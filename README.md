@@ -1,4 +1,4 @@
-# django-playbook
+# django-studio
 
 Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS.
 
@@ -15,7 +15,7 @@ Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS
 ## Usage
 
 ```bash
-uvx cookiecutter gh:danjac/django-playbook
+uvx cookiecutter gh:danjac/django-studio
 ```
 
 Then follow the prompts:

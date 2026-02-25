@@ -2,6 +2,48 @@
 
 This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
 
+## Session Workflow
+
+At the start of every session, follow this order — do not skip ahead:
+
+1. **Fix bugs first.** Check `BUGS.md` for open bugs. Fix every one before doing any roadmap work. A stable codebase is the baseline.
+2. **Resume the roadmap.** Open `ROADMAP.md`, find the next unchecked task, and continue from there.
+
+If `ROADMAP.md` does not exist yet, ask the user the following before creating it:
+- What problem is this project solving?
+- What are the requirements and constraints?
+- Who are the users and stakeholders?
+
+Once clarity is established, create `ROADMAP.md` with milestones and tasks. Each task gets a checkbox (`- [ ]`).
+
+## Bug Workflow
+
+Bugs are logged by the user in `BUGS.md`. For each bug:
+
+1. Create a branch: `git checkout -b fix/<short-description>`
+2. Diagnose — state root cause with `file:line` reference before touching code
+3. Fix and write a regression test
+4. Run `just lint && just typecheck && just test` — all must pass
+5. Merge into `main` with: `fix: <description>`
+6. Mark the bug as resolved in `BUGS.md`
+
+## Roadmap Workflow
+
+The roadmap lives in `ROADMAP.md`, broken into milestones. Each milestone has tasks with checkboxes.
+
+For each milestone:
+
+1. Create a branch: `git checkout -b milestone-<N>`
+2. Work through each task. When a task is done, mark it: `- [x] Task name`
+3. After each task, run `just lint && just typecheck && just test`
+4. When all tasks in the milestone are complete, **stop and tell the user** — do not merge or continue to the next milestone
+5. After the user approves, ask the user to run `git rebase -i` to squash the branch commits into logical units, then merge into `main` and delete the branch:
+   ```bash
+   git checkout main
+   git merge milestone-<N>
+   git branch -d milestone-<N>
+   ```
+
 ## Stack
 
 - **Python 3.14**, **Django 6.0**, **PostgreSQL 18**, **Redis 8**
@@ -91,10 +133,6 @@ just psql                      # Connect to PostgreSQL
 Conventional commits enforced by commitlint. Format: `type: subject`
 
 Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
-
-### Branching
-
-Create a well-named branch for each change. Before merging into `main`, squash commits and ensure all tests pass with 100% coverage.
 
 ## Code Style
 

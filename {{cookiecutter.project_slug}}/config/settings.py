@@ -464,6 +464,9 @@ if env.bool("USE_DEBUG_TOOLBAR", default=False):
 
 DEFAULT_PAGE_SIZE = 30
 
+# Cookie name used to record GDPR consent
+GDPR_COOKIE_NAME = env("GDPR_COOKIE_NAME", default="accept-cookies")
+
 META_TAGS = {
     "author": env("META_AUTHOR", default="{{cookiecutter.author}}"),
     "description": env("META_DESCRIPTION", default="{{cookiecutter.description}}"),

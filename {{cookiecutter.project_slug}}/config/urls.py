@@ -3,7 +3,10 @@ from django.contrib import admin
 from django.urls import include, path
 from health_check.views import HealthCheckView
 
+from {{cookiecutter.app_name}} import views
+
 urlpatterns = [
+    path("accept-cookies/", views.accept_cookies, name="accept_cookies"),
     path("", include("{{cookiecutter.app_name}}.users.urls")),
     path("account/", include("allauth.urls")),
     path(

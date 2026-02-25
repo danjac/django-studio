@@ -17,6 +17,17 @@ if TYPE_CHECKING:
 register = template.Library()
 
 
+@register.inclusion_tag("cookie_banner.html", takes_context=True)
+def cookie_banner(context: "RequestContext") -> dict:
+    """Render the GDPR cookie consent banner.
+
+    Passes ``cookies_accepted`` into the template based on whether the
+    GDPR consent cookie is present on the request.
+    """
+    cookies_accepted = settings.GDPR_COOKIE_NAME in context.request.COOKIES
+    return context.flatten() | {"cookies_accepted": cookies_accepted}
+
+
 @register.simple_tag(takes_context=True)
 def title_tag(context: RequestContext, *elements: str, divider: str = " | ") -> str:
     """Renders <title> content including the site name.

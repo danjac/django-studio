@@ -1,0 +1,6 @@
+- name: Run psql commands
+  hosts: server
+  become: false
+  gather_facts: true
+  roles:
+      - scripts_psql

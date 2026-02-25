@@ -1,4 +1,15 @@
+# Justfile for Django project
+
+# Ansible configuration
+ansible_dir := invocation_directory() / "ansible"
+script_dir := ansible_dir / "scripts"
+
 @_default:
+    just --list
+
+# Install all dependencies
+[group('development')]
+install: pyinstall precommitinstall
     just --list
 
 # Install all dependencies
@@ -109,3 +120,35 @@ precommitupdate:
 [group('development')]
 precommitall:
    @just precommit run --all-files
+# Re-run pre-commit on all files
+[group('development')]
+precommitall:
+    @just precommit run --all-files
+
+# Run Ansible playbook
+[group('deployment')]
+apb playbook *args:
+    ansible-playbook -i {{ ansible_dir / "hosts.yml" }} {{ ansible_dir / playbook + ".yml" }} {{ args }}
+
+# Run Django manage.py commands on production server
+[group('production')]
+rdj *args:
+    @just remote_script manage.sh dj_manage {{ args }}
+
+# Run Psql commands remotely on production database
+[group('production')]
+rpsql *args:
+    @just remote_script psql.sh psql {{ args }}
+
+# Run Kubectl commands remotely on production cluster
+[group('production')]
+kube *args:
+    @just remote_script kubectl.sh kubectl {{ args }}
+
+[private]
+remote_script script playbook *args:
+    tmp_dir := env_var_or_default("TMPDIR", "/tmp")
+    script_path := tmp_dir / script + ".sh"
+    {{ ansible_dir }}/scripts/{{ script }}.sh: {{ playbook }}
+        scp -3 {{ groups['server'][0] }} {{ groups['server'][0] }}:/tmp/{{ script }}.sh {{ script_path }}
+    ssh -t {{ hostvars[groups['server'][0]]['ansible_user'] }}@{{ groups['server'][0] }} "{{ script_path }} {{ args }}"

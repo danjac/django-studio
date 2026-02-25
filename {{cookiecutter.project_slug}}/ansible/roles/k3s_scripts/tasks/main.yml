@@ -1,0 +1,9 @@
+- name: Add scripts to access the cluster
+  ansible.builtin.template:
+      src: "{{ item }}.j2"
+      dest: "{{ item }}"
+      mode: "u+x"
+  loop:
+      - deploy.sh
+      - manage.sh
+      - psql.sh

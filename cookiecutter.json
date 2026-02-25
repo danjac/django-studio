@@ -11,6 +11,8 @@
   "_copy_without_render": [
     "templates/**",
     "static/**",
-    "justfile"
+    "justfile",
+    "terraform/**",
+    "ansible/**"
   ]
 }

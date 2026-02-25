@@ -1,0 +1,5 @@
+- name: Ubuntu server upgrades
+  hosts: all
+  become: true
+  roles:
+      - upgrade

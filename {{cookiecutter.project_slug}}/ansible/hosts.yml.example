@@ -1,0 +1,36 @@
+all:
+  children:
+    server:
+      hosts:
+        123.456.78.910:
+          private_ip: 10.0.0.1
+          hostname: server
+          role: server
+    agents:
+      hosts:
+        123.456.78.911:
+          hostname: database
+          role: database
+        123.456.78.912:
+          hostname: jobrunner
+          role: jobrunner
+        123.456.78.913:
+          hostname: webapp-1
+          role: webapp
+        123.456.78.914:
+          hostname: webapp-2
+          role: webapp
+  vars:
+    domain: "myapp.com"
+    k3s_deploy_admin_url: "admin/"
+    k3s_deploy_admins: "admin@gmail.com"
+    k3s_deploy_contact_email: "contact@gmail.com"
+    k3s_deploy_mailgun_api_key: ""
+    k3s_deploy_mailgun_api_url: "https://api.eu.mailgun.net/v3"
+    k3s_deploy_postgres_volume: "/mnt/HC_Volume_104566943"
+    k3s_deploy_postgres_password: ""
+    k3s_deploy_pwa_sha256_fingerprints: ""
+    k3s_deploy_secret_key: ""
+    k3s_deploy_secret_key_fallbacks: ""
+    k3s_deploy_sentry_url: ""
+    k3s_deploy_open_telemetry_url: ""

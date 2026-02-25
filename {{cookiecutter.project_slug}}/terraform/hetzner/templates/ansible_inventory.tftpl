@@ -1,0 +1,35 @@
+all:
+  children:
+    server:
+      hosts:
+        ${server_public_ip}:
+          private_ip: ${server_private_ip}
+          hostname: server
+          role: server
+    agents:
+      hosts:
+        ${database_public_ip}:
+          hostname: database
+          role: database
+        ${jobrunner_public_ip}:
+          hostname: jobrunner
+          role: jobrunner
+%{ for idx, ip in webapp_public_ips ~}
+        ${ip}:
+          hostname: webapp-${idx + 1}
+          role: webapp
+%{ endfor ~}
+  vars:
+    domain: "${domain}"
+    k3s_deploy_admin_url: "admin/"
+    k3s_deploy_admins: ""
+    k3s_deploy_contact_email: ""
+    k3s_deploy_mailgun_api_key: ""
+    k3s_deploy_mailgun_api_url: "https://api.eu.mailgun.net/v3"
+    k3s_deploy_postgres_volume: "${postgres_volume_mount_path}"
+    k3s_deploy_postgres_password: ""
+    k3s_deploy_pwa_sha256_fingerprints: ""
+    k3s_deploy_secret_key: ""
+    k3s_deploy_secret_key_fallbacks: ""
+    k3s_deploy_sentry_url: ""
+    k3s_deploy_open_telemetry_url: ""

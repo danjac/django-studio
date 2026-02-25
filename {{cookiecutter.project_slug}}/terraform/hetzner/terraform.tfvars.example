@@ -1,0 +1,22 @@
+# Hetzner Cloud API token (create in Cloud Console → Project → Security → API Tokens)
+hcloud_token = ""
+
+# SSH public key (content of ~/.ssh/id_rsa.pub)
+ssh_public_key = ""
+
+# Name prefix for all resources
+cluster_name = "{{cookiecutter.project_slug}}"
+
+# Hetzner datacenter location (nbg1, fsn1, hel1, ash, hil)
+location = "nbg1"
+
+# Server types (cx11-cpx51, ccx13-ccx63, cax11-cax41)
+server_type         = "cx23"  # k3s control plane + Traefik
+database_server_type = "cx23"  # PostgreSQL + Redis
+agent_server_type    = "cx23"  # Jobrunner + Webapps
+
+# Number of webapp instances
+webapp_count = 2
+
+# PostgreSQL volume size in GB
+postgres_volume_size = 50

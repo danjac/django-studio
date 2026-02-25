@@ -6,6 +6,7 @@
   "author": "Your Name",
   "author_email": "you@example.com",
   "use_hx_boost": ["y", "n"],
+  "use_storage": ["y", "n"],
   "_copy_without_render": [
     "templates/**",
     "static/**",

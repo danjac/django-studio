@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Plugins */
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+/* Custom variant for HTMX transitions */
+@custom-variant htmx-added (& .htmx-added,.htmx-added &);
+
+@import "./base.css";
+@import "./buttons.css";
+@import "./forms.css";
+@import "./messages.css";

@@ -1,0 +1,24 @@
+@layer components {
+    .form-input,
+    .form-textarea,
+    .form-select {
+        @apply w-full rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100;
+    }
+
+    .form-checkbox,
+    .form-radio {
+        @apply rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-zinc-700 dark:text-zinc-300;
+    }
+
+    .form-error {
+        @apply mt-1 text-sm text-red-600 dark:text-red-400;
+    }
+
+    .form-help {
+        @apply mt-1 text-sm text-zinc-500 dark:text-zinc-400;
+    }
+}

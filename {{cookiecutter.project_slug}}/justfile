@@ -1,0 +1,111 @@
+@_default:
+    just --list
+
+# Install all dependencies
+[group('development')]
+install: pyinstall precommitinstall
+
+# Update all dependencies
+[group('development')]
+update: pyupdate pyinstall precommitupdate
+
+# Install all Python dependencies
+[group('development')]
+pyinstall:
+   uv sync --frozen --all-extras --no-install-project
+
+# Update all Python dependencies
+[group('development')]
+pyupdate:
+   uv lock --upgrade
+
+# Run Django management command
+[group('development')]
+dj *args:
+   uv run python ./manage.py {{ args }}
+
+# Run Django development server + Tailwind
+[group('development')]
+serve:
+   @just dj tailwind runserver
+
+# Run all tests
+[group('development')]
+test-all: test e2e
+
+# Run unit tests
+[group('development')]
+test *args:
+   uv run pytest {{ args }}
+
+# Run e2e tests with Playwright (headless)
+[group('development')]
+e2e *args:
+   uv run pytest -c playright.ini {{ args }}
+
+# Run e2e tests with a visible browser window
+[group('development')]
+e2e-headed *args:
+   uv run pytest -c playright.ini --headed {{ args }}
+
+# Install Playwright browsers (run once after uv sync)
+[group('development')]
+playwright-install:
+   uv run playwright install chromium
+
+# Run pytest-watcher
+[group('development')]
+tw:
+   uv run ptw .
+
+# Run type checks
+[group('development')]
+typecheck *args:
+   uv run basedpyright {{ args }}
+
+# Run linting
+[group('development')]
+lint:
+   uv run ruff check --fix
+   uv run djlint --lint templates/
+
+# Run docker compose
+[group('development')]
+dc *args:
+   docker compose {{ args }}
+
+# Start all Docker services
+[group('development')]
+start *args:
+   @just dc up -d --remove-orphans {{ args }}
+
+# Stop all Docker services
+[group('development')]
+stop *args:
+   @just dc down {{ args }}
+
+# Run Psql
+[group('development')]
+psql *args:
+   @just dc exec postgres psql -U postgres {{ args }}
+
+# Run pre-commit manually
+[group('development')]
+precommit *args:
+   uv run --with pre-commit-uv pre-commit {{ args }}
+
+# Install pre-commit hooks
+[group('development')]
+precommitinstall:
+   @just precommit install
+   @just precommit install --hook-type commit-msg
+
+# Update pre-commit hooks
+[group('development')]
+precommitupdate:
+   @just precommit autoupdate
+
+# Re-run pre-commit on all files
+[group('development')]
+precommitall:
+   @just precommit run --all-files

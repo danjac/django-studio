@@ -1,0 +1,21 @@
+@layer components {
+    .message {
+        @apply flex items-center justify-between rounded-lg border px-4 py-3 text-sm;
+    }
+
+    .message-success {
+        @apply border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/20 dark:text-green-200;
+    }
+
+    .message-error {
+        @apply border-red-200 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-200;
+    }
+
+    .message-warning {
+        @apply border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200;
+    }
+
+    .message-info {
+        @apply border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200;
+    }
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% title_tag %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% meta_tags %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'app.css' %}" />
+    <script src="{% static 'vendor/htmx-2.0.8.min.js' %}" defer></script>
+    <script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
+  </head>
+  <body
+    hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'
+    hx-boost="true"
+  >
+    <div id="hx-indicator" class="htmx-indicator"></div>
+    {% if messages %}
+      {% include "messages.html" %}
+    {% endif %}
+    <main>
+      {% block content %}
+      {% endblock content %}
+    </main>
+  </body>
+</html>

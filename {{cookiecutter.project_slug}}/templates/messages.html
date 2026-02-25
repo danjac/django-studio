@@ -1,0 +1,19 @@
+<div
+  {% if hx_oob %}
+    id="messages"
+    hx-swap-oob="true"
+  {% endif %}
+>
+  {% for message in messages %}
+    <div
+      x-data="{ show: true }"
+      x-show="show"
+      x-transition
+      role="alert"
+      class="message message-{{ message.tags }}"
+    >
+      {{ message }}
+      <button @click="show = false" aria-label="Dismiss">&times;</button>
+    </div>
+  {% endfor %}
+</div>

@@ -5,6 +5,7 @@ import os
 
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
 USE_STORAGE = "{{cookiecutter.use_storage}}"
+USE_I18N = "{{cookiecutter.use_i18n}}"
 
 BASE_HTML = os.path.join("templates", "base.html")
 DEFAULT_BASE_HTML = os.path.join("templates", "default_base.html")
@@ -141,6 +142,69 @@ def remove_storage_terraform() -> None:
         os.rmdir(tf_dir)
 
 
+# ── i18n ──────────────────────────────────────────────────────────────────────
+
+LOCALE_DIR = "locale"
+JUSTFILE = "justfile"
+
+_SETTINGS_I18N_BLOCK = """
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
+LANGUAGES = [
+    ("en", "English"),
+]
+"""
+
+_URLS_I18N_PATH = '    path("i18n/", include("django.conf.urls.i18n")),\n'
+
+_JUSTFILE_I18N = """
+# Extract translatable strings
+[group('i18n')]
+makemessages *args:
+   @just dj makemessages -l en {{ args }}
+
+# Compile message files
+[group('i18n')]
+compilemessages *args:
+   @just dj compilemessages {{ args }}
+"""
+
+
+def setup_i18n() -> None:
+    """Add LOCALE_PATHS, LANGUAGES, i18n URLs, locale dir, and justfile commands."""
+    with open(SETTINGS_PY, "a") as f:
+        f.write(_SETTINGS_I18N_BLOCK)
+
+    with open(URLS_PY) as f:
+        content = f.read()
+    content = content.replace(
+        '    path("account/',
+        _URLS_I18N_PATH + '    path("account/',
+    )
+    with open(URLS_PY, "w") as f:
+        f.write(content)
+
+    os.makedirs(LOCALE_DIR, exist_ok=True)
+
+    with open(JUSTFILE, "a") as f:
+        f.write(_JUSTFILE_I18N)
+
+
+def remove_i18n() -> None:
+    """Disable i18n: set USE_I18N=False, remove LocaleMiddleware and i18n context processor."""
+    with open(SETTINGS_PY) as f:
+        content = f.read()
+    content = content.replace("USE_I18N = True\n", "USE_I18N = False\n")
+    content = content.replace(
+        '    "django.middleware.locale.LocaleMiddleware",\n', ""
+    )
+    content = content.replace(
+        '        "django.template.context_processors.i18n",\n', ""
+    )
+    with open(SETTINGS_PY, "w") as f:
+        f.write(content)
+
+
 # ── main ──────────────────────────────────────────────────────────────────────
 
 if USE_HX_BOOST == "y":
@@ -152,3 +216,8 @@ if USE_STORAGE == "y":
     setup_storage()
 else:
     remove_storage_terraform()
+
+if USE_I18N == "y":
+    setup_i18n()
+else:
+    remove_i18n()

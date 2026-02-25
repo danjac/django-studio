@@ -1,9 +1,13 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>Permission Denied</title>
-  </head>
-  <body>
-    <h1>403 Permission Denied</h1>
-  </body>
-</html>
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="py-12 text-center">
+    <p class="text-base font-semibold text-indigo-600 dark:text-indigo-400">403</p>
+    <h1 class="mt-2 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{% translate "Permission Denied" %}</h1>
+    <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-400">{% translate "You do not have permission to access this page." %}</p>
+    <div class="mt-8">
+      <a href="/" class="btn btn-primary">{% translate "Go home" %}</a>
+    </div>
+  </div>
+{% endblock content %}

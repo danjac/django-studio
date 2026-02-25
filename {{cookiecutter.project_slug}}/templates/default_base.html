@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {% meta_tags %}
     {% load static %}
+    {% load i18n %}
     <link rel="stylesheet" href="{% static 'app.css' %}" />
     <script src="{% static 'vendor/htmx-2.0.8.min.js' %}" defer></script>
     <script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
@@ -15,7 +16,36 @@
     {% if messages %}
       {% include "messages.html" %}
     {% endif %}
-    <main>
+    <nav class="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+          <a
+            href="/"
+            class="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+          >
+            {{cookiecutter.project_name}}
+          </a>
+          <div class="flex items-center gap-3">
+            {% if user.is_authenticated %}
+              <a
+                href="{% url 'account_email' %}"
+                class="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              >
+                {{ user.email }}
+              </a>
+              <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary btn-sm">{% translate "Sign out" %}</button>
+              </form>
+            {% else %}
+              <a href="{% url 'account_login' %}" class="btn btn-secondary btn-sm">{% translate "Sign in" %}</a>
+              <a href="{% url 'account_signup' %}" class="btn btn-primary btn-sm">{% translate "Sign up" %}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {% block content %}
       {% endblock content %}
     </main>

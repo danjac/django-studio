@@ -5,6 +5,7 @@
   "description": "A Django project",
   "author": "Your Name",
   "author_email": "you@example.com",
+  "use_hx_boost": ["y", "n"],
   "_copy_without_render": [
     "templates/**",
     "static/**",

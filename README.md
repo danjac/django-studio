@@ -15,8 +15,7 @@ Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS
 ## Usage
 
 ```bash
-pip install cookiecutter
-cookiecutter gh:yourusername/django-playbook
+uvx cookiecutter gh:danjac/django-playbook
 ```
 
 Then follow the prompts:

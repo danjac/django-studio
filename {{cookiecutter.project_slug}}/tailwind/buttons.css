@@ -1,25 +1,73 @@
 @layer components {
     .btn {
-        @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-2) var(--spacing-4);
+        font-weight: 600;
+        transition-property: color, background-color, border-color;
+        transition-timing-function: var(--default-transition-timing-function);
+        transition-duration: var(--default-transition-duration);
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--btn-ring-color, var(--color-zinc-400));
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
     }
 
     .btn-primary {
-        @apply bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500;
+        --btn-ring-color: var(--color-indigo-500);
+        background-color: var(--color-indigo-600);
+        color: var(--color-white);
+
+        &:hover {
+            background-color: var(--color-indigo-700);
+        }
     }
 
     .btn-secondary {
-        @apply bg-zinc-100 text-zinc-900 hover:bg-zinc-200 focus:ring-zinc-400 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700;
+        --btn-ring-color: var(--color-zinc-400);
+        background-color: var(--color-zinc-100);
+        color: var(--color-zinc-900);
+
+        &:hover {
+            background-color: var(--color-zinc-200);
+        }
+
+        @variant dark {
+            background-color: var(--color-zinc-800);
+            color: var(--color-zinc-100);
+
+            &:hover {
+                background-color: var(--color-zinc-700);
+            }
+        }
     }
 
     .btn-danger {
-        @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+        --btn-ring-color: var(--color-red-500);
+        background-color: var(--color-red-600);
+        color: var(--color-white);
+
+        &:hover {
+            background-color: var(--color-red-700);
+        }
     }
 
     .btn-sm {
-        @apply px-3 py-1 text-sm;
+        padding: var(--spacing-1) var(--spacing-3);
+        font-size: var(--text-sm);
+        line-height: var(--text-sm--line-height);
     }
 
     .btn-lg {
-        @apply px-6 py-3 text-lg;
+        padding: var(--spacing-3) var(--spacing-6);
+        font-size: var(--text-lg);
+        line-height: var(--text-lg--line-height);
     }
 }

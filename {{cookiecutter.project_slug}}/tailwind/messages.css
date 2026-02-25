@@ -1,21 +1,60 @@
 @layer components {
     .message {
-        @apply flex items-center justify-between rounded-lg border px-4 py-3 text-sm;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: var(--radius-lg);
+        border: 1px solid;
+        padding: var(--spacing-3) var(--spacing-4);
+        font-size: var(--text-sm);
+        line-height: var(--text-sm--line-height);
     }
 
     .message-success {
-        @apply border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/20 dark:text-green-200;
+        border-color: var(--color-green-200);
+        background-color: var(--color-green-50);
+        color: var(--color-green-800);
+
+        @variant dark {
+            border-color: var(--color-green-800);
+            background-color: color-mix(in srgb, var(--color-green-900) 20%, transparent);
+            color: var(--color-green-200);
+        }
     }
 
     .message-error {
-        @apply border-red-200 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-200;
+        border-color: var(--color-red-200);
+        background-color: var(--color-red-50);
+        color: var(--color-red-800);
+
+        @variant dark {
+            border-color: var(--color-red-800);
+            background-color: color-mix(in srgb, var(--color-red-900) 20%, transparent);
+            color: var(--color-red-200);
+        }
     }
 
     .message-warning {
-        @apply border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200;
+        border-color: var(--color-yellow-200);
+        background-color: var(--color-yellow-50);
+        color: var(--color-yellow-800);
+
+        @variant dark {
+            border-color: var(--color-yellow-800);
+            background-color: color-mix(in srgb, var(--color-yellow-900) 20%, transparent);
+            color: var(--color-yellow-200);
+        }
     }
 
     .message-info {
-        @apply border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200;
+        border-color: var(--color-blue-200);
+        background-color: var(--color-blue-50);
+        color: var(--color-blue-800);
+
+        @variant dark {
+            border-color: var(--color-blue-800);
+            background-color: color-mix(in srgb, var(--color-blue-900) 20%, transparent);
+            color: var(--color-blue-200);
+        }
     }
 }

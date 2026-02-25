@@ -24,7 +24,7 @@ def enable_hx_boost() -> None:
     """Wire up hx-boost when the user opts in."""
     # base.html: switch between hx_base and default_base based on request type
     with open(BASE_HTML, "w") as f:
-        f.write('{% extends request.htmx|yesno:"hx_base.html,default_base.html" %}\n')
+        f.write("{" + '% extends request.htmx|yesno:"hx_base.html,default_base.html" %}\n')
 
     # default_base.html: expand <body> to multi-attribute form with hx-boost
     with open(DEFAULT_BASE_HTML) as f:
@@ -157,16 +157,17 @@ LANGUAGES = [
 
 _URLS_I18N_PATH = '    path("i18n/", include("django.conf.urls.i18n")),\n'
 
-_JUSTFILE_I18N = """
+_args = "{" + "{ args }}"
+_JUSTFILE_I18N = f"""
 # Extract translatable strings
 [group('i18n')]
 makemessages *args:
-   @just dj makemessages -l en {{ args }}
+   @just dj makemessages -l en {_args}
 
 # Compile message files
 [group('i18n')]
 compilemessages *args:
-   @just dj compilemessages {{ args }}
+   @just dj compilemessages {_args}
 """
 
 

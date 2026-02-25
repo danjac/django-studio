@@ -22,7 +22,7 @@ def title_tag(context: RequestContext, *elements: str, divider: str = " | ") -> 
     """Renders <title> content including the site name.
 
     Example:
-        {% title_tag "About Us" %}
+        {% raw %}{% title_tag "About Us" %}{% endraw %}
     Results in:
         <title>My Site | About Us</title>
     """
@@ -77,17 +77,17 @@ def fragment(
     only: bool = False,
     **extra_context,
 ) -> SafeString:
-    """Renders an include template with block content passed as {{ content }}.
+    """Renders an include template with block content passed as {{ '{{ content }}' }}.
 
     Example:
 
-        {% fragment "header.html" %}
+        {% raw %}{% fragment "header.html" %}{% endraw %}
         title goes here
-        {% endfragment %}
+        {% raw %}{% endfragment %}{% endraw %}
 
     header.html:
 
-        <h1>{{ content }}</h1>
+        <h1>{{ '{{ content }}' }}</h1>
 
     If `only` is passed the outer context is not included.
     """

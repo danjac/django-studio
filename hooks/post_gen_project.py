@@ -38,9 +38,15 @@ def enable_hx_boost() -> None:
 
 
 def remove_hx_base() -> None:
-    """Remove hx_base.html when hx-boost is not used — it serves no purpose."""
+    """Collapse default_base.html into base.html when hx-boost is not used.
+
+    Without hx-boost there is no need for dynamic extends; base.html becomes
+    the full layout and the default_base.html / hx_base.html stubs are removed.
+    """
     if os.path.exists(HX_BASE_HTML):
         os.remove(HX_BASE_HTML)
+    # Replace the extends-stub with the actual full layout.
+    os.replace(DEFAULT_BASE_HTML, BASE_HTML)
 
 
 # ── storage ───────────────────────────────────────────────────────────────────

@@ -19,20 +19,25 @@ TERRAFORM_STORAGE = os.path.join("terraform", "hetzner", "storage.tf")
 # ── hx-boost ──────────────────────────────────────────────────────────────────
 
 
-def disable_hx_boost() -> None:
-    """Remove hx-boost wiring when the user opts out."""
-    # base.html: drop the HTMX/full-page switch, just extend default_base
+def enable_hx_boost() -> None:
+    """Wire up hx-boost when the user opts in."""
+    # base.html: switch between hx_base and default_base based on request type
     with open(BASE_HTML, "w") as f:
-        f.write('{% extends "default_base.html" %}\n')
+        f.write('{% extends request.htmx|yesno:"hx_base.html,default_base.html" %}\n')
 
-    # default_base.html: remove hx-boost attribute from <body>
+    # default_base.html: expand <body> to multi-attribute form with hx-boost
     with open(DEFAULT_BASE_HTML) as f:
         content = f.read()
-    content = content.replace('\n    hx-boost="true"', "")
+    content = content.replace(
+        "  <body hx-headers=",
+        '  <body\n    hx-boost="true"\n    hx-headers=',
+    )
     with open(DEFAULT_BASE_HTML, "w") as f:
         f.write(content)
 
-    # hx_base.html is only needed for boosted navigation — remove it
+
+def remove_hx_base() -> None:
+    """Remove hx_base.html when hx-boost is not used — it serves no purpose."""
     if os.path.exists(HX_BASE_HTML):
         os.remove(HX_BASE_HTML)
 
@@ -138,8 +143,10 @@ def remove_storage_terraform() -> None:
 
 # ── main ──────────────────────────────────────────────────────────────────────
 
-if USE_HX_BOOST == "n":
-    disable_hx_boost()
+if USE_HX_BOOST == "y":
+    enable_hx_boost()
+else:
+    remove_hx_base()
 
 if USE_STORAGE == "y":
     setup_storage()

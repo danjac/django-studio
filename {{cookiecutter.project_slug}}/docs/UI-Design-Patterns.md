@@ -130,6 +130,37 @@ This project uses Zinc for neutral colors:
 - Use semantic HTML (`nav`, `main`, `article`, `section`)
 - Use `aria-label` for icon-only buttons
 
+## Icons
+
+Use [`heroicons`](https://heroicons.com/) for all icons via the `heroicons[django]` package. Load the template tag and prefer the built-in icon set over custom SVGs.
+
+```html
+{% load heroicons %}
+
+<!-- Outline (24px) — default for most UI icons -->
+{% heroicon_outline "arrow-right" %}
+
+<!-- Solid (24px) — filled variant -->
+{% heroicon_solid "check" %}
+
+<!-- Mini (20px) — for compact UI, inline with text -->
+{% heroicon_mini "x-mark" class="size-4" %}
+
+<!-- Micro (16px) — smallest, for tight spaces -->
+{% heroicon_micro "chevron-down" %}
+```
+
+Pass extra attributes (e.g. `class`, `aria-hidden`) directly to the tag:
+
+```html
+{% heroicon_outline "magnifying-glass" class="size-5 text-zinc-400" aria-hidden="true" %}
+```
+
+**Rules:**
+- Use `heroicons` as the first choice for every icon.
+- Use custom inline SVGs only when no heroicon exists for the shape you need.
+- Never use character entities (`&times;`, `&#9998;`) or emoji as icons.
+
 ## Best Practices
 
 1. Use semantic HTML elements

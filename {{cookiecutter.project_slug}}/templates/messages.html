@@ -1,3 +1,4 @@
+{% load heroicons %}
 <div
   id="messages"
   {% if hx_oob %}hx-swap-oob="true"{% endif %}
@@ -16,7 +17,7 @@
         @click="show = false"
         aria-label="Dismiss"
         class="ml-4 shrink-0 cursor-pointer opacity-60 hover:opacity-100"
-      >&times;</button>
+      >{% heroicon_mini "x-mark" class="size-4" %}</button>
     </div>
   {% endfor %}
 </div>

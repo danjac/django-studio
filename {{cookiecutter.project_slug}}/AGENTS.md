@@ -144,6 +144,20 @@ Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `buil
 - `pyupgrade --py314` applied automatically
 - `django-upgrade --target-version 6.0` applied automatically
 
+### Icons
+
+Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Load the tag at the top of any template that needs icons and prefer the built-in set over custom SVGs.
+
+```html
+{% load heroicons %}
+{% heroicon_mini "x-mark" class="size-4" %}
+{% heroicon_outline "arrow-right" class="size-5" %}
+```
+
+Use custom inline SVGs only when no heroicon exists for the shape you need. Never use character entities (`&times;`) or emoji as icons.
+
+See `docs/UI-Design-Patterns.md` for the full icon guide.
+
 ### Templates
 
 - `djhtml` for HTML/CSS/JS indentation

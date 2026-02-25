@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This is a Django project using HTMX, AlpineJS, and Tailwind CSS.
+This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
 
 ## Stack
 

@@ -125,10 +125,148 @@ This project uses Zinc for neutral colors:
 
 ## Accessibility
 
-- Use `focus:ring-2` for focus states
-- Use `sr-only` for screen reader text
-- Use semantic HTML (`nav`, `main`, `article`, `section`)
-- Use `aria-label` for icon-only buttons
+Target WCAG 2.1 AA as the baseline.
+
+### Semantic HTML
+
+Use the right element for the job — don't use `<div>` where a semantic element exists:
+
+```html
+<nav>        <!-- site/section navigation -->
+<main>       <!-- primary page content (one per page) -->
+<article>    <!-- self-contained content (post, card) -->
+<section>    <!-- thematic group with a heading -->
+<aside>      <!-- complementary content / sidebar -->
+<header>     <!-- page or section header -->
+<footer>     <!-- page or section footer -->
+<h1>–<h6>   <!-- headings in document order, never skip levels -->
+<button>     <!-- any clickable action (not <div @click>) -->
+<a href="…"> <!-- navigation to a URL -->
+```
+
+### Focus Management
+
+Every interactive element must have a visible focus ring. Tailwind removes outlines by default — always restore them:
+
+```html
+<button class="focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+<a class="focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded">
+```
+
+Use `focus-visible:` instead of `focus:` when you only want the ring for keyboard users (not mouse clicks):
+
+```html
+<button class="focus-visible:ring-2 focus-visible:ring-indigo-500">
+```
+
+### Screen Reader Text
+
+Use `sr-only` to provide text for screen readers that is hidden visually:
+
+```html
+<!-- Icon-only button -->
+<button aria-label="Close" class="...">
+  {% heroicon_mini "x-mark" class="size-4" aria-hidden="true" %}
+</button>
+
+<!-- Supplementary context -->
+<a href="/users/42/">
+  View profile
+  <span class="sr-only">for Alice Smith</span>
+</a>
+```
+
+### Icons and ARIA
+
+Decorative icons (accompanied by visible text) must be hidden from screen readers. Standalone icons need a label.
+
+```html
+<!-- Decorative — hidden from AT -->
+{% heroicon_outline "arrow-right" class="size-5" aria-hidden="true" %}
+
+<!-- Standalone — labelled via parent button -->
+<button aria-label="Delete item">
+  {% heroicon_outline "trash" class="size-5" aria-hidden="true" %}
+</button>
+```
+
+### Forms
+
+Every input needs a `<label>`. Never rely on `placeholder` as a substitute — it disappears on focus and has poor contrast.
+
+```html
+<label for="email">Email address</label>
+<input id="email" type="email" ...>
+
+<!-- Error messages -->
+<input id="email" aria-describedby="email-error" aria-invalid="true" ...>
+<p id="email-error" class="text-rose-600 text-sm">Enter a valid email address.</p>
+```
+
+With `widget_tweaks`, add ARIA attributes directly in the template:
+
+```html
+{% render_field form.email class="form-input" aria-describedby="email-error" %}
+```
+
+### HTMX Dynamic Content
+
+When HTMX swaps content, screen readers won't announce the change unless you use a live region:
+
+```html
+<!-- Announce status messages (e.g. "Saved") -->
+<div aria-live="polite" aria-atomic="true" id="status"></div>
+
+<!-- Announce errors urgently -->
+<div aria-live="assertive" aria-atomic="true" id="errors"></div>
+```
+
+For full-page fragment swaps, move focus explicitly:
+
+```html
+<div hx-get="/results/" hx-target="#results" hx-swap="innerHTML" hx-on::after-swap="document.getElementById('results').focus()">
+```
+
+### AlpineJS Interactive Widgets
+
+Use ARIA state attributes alongside Alpine state:
+
+```html
+<!-- Disclosure / accordion -->
+<button @click="open = !open" :aria-expanded="open.toString()">Toggle</button>
+<div x-show="open" role="region">...</div>
+
+<!-- Modal — trap focus while open -->
+<div
+  x-show="open"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dialog-title"
+  x-trap.inert.noscroll="open"
+>
+  <h2 id="dialog-title">Confirm deletion</h2>
+</div>
+```
+
+`x-trap` requires the `@alpinejs/focus` plugin — ensure it is registered.
+
+### Color Contrast
+
+- Normal text: minimum 4.5:1 contrast ratio against background (WCAG AA)
+- Large text (18px+ or 14px+ bold): minimum 3:1
+- UI components and focus indicators: minimum 3:1
+
+The Zinc + Indigo palette meets AA at standard pairings:
+- `text-zinc-900` on `bg-white` ✓
+- `text-zinc-100` on `bg-zinc-950` ✓
+- Avoid `text-zinc-400` on `bg-white` for body text — use `text-zinc-500` minimum
+
+### Keyboard Navigation
+
+- All interactive elements reachable by `Tab` in logical order
+- `Escape` closes modals, dropdowns, and overlays
+- Arrow keys navigate within composite widgets (menus, tabs, radio groups)
+- No keyboard traps except intentional modal focus traps (with escape to close)
 
 ## Icons
 

@@ -8,6 +8,7 @@
   "use_hx_boost": ["y", "n"],
   "use_storage": ["y", "n"],
   "use_i18n": ["y", "n"],
+  "use_pwa": ["y", "n"],
   "_copy_without_render": [
     "templates/**",
     "static/**",

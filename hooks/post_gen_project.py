@@ -6,6 +6,7 @@ import os
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
 USE_STORAGE = "{{cookiecutter.use_storage}}"
 USE_I18N = "{{cookiecutter.use_i18n}}"
+USE_PWA = "{{cookiecutter.use_pwa}}"
 
 BASE_HTML = os.path.join("templates", "base.html")
 DEFAULT_BASE_HTML = os.path.join("templates", "default_base.html")
@@ -212,6 +213,170 @@ def remove_i18n() -> None:
         f.write(content)
 
 
+# ── pwa ───────────────────────────────────────────────────────────────────────
+
+APP_NAME = "{{cookiecutter.app_name}}"
+VIEWS_PY = os.path.join(APP_NAME, "views.py")
+TEST_VIEWS_PY = os.path.join(APP_NAME, "tests", "test_views.py")
+SERVICE_WORKER_JS = os.path.join("static", "service-worker.js")
+
+_VIEWS_IMPORT_BEFORE = "from django.http import HttpResponse\n"
+_VIEWS_IMPORT_AFTER = "from django.http import HttpResponse, JsonResponse\n"
+
+_VIEWS_PWA_BLOCK = """
+
+@require_safe
+@_cache_control
+@_cache_page
+def manifest(request: HttpRequest) -> JsonResponse:
+    \"\"\"Serve PWA manifest.json.\"\"\"
+    pwa = settings.PWA_CONFIG
+    return JsonResponse(
+        {
+            "background_color": pwa["background_color"],
+            "description": pwa["description"],
+            "dir": "ltr",
+            "display": "minimal-ui",
+            "id": "?homescreen=1",
+            "lang": "en",
+            "name": request.site.name,
+            "orientation": "any",
+            "prefer_related_applications": False,
+            "scope": reverse("index"),
+            "short_name": request.site.name[:12],
+            "start_url": reverse("index"),
+            "theme_color": pwa["theme_color"],
+        }
+    )
+
+
+@require_safe
+@_cache_control
+@_cache_page
+def assetlinks(_) -> JsonResponse:
+    \"\"\"Serve PWA .well-known/assetlinks.json.\"\"\"
+    pwa = settings.PWA_CONFIG["assetlinks"]
+    return JsonResponse(
+        [
+            {
+                "relation": ["delegate_permission/common.handle_all_urls"],
+                "target": {
+                    "namespace": "android_app",
+                    "package_name": pwa["package_name"],
+                    "sha256_cert_fingerprints": pwa["sha256_fingerprints"],
+                },
+            }
+        ],
+        safe=False,
+    )
+"""
+
+_URLS_PWA_ANCHOR = '    path("accept-cookies/", views.accept_cookies, name="accept_cookies"),\n'
+_URLS_PWA_PATHS = (
+    '    path("manifest.json", views.manifest, name="manifest"),\n'
+    '    path(".well-known/assetlinks.json", views.assetlinks, name="assetlinks"),\n'
+    '    path("accept-cookies/", views.accept_cookies, name="accept_cookies"),\n'
+)
+
+_SETTINGS_PWA_BLOCK = """
+# PWA
+
+PWA_CONFIG = {
+    "background_color": env("PWA_BACKGROUND_COLOR", default="#ffffff"),
+    "description": env("PWA_DESCRIPTION", default="{{cookiecutter.description}}"),
+    "theme_color": env("PWA_THEME_COLOR", default="#000000"),
+    "assetlinks": {
+        "package_name": env("PWA_PACKAGE_NAME", default=""),
+        "sha256_fingerprints": env.list("PWA_SHA256_FINGERPRINTS", default=[]),
+    },
+}
+"""
+
+_TEST_PWA_BLOCK = """
+
+class TestManifest:
+    @pytest.mark.django_db
+    def test_get(self, client):
+        response = client.get(reverse("manifest"))
+        assert response.status_code == 200
+        assert response.json()["start_url"] == "/"
+
+    @pytest.mark.django_db
+    def test_post_not_allowed(self, client):
+        response = client.post(reverse("manifest"))
+        assert response.status_code == 405
+
+
+class TestAssetlinks:
+    @pytest.mark.django_db
+    def test_get(self, client):
+        response = client.get(reverse("assetlinks"))
+        assert response.status_code == 200
+        assert isinstance(response.json(), list)
+
+    @pytest.mark.django_db
+    def test_post_not_allowed(self, client):
+        response = client.post(reverse("assetlinks"))
+        assert response.status_code == 405
+"""
+
+
+_DEFAULT_BASE_MANIFEST_ANCHOR = "    <link rel=\"stylesheet\" href=\"{% static 'app.css' %}\" />\n"
+_DEFAULT_BASE_MANIFEST_REPLACEMENT = (
+    "    <link rel=\"manifest\" href=\"{% url 'manifest' %}\">\n"
+    "    <link rel=\"stylesheet\" href=\"{% static 'app.css' %}\" />\n"
+)
+
+_DEFAULT_BASE_SW_ANCHOR = "  </body>\n"
+_DEFAULT_BASE_SW_REPLACEMENT = """\
+    <script>
+      if (typeof navigator.serviceWorker !== 'undefined') {
+        navigator.serviceWorker.register('{% static "service-worker.js" %}')
+      }
+    </script>
+  </body>
+"""
+
+
+def setup_pwa() -> None:
+    """Add PWA manifest/assetlinks views, URLs, settings, tests, and template wiring."""
+
+    with open(VIEWS_PY) as f:
+        content = f.read()
+    content = content.replace(_VIEWS_IMPORT_BEFORE, _VIEWS_IMPORT_AFTER)
+    content += _VIEWS_PWA_BLOCK
+    with open(VIEWS_PY, "w") as f:
+        f.write(content)
+
+    with open(URLS_PY) as f:
+        content = f.read()
+    content = content.replace(_URLS_PWA_ANCHOR, _URLS_PWA_PATHS)
+    with open(URLS_PY, "w") as f:
+        f.write(content)
+
+    with open(SETTINGS_PY, "a") as f:
+        f.write(_SETTINGS_PWA_BLOCK)
+
+    with open(TEST_VIEWS_PY, "a") as f:
+        f.write(_TEST_PWA_BLOCK)
+
+    # When hx-boost is off, default_base.html is renamed to base.html by
+    # remove_hx_base(), so we modify whichever file actually holds the full HTML.
+    full_html = DEFAULT_BASE_HTML if os.path.exists(DEFAULT_BASE_HTML) else BASE_HTML
+    with open(full_html) as f:
+        content = f.read()
+    content = content.replace(_DEFAULT_BASE_MANIFEST_ANCHOR, _DEFAULT_BASE_MANIFEST_REPLACEMENT)
+    content = content.replace(_DEFAULT_BASE_SW_ANCHOR, _DEFAULT_BASE_SW_REPLACEMENT)
+    with open(full_html, "w") as f:
+        f.write(content)
+
+
+def remove_pwa_static() -> None:
+    """Remove the service worker when PWA is not used."""
+    if os.path.exists(SERVICE_WORKER_JS):
+        os.remove(SERVICE_WORKER_JS)
+
+
 # ── main ──────────────────────────────────────────────────────────────────────
 
 if USE_HX_BOOST == "y":
@@ -228,3 +393,8 @@ if USE_I18N == "y":
     setup_i18n()
 else:
     remove_i18n()
+
+if USE_PWA == "y":
+    setup_pwa()
+else:
+    remove_pwa_static()

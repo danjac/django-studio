@@ -213,7 +213,7 @@ AUTH_PASSWORD_VALIDATORS: list[dict[str, str]] = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LOGIN_REDIRECT_URL = reverse_lazy("home")
+LOGIN_REDIRECT_URL = reverse_lazy("index")
 LOGIN_URL = reverse_lazy("account_login")
 
 ACCOUNT_SIGNUP_FIELDS = [
@@ -466,6 +466,8 @@ DEFAULT_PAGE_SIZE = 30
 
 # Cookie name used to record GDPR consent
 GDPR_COOKIE_NAME = env("GDPR_COOKIE_NAME", default="accept-cookies")
+
+CONTACT_EMAIL = env("CONTACT_EMAIL", default=f"contact@{EMAIL_HOST}")
 
 META_TAGS = {
     "author": env("META_AUTHOR", default="{{cookiecutter.author}}"),

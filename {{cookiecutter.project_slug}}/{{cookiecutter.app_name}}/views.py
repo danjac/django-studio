@@ -2,10 +2,55 @@ import datetime
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.cache import cache_control, cache_page
+from django.views.decorators.http import require_POST, require_safe
 
 from {{cookiecutter.app_name}}.http.request import HttpRequest
+from {{cookiecutter.app_name}}.http.response import TextResponse
+
+_CACHE_TIMEOUT = 60 * 60 * 24 * 365
+
+_cache_control = cache_control(max_age=_CACHE_TIMEOUT, immutable=True, public=True)
+_cache_page = cache_page(_CACHE_TIMEOUT)
+
+
+@require_safe
+def index(request: HttpRequest) -> TemplateResponse:
+    """Landing page."""
+    return TemplateResponse(request, "home.html")
+
+
+@require_safe
+def about(request: HttpRequest) -> TemplateResponse:
+    """About page."""
+    return TemplateResponse(request, "about.html")
+
+
+@require_safe
+@_cache_control
+@_cache_page
+def robots(_) -> TextResponse:
+    """Serve robots.txt."""
+    return TextResponse(
+        "\n".join(
+            [
+                "User-Agent: *",
+                *[f"Allow: {reverse(name)}$" for name in ["index", "about"]],
+                "Disallow: /",
+            ]
+        ),
+    )
+
+
+@require_safe
+@_cache_control
+@_cache_page
+def security(_) -> TextResponse:
+    """Serve .well-known/security.txt."""
+    return TextResponse(f"Contact: mailto:{settings.CONTACT_EMAIL}")
 
 
 @require_POST

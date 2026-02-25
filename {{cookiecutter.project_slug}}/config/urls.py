@@ -6,6 +6,10 @@ from health_check.views import HealthCheckView
 from {{cookiecutter.app_name}} import views
 
 urlpatterns = [
+    path("", views.index, name="index"),
+    path("about/", views.about, name="about"),
+    path("robots.txt", views.robots, name="robots"),
+    path(".well-known/security.txt", views.security, name="security"),
     path("accept-cookies/", views.accept_cookies, name="accept_cookies"),
     path("", include("{{cookiecutter.app_name}}.users.urls")),
     path("account/", include("allauth.urls")),

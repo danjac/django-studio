@@ -322,7 +322,7 @@ uv add opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
 
 ```python
 # settings.py
-OTEL_SERVICE_NAME = "{{cookiecutter.app_name}}"
+OTEL_SERVICE_NAME = "myapp"
 OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ```
 

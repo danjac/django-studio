@@ -7,8 +7,8 @@ Alpine.js provides reactive JavaScript behavior without writing JavaScript files
 Alpine.js is bundled locally in `static/vendor/`.
 
 ```html
-<script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
-
+<script src="/static/vendor/alpine-3.15.2.min.js" defer></script>
+```
 
 ## Basic Usage
 

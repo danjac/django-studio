@@ -156,7 +156,7 @@ just typecheck
 Configured in pyproject.toml:
 ```toml
 [tool.pyright]
-include = ["{{cookiecutter.app_name}}"]
+include = ["myapp"]
 exclude = ["**/migrations/*.py", "**/tests/**/*.py"]
 typeCheckingMode = "basic"
 ```

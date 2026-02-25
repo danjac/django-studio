@@ -10,7 +10,7 @@ This project uses pytest with pytest-django for unit tests and Playwright for E2
 DJANGO_SETTINGS_MODULE = config.settings
 asyncio_mode = auto
 addopts = -v -x --tb=short -p no:warnings --browser chromium -m e2e
-testpaths = {{cookiecutter.app_name}}
+testpaths = myapp
 env =
     DJANGO_ALLOW_ASYNC_UNSAFE=true
     USE_CONNECTION_POOL=false
@@ -35,7 +35,7 @@ markers = ["e2e: end-to-end browser tests with Playwright"]
 
 ```bash
 just test                      # Unit tests
-just test {{cookiecutter.app_name}}/users  # Specific module
+just test myapp/users  # Specific module
 just tw                        # Watch mode
 just e2e                       # E2E tests (headless)
 just e2e-headed               # E2E tests (visible browser)
@@ -47,7 +47,7 @@ just playwright-install       # Install Chromium for E2E
 Tests are colocated with modules:
 
 ```
-{{cookiecutter.app_name}}/
+myapp/
     users/
         models.py
         views.py
@@ -65,18 +65,18 @@ Tests are colocated with modules:
 ```python
 # conftest.py
 pytest_plugins = [
-    "{{cookiecutter.app_name}}.tests.fixtures",
-    "{{cookiecutter.app_name}}.tests.e2e_fixtures",
-    "{{cookiecutter.app_name}}.users.tests.fixtures",
+    "myapp.tests.fixtures",
+    "myapp.tests.e2e_fixtures",
+    "myapp.users.tests.fixtures",
 ]
 ```
 
 ## Unit Test Fixtures
 
 ```python
-# {{cookiecutter.app_name}}/tests/fixtures.py
+# myapp/tests/fixtures.py
 import pytest
-from {{cookiecutter.app_name}}.users.tests.factories import UserFactory
+from myapp.users.tests.factories import UserFactory
 
 @pytest.fixture
 def user():
@@ -86,7 +86,7 @@ def user():
 ## E2E Fixtures
 
 ```python
-# {{cookiecutter.app_name}}/tests/e2e_fixtures.py
+# myapp/tests/e2e_fixtures.py
 import pytest
 from playwright.sync_api import Page
 
@@ -111,10 +111,10 @@ def auth_page(page: Page, e2e_user, live_server) -> Page:
 ## Factories
 
 ```python
-# {{cookiecutter.app_name}}/users/tests/factories.py
+# myapp/users/tests/factories.py
 from factory import django
 from factory.declarations import Sequence
-from {{cookiecutter.app_name}}.users.models import User
+from myapp.users.models import User
 
 class UserFactory(django.DjangoModelFactory):
     class Meta:
@@ -128,7 +128,7 @@ class UserFactory(django.DjangoModelFactory):
 ## Unit Tests
 
 ```python
-# {{cookiecutter.app_name}}/users/tests/test_models.py
+# myapp/users/tests/test_models.py
 import pytest
 
 @pytest.mark.django_db
@@ -141,7 +141,7 @@ class TestUser:
 ## View Tests with HTMX
 
 ```python
-# {{cookiecutter.app_name}}/tests/test_views.py
+# myapp/tests/test_views.py
 import pytest
 from django.urls import reverse
 
@@ -162,7 +162,7 @@ class TestHome:
 ## E2E Tests
 
 ```python
-# {{cookiecutter.app_name}}/tests/test_playwright.py
+# myapp/tests/test_playwright.py
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -176,7 +176,7 @@ def test_home_page(page: Page, live_server):
 ## Test Settings
 
 ```python
-# {{cookiecutter.app_name}}/tests/fixtures.py
+# myapp/tests/fixtures.py
 @pytest.fixture(autouse=True)
 def _settings_overrides(settings):
     settings.CACHES = {
@@ -193,7 +193,7 @@ def _settings_overrides(settings):
 
 ```python
 def test_external_api(mocker):
-    mock = mocker.patch("{{cookiecutter.app_name}}.client.get_data")
+    mock = mocker.patch("myapp.client.get_data")
     mock.return_value = {"result": "mocked"}
     # test logic
 ```

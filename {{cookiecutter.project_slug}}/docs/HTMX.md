@@ -57,7 +57,7 @@ The `meta_tags` template tag renders HTMX config as:
 This project uses `hx-headers` attribute with CSRF token from context processor:
 
 ```python
-# {{cookiecutter.app_name}}/context_processors.py
+# myapp/context_processors.py
 from django.conf import settings
 from django.http import HttpHeaders
 import functools
@@ -78,7 +78,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 # ...
-                "{{cookiecutter.app_name}}.context_processors.csrf_header",
+                "myapp.context_processors.csrf_header",
             ],
         },
     },

@@ -25,7 +25,7 @@ TASKS = {
 ## Defining Tasks
 
 ```python
-# {{cookiecutter.app_name}}/tasks.py
+# myapp/tasks.py
 from django.tasks import task
 
 @task
@@ -40,7 +40,7 @@ async def my_task(*, item_id: int) -> str:
 
 ```python
 # From views or management commands
-from {{cookiecutter.app_name}}.tasks import my_task
+from myapp.tasks import my_task
 
 # Enqueue with kwargs
 my_task.enqueue(item_id=123)
@@ -59,11 +59,11 @@ This runs the Django tasks database worker to process queued tasks.
 Tasks can be scheduled via cron (using management commands):
 
 ```python
-# {{cookiecutter.app_name}}/management/commands/myapp.py
+# myapp/management/commands/myapp.py
 from typing import Annotated
 import typer
 from django_typer.management import Typer
-from {{cookiecutter.app_name}} import tasks
+from myapp import tasks
 
 app = Typer()
 

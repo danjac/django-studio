@@ -13,7 +13,7 @@ myproject/
 │   ├── asgi.py          # ASGI application
 │   └── wsgi.py          # WSGI application
 │
-├── {{cookiecutter.app_name}}/             # Main application package
+├── myapp/             # Main application package
 │   ├── __init__.py
 │   ├── admin.py          # Admin configuration
 │   ├── apps.py           # App configuration
@@ -85,10 +85,10 @@ The `config/` directory contains Django project configuration:
 
 ## Apps Directory
 
-The `{{cookiecutter.app_name}}/` directory contains the main application package. Each sub-app should be self-contained:
+The `myapp/` directory contains the main application package. Each sub-app should be self-contained:
 
 ```
-{{cookiecutter.app_name}}/subapp/
+myapp/subapp/
 ├── models.py         # Core business logic
 ├── views.py          # Request handlers (function-based)
 ├── urls.py           # URL routes for this app
@@ -124,7 +124,7 @@ templates/
 Tests are colocated with modules:
 
 ```
-{{cookiecutter.app_name}}/subapp/
+myapp/subapp/
 ├── models.py
 └── tests/
     ├── __init__.py

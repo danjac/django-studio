@@ -170,7 +170,7 @@ This project uses **function-based views only**, not class-based views.
 ### View Decorators
 
 ```python
-# {{cookiecutter.app_name}}/http/decorators.py
+# myapp/http/decorators.py
 from django.views.decorators.http import require_http_methods
 
 require_form_methods = require_http_methods(["GET", "HEAD", "POST"])
@@ -194,7 +194,7 @@ def create_item(request):
 ### Custom Response Classes
 
 ```python
-# {{cookiecutter.app_name}}/http/response.py
+# myapp/http/response.py
 import http
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -216,7 +216,7 @@ class HttpResponseConflict(HttpResponse):
 ### Extended HttpRequest
 
 ```python
-# {{cookiecutter.app_name}}/http/request.py
+# myapp/http/request.py
 from django.http import HttpRequest as DjangoHttpRequest
 from django_htmx.middleware import HtmxDetails
 
@@ -307,7 +307,7 @@ gunicorn --worker-class uvicorn.workers.UvicornWorker config.asgi:application
 ### Custom QuerySet with Searchable Mixin
 
 ```python
-# {{cookiecutter.app_name}}/db/search.py
+# myapp/db/search.py
 class Searchable(Base):
     default_search_fields: tuple[str, ...] = ()
 
@@ -318,8 +318,8 @@ class Searchable(Base):
 ```
 
 ```python
-# {{cookiecutter.app_name}}/models.py
-from {{cookiecutter.app_name}}.db.search import Searchable
+# myapp/models.py
+from myapp.db.search import Searchable
 
 class PodcastQuerySet(Searchable, models.QuerySet):
     default_search_fields = ("search_vector",)
@@ -336,7 +336,7 @@ class PodcastQuerySet(Searchable, models.QuerySet):
 Use PostgreSQL full-text search. This project uses a `Searchable` mixin pattern:
 
 ```python
-# {{cookiecutter.app_name}}/db/search.py
+# myapp/db/search.py
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.db.models import F, Q, QuerySet
 import functools
@@ -368,8 +368,8 @@ class Searchable:
 Use in models:
 
 ```python
-# {{cookiecutter.app_name}}/models.py
-from {{cookiecutter.app_name}}.db.search import Searchable
+# myapp/models.py
+from myapp.db.search import Searchable
 
 class ItemQuerySet(Searchable, models.QuerySet):
     default_search_fields = ("search_vector",)
@@ -384,21 +384,21 @@ class Item(models.Model):
 Use database triggers to auto-update search vectors:
 
 ```python
-# {{cookiecutter.app_name}}/migrations/0002_add_search_trigger.py
+# myapp/migrations/0002_add_search_trigger.py
 from django.db import migrations
 
 class Migration(migrations.Migration):
-    dependencies = [("{{cookiecutter.app_name}}", "0001_initial")]
+    dependencies = [("myapp", "0001_initial")]
 
     operations = [
         migrations.RunSQL(
             sql="""
-CREATE TRIGGER {{cookiecutter.app_name}}_update_search_trigger
-BEFORE INSERT OR UPDATE OF title, description ON {{cookiecutter.app_name}}_item
+CREATE TRIGGER myapp_update_search_trigger
+BEFORE INSERT OR UPDATE OF title, description ON myapp_item
 FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(
     search_vector, 'pg_catalog.english', title, description);
-UPDATE {{cookiecutter.app_name}}_item SET search_vector = NULL;""",
-            reverse_sql="DROP TRIGGER IF EXISTS {{cookiecutter.app_name}}_update_search_trigger ON {{cookiecutter.app_name}}_item;",
+UPDATE myapp_item SET search_vector = NULL;""",
+            reverse_sql="DROP TRIGGER IF EXISTS myapp_update_search_trigger ON myapp_item;",
         ),
     ]
 ```
@@ -423,7 +423,7 @@ class Item(models.Model):
 Forms define only fields, labels, and error messages - **no CSS classes**:
 
 ```python
-# {{cookiecutter.app_name}}/forms.py
+# myapp/forms.py
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
@@ -461,7 +461,7 @@ Classes added in templates using `widget_tweaks`:
 ## Context Processors
 
 ```python
-# {{cookiecutter.app_name}}/context_processors.py
+# myapp/context_processors.py
 def csrf_header(_) -> dict[str, str | None]:
     return {"csrf_header": _csrf_header_name()}
 
@@ -473,7 +473,7 @@ def _csrf_header_name() -> str | None:
 ## Template Tags
 
 ```python
-# {{cookiecutter.app_name}}/templatetags.py
+# myapp/templatetags.py
 from django import template
 
 register = template.Library()
@@ -498,14 +498,14 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
-    path("", include("{{cookiecutter.app_name}}.users.urls")),
+    path("", include("myapp.users.urls")),
 ]
 ```
 
 ## Admin
 
 ```python
-# {{cookiecutter.app_name}}/admin.py
+# myapp/admin.py
 from django.contrib import admin
 
 @admin.register(MyModel)

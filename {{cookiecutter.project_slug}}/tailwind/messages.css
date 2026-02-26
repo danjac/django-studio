@@ -1,60 +1,47 @@
-@layer components {
-    .message {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-radius: var(--radius-lg);
-        border: 1px solid;
-        padding: var(--spacing-3) var(--spacing-4);
-        font-size: var(--text-sm);
-        line-height: var(--text-sm--line-height);
-    }
-
-    .message-success {
-        border-color: var(--color-green-200);
-        background-color: var(--color-green-50);
-        color: var(--color-green-800);
-
-        @variant dark {
-            border-color: var(--color-green-800);
-            background-color: color-mix(in srgb, var(--color-green-900) 20%, transparent);
-            color: var(--color-green-200);
-        }
-    }
-
+@layer messages {
     .message-error {
-        border-color: var(--color-red-200);
-        background-color: var(--color-red-50);
-        color: var(--color-red-800);
-
-        @variant dark {
-            border-color: var(--color-red-800);
-            background-color: color-mix(in srgb, var(--color-red-900) 20%, transparent);
-            color: var(--color-red-200);
-        }
-    }
-
-    .message-warning {
-        border-color: var(--color-yellow-200);
-        background-color: var(--color-yellow-50);
-        color: var(--color-yellow-800);
-
-        @variant dark {
-            border-color: var(--color-yellow-800);
-            background-color: color-mix(in srgb, var(--color-yellow-900) 20%, transparent);
-            color: var(--color-yellow-200);
-        }
+        background-color: var(--color-bg);
+        border: 2px solid var(--color-rose-600);
+        color: var(--color-rose-600);
     }
 
     .message-info {
-        border-color: var(--color-blue-200);
-        background-color: var(--color-blue-50);
-        color: var(--color-blue-800);
+        background-color: var(--color-bg);
+        border: 2px solid var(--color-sky-600);
+        color: var(--color-sky-600);
+    }
 
-        @variant dark {
-            border-color: var(--color-blue-800);
-            background-color: color-mix(in srgb, var(--color-blue-900) 20%, transparent);
-            color: var(--color-blue-200);
+    .message-success {
+        background-color: var(--color-bg);
+        border: 2px solid var(--color-emerald-600);
+        color: var(--color-emerald-600);
+    }
+
+    .message-warning {
+        background-color: var(--color-bg);
+        border: 2px solid var(--color-amber-600);
+        color: var(--color-amber-600);
+    }
+
+    @variant dark {
+        .message-error {
+            border-color: var(--color-rose-400);
+            color: var(--color-rose-400);
+        }
+
+        .message-info {
+            border-color: var(--color-sky-400);
+            color: var(--color-sky-400);
+        }
+
+        .message-success {
+            border-color: var(--color-emerald-400);
+            color: var(--color-emerald-400);
+        }
+
+        .message-warning {
+            border-color: var(--color-amber-400);
+            color: var(--color-amber-400);
         }
     }
 }

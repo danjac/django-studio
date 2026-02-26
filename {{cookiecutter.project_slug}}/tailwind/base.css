@@ -1,6 +1,15 @@
 @layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
     :root {
         scrollbar-width: thin;
+
         --color-bg: var(--color-white);
         --color-surface: var(--color-zinc-50);
         --color-border: var(--color-zinc-200);
@@ -22,26 +31,32 @@
         color: var(--color-text);
     }
 
-    /* AlpineJS: hide x-cloak elements until Alpine initialises */
+    /* ALPINEJS */
+
     [x-cloak] {
         display: none !important;
     }
 
-    /* HTMX loading indicator */
+    /* HTMX */
     #hx-indicator {
         display: none;
         position: fixed;
         top: 0;
         left: 0;
-        width: 0%;
         height: 3px;
         background: var(--color-indigo-500);
         z-index: 9999;
-        transition: width 0.3s ease;
+        transition:
+        width 300ms ease-out,
+        opacity 150ms 150ms ease-in;
+        transform: translate3d(0, 0, 0);
+
+        @variant dark {
+            background: var(--color-indigo-400);
+        }
     }
 
     #hx-indicator.htmx-request {
         display: block !important;
-        width: 100%;
     }
 }

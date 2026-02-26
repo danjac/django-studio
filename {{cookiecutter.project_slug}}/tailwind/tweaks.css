@@ -1,0 +1,51 @@
+/* DIVIDES */
+
+@utility divide-x {
+    @variant dark {
+        & > * + *,
+        & > * {
+            border-color: var(--color-gray-600);
+        }
+    }
+}
+
+@utility divide-y {
+    @variant dark {
+        & > * + *,
+        & > * {
+            border-color: var(--color-gray-600);
+        }
+    }
+}
+
+/* BORDERS */
+
+@utility border {
+    @variant dark {
+        border-color: var(--color-gray-600);
+    }
+}
+
+@utility border-t {
+    @variant dark {
+        border-color: var(--color-gray-600);
+    }
+}
+
+@utility border-l {
+    @variant dark {
+        border-color: var(--color-gray-600);
+    }
+}
+
+@utility border-r {
+    @variant dark {
+        border-color: var(--color-gray-600);
+    }
+}
+
+@utility border-b {
+    @variant dark {
+        border-color: var(--color-gray-600);
+    }
+}

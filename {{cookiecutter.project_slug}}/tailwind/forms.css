@@ -1,72 +1,48 @@
-@layer components {
+@layer forms {
     .form-input,
-    .form-textarea,
-    .form-select {
-        width: 100%;
+    .form-select,
+    .form-multiselect,
+    .form-textarea {
+        background: var(--color-surface);
+        color: var(--color-text);
         border-radius: var(--radius-lg);
-        border: 1px solid var(--color-zinc-300);
-        padding: var(--spacing-2) var(--spacing-3);
-        color: var(--color-zinc-900);
+        border: 1px solid var(--color-border);
+        padding: theme("padding.2") theme("padding.3");
+        transition: border-color 200ms ease, box-shadow 200ms ease;
 
-        &::placeholder {
-            color: var(--color-zinc-400);
-        }
-
-        &:focus {
-            outline: none;
+        @variant focus {
             border-color: var(--color-indigo-500);
-            box-shadow: 0 0 0 1px var(--color-indigo-500);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        .has-errors & {
+            border-color: var(--color-rose-500);
+            --tw-ring-color: var(--color-rose-500);
+            @variant dark {
+                border-color: var(--color-rose-400);
+                --tw-ring-color: var(--color-rose-400);
+            }
         }
 
         @variant dark {
-            border-color: var(--color-zinc-700);
-            background-color: var(--color-zinc-800);
-            color: var(--color-zinc-100);
+            background: var(--color-zinc-800);
+            border-color: var(--color-zinc-600);
+            color: var(--color-zinc-200);
+
+            @variant focus {
+                border-color: var(--color-indigo-400);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            }
         }
     }
 
-    .form-checkbox,
-    .form-radio {
-        border-radius: var(--radius-sm);
-        border-color: var(--color-zinc-300);
-        color: var(--color-indigo-600);
+    /* search inputs */
 
-        &:focus {
-            box-shadow: 0 0 0 2px var(--color-indigo-500);
-        }
-    }
-
-    .form-label {
-        display: block;
-        font-size: var(--text-sm);
-        line-height: var(--text-sm--line-height);
-        font-weight: 500;
-        color: var(--color-zinc-700);
-
-        @variant dark {
-            color: var(--color-zinc-300);
-        }
-    }
-
-    .form-error {
-        margin-top: var(--spacing-1);
-        font-size: var(--text-sm);
-        line-height: var(--text-sm--line-height);
-        color: var(--color-red-600);
-
-        @variant dark {
-            color: var(--color-red-400);
-        }
-    }
-
-    .form-help {
-        margin-top: var(--spacing-1);
-        font-size: var(--text-sm);
-        line-height: var(--text-sm--line-height);
-        color: var(--color-zinc-500);
-
-        @variant dark {
-            color: var(--color-zinc-400);
-        }
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-cancel-button,
+    input[type="search"]::-webkit-search-results-button,
+    input[type="search"]::-webkit-search-results-decoration {
+        display: none;
     }
 }

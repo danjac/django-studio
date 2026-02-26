@@ -27,9 +27,13 @@ all:
     k3s_deploy_mailgun_api_key: ""
     k3s_deploy_mailgun_api_url: "https://api.eu.mailgun.net/v3"
     k3s_deploy_postgres_volume: "${postgres_volume_mount_path}"
-    k3s_deploy_postgres_password: ""
+    k3s_deploy_postgres_password: "CHANGE_ME" # pragma: allowlist secret
     k3s_deploy_pwa_sha256_fingerprints: ""
-    k3s_deploy_secret_key: ""
+    k3s_deploy_secret_key: "CHANGE_ME" # pragma: allowlist secret
     k3s_deploy_secret_key_fallbacks: ""
     k3s_deploy_sentry_url: ""
     k3s_deploy_open_telemetry_url: ""
+    k3s_observability_grafana_smtp_password: "CHANGE_ME" # pragma: allowlist secret
+    k3s_observability_grafana_password: "CHANGE_ME" # pragma: allowlist secret
+    k3s_observability_grafana_subdomain: "grafana"
+

@@ -1,23 +1,19 @@
-{% load heroicons %}
-<div
-  id="messages"
-  {% if hx_oob %}hx-swap-oob="true"{% endif %}
-  class="fixed top-4 right-4 z-50 flex w-full max-w-sm flex-col gap-2"
->
-  {% for message in messages %}
-    <div
-      x-data="{ show: true }"
-      x-show="show"
-      x-transition
-      role="alert"
-      class="message message-{{ message.tags }}"
-    >
-      <span>{{ message }}</span>
-      <button
-        @click="show = false"
-        aria-label="Dismiss"
-        class="ml-4 shrink-0 cursor-pointer opacity-60 hover:opacity-100"
-      >{% heroicon_mini "x-mark" class="size-4" %}</button>
-    </div>
-  {% endfor %}
+<div id="messages" class="flex fixed inset-x-0 bottom-4 z-50 justify-center md:justify-end md:pr-4"{% if hx_oob %} hx-swap-oob="true"{% endif %}>
+    {% if messages %}
+        <ul class="flex flex-col gap-2 items-center md:items-end">
+            {% for message in messages %}
+                <li class="flex flex-wrap items-center justify-center px-4 py-3 font-semibold text-center rounded-xl shadow-lg message-{{ message.tags }}"
+                    role="alert"
+                    x-data="{show: true}"
+                    x-show="show"
+                    x-init="setTimeout(() => show = false, 4000)"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="transform opacity-0 translate-y-2"
+                    x-transition:enter-end="transform opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="transform opacity-100 translate-y-0"
+                    x-transition:leave-end="transform opacity-0 translate-y-2">{{ message.message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </div>

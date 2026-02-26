@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING
 import pytest
 from django.contrib.auth.models import AnonymousUser
 
-from {{cookiecutter.app_name}}.users.tests.factories import UserFactory
+from {{cookiecutter.package_name}}.users.tests.factories import UserFactory
 
 if TYPE_CHECKING:
     from django.test import Client
 
-    from {{cookiecutter.app_name}}.users.models import User
+    from {{cookiecutter.package_name}}.users.models import User
 
 
 @pytest.fixture

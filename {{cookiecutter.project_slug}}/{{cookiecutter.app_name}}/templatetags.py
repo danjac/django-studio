@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from django.template.context import Context
     from django.utils.safestring import SafeString
 
-    from {{cookiecutter.app_name}}.http.request import RequestContext
+    from {{cookiecutter.package_name}}.http.request import RequestContext
 
 register = template.Library()
 

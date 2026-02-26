@@ -230,7 +230,7 @@ Add CronJob manifests to your Ansible deploy templates:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ app_name }}-{{ task_name }}
+  name: {{ package_name }}-{{ task_name }}
   namespace: {{ namespace }}
 spec:
   schedule: {{ schedule }}

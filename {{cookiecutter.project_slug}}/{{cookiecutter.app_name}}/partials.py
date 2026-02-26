@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from django.template.response import TemplateResponse
 
 if TYPE_CHECKING:
-    from {{cookiecutter.app_name}}.http.request import HttpRequest
+    from {{cookiecutter.package_name}}.http.request import HttpRequest
 
 
 def render_partial_response(

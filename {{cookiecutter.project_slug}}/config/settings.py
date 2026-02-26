@@ -57,7 +57,7 @@ INSTALLED_APPS: list[str] = [
     "health_check",
     "heroicons",
     "widget_tweaks",
-    "{{cookiecutter.app_name}}.users",
+    "{{cookiecutter.package_name}}.users",
 ]
 
 
@@ -77,10 +77,10 @@ MIDDLEWARE: list[str] = [
     "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
-    "{{cookiecutter.app_name}}.middleware.HtmxCacheMiddleware",
-    "{{cookiecutter.app_name}}.middleware.HtmxMessagesMiddleware",
-    "{{cookiecutter.app_name}}.middleware.HtmxRedirectMiddleware",
-    "{{cookiecutter.app_name}}.middleware.SearchMiddleware",
+    "{{cookiecutter.package_name}}.middleware.HtmxCacheMiddleware",
+    "{{cookiecutter.package_name}}.middleware.HtmxMessagesMiddleware",
+    "{{cookiecutter.package_name}}.middleware.HtmxRedirectMiddleware",
+    "{{cookiecutter.package_name}}.middleware.SearchMiddleware",
 ]
 
 # Databases
@@ -134,7 +134,7 @@ TEMPLATES = [
         "DIRS": [BASE_DIR / "templates"],
         "OPTIONS": {
             "builtins": [
-                "{{cookiecutter.app_name}}.templatetags",
+                "{{cookiecutter.package_name}}.templatetags",
             ],
             "debug": env.bool("TEMPLATE_DEBUG", default=DEBUG),
             "context_processors": [
@@ -146,8 +146,8 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "{{cookiecutter.app_name}}.context_processors.cache_timeout",
-                "{{cookiecutter.app_name}}.context_processors.csrf_header",
+                "{{cookiecutter.package_name}}.context_processors.cache_timeout",
+                "{{cookiecutter.package_name}}.context_processors.csrf_header",
             ],
         },
     }
@@ -431,7 +431,7 @@ LOGGING = {
             "handlers": ["console"],
             "level": "INFO",
         },
-        "{{cookiecutter.app_name}}": {
+        "{{cookiecutter.package_name}}": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,

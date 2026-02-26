@@ -215,9 +215,9 @@ def remove_i18n() -> None:
 
 # ── pwa ───────────────────────────────────────────────────────────────────────
 
-APP_NAME = "{{cookiecutter.app_name}}"
-VIEWS_PY = os.path.join(APP_NAME, "views.py")
-TEST_VIEWS_PY = os.path.join(APP_NAME, "tests", "test_views.py")
+PACKAGE_NAME = "{{cookiecutter.package_name}}"
+VIEWS_PY = os.path.join(PACKAGE_NAME, "views.py")
+TEST_VIEWS_PY = os.path.join(PACKAGE_NAME, "tests", "test_views.py")
 SERVICE_WORKER_JS = os.path.join("static", "service-worker.js")
 
 _VIEWS_IMPORT_BEFORE = "from django.http import HttpResponse\n"

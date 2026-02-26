@@ -2,7 +2,7 @@ from allauth.account.models import EmailAddress
 from factory import django
 from factory.declarations import LazyAttribute, Sequence, SubFactory
 
-from {{cookiecutter.app_name}}.users.models import User
+from {{cookiecutter.package_name}}.users.models import User
 
 
 class UserFactory(django.DjangoModelFactory):

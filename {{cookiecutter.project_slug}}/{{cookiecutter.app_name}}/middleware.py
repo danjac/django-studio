@@ -12,7 +12,7 @@ from django_htmx.http import HttpResponseLocation
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from {{cookiecutter.app_name}}.http.request import HttpRequest
+    from {{cookiecutter.package_name}}.http.request import HttpRequest
 
 
 @dataclasses.dataclass(frozen=True, kw_only=False)

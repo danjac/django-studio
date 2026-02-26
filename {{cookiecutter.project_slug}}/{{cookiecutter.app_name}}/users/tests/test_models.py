@@ -1,6 +1,6 @@
 import pytest
 
-from {{cookiecutter.app_name}}.users.tests.factories import UserFactory
+from {{cookiecutter.package_name}}.users.tests.factories import UserFactory
 
 
 @pytest.mark.django_db

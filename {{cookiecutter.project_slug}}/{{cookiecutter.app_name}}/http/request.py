@@ -7,8 +7,8 @@ if TYPE_CHECKING:
     from django.contrib.auth.models import AnonymousUser
     from django_htmx.middleware import HtmxDetails
 
-    from {{cookiecutter.app_name}}.middleware import SearchDetails
-    from {{cookiecutter.app_name}}.users.models import User
+    from {{cookiecutter.package_name}}.middleware import SearchDetails
+    from {{cookiecutter.package_name}}.users.models import User
 
 
 class HttpRequest(DjangoHttpRequest):

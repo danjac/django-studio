@@ -1,7 +1,7 @@
 import pytest
 from django.core.paginator import EmptyPage, PageNotAnInteger
 
-from {{cookiecutter.app_name}}.paginator import Paginator, validate_page_number
+from {{cookiecutter.package_name}}.paginator import Paginator, validate_page_number
 
 
 class TestPage:

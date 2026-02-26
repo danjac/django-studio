@@ -1,6 +1,6 @@
 from django_htmx.middleware import HtmxDetails
 
-from {{cookiecutter.app_name}}.partials import render_partial_response
+from {{cookiecutter.package_name}}.partials import render_partial_response
 
 
 class TestRenderPartialResponse:

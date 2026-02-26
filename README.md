@@ -22,7 +22,7 @@ Then follow the prompts:
 
 - `project_name`: Human-readable project name (e.g. "My Project")
 - `project_slug`: Directory/repo name (e.g. "my-project")
-- `app_name`: Python package name (e.g. "myapp")
+- `package_name`: Python package name (e.g. "myapp")
 - `description`: Short project description
 - `author`: Your name
 - `author_email`: Your email

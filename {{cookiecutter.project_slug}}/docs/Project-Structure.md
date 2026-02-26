@@ -108,7 +108,7 @@ templates/
 ├── partials/             # Reusable partials
 │   ├── card.html
 │   └── ...
-└── app_name/              # App-specific templates
+└── package_name/              # App-specific templates
     ├── list.html
     └── detail.html
 ```

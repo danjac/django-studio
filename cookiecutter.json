@@ -1,7 +1,7 @@
 {
   "project_name": "My Django Project",
   "project_slug": "my-django-project",
-  "app_name": "myapp",
+  "package_name": "myapp",
   "description": "A Django project",
   "author": "Your Name",
   "author_email": "you@example.com",

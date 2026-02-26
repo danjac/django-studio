@@ -84,7 +84,7 @@ addopts = [
 ]
 markers = ["e2e: end-to-end browser tests with Playwright"]
 
-testpaths = ["{{cookiecutter.app_name}}", "templates"]
+testpaths = ["{{cookiecutter.package_name}}", "templates"]
 env = [
     "COVERAGE_CORE=sysmon",
     "DJANGO_ALLOW_ASYNC_UNSAFE=true",
@@ -102,7 +102,7 @@ runner = "pytest"
 patterns = ["*.py", "*.html"]
 
 [tool.coverage.run]
-source = ["{{cookiecutter.app_name}}"]
+source = ["{{cookiecutter.package_name}}"]
 omit = ["**/migrations/*", "*/tests/*"]
 
 [tool.djlint]
@@ -176,7 +176,7 @@ lint.ignore = [
 "**/tests/**.py" = ["D101", "D102", "D103", "D105", "PL", "RUF"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["{{cookiecutter.app_name}}"]
+known-first-party = ["{{cookiecutter.package_name}}"]
 
 [tool.isort]
 profile = "black"
@@ -185,6 +185,6 @@ profile = "black"
 django_settings_module = "config.settings"
 
 [tool.pyright]
-include = ["{{cookiecutter.app_name}}"]
+include = ["{{cookiecutter.package_name}}"]
 exclude = ["**/migrations/*.py", "**/tests/**/*.py"]
 typeCheckingMode = "basic"

@@ -4,7 +4,7 @@ import pytest
 from allauth.account.models import EmailAddress
 from django.urls import reverse
 
-from {{cookiecutter.app_name}}.users.tests.factories import UserFactory
+from {{cookiecutter.package_name}}.users.tests.factories import UserFactory
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page

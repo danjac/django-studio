@@ -6,12 +6,12 @@ from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.db.models import Model, QuerySet
 from django.utils.functional import cached_property
 
-from {{cookiecutter.app_name}}.partials import render_partial_response
+from {{cookiecutter.package_name}}.partials import render_partial_response
 
 if TYPE_CHECKING:
     from django.template.response import TemplateResponse
 
-    from {{cookiecutter.app_name}}.http.request import HttpRequest
+    from {{cookiecutter.package_name}}.http.request import HttpRequest
 
 T = TypeVar("T")
 T_Model = TypeVar("T_Model", bound=Model)

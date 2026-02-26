@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import include, path
 from health_check.views import HealthCheckView
 
-from {{cookiecutter.app_name}} import views
+from {{cookiecutter.package_name}} import views
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -12,7 +12,7 @@ urlpatterns = [
     path("robots.txt", views.robots, name="robots"),
     path(".well-known/security.txt", views.security, name="security"),
     path("accept-cookies/", views.accept_cookies, name="accept_cookies"),
-    path("", include("{{cookiecutter.app_name}}.users.urls")),
+    path("", include("{{cookiecutter.package_name}}.users.urls")),
     path("account/", include("allauth.urls")),
     path(
         "ht/live/",

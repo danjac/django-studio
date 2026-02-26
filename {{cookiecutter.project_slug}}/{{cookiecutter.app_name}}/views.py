@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -16,7 +16,7 @@ from {{cookiecutter.app_name}}.http.response import TextResponse
 if TYPE_CHECKING:
     from {{cookiecutter.app_name}}.http.request import HttpRequest
 
-_CACHE_TIMEOUT = 60 * 60 * 24 * 365
+_CACHE_TIMEOUT: Final = 60 * 60 * 24 * 365
 
 _cache_control = cache_control(max_age=_CACHE_TIMEOUT, immutable=True, public=True)
 _cache_page = cache_page(_CACHE_TIMEOUT)
@@ -31,7 +31,13 @@ def index(request: HttpRequest) -> TemplateResponse:
 @require_safe
 def about(request: HttpRequest) -> TemplateResponse:
     """About page."""
-    return TemplateResponse(request, "about.html")
+    return TemplateResponse(
+        request,
+        "about.html",
+        {
+            "contact_email": settings.CONTACT_EMAIL,
+        },
+    )
 
 
 @require_safe

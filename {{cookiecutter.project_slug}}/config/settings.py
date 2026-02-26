@@ -11,6 +11,7 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
 from opentelemetry.instrumentation.redis import RedisInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -46,6 +47,8 @@ INSTALLED_APPS: list[str] = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.github",
+    "allauth.socialaccount.providers.google",
     "django_htmx",
     "django_http_compression",
     "django_linear_migrations",
@@ -56,6 +59,7 @@ INSTALLED_APPS: list[str] = [
     "widget_tweaks",
     "{{cookiecutter.app_name}}.users",
 ]
+
 
 MIDDLEWARE: list[str] = [
     "django.middleware.security.SecurityMiddleware",
@@ -89,6 +93,8 @@ DATABASES = {
 }
 
 if env.bool("USE_CONNECTION_POOL", default=True):
+    # Connection pool settings
+    # https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool
     DATABASES["default"]["CONN_MAX_AGE"] = 0
     DATABASES["default"]["OPTIONS"] = {
         "pool": (
@@ -98,6 +104,7 @@ if env.bool("USE_CONNECTION_POOL", default=True):
                 "max_lifetime": env.int("CONN_POOL_MAX_LIFETIME", 1800),
                 "max_idle": env.int("CONN_POOL_MAX_IDLE", 120),
                 "max_waiting": env.int("CONN_POOL_MAX_WAITING", 200),
+                # assumes 30s statement_timeout in PostgreSQL
                 "timeout": env.int("CONN_POOL_TIMEOUT", default=20),
             }
         ),
@@ -114,6 +121,8 @@ CACHES = {
     }
 }
 
+
+# Required for health check
 REDIS_URL = CACHES["default"]["LOCATION"]
 
 # Templates
@@ -144,6 +153,9 @@ TEMPLATES = [
     }
 ]
 
+
+# Server settings
+
 ROOT_URLCONF = "config.urls"
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
@@ -151,6 +163,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 SITE_ID = 1
 
 USE_HTTPS = env.bool("USE_HTTPS", default=True)
+
+# Session and cookies
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
@@ -161,13 +175,18 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[]) or []
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = USE_HTTPS
 
-# Email
+
+# Email configuration
+
+# Mailgun
+# https://anymail.dev/en/v9.0/esps/mailgun/
 
 if MAILGUN_API_KEY := env("MAILGUN_API_KEY", default=None):
     INSTALLED_APPS += ["anymail"]
 
     EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 
+    # For European domains: https://api.eu.mailgun.net/v3
     MAILGUN_API_URL = env("MAILGUN_API_URL", default="https://api.mailgun.net/v3")
     MAILGUN_SENDER_DOMAIN = EMAIL_HOST = env("MAILGUN_SENDER_DOMAIN")
 
@@ -194,8 +213,10 @@ MANAGERS = (
 
 SERVER_EMAIL = env("SERVER_EMAIL", default=f"no-reply@{EMAIL_HOST}")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=SERVER_EMAIL)
+CONTACT_EMAIL = env("CONTACT_EMAIL", default=SERVER_EMAIL)
 
-# Authentication
+# authentication settings
+# https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 
 AUTH_USER_MODEL = "users.User"
 
@@ -216,6 +237,8 @@ AUTH_PASSWORD_VALIDATORS: list[dict[str, str]] = [
 LOGIN_REDIRECT_URL = reverse_lazy("index")
 LOGIN_URL = reverse_lazy("account_login")
 
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+
 ACCOUNT_SIGNUP_FIELDS = [
     "email*",
     "username*",
@@ -233,11 +256,24 @@ ACCOUNT_PREVENT_ENUMERATION = False
 ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD = "phone_number"
 ACCOUNT_UNIQUE_EMAIL = True
 
-SOCIALACCOUNT_PROVIDERS: dict = {}
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    },
+}
+
+# admin settings
 
 ADMIN_URL = env("ADMIN_URL", default="admin/")
 
-# Internationalization
+# Internationalization/Localization
+# https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "en"
 
@@ -246,14 +282,26 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
+FORMAT_MODULE_PATH = ["config.formats"]
+
 # Static files
+
+# Ephemeral static files required for build only
+STATIC_SRC = BASE_DIR / "static"
 
 STATIC_URL = env("STATIC_URL", default="/static/")
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [STATIC_SRC]
+
+# Tailwind CLI
+# https://django-tailwind-cli.andrich.me/settings/#settings
 
 TAILWIND_CLI_SRC_CSS = BASE_DIR / "tailwind" / "app.css"
 TAILWIND_CLI_DIST_CSS = "app.css"
+
+# Whitenoise
+# https://whitenoise.readthedocs.io/en/latest/django.html
+#
 
 if env.bool("USE_COLLECTSTATIC", default=True):
     STORAGES = {
@@ -262,11 +310,17 @@ if env.bool("USE_COLLECTSTATIC", default=True):
         },
     }
 else:
+    # for development only
     INSTALLED_APPS += ["whitenoise.runserver_nostatic"]
+
+
+# Templates
+# https://docs.djangoproject.com/en/1.11/ref/forms/renderers/
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
-# Security
+# Secure settings
+# https://docs.djangoproject.com/en/4.1/topics/security/
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -288,6 +342,9 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
 SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=False)
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=0)
 
+# Permissions Policy
+# https://pypi.org/project/django-permissions-policy/
+
 PERMISSIONS_POLICY: dict[str, list] = {
     "accelerometer": [],
     "camera": [],
@@ -299,6 +356,9 @@ PERMISSIONS_POLICY: dict[str, list] = {
     "microphone": [],
     "payment": [],
 }
+
+# Content-Security-Policy
+# https://docs.djangoproject.com/en/dev/ref/csp/
 
 CSP_SCRIPT_WHITELIST = env.list("CSP_SCRIPT_WHITELIST", default=[])
 
@@ -320,9 +380,13 @@ SECURE_CSP = {
     "script-src": SCRIPT_SCP,
     "script-src-elem": SCRIPT_SCP,
     "img-src": [CSP.SELF, CSP_DATA],
+    # Allow all audio files
+    "media-src": ["*"],
 }
 
 # Tasks
+# https://docs.djangoproject.com/en/6.0/topics/tasks/
+# https://pypi.org/project/django-tasks-db/
 
 TASKS = {
     "default": {
@@ -332,6 +396,7 @@ TASKS = {
 }
 
 # Logging
+# https://docs.djangoproject.com/en/5.0/howto/logging/
 
 LOGGING = {
     "version": 1,
@@ -394,12 +459,20 @@ LOGGING = {
             "level": "CRITICAL",
             "propagate": False,
         },
+        "httpcore": {
+            "handlers": ["console"],
+            "level": "CRITICAL",
+            "propagate": False,
+        },
     },
 }
 
-# OpenTelemetry (optional)  # noqa: ERA001
+# OpenTelemetry
+# https://opentelemetry.io/docs/instrumentation/python/automatic/
 
 if OPEN_TELEMETRY_URL := env("OPEN_TELEMETRY_URL", default=None):
+    # Configure OTLP exporter — OTLPSpanExporter uses the endpoint as-is, so
+    # we must include the signal-specific path explicitly.
     otlp_exporter = OTLPSpanExporter(
         endpoint=f"{OPEN_TELEMETRY_URL.rstrip('/')}/v1/traces"
     )
@@ -417,18 +490,23 @@ if OPEN_TELEMETRY_URL := env("OPEN_TELEMETRY_URL", default=None):
         }
     )
 
+    # Configure tracer provider
     tracer_provider = TracerProvider(resource=resource)
     tracer_provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
     trace.set_tracer_provider(tracer_provider)
 
+    # Instrument Django and Redis
     DjangoInstrumentor().instrument()
     PsycopgInstrumentor().instrument()
     RedisInstrumentor().instrument()
+    RequestsInstrumentor().instrument()
 
+    # Suppress noise from OpenTelemetry libraries
     logging.getLogger("opentelemetry").setLevel(logging.WARNING)
     logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
-# Sentry (optional)  # noqa: ERA001
+# Sentry
+# https://docs.sentry.io/platforms/python/guides/django/
 
 if SENTRY_URL := env("SENTRY_URL", default=None):
     ignore_logger("django.security.DisallowedHost")
@@ -437,20 +515,33 @@ if SENTRY_URL := env("SENTRY_URL", default=None):
         dsn=SENTRY_URL,
         integrations=[DjangoIntegration()],
         traces_sample_rate=0.5,
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
     )
 
 # Dev tools
 
+# Watchfiles
+# https://github.com/adamchainz/django-watchfiles
+
 if env.bool("USE_WATCHFILES", default=False):
     INSTALLED_APPS += ["django_watchfiles"]
 
+# Django browser reload
+# https://github.com/adamchainz/django-browser-reload
+
 if env.bool("USE_BROWSER_RELOAD", default=False):
     INSTALLED_APPS += ["django_browser_reload"]
+
     MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
+
+# Debug toolbar
+# https://github.com/jazzband/django-debug-toolbar
 
 if env.bool("USE_DEBUG_TOOLBAR", default=False):
     INSTALLED_APPS += ["debug_toolbar"]
+
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
     DEBUG_TOOLBAR_CONFIG = {
@@ -458,26 +549,33 @@ if env.bool("USE_DEBUG_TOOLBAR", default=False):
         "UPDATE_ON_FETCH": True,
     }
 
+    # INTERNAL_IPS required for debug toolbar
     INTERNAL_IPS = env.list("INTERNAL_IPS", default=["127.0.0.1"])
 
-# Site settings
+# PROJECT-SPECIFIC SETTINGS
+
+# Cookie used to check user accepts cookies
+
+GDPR_COOKIE_NAME = "accept-cookies"
+
+# Default page size for paginated views
 
 DEFAULT_PAGE_SIZE = 30
 
-# Cookie name used to record GDPR consent
-GDPR_COOKIE_NAME = env("GDPR_COOKIE_NAME", default="accept-cookies")
-
-CONTACT_EMAIL = env("CONTACT_EMAIL", default=f"contact@{EMAIL_HOST}")
-
-META_TAGS = {
-    "author": env("META_AUTHOR", default="{{cookiecutter.author}}"),
-    "description": env("META_DESCRIPTION", default="{{cookiecutter.description}}"),
-    "keywords": env("META_KEYWORDS", default=""),
-}
+# HTMX configuration
+# https://htmx.org/docs/#config
 
 HTMX_CONFIG = {
     "globalViewTransitions": False,
     "scrollBehavior": "instant",
     "scrollIntoViewOnBoost": False,
     "useTemplateFragments": True,
+}
+
+# Site meta configuration
+
+META_TAGS = {
+    "author": env("META_AUTHOR", default="{{cookiecutter.author}}"),
+    "description": env("META_DESCRIPTION", default="{{cookiecutter.description}}"),
+    "keywords": env("META_KEYWORDS", default=""),
 }

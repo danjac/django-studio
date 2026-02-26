@@ -14,8 +14,10 @@ ENV LC_CTYPE=C.utf8 \
     PATH="/app/.venv/bin:$PATH"
 WORKDIR /app
 
+# Install uv
 COPY --from=ghcr.io/astral-sh/uv:0.9.8 /uv /usr/local/bin/uv
 
+# Install Python dependencies
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-group dev --no-install-project
@@ -36,13 +38,16 @@ ENV LC_CTYPE=C.utf8 \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.venv/bin:$PATH"
 
+# Create non-root user FIRST, before any file copies
 RUN useradd -m -u 1000 django
 
 WORKDIR /app
 
+# Copy files with correct ownership from the start using --chown
 COPY --from=python-base --chown=django:django /app/.venv /app/.venv
 COPY --from=staticfiles --chown=django:django /app/staticfiles /app/staticfiles
 
+# Copy application code with correct ownership
 COPY --chown=django:django . .
 
 USER django

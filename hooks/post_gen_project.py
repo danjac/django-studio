@@ -321,7 +321,7 @@ class TestAssetlinks:
 """
 
 
-_DEFAULT_BASE_MANIFEST_ANCHOR = "    <link rel=\"stylesheet\" href=\"{% static 'app.css' %}\" />\n"
+{% raw %}_DEFAULT_BASE_MANIFEST_ANCHOR = "    <link rel=\"stylesheet\" href=\"{% static 'app.css' %}\" />\n"
 _DEFAULT_BASE_MANIFEST_REPLACEMENT = (
     "    <link rel=\"manifest\" href=\"{% url 'manifest' %}\">\n"
     "    <link rel=\"stylesheet\" href=\"{% static 'app.css' %}\" />\n"
@@ -336,6 +336,7 @@ _DEFAULT_BASE_SW_REPLACEMENT = """\
     </script>
   </body>
 """
+{% endraw %}
 
 
 def setup_pwa() -> None:

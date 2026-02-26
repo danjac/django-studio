@@ -149,9 +149,9 @@ Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `buil
 Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Load the tag at the top of any template that needs icons and prefer the built-in set over custom SVGs.
 
 ```html
-{% load heroicons %}
+{% raw %}{% load heroicons %}
 {% heroicon_mini "x-mark" class="size-4" %}
-{% heroicon_outline "arrow-right" class="size-5" %}
+{% heroicon_outline "arrow-right" class="size-5" %}{% endraw %}
 ```
 
 Use custom inline SVGs only when no heroicon exists for the shape you need. Never use character entities (`&times;`) or emoji as icons.

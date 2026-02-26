@@ -1,5 +1,5 @@
 # Cloudflare API token (create in Dashboard → Profile → API Tokens)
-# Required permissions: Zone (Edit), Zone Settings (Edit), DNS (Edit), 
+# Required permissions: Zone (Edit), Zone Settings (Edit), DNS (Edit),
 # Page Rules (Edit), Zone WAF (Edit), Transform Rules (Edit)
 cloudflare_api_token = ""
 

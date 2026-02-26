@@ -397,7 +397,7 @@ LOGGING = {
     },
 }
 
-# OpenTelemetry (optional)
+# OpenTelemetry (optional)  # noqa: ERA001
 
 if OPEN_TELEMETRY_URL := env("OPEN_TELEMETRY_URL", default=None):
     otlp_exporter = OTLPSpanExporter(
@@ -428,7 +428,7 @@ if OPEN_TELEMETRY_URL := env("OPEN_TELEMETRY_URL", default=None):
     logging.getLogger("opentelemetry").setLevel(logging.WARNING)
     logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
-# Sentry (optional)
+# Sentry (optional)  # noqa: ERA001
 
 if SENTRY_URL := env("SENTRY_URL", default=None):
     ignore_logger("django.security.DisallowedHost")

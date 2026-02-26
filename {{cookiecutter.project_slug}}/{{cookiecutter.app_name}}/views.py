@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import datetime
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -8,8 +11,10 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_control, cache_page
 from django.views.decorators.http import require_POST, require_safe
 
-from {{cookiecutter.app_name}}.http.request import HttpRequest
 from {{cookiecutter.app_name}}.http.response import TextResponse
+
+if TYPE_CHECKING:
+    from {{cookiecutter.app_name}}.http.request import HttpRequest
 
 _CACHE_TIMEOUT = 60 * 60 * 24 * 365
 

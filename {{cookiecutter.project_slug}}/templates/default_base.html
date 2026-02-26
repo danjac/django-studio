@@ -35,10 +35,10 @@
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <a
-            href="/"
+            href="{% url 'index' %}"
             class="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
           >
-            {{cookiecutter.project_name}}
+            {{ request.site.name }}
           </a>
           <div class="flex items-center gap-3">
             {% if user.is_authenticated %}

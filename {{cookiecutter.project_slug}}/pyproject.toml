@@ -103,7 +103,7 @@ omit = ["**/migrations/*", "*/tests/*"]
 
 [tool.djlint]
 profile = "django"
-ignore = "H030,H031,H017,H021"
+ignore = "H016,H030,H031,H017,H021,T003"
 custom_blocks = "cache,partialdef,fragment"
 
 [tool.ruff]
@@ -159,6 +159,7 @@ lint.ignore = [
     "DJ008",
     "E501",
     "E701",
+    "PLR0913",
     "PT019",
     "Q000",
     "S101",

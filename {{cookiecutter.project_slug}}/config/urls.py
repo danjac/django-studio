@@ -8,6 +8,7 @@ from {{cookiecutter.app_name}} import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("about/", views.about, name="about"),
+    path("privacy/", views.about, name="privacy"),
     path("robots.txt", views.robots, name="robots"),
     path(".well-known/security.txt", views.security, name="security"),
     path("accept-cookies/", views.accept_cookies, name="accept_cookies"),

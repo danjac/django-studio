@@ -41,6 +41,12 @@ def about(request: HttpRequest) -> TemplateResponse:
 
 
 @require_safe
+def privacy(request: HttpRequest) -> TemplateResponse:
+    """Renders Privacy page."""
+    return TemplateResponse(request, "privacy.html")
+
+
+@require_safe
 @_cache_control
 @_cache_page
 def robots(_) -> TextResponse:

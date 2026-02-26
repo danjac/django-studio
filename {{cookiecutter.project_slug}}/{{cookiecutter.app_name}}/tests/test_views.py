@@ -17,6 +17,13 @@ class TestAbout:
         assert response.status_code == 200
 
 
+class TestPrivacy:
+    @pytest.mark.django_db
+    def test_get(self, client):
+        response = client.get(reverse("privacy"))
+        assert response.status_code == 200
+
+
 class TestRobots:
     @pytest.mark.django_db
     def test_get(self, client):

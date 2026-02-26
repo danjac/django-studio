@@ -11,10 +11,23 @@ uvx cookiecutter --no-input --output-dir /tmp ./
 If a project has already been created in `/tmp`, you can remove it before creating a new one:
 
 ```bashbash
-rm -rf /tmp/my_django_project
+cd /tm/my_django_project
+just stop # stop the development services if they are running
+cd ..
+rm -rf my_django_project
 ```
 
 This will create a new Django project in `/tmp` with the default settings. You can then navigate to the project directory and check if the project was created successfully.
+
+You can test the project by running the following command in the project directory:
+
+```bash
+just start # start the development services
+just lint # run linters
+just typecheck # run type checks
+just test # run tests
+just stop # stop the development services
+```
 
 ## Bugs
 

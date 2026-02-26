@@ -1,2 +1,0 @@
-1. Cookie banner: this should NOT be shown in error pages. Error pages should **NOT** inherit from base.html: error_base.html must implement its own layout, and should not include the cookie banner. This is a bug because error pages do not use `RequestContext`.
-2. "Privacy" page is missing!!!! Add privacy url and view, and add a link to the privacy page in the cookie banner. See `../radiofeed-app` for an example of how to implement the privacy page.

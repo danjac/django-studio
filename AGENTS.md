@@ -23,11 +23,15 @@ You can test the project by running the following command in the project directo
 
 ```bash
 just start # start the development services
+just install # install dependencies*
+just precommitall # run pre-commit on all files
 just lint # run linters
 just typecheck # run type checks
 just test # run tests
 just stop # stop the development services
 ```
+
+- **Note** you may need to run `uv sync` first to install the dependencies in the virtual environment before running `just install`.
 
 ## Bugs
 

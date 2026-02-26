@@ -15,3 +15,7 @@ rm -rf /tmp/my_django_project
 ```
 
 This will create a new Django project in `/tmp` with the default settings. You can then navigate to the project directory and check if the project was created successfully.
+
+## Bugs
+
+User will keep track of bugs in document BUGS.md. Check this and fix them first before adding new features. If you find a bug, please report it in the BUGS.md file with a clear description and steps to reproduce it.

@@ -18,7 +18,8 @@ venv/
 local_settings.py
 db.sqlite3
 staticfiles/
-mediafiles/
+media/
+static/app.css
 
 # Environment
 .env

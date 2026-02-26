@@ -1,3 +1,4 @@
+{% load i18n static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,13 +6,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {% meta_tags %}
-    {% load static %}
-    {% load i18n %}
     <link rel="stylesheet" href="{% static 'app.css' %}" />
     <script src="{% static 'vendor/htmx-2.0.8.min.js' %}" defer></script>
     <script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
   </head>
-  <body hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+  <body>
     <div
       id="hx-indicator"
       x-data="{ width: 0 }"
@@ -46,7 +45,7 @@
                 href="{% url 'account_email' %}"
                 class="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               >
-                {{ user.email }}
+                {{ user.username }}
               </a>
               <form method="post" action="{% url 'account_logout' %}">
                 {% csrf_token %}

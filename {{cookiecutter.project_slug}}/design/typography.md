@@ -25,10 +25,22 @@ from markdownify import markdownify
 
 ALLOWED_TAGS = {"p", "h2", "h3", "h4", "pre", "code", "hr"}
 
+_markdown = MarkdownIt("commonmark", {
+  "linkify": True,
+  "typographer": True,
+}).enable(
+        [
+            "linkify",
+            "replacements",
+            "smartquotes",
+        ]
+    )
+
+
 def my_view(request, pk):
     obj = get_object_or_404(MyModel, pk=pk)
     rendered = markdownify(content) if nh3.is_html(content) else content
-    return nh3.clean(
+    safe_html = nh3.clean(
         _markdown().render(content),
         tags=ALLOWED_TAGS,
     )

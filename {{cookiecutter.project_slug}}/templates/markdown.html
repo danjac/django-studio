@@ -1,0 +1,25 @@
+{#
+  Renders a pre-processed markdown string as styled prose.
+
+  Requires:
+    - tailwindcss/typography plugin (already in tailwind.config.js)
+    - markdown content pre-rendered to HTML (e.g. via django-markdownify or bleach)
+
+  Context variables:
+    markdown (str) — HTML string from a markdown renderer (required)
+
+  Usage in view:
+    import markdownify  # or bleach, or your chosen library
+    context["markdown"] = markdownify.markdownify(obj.body)
+
+  Usage in template:
+    {% include "markdown.html" with markdown=markdown %}
+#}
+{% if markdown %}
+  <div
+    class="prose prose-zinc break-words dark:prose-invert prose-headings:mb-3 prose-headings:text-lg prose-hr:my-3 prose-ol:list-inside prose-ol:p-0 prose-p:mb-3 prose-p:my-3 prose-ul:list-inside prose-ul:p-0 lg:prose-headings:text-xl"
+    hx-disable="true"
+  >
+    {{ markdown }}
+  </div>
+{% endif %}

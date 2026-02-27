@@ -33,6 +33,22 @@ just stop # stop the development services
 
 - **Note** you may need to run `uv sync` first to install the dependencies in the virtual environment before running `just install`.
 
+## Design System
+
+The template includes a component library in `{{cookiecutter.project_slug}}/design/`. When modifying or adding UI components in the generated project, check the design system first:
+
+- `design/README.md` — component index and design tokens
+- `design/navigation.md` — navbar, sidebar, user dropdown
+- `design/forms.md` — form wrapper, field template, input classes
+- `design/buttons.md` — button variants
+- `design/messages.md` — toast alerts
+- `design/cards.md` — link card component
+- `design/pagination.md` — paginated list
+- `design/typography.md` — markdown/prose, heading scale
+- `design/layout.md` — base templates, page layout patterns
+
+Components are sourced from the `radiofeed-app` production codebase and generalized for reuse. When adding a component to the template, add a corresponding doc to `design/`.
+
 ## Bugs
 
 User will keep track of bugs in document BUGS.md. Check this and fix them first before adding new features. If you find a bug, please report it in the BUGS.md file with a clear description and steps to reproduce it.

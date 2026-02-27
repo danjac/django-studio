@@ -144,6 +144,23 @@ Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `buil
 - `pyupgrade --py314` applied automatically
 - `django-upgrade --target-version 6.0` applied automatically
 
+### Design System
+
+A component library lives in `design/`. It documents every ready-made UI component and when to use it:
+
+| Doc | Components covered |
+|-----|--------------------|
+| `design/buttons.md` | `btn`, `btn-primary`, `btn-default`, `btn-danger` |
+| `design/messages.md` | Django messages toast, HTMX OOB swap |
+| `design/forms.md` | `form.html`, `form/field.html`, widget classes |
+| `design/navigation.md` | `navbar.html`, `sidebar.html`, user dropdown |
+| `design/cards.md` | `card.html` — link card with optional image |
+| `design/pagination.md` | `paginate.html` — Previous/Next with HTMX |
+| `design/typography.md` | `markdown.html`, prose, heading scale, link style |
+| `design/layout.md` | Base templates, two-column layout, HTMX indicator |
+
+**Before writing new UI markup**, check `design/` first — the component you need likely already exists.
+
 ### Icons
 
 Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Load the tag at the top of any template that needs icons and prefer the built-in set over custom SVGs.

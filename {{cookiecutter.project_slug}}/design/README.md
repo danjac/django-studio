@@ -1,0 +1,47 @@
+# Design System
+
+This project ships with a ready-made set of UI components built on Tailwind CSS, HTMX, and AlpineJS. All components are sourced from and battle-tested in production.
+
+## Component Index
+
+| Component | Template file | CSS layer | Doc |
+|-----------|--------------|-----------|-----|
+| Buttons | _(utility classes only)_ | `tailwind/buttons.css` | [buttons.md](buttons.md) |
+| Messages / Alerts | `templates/messages.html` | `tailwind/messages.css` | [messages.md](messages.md) |
+| Forms | `templates/form/field.html`, `templates/form.html` | `tailwind/forms.css` | [forms.md](forms.md) |
+| Navbar | `templates/navbar.html` | — | [navigation.md](navigation.md) |
+| Sidebar | `templates/sidebar.html` | — | [navigation.md](navigation.md) |
+| User Dropdown | _(inside navbar.html)_ | — | [navigation.md](navigation.md) |
+| Cards | `templates/card.html` | — | [cards.md](cards.md) |
+| Pagination | `templates/paginate.html` | — | [pagination.md](pagination.md) |
+| Markdown / Prose | `templates/markdown.html` | — | [typography.md](typography.md) |
+| Layout patterns | _(in base templates)_ | — | [layout.md](layout.md) |
+
+## Stack
+
+- **Tailwind CSS v4** — utility-first CSS, compiled by `django-tailwind-cli`
+- **AlpineJS v3** — lightweight reactivity for interactive components
+- **HTMX v2** — server-driven partial page updates
+- **Heroicons** — SVG icon set via `heroicons[django]`
+
+## Design Tokens
+
+CSS custom properties defined in `tailwind/base.css`:
+
+```css
+--color-bg          /* page background */
+--color-surface     /* card / panel background */
+--color-border      /* default border */
+--color-text        /* primary text */
+--color-text-muted  /* secondary / placeholder text */
+```
+
+Light and dark variants are set automatically via the `@variant dark` media query.
+
+## Global Rules
+
+- Use `heroicons` for all icons — see `docs/UI-Design-Patterns.md`
+- Use `btn`, `btn-primary`, `btn-default`, `btn-danger` for all buttons
+- Use `form-input`, `form-select`, `form-textarea` for all inputs
+- Prefer `{% include %}` with context variables over copy-pasting markup
+- All interactive elements must have visible focus rings (see accessibility section in each doc)

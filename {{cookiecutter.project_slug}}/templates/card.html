@@ -1,0 +1,35 @@
+{#
+  Generic link card with optional thumbnail image, title, and subtitle.
+
+  Context variables:
+    url         (str)  — the href for the card link (required)
+    title       (str)  — primary heading text (required)
+    subtitle    (str)  — secondary line below the title (optional)
+    image_url   (str)  — thumbnail image URL (optional)
+    target_blank (bool) — open in new tab (optional, default false)
+#}
+<a
+  href="{{ url }}"
+  title="{{ title }}"
+  class="group flex items-center gap-4"
+  {% if target_blank %}target="_blank" rel="noopener noreferrer"{% endif %}
+>
+  {% if image_url %}
+    <img
+      src="{{ image_url }}"
+      alt=""
+      class="size-16 shrink-0 rounded-xl object-cover"
+      loading="lazy"
+    >
+  {% endif %}
+  <div class="min-w-0 flex-1">
+    <h2 class="line-clamp-2 font-bold leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+      {{ title }}
+    </h2>
+    {% if subtitle %}
+      <p class="line-clamp-1 text-sm font-semibold text-zinc-500 group-hover:text-indigo-600 dark:text-zinc-400 dark:group-hover:text-indigo-400">
+        {{ subtitle }}
+      </p>
+    {% endif %}
+  </div>
+</a>

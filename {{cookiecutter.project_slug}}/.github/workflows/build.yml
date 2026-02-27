@@ -1,0 +1,20 @@
+name: {{cookiecutter.project_slug}}:build
+{% raw -%}
+run-name: ${{ github.actor }} is building Docker image
+on:
+  workflow_dispatch:
+    branches:
+      - main
+permissions:
+  attestations: write
+  contents: write
+  packages: write
+  id-token: write
+jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+  build:
+    uses: ./.github/workflows/docker.yml
+    needs: checks
+    secrets: inherit # pragma: allowlist secret
+{%- endraw %}

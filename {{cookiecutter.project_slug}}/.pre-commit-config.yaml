@@ -10,6 +10,7 @@ repos:
         exclude: '.*\.j2$'
       - id: check-toml
       - id: check-yaml
+        exclude: ^.github/
       - id: debug-statements
       - id: destroyed-symlinks
       - id: detect-private-key

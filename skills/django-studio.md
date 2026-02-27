@@ -8,10 +8,15 @@ Classify `$FEEDBACK` as either a **bug** or an **improvement**:
 - **Bug**: something broken, incorrect, missing, or producing an error in a generated project
 - **Improvement**: a pattern to add, an antipattern to remove, a missing utility, or a better default
 
+Resolve the django-studio directory:
+- Run `echo $DJANGO_STUDIO_DIR` via shell
+- If the result is non-empty, use that path
+- Otherwise fall back to `~/Projects/side-projects/django-studio`
+
 Append a dated entry to the appropriate file using today's date:
 
-- Bugs → `/home/danjac/Projects/side-projects/django-studio/BUGS.md`
-- Improvements → `/home/danjac/Projects/side-projects/django-studio/IMPROVEMENTS.md`
+- Bugs → `<resolved-dir>/BUGS.md`
+- Improvements → `<resolved-dir>/IMPROVEMENTS.md`
 
 ## Entry format
 

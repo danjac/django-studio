@@ -62,7 +62,7 @@
         }
     }
 
-    .btn-default {
+    .btn-secondary {
         color: var(--color-white);
         background-color: var(--color-violet-600);
         border: solid theme("borderWidth.DEFAULT") var(--color-violet-600);

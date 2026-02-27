@@ -3,34 +3,37 @@
   Sidebar navigation — replace the example items with your application's links.
   This template is also used by navbar.html for the mobile slide-in menu.
 
-  Item pattern:
-    <li>
-      <a href="{% url 'my_view' %}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold
-                text-zinc-700 transition-colors hover:bg-zinc-100
-                dark:text-zinc-200 dark:hover:bg-zinc-800">
-        {% heroicon_mini "icon-name" class="size-4 shrink-0" aria-hidden="true" %}
-        {% translate "Label" %}
-      </a>
-    </li>
+  Each nav item uses the shared {% partial item %} below. Usage:
+    {% with icon="icon-name" label="Label" url=my_url %}
+      {% partial item %}
+    {% endwith %}
+
+  For URL resolution, assign the URL before {% with %}:
+    {% url 'my_view' as my_url %}
+    {% with icon="home" label="Home" url=my_url %}
+      {% partial item %}
+    {% endwith %}
 #}
 <ul class="space-y-1">
-  <li>
-    <a
-      href="{% url 'index' %}"
-      class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
-    >
-      {% heroicon_mini "home" class="size-4 shrink-0" aria-hidden="true" %}
-      {% translate "Home" %}
-    </a>
-  </li>
-  <li>
-    <a
-      href="{% url 'account_email' %}"
-      class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
-    >
-      {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria-hidden="true" %}
-      {% translate "Settings" %}
-    </a>
-  </li>
+  {% url 'index' as home_url %}
+  {% with icon="home" label="Home" url=home_url %}
+    {% partial item %}
+  {% endwith %}
+
+  {% url 'account_email' as settings_url %}
+  {% with icon="cog-6-tooth" label="Settings" url=settings_url %}
+    {% partial item %}
+  {% endwith %}
 </ul>
+
+{% partialdef item %}
+  <li>
+    <a
+      href="{{ url }}"
+      class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+    >
+      {% heroicon_mini icon class="size-4 shrink-0" aria-hidden="true" %}
+      {% translate label %}
+    </a>
+  </li>
+{% endpartialdef %}

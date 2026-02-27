@@ -7,6 +7,7 @@
     $watch('showUserDropdown', v => { if (v) showMobileMenu = false; });
   "
   @htmx:before-request.window="showMobileMenu = false; showUserDropdown = false"
+  @keyup.escape.window="showMobileMenu = false; showUserDropdown = false"
 >
   <nav class="flex items-center justify-between p-4">
     <a
@@ -21,7 +22,6 @@
           <div
             class="relative"
             @click.outside="showUserDropdown = false"
-            @keyup.escape.window="showUserDropdown = false"
           >
             <button
               type="button"
@@ -90,17 +90,17 @@
             aria-label="{% translate 'Toggle navigation menu' %}"
             @click="showMobileMenu = !showMobileMenu"
           >
-            <span x-show="!showMobileMenu" x-cloak>
+            <span x-show="!showMobileMenu">
               {% heroicon_outline "bars-3" class="size-6" aria-hidden="true" %}
             </span>
-            <span x-show="showMobileMenu" x-cloak>
+            <span x-cloak x-show="showMobileMenu">
               {% heroicon_outline "x-mark" class="size-6" aria-hidden="true" %}
             </span>
           </button>
         </li>
       {% else %}
         <li>
-          <a href="{% url 'account_login' %}" class="btn btn-default">
+          <a href="{% url 'account_login' %}" class="btn btn-secondary">
             {% translate "Sign in" %}
           </a>
         </li>

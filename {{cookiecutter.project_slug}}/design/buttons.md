@@ -7,10 +7,10 @@ CSS source: `tailwind/buttons.css`
 | Class | Use case |
 |-------|----------|
 | `btn btn-primary` | Primary action (indigo) |
-| `btn btn-default` | Secondary / neutral action (violet) |
+| `btn btn-secondary` | Secondary / neutral action (violet) |
 | `btn btn-danger` | Destructive action (rose) |
 | `btn btn-primary btn-outline` | Outlined primary |
-| `btn btn-default btn-outline` | Outlined neutral |
+| `btn btn-secondary btn-outline` | Outlined neutral |
 | `btn btn-danger btn-outline` | Outlined destructive |
 
 All buttons require **both** the base `btn` class and a variant class.
@@ -22,7 +22,7 @@ All buttons require **both** the base `btn` class and a variant class.
 <button type="submit" class="btn btn-primary">Save changes</button>
 
 <!-- Secondary action -->
-<a href="{% url 'index' %}" class="btn btn-default">Cancel</a>
+<a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
 
 <!-- Destructive action -->
 <button type="submit" class="btn btn-danger">Delete account</button>

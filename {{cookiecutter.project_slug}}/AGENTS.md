@@ -150,11 +150,13 @@ A component library lives in `design/`. It documents every ready-made UI compone
 
 | Doc | Components covered |
 |-----|--------------------|
-| `design/buttons.md` | `btn`, `btn-primary`, `btn-default`, `btn-danger` |
+| `design/buttons.md` | `btn`, `btn-primary`, `btn-secondary`, `btn-danger` |
 | `design/messages.md` | Django messages toast, HTMX OOB swap |
 | `design/forms.md` | `form.html`, `form/field.html`, widget classes |
 | `design/navigation.md` | `navbar.html`, `sidebar.html`, user dropdown |
+| `design/modals.md` | `modal.html` — accessible dialog with focus trap |
 | `design/cards.md` | `card.html` — link card with optional image |
+| `design/badges.md` | Status badges, count chips, category tags |
 | `design/pagination.md` | `paginate.html` — Previous/Next with HTMX |
 | `design/typography.md` | `markdown.html`, prose, heading scale, link style |
 | `design/layout.md` | Base templates, two-column layout, HTMX indicator |

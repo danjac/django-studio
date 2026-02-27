@@ -12,7 +12,9 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 | Navbar | `templates/navbar.html` | — | [navigation.md](navigation.md) |
 | Sidebar | `templates/sidebar.html` | — | [navigation.md](navigation.md) |
 | User Dropdown | _(inside navbar.html)_ | — | [navigation.md](navigation.md) |
+| Modal / Dialog | `templates/modal.html` | — | [modals.md](modals.md) |
 | Cards | `templates/card.html` | — | [cards.md](cards.md) |
+| Badges / Tags | _(inline classes)_ | — | [badges.md](badges.md) |
 | Pagination | `templates/paginate.html` | — | [pagination.md](pagination.md) |
 | Markdown / Prose | `templates/markdown.html` | — | [typography.md](typography.md) |
 | Layout patterns | _(in base templates)_ | — | [layout.md](layout.md) |
@@ -41,7 +43,7 @@ Light and dark variants are set automatically via the `@variant dark` media quer
 ## Global Rules
 
 - Use `heroicons` for all icons — see `docs/UI-Design-Patterns.md`
-- Use `btn`, `btn-primary`, `btn-default`, `btn-danger` for all buttons
+- Use `btn`, `btn-primary`, `btn-secondary`, `btn-danger` for all buttons
 - Use `form-input`, `form-select`, `form-textarea` for all inputs
 - Prefer `{% include %}` with context variables over copy-pasting markup
 - All interactive elements must have visible focus rings (see accessibility section in each doc)

@@ -56,7 +56,7 @@ When not authenticated, the navbar shows sign-in and sign-up buttons. To add mor
     </a>
   </li>
   <li>
-    <a href="{% url 'account_login' %}" class="btn btn-default">Sign in</a>
+    <a href="{% url 'account_login' %}" class="btn btn-secondary">Sign in</a>
   </li>
 ```
 
@@ -71,25 +71,23 @@ When not authenticated, the navbar shows sign-in and sign-up buttons. To add mor
 
 ### Default Items
 
-The template ships with two placeholder items (Home, Settings). Replace them with your application's navigation:
+The template ships with two placeholder items (Home, Settings). Replace them with your application's navigation using the `{% partial item %}` shorthand:
 
 ```html
-{% load heroicons i18n %}
-<ul class="space-y-1">
-  <li>
-    <a
-      href="{% url 'podcasts:subscriptions' %}"
-      class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold
-             text-zinc-700 transition-colors hover:bg-zinc-100
-             dark:text-zinc-200 dark:hover:bg-zinc-800"
-    >
-      {% heroicon_mini "rss" class="size-4 shrink-0" aria-hidden="true" %}
-      {% translate "Subscriptions" %}
-    </a>
-  </li>
-  <!-- add more items ... -->
-</ul>
+{% url 'podcasts:subscriptions' as subscriptions_url %}
+{% with icon="rss" label="Subscriptions" url=subscriptions_url %}
+  {% partial item %}
+{% endwith %}
+
+{% url 'episodes:bookmarks' as bookmarks_url %}
+{% with icon="bookmark" label="Bookmarks" url=bookmarks_url %}
+  {% partial item %}
+{% endwith %}
 ```
+
+The `item` partial is defined at the bottom of `sidebar.html` and renders a consistent `<li><a>` with icon and label.
+
+The URL must be resolved before the `{% with %}` block because template tags can't run inside `{% with %}` values. Use `{% url '...' as var %}` at the top of each item.
 
 ### Active Item Highlighting
 

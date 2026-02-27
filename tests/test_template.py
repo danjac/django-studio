@@ -9,6 +9,17 @@ from pathlib import Path
 import pytest
 from cookiecutter.main import cookiecutter
 
+_TEMPLATE_DIR = "."
+
+_DEFAULT_CONTEXT = {
+    "project_name": "Test Project",
+    "project_slug": "test-project",
+    "package_name": "testapp",
+    "description": "A test project",
+    "author": "Test Author",
+    "author_email": "test@example.com",
+}
+
 
 @pytest.fixture
 def output_dir():
@@ -21,14 +32,30 @@ def output_dir():
 @pytest.fixture
 def default_context():
     """Default cookiecutter context for testing."""
-    return {
-        "project_name": "Test Project",
-        "project_slug": "test-project",
-        "package_name": "testapp",
-        "description": "A test project",
-        "author": "Test Author",
-        "author_email": "test@example.com",
-    }
+    return _DEFAULT_CONTEXT
+
+
+@pytest.fixture(scope="module")
+def project(tmp_path_factory):
+    """Render the template once with default context; reused across tests."""
+    output_dir = tmp_path_factory.mktemp("project")
+    cookiecutter(
+        _TEMPLATE_DIR,
+        no_input=True,
+        output_dir=str(output_dir),
+        extra_context=_DEFAULT_CONTEXT,
+    )
+    return output_dir / "test-project"
+
+
+def _render(output_dir: Path, extra_context: dict) -> Path:
+    result = cookiecutter(
+        _TEMPLATE_DIR,
+        no_input=True,
+        output_dir=str(output_dir),
+        extra_context=extra_context,
+    )
+    return Path(result)
 
 
 class TestTemplateRendering:
@@ -215,3 +242,214 @@ class TestCustomPackageName:
         project_path = output_dir / "my-app"
         assert (project_path / "mypackage").is_dir()
         assert not (project_path / "my-app").exists()
+
+
+class TestAnsibleRendering:
+    """Verify Ansible files are processed correctly by cookiecutter.
+
+    These files were previously excluded from rendering via _copy_without_render,
+    causing {{ cookiecutter.project_slug }} to appear literally in the generated project.
+    """
+
+    def test_group_vars_has_project_slug(self, project):
+        content = (project / "ansible" / "group_vars" / "all.yml").read_text()
+        assert "test-project" in content
+
+    def test_group_vars_preserves_ansible_variables(self, project):
+        """Ansible variables must survive cookiecutter rendering intact."""
+        content = (project / "ansible" / "group_vars" / "all.yml").read_text()
+        assert "{{ ansible_user }}" in content
+        assert "{{ home_dir }}" in content
+
+    def test_group_vars_no_cookiecutter_literals(self, project):
+        content = (project / "ansible" / "group_vars" / "all.yml").read_text()
+        assert "cookiecutter" not in content
+
+    def test_observability_defaults_has_project_slug(self, project):
+        path = (
+            project
+            / "ansible"
+            / "roles"
+            / "k3s_observability"
+            / "defaults"
+            / "main.yml"
+        )
+        content = path.read_text()
+        assert "test-project" in content
+
+    def test_observability_defaults_no_cookiecutter_literals(self, project):
+        path = (
+            project
+            / "ansible"
+            / "roles"
+            / "k3s_observability"
+            / "defaults"
+            / "main.yml"
+        )
+        content = path.read_text()
+        assert "cookiecutter" not in content
+
+    def test_ansible_task_files_preserved_verbatim(self, project):
+        """Task files (which contain Ansible {{ }} variables) must not be
+        processed by cookiecutter — they should arrive unchanged."""
+        task_file = project / "ansible" / "roles" / "user" / "tasks" / "main.yml"
+        content = task_file.read_text()
+        # Ansible variables should be present as-is, not mangled
+        assert "{{ playbook_dir }}" in content
+
+    def test_script_role_task_files_are_tasks_not_playbooks(self, project):
+        """scripts_* role task files must be proper task lists, not playbooks."""
+        for role in ("scripts_dj_manage", "scripts_kubectl", "scripts_psql"):
+            path = project / "ansible" / "roles" / role / "tasks" / "main.yml"
+            content = path.read_text()
+            # Playbook-level keys must not be present in a tasks file
+            assert "hosts:" not in content
+            assert "gather_facts:" not in content
+            # Must be a proper task with a name
+            assert "- name:" in content
+
+
+class TestTerraformRendering:
+    """Verify Terraform files are processed correctly by cookiecutter.
+
+    These files were previously excluded from rendering via _copy_without_render.
+    """
+
+    def test_hetzner_variables_has_project_slug(self, project):
+        content = (project / "terraform" / "hetzner" / "variables.tf").read_text()
+        assert '"test-project"' in content
+
+    def test_hetzner_variables_cluster_name_no_duplicate(self, project):
+        """The cluster_name variable must not have duplicate attribute declarations."""
+        content = (project / "terraform" / "hetzner" / "variables.tf").read_text()
+        assert content.count('variable "cluster_name"') == 1
+        # Extract the cluster_name block and verify it has exactly one default
+        start = content.index('variable "cluster_name"')
+        end = content.index("}", start) + 1
+        block = content[start:end]
+        assert block.count("default") == 1
+
+    def test_hetzner_variables_no_cookiecutter_literals(self, project):
+        content = (project / "terraform" / "hetzner" / "variables.tf").read_text()
+        assert "cookiecutter" not in content
+
+    def test_storage_module_exists(self, project):
+        assert (project / "terraform" / "storage" / "main.tf").exists()
+
+    def test_storage_has_project_slug(self, project):
+        content = (project / "terraform" / "storage" / "main.tf").read_text()
+        assert "test-project-media" in content
+
+    def test_storage_no_cookiecutter_literals(self, project):
+        content = (project / "terraform" / "storage" / "main.tf").read_text()
+        assert "cookiecutter" not in content
+
+    def test_storage_not_in_hetzner_module(self, project):
+        """storage.tf must not live alongside the cluster variables — it was
+        moved to terraform/storage/ to avoid duplicate variable declarations."""
+        assert not (project / "terraform" / "hetzner" / "storage.tf").exists()
+
+    def test_terraform_tfvars_example_has_project_slug(self, project):
+        content = (
+            project / "terraform" / "hetzner" / "terraform.tfvars.example"
+        ).read_text()
+        assert "test-project" in content
+
+
+class TestStorageFeatureFlag:
+    """Test use_storage flag behaviour."""
+
+    def test_storage_dir_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "y"})
+        assert (project / "terraform" / "storage" / "main.tf").exists()
+
+    def test_storage_dir_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "n"})
+        assert not (project / "terraform" / "storage").exists()
+
+    def test_s3_settings_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "y"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "S3Boto3Storage" in content
+
+    def test_s3_settings_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "n"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "S3Boto3Storage" not in content
+
+    def test_env_storage_vars_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "y"})
+        content = (project / ".env.example").read_text()
+        assert "HETZNER_STORAGE_ACCESS_KEY" in content
+
+    def test_env_storage_vars_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "n"})
+        content = (project / ".env.example").read_text()
+        assert "HETZNER_STORAGE_ACCESS_KEY" not in content
+
+
+class TestHxBoostFeatureFlag:
+    """Test use_hx_boost flag behaviour."""
+
+    def test_hx_base_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": "y"})
+        assert (project / "templates" / "hx_base.html").exists()
+
+    def test_hx_base_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": "n"})
+        assert not (project / "templates" / "hx_base.html").exists()
+
+    def test_base_html_uses_htmx_extends_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": "y"})
+        content = (project / "templates" / "base.html").read_text()
+        assert "htmx" in content
+
+    def test_base_html_is_full_layout_when_disabled(self, output_dir):
+        """Without hx-boost, base.html should be the full layout (no dynamic extends)."""
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": "n"})
+        assert (project / "templates" / "base.html").exists()
+        assert not (project / "templates" / "default_base.html").exists()
+
+
+class TestI18nFeatureFlag:
+    """Test use_i18n flag behaviour."""
+
+    def test_locale_dir_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "y"})
+        assert (project / "locale").is_dir()
+
+    def test_locale_dir_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "n"})
+        assert not (project / "locale").exists()
+
+    def test_use_i18n_true_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "y"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "USE_I18N = True" in content
+
+    def test_use_i18n_false_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "n"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "USE_I18N = False" in content
+
+
+class TestPwaFeatureFlag:
+    """Test use_pwa flag behaviour."""
+
+    def test_service_worker_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": "y"})
+        assert (project / "static" / "service-worker.js").exists()
+
+    def test_service_worker_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": "n"})
+        assert not (project / "static" / "service-worker.js").exists()
+
+    def test_manifest_view_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": "y"})
+        content = (project / "config" / "urls.py").read_text()
+        assert "manifest" in content
+
+    def test_manifest_view_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": "n"})
+        content = (project / "config" / "urls.py").read_text()
+        assert "manifest" not in content

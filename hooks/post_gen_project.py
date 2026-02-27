@@ -2,6 +2,7 @@
 """Post-generation hook: adjusts files based on cookiecutter choices."""
 
 import os
+import shutil
 
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
 USE_STORAGE = "{{cookiecutter.use_storage}}"
@@ -138,12 +139,9 @@ def setup_storage() -> None:
 
 def remove_storage_terraform() -> None:
     """Remove the storage terraform directory when storage is not used."""
-    if os.path.exists(TERRAFORM_STORAGE):
-        os.remove(TERRAFORM_STORAGE)
-    # Remove the terraform/storage dir if now empty
     tf_storage = os.path.join("terraform", "storage")
-    if os.path.isdir(tf_storage) and not os.listdir(tf_storage):
-        os.rmdir(tf_storage)
+    if os.path.isdir(tf_storage):
+        shutil.rmtree(tf_storage)
     tf_dir = "terraform"
     if os.path.isdir(tf_dir) and not os.listdir(tf_dir):
         os.rmdir(tf_dir)

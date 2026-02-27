@@ -8,11 +8,18 @@ This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for
 
 Before starting any work, have a "Session Zero" to set up the project structure and documentation.
 
-1. Discuss and define the project goals, requirements, and constraints with the user.
-2. If required, update the `README.md` with a project overview and setup instructions.
-3. Create `ROADMAP.md` with milestones and tasks based on the project goals.
-4. Create `BUGS.md` to track any bugs that arise during development.
-5. Discuss roadmap priorities and get user approval on the initial plan.
+1. Discuss and define the project goals, requirements, and constraints with the user. For example:
+
+- What problem is this project solving?
+- Who are the users and stakeholders?
+- What are the key features and success criteria?
+- What are the key challenges the user anticipates?
+- What similar projects exist that can be used for inspiration or reference?
+
+1. If required, update the `README.md` with a project overview and setup instructions.
+2. Create `ROADMAP.md` with milestones and tasks based on the project goals.
+3. Create `BUGS.md` to track any bugs that arise during development.
+4. Discuss roadmap priorities and get user approval on the initial plan.
 
 ### Process
 

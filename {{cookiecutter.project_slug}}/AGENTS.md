@@ -4,12 +4,25 @@ This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for
 
 ## Session Workflow
 
+### Session Zero
+
+Before starting any work, have a "Session Zero" to set up the project structure and documentation.
+
+1. Discuss and define the project goals, requirements, and constraints with the user.
+2. If required, update the `README.md` with a project overview and setup instructions.
+3. Create `ROADMAP.md` with milestones and tasks based on the project goals.
+4. Create `BUGS.md` to track any bugs that arise during development.
+5. Discuss roadmap priorities and get user approval on the initial plan.
+
+### Process
+
 At the start of every session, follow this order — do not skip ahead:
 
 1. **Fix bugs first.** Check `BUGS.md` for open bugs. Fix every one before doing any roadmap work. A stable codebase is the baseline.
 2. **Resume the roadmap.** Open `ROADMAP.md`, find the next unchecked task, and continue from there.
 
 If `ROADMAP.md` does not exist yet, ask the user the following before creating it:
+
 - What problem is this project solving?
 - What are the requirements and constraints?
 - Who are the users and stakeholders?
@@ -38,6 +51,7 @@ For each milestone:
 3. After each task, run `just lint && just typecheck && just test`
 4. When all tasks in the milestone are complete, **stop and tell the user** — do not merge or continue to the next milestone
 5. After the user approves, ask the user to run `git rebase -i` to squash the branch commits into logical units, then merge into `main` and delete the branch:
+
    ```bash
    git checkout main
    git merge milestone-<N>
@@ -148,18 +162,18 @@ Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `buil
 
 A component library lives in `design/`. It documents every ready-made UI component and when to use it:
 
-| Doc | Components covered |
-|-----|--------------------|
-| `design/buttons.md` | `btn`, `btn-primary`, `btn-secondary`, `btn-danger` |
-| `design/messages.md` | Django messages toast, HTMX OOB swap |
-| `design/forms.md` | `form.html`, `form/field.html`, widget classes |
-| `design/navigation.md` | `navbar.html`, `sidebar.html`, user dropdown |
-| `design/modals.md` | `modal.html` — accessible dialog with focus trap |
-| `design/cards.md` | `card.html` — link card with optional image |
-| `design/badges.md` | Status badges, count chips, category tags |
-| `design/pagination.md` | `paginate.html` — Previous/Next with HTMX |
-| `design/typography.md` | `markdown.html`, prose, heading scale, link style |
-| `design/layout.md` | Base templates, two-column layout, HTMX indicator |
+| Doc                    | Components covered                                  |
+| ---------------------- | --------------------------------------------------- |
+| `design/buttons.md`    | `btn`, `btn-primary`, `btn-secondary`, `btn-danger` |
+| `design/messages.md`   | Django messages toast, HTMX OOB swap                |
+| `design/forms.md`      | `form.html`, `form/field.html`, widget classes      |
+| `design/navigation.md` | `navbar.html`, `sidebar.html`, user dropdown        |
+| `design/modals.md`     | `modal.html` — accessible dialog with focus trap    |
+| `design/cards.md`      | `card.html` — link card with optional image         |
+| `design/badges.md`     | Status badges, count chips, category tags           |
+| `design/pagination.md` | `paginate.html` — Previous/Next with HTMX           |
+| `design/typography.md` | `markdown.html`, prose, heading scale, link style   |
+| `design/layout.md`     | Base templates, two-column layout, HTMX indicator   |
 
 **Before writing new UI markup**, check `design/` first — the component you need likely already exists.
 
@@ -168,9 +182,8 @@ A component library lives in `design/`. It documents every ready-made UI compone
 Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Load the tag at the top of any template that needs icons and prefer the built-in set over custom SVGs.
 
 ```html
-{% raw %}{% load heroicons %}
-{% heroicon_mini "x-mark" class="size-4" %}
-{% heroicon_outline "arrow-right" class="size-5" %}{% endraw %}
+{% raw %}{% load heroicons %} {% heroicon_mini "x-mark" class="size-4" %} {%
+heroicon_outline "arrow-right" class="size-5" %}{% endraw %}
 ```
 
 Use custom inline SVGs only when no heroicon exists for the shape you need. Never use character entities (`&times;`) or emoji as icons.

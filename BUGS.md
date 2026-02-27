@@ -1,3 +1,5 @@
+<!-- All bugs resolved. Add new bugs below this line. -->
+
 ~~Ansible configuration completely broken, not processing files correctly:~~
 
 ~~HINT: only process Ansible files we need to, and ignore the rest.~~

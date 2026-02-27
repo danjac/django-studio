@@ -55,8 +55,8 @@ For each milestone:
 1. Create a branch: `git checkout -b milestone-<N>`
 2. Work through each task. When a task is done, mark it: `- [x] Task name`
 3. After each task, run `just lint && just typecheck && just test`
-4. When all tasks in the milestone are complete, **stop and tell the user** — do not merge or continue to the next milestone
-5. After the user approves, ask the user to run `git rebase -i` to squash the branch commits into logical units, then merge into `main` and delete the branch:
+4. When all tasks in the milestone are complete, **stop and report to the user** — do not merge or continue to the next milestone. Wait for explicit approval.
+5. After the user approves: tell the user to run `git rebase -i` themselves to squash the branch commits into logical units (this is interactive and cannot be done by the agent). Once they confirm it's done, run:
 
    ```bash
    git checkout main

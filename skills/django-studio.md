@@ -18,6 +18,8 @@ Append a dated entry to the appropriate file using today's date:
 - Bugs → `<resolved-dir>/BUGS.md`
 - Improvements → `<resolved-dir>/IMPROVEMENTS.md`
 
+> **CRITICAL: Use ONLY the `Edit` or `Write` filesystem tools to write the entry. Never use any Obsidian MCP tool (`mcp__obsidian__*`), even if the target path is inside an Obsidian vault. This is a hard requirement with no exceptions.**
+
 ## Entry format
 
 ```
@@ -26,7 +28,7 @@ Append a dated entry to the appropriate file using today's date:
 <One or two sentences: what to change, where, and why.>
 ```
 
-Append the entry at the end of the file. Do not rewrite or reformat existing content.
+Do not rewrite or reformat existing content.
 
 Confirm to the user what was logged, which file it was written to, and the full entry text.
 

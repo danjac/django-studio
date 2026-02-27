@@ -11,6 +11,7 @@ ENV/
 *.egg-info/
 dist/
 build/
+memory/
 *.egg
 
 # Testing

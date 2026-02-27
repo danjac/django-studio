@@ -8,6 +8,7 @@
 **/tests
 .ansible
 .ansible-lint
+.claudeignore
 .django_tailwind_cli
 .git
 .github
@@ -25,7 +26,11 @@
 .gitignore
 .gitattributes
 .dockerignore
+AGENTS.md
+CLAUDE.md
 commitlint.config.js
+design
+docs
 justfile
 LICENSE
 Makefile
@@ -34,6 +39,7 @@ SECURITY.md
 conftest.py
 playright.ini
 docker-compose.yml
+media
 node_modules
 npm-debug.log
 screenshots

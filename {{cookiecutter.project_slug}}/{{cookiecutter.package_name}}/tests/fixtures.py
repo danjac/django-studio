@@ -11,7 +11,7 @@ def site():
 
 
 @pytest.fixture(autouse=True)
-def _settings_overrides(settings) -> None:
+def _settings_overrides(settings, tmp_path) -> None:
     """Default settings overrides for all tests."""
     settings.CACHES = {
         "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}
@@ -22,6 +22,8 @@ def _settings_overrides(settings) -> None:
     settings.ALLOWED_HOSTS = ["example.com", "testserver", "localhost"]
     settings.LOGGING = None
     settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+    settings.MEDIA_ROOT = tmp_path / "media"
+    settings.MEDIA_ROOT.mkdir(exist_ok=True)
 
 
 @pytest.fixture

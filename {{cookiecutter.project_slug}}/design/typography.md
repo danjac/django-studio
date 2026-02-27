@@ -8,9 +8,9 @@ Template: `templates/markdown.html`
 
 ### Context Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `markdown` | yes | Sanitized HTML string from a markdown renderer |
+| Variable   | Required | Description                                    |
+| ---------- | -------- | ---------------------------------------------- |
+| `markdown` | yes      | Sanitized HTML string from a markdown renderer |
 
 ### Usage
 
@@ -19,20 +19,24 @@ Pre-render markdown to HTML in the view, then pass it to the template:
 ```python
 # views.py — using python-markdown + bleach for sanitization
 import markdown
-import bleach
+import nh3
+from markdown_it import MarkdownIt
+from markdownify import markdownify
 
-ALLOWED_TAGS = bleach.sanitizer.ALLOWED_TAGS | {"p", "h2", "h3", "h4", "pre", "code", "hr"}
+ALLOWED_TAGS = {"p", "h2", "h3", "h4", "pre", "code", "hr"}
 
 def my_view(request, pk):
     obj = get_object_or_404(MyModel, pk=pk)
-    rendered = markdown.markdown(obj.body, extensions=["fenced_code", "tables"])
-    safe_html = bleach.clean(rendered, tags=ALLOWED_TAGS, strip=True)
+    rendered = markdownify(content) if nh3.is_html(content) else content
+    return nh3.clean(
+        _markdown().render(content),
+        tags=ALLOWED_TAGS,
+    )
     return TemplateResponse(request, "my_detail.html", {"markdown": safe_html})
 ```
 
 ```html
-{# my_detail.html #}
-{% include "markdown.html" with markdown=markdown %}
+{# my_detail.html #} {% include "markdown.html" with markdown=markdown %}
 ```
 
 ### Prose Classes
@@ -48,7 +52,7 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: "none",  // remove default max-width
+            maxWidth: "none", // remove default max-width
           },
         },
       },
@@ -65,12 +69,12 @@ The `hx-disable="true"` attribute on the prose wrapper prevents HTMX from interc
 
 ## Heading Scale
 
-| Element | Classes | Use |
-|---------|---------|-----|
-| Page title | `text-2xl font-bold` | One per page |
-| Section heading | `text-xl font-semibold` | Subsections |
-| Card title | `text-base font-bold leading-tight` | Card `.card.html` |
-| Muted label | `text-sm font-semibold text-zinc-500 dark:text-zinc-400` | Metadata, captions |
+| Element         | Classes                                                  | Use                |
+| --------------- | -------------------------------------------------------- | ------------------ |
+| Page title      | `text-2xl font-bold`                                     | One per page       |
+| Section heading | `text-xl font-semibold`                                  | Subsections        |
+| Card title      | `text-base font-bold leading-tight`                      | Card `.card.html`  |
+| Muted label     | `text-sm font-semibold text-zinc-500 dark:text-zinc-400` | Metadata, captions |
 
 ## Text Colours
 

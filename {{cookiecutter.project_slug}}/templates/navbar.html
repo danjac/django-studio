@@ -87,7 +87,7 @@
             type="button"
             class="rounded-xl p-2 text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
             :aria-expanded="showMobileMenu.toString()"
-            aria-label="{% translate 'Toggle navigation menu' %}"
+            aria-label="{% translate "Toggle navigation menu" %}"
             @click="showMobileMenu = !showMobileMenu"
           >
             <span x-show="!showMobileMenu">
@@ -115,7 +115,7 @@
   {% if user.is_authenticated %}
     <nav
       class="absolute left-0 z-50 w-full border-b border-zinc-200 bg-white px-4 py-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 md:hidden"
-      aria-label="{% translate 'Mobile navigation' %}"
+      aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
       x-transition:enter="transition ease-out duration-100"

@@ -37,8 +37,8 @@ markers = ["e2e: end-to-end browser tests with Playwright"]
 just test                      # Unit tests
 just test myapp/users  # Specific module
 just tw                        # Watch mode
-just e2e                       # E2E tests (headless)
-just e2e-headed               # E2E tests (visible browser)
+just test-e2e                  # E2E tests (headless)
+just test-e2e-headed          # E2E tests (visible browser)
 just playwright-install       # Install Chromium for E2E
 ```
 

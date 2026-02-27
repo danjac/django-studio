@@ -57,8 +57,8 @@ just serve              # Dev server + Tailwind watcher
 just test              # Run unit tests
 just test myapp/users  # Test specific module
 just tw                # Watch mode
-just e2e               # E2E tests (headless)
-just e2e-headed        # E2E tests (visible browser)
+just test-e2e          # E2E tests (headless)
+just test-e2e-headed   # E2E tests (visible browser)
 just lint              # Run linters
 just typecheck         # Run type checker
 

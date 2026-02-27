@@ -13,6 +13,7 @@ Before starting any work, have a "Session Zero" to set up the project structure 
    - Who are the users and stakeholders?
    - What are the key features and success criteria?
    - What are the key challenges the user anticipates?
+   - What should the project **not** do (out of scope)?
    - What similar projects exist that can be used for inspiration or reference?
 1. If required, update the `README.md` with a project overview and setup instructions.
 1. Create `ROADMAP.md` with milestones and tasks based on the project goals.

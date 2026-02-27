@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
+        with:
+          python-version: "3.14"
+      - uses: astral-sh/uv-action@a8f6bfd07e5e3ae1f5fe14c7a6d851d6c2f39b2f  # v0.1.1
+      - uses: pre-commit/action@3.0.1
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
+        with:
+          python-version: "3.14"
+      - uses: astral-sh/uv-action@a8f6bfd07e5e3ae1f5fe14c7a6d851d6c2f39b2f  # v0.1.1
+      - run: just lint
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
+        with:
+          python-version: "3.14"
+      - uses: astral-sh/uv-action@a8f6bfd07e5e3ae1f5fe14c7a6d851d6c2f39b2f  # v0.1.1
+      - run: just format
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
+        with:
+          python-version: "3.14"
+      - uses: astral-sh/uv-action@a8f6bfd07e5e3ae1f5fe14c7a6d851d6c2f39b2f  # v0.1.1
+      - run: just test

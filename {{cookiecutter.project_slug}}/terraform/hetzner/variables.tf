@@ -7,9 +7,6 @@ variable "hcloud_token" {
 variable "cluster_name" {
   description = "Name prefix for all resources"
   type        = string
-  default     = "myproject"
-  description = "Name prefix for all resources"
-  type        = string
   default     = "{{cookiecutter.project_slug}}"
 }
 

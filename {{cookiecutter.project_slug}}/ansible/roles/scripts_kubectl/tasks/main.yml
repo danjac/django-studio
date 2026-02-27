@@ -1,6 +1,5 @@
-- name: Run kubectl commands
-  hosts: server
-  become: false
-  gather_facts: true
-  roles:
-      - scripts_kubectl
+- name: Add kubectl script
+  ansible.builtin.template:
+      src: kubectl.sh.j2
+      dest: kubectl.sh
+      mode: "u+x"

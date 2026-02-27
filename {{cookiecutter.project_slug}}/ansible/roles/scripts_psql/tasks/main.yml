@@ -1,6 +1,5 @@
-- name: Run psql commands
-  hosts: server
-  become: false
-  gather_facts: true
-  roles:
-      - scripts_psql
+- name: Add psql script
+  ansible.builtin.template:
+      src: psql.sh.j2
+      dest: psql.sh
+      mode: "u+x"

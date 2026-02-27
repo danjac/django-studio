@@ -1,41 +1,8 @@
-Generated Django templates have linting errors:
+~~Ansible configuration completely broken, not processing files correctly:~~
 
-```
+~~HINT: only process Ansible files we need to, and ignore the rest.~~
 
-Linted 7 files, found 0 errors.
-
-
-100% 7/7 [00:00<?, ?it/s]
-
-
-templates/card.html
-───────────────────────────────────────────────────────────────────────────────
-H006 18:4 Img tag should have height and width attributes. <img src="{{ i
-
-templates/error_base.html
-───────────────────────────────────────────────────────────────────────────────
-H025 15:0 Tag seems to be an orphan. </body>
-
-templates/navbar.html
-───────────────────────────────────────────────────────────────────────────────
-T002 90:24 Double quotes should be used in tags. {% translate 'Toggle
-T002 118:18 Double quotes should be used in tags. {% translate 'Mobile
-
-Linted 7 files, found 4 errors.
-
-
-100% 7/7 [00:00<?, ?it/s]
-
-
-Linted 7 files, found 0 errors.
-
-
-100% 6/6 [00:00<?, ?it/s]
-
-
-templates/modal.html
-───────────────────────────────────────────────────────────────────────────────
-T002 71:20 Double quotes should be used in tags. {% translate 'Close
-
-Linted 6 files, found 1 error.
-```
+**Resolved**: Fixed three issues:
+1. `terraform/hetzner/variables.tf` had duplicate `description`/`type`/`default` in `cluster_name` block — removed stale duplicate
+2. `terraform/hetzner/storage.tf` was a standalone module in the same dir as `variables.tf`, causing duplicate `variable "location"` — moved to `terraform/storage/main.tf`
+3. `cookiecutter.json` `_copy_without_render` had `"ansible/**"` preventing `group_vars/all.yml` and `k3s_observability/defaults/main.yml` from being rendered — replaced with specific task/template/vars/defaults patterns; added `{% raw %}` guards to `group_vars/all.yml` for Ansible-specific variables

@@ -10,6 +10,9 @@ Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS
 - just for task running
 - django-tasks-db for background tasks (not Celery)
 - django-allauth for authentication
+
+- Design pattern library
+
 - 100% test coverage required
 
 ## Usage

@@ -33,6 +33,27 @@ just stop # stop the development services
 
 - **Note** you may need to run `uv sync` first to install the dependencies in the virtual environment before running `just install`.
 
+## Cookiecutter Project Testing
+
+The cookiecutter project itself has its own tests and pre-commit config. Run these from the root directory:
+
+```bash
+just check      # Run lint, format, and tests
+just test      # Run pytest
+just lint      # Run ruff on tests
+just format    # Check formatting
+```
+
+To install pre-commit hooks for the cookiecutter project itself:
+
+```bash
+uv run pre-commit install
+```
+
+## Design System
+
+The template includes a component library in `{{cookiecutter.project_slug}}/design/`. When modifying or adding UI components in the generated project, check the design system first:
+
 ## Design System
 
 The template includes a component library in `{{cookiecutter.project_slug}}/design/`. When modifying or adding UI components in the generated project, check the design system first:

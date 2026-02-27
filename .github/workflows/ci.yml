@@ -19,24 +19,6 @@ jobs:
           cache: "pip"
       - uses: pre-commit/action@v3.0.1
 
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true
-      - run: just lint
-
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true
-      - run: just format
-
   test:
     runs-on: ubuntu-latest
     steps:
@@ -44,4 +26,4 @@ jobs:
       - uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-      - run: just test
+      - run: uv run pytest -v

@@ -28,6 +28,3 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
-
-# Cookiecutter template (not part of generated project)
-{{cookiecutter.project_slug}}/

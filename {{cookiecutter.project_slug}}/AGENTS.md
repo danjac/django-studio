@@ -216,3 +216,14 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 - **Scope discipline** — Only change what was explicitly requested.
 - **Diagnose before changing** — Read the code and state your diagnosis with a file:line reference before editing.
 - **Verify runtime behaviour** — Passing tests is necessary but not sufficient.
+
+## Template Feedback
+
+This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself — a broken default, a missing utility, an antipattern — log it immediately using the `/django-studio` command:
+
+```
+/django-studio bug: <what is broken and where>
+/django-studio improvement: <what to add or change and why>
+```
+
+Do not wait until the end of a session. Log it when you notice it.

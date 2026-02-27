@@ -54,12 +54,12 @@ uv run pre-commit install
 
 `cookiecutter.json` exposes four boolean feature flags. The post-generation hook (`hooks/post_gen_project.py`) removes unused files based on these selections:
 
-| Flag | Default | Effect when disabled |
-|------|---------|----------------------|
-| `use_hx_boost` | `"y"` | Removes HTMX boost config |
-| `use_storage` | `"y"` | Removes `terraform/storage/` |
-| `use_i18n` | `"n"` | Removes i18n middleware and locale config |
-| `use_pwa` | `"n"` | Removes PWA manifest and service worker |
+| Flag           | Default | Effect when disabled                      |
+| -------------- | ------- | ----------------------------------------- |
+| `use_hx_boost` | `"y"`   | Removes HTMX boost config                 |
+| `use_storage`  | `"y"`   | Removes `terraform/storage/`              |
+| `use_i18n`     | `"n"`   | Removes i18n middleware and locale config |
+| `use_pwa`      | `"n"`   | Removes PWA manifest and service worker   |
 
 When adding template files that are conditional on a flag, update `hooks/post_gen_project.py` — do not hard-delete files from the template directory itself. When adding files that contain Django or Tailwind `{{ }}` syntax, add their paths to `_copy_without_render` in `cookiecutter.json` so cookiecutter copies them verbatim instead of treating them as Jinja2 templates.
 
@@ -78,6 +78,10 @@ The template includes a component library in `{{cookiecutter.project_slug}}/desi
 - `design/layout.md` — base templates, page layout patterns
 
 Components are sourced from the `radiofeed-app` production codebase and generalized for reuse. When adding a component to the template, add a corresponding doc to `design/`.
+
+## Improvements
+
+**NOTE** improvements have lower priority than bugs. Only work on improvements after all bugs are resolved and the project is stable.
 
 ## Bugs
 

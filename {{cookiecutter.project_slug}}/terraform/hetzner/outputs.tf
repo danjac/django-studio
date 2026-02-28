@@ -61,6 +61,7 @@ output "network_id" {
 output "ansible_inventory" {
   description = "Ansible inventory snippet for hosts.yml"
   value = templatefile("${path.module}/templates/ansible_inventory.tftpl", {
+    domain                     = var.domain
     server_public_ip           = hcloud_server.server.ipv4_address
     server_private_ip          = hcloud_server_network.server_network.ip
     database_public_ip         = hcloud_server.database.ipv4_address

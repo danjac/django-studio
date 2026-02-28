@@ -29,9 +29,9 @@
               :aria-expanded="showUserDropdown.toString()"
               @click="showUserDropdown = !showUserDropdown"
             >
-              {% heroicon_mini "user-circle" class="size-5 shrink-0" aria-hidden="true" %}
+              {% heroicon_mini "user-circle" class="size-5 shrink-0" aria_hidden="true" %}
               <span class="hidden sm:inline">{{ user.username }}</span>
-              {% heroicon_mini "chevron-down" class="size-4" aria-hidden="true" %}
+              {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
             </button>
             <div
               class="absolute right-0 z-20 mt-1 w-56 rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
@@ -49,7 +49,7 @@
                     href="{% url 'account_email' %}"
                     class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                   >
-                    {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria-hidden="true" %}
+                    {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
                     {% translate "Account settings" %}
                   </a>
                 </li>
@@ -61,7 +61,7 @@
                       rel="noopener noreferrer"
                       class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                     >
-                      {% heroicon_mini "wrench-screwdriver" class="size-4 shrink-0" aria-hidden="true" %}
+                      {% heroicon_mini "wrench-screwdriver" class="size-4 shrink-0" aria_hidden="true" %}
                       {% translate "Site admin" %}
                     </a>
                   </li>
@@ -73,7 +73,7 @@
                       type="submit"
                       class="flex w-full items-center gap-2 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                     >
-                      {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria-hidden="true" %}
+                      {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria_hidden="true" %}
                       {% translate "Sign out" %}
                     </button>
                   </form>
@@ -82,39 +82,6 @@
             </div>
           </div>
         </li>
-
-      {% endif %}
-      <li class="md:hidden">
-        <button
-          type="button"
-          class="rounded-xl p-2 text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          :aria-expanded="showMobileMenu.toString()"
-          aria-label="{% translate "Toggle navigation menu" %}"
-          @click="showMobileMenu = !showMobileMenu"
-        >
-          <span x-show="!showMobileMenu">
-            {% heroicon_outline "bars-3" class="size-6" aria-hidden="true" %}
-          </span>
-          <span x-cloak x-show="showMobileMenu">
-            {% heroicon_outline "x-mark" class="size-6" aria-hidden="true" %}
-          </span>
-        </button>
-      </li>
-          <button
-            type="button"
-            class="rounded-xl p-2 text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            :aria-expanded="showMobileMenu.toString()"
-            aria-label="{% translate "Toggle navigation menu" %}"
-            @click="showMobileMenu = !showMobileMenu"
-          >
-            <span x-show="!showMobileMenu">
-              {% heroicon_outline "bars-3" class="size-6" aria-hidden="true" %}
-            </span>
-            <span x-cloak x-show="showMobileMenu">
-              {% heroicon_outline "x-mark" class="size-6" aria-hidden="true" %}
-            </span>
-          </button>
-
       {% else %}
         <li>
           <a href="{% url 'account_login' %}" class="btn btn-secondary">
@@ -127,6 +94,22 @@
           </a>
         </li>
       {% endif %}
+      <li class="md:hidden">
+        <button
+          type="button"
+          class="rounded-xl p-2 text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          :aria-expanded="showMobileMenu.toString()"
+          aria-label="{% translate "Toggle navigation menu" %}"
+          @click="showMobileMenu = !showMobileMenu"
+        >
+          <span x-show="!showMobileMenu">
+            {% heroicon_outline "bars-3" class="size-6" aria_hidden="true" %}
+          </span>
+          <span x-cloak x-show="showMobileMenu">
+            {% heroicon_outline "x-mark" class="size-6" aria_hidden="true" %}
+          </span>
+        </button>
+      </li>
     </ul>
   </nav>
   {% if user.is_authenticated %}
@@ -171,22 +154,6 @@
           </a>
         </li>
       </ul>
-    </nav>
-  {% endif %}
-    <nav
-      class="absolute left-0 z-50 w-full border-b border-zinc-200 bg-white px-4 py-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 md:hidden"
-      aria-label="{% translate "Mobile navigation" %}"
-      x-cloak
-      x-show="showMobileMenu"
-      x-transition:enter="transition ease-out duration-100"
-      x-transition:enter-start="opacity-0 -translate-y-4"
-      x-transition:enter-end="opacity-100 translate-y-0"
-      x-transition:leave="transition ease-in duration-100"
-      x-transition:leave-start="opacity-100 translate-y-0"
-      x-transition:leave-end="opacity-0 -translate-y-4"
-      @click.outside="showMobileMenu = false"
-    >
-      {% include "sidebar.html" %}
     </nav>
   {% endif %}
 </header>

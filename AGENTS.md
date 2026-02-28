@@ -27,9 +27,20 @@ just install                    # install Python deps + pre-commit hooks
 just precommit run --all-files  # run all pre-commit hooks
 just lint                       # run linters
 just typecheck                  # run type checks
+just dj makemigrations          # generate initial users migration (expected on first run)
 just test                       # run tests
 just stop                       # stop Docker services
 ```
+
+**Expected on first run:**
+
+- `just test` will report coverage below 100%. This is normal — the template ships utility
+  modules (`admin.py`, `db/search.py`, `http/`) as starting points without tests. The 100%
+  coverage target is a goal for developers to reach as they build their project, not a
+  gate on the initial scaffold.
+- `just dj makemigrations` is required before `just test` because the `users` app ships
+  without an initial migration. Developers are expected to customise the `User` model
+  fields before generating migrations.
 
 **Note:** Run `uv sync` from the cookiecutter repo root first if working from a fresh clone and the virtual environment doesn't exist yet. This installs the cookiecutter tooling itself; it is separate from the generated project's dependencies.
 
@@ -48,6 +59,12 @@ To install pre-commit hooks for the cookiecutter project itself:
 
 ```bash
 uv run pre-commit install
+```
+
+Run pre-commit hooks on all files in the cookiecutter project to ensure all checks pass:
+
+```bash
+git init && git commit -A && pre-commit run --all-files
 ```
 
 ## Feature Flags
@@ -86,3 +103,7 @@ Components are sourced from the `radiofeed-app` production codebase and generali
 ## Bugs
 
 User will keep track of bugs in `BUGS.md`. Check this and fix them first before adding new features. If you find a bug, report it in `BUGS.md` with a clear description and steps to reproduce it.
+
+```
+
+```

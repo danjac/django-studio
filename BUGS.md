@@ -1,9 +1,12 @@
 <!-- All bugs resolved. Add new bugs below this line. -->
 
+~~## terraform linting fixes~~
+
+**Resolved**: `terraform/hetzner/outputs.tf` was missing `domain = var.domain` in the `templatefile` call for `ansible_inventory`. Added `variable "domain"` to `variables.tf` and `domain` to `terraform.tfvars.example`.
+
 ~~## Errors in generated pyproject.toml:~~
 
 **Resolved**: Removed invalid `profile = "black"` from ruff configuration. This option is not valid in modern ruff versions - ruff uses black-compatible formatting by default.
-
 
 absolufy-imports.........................................................Passed
 ~~## `privacy` URL wired to `about` view~~

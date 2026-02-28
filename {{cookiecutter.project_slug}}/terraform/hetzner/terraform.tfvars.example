@@ -4,6 +4,9 @@ hcloud_token = ""
 # SSH public key (content of ~/.ssh/id_rsa.pub)
 ssh_public_key = ""
 
+# Primary domain name for the deployment (e.g. example.com)
+domain = ""
+
 # Name prefix for all resources
 cluster_name = "{{cookiecutter.project_slug}}"
 

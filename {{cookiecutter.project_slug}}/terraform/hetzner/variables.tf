@@ -69,6 +69,11 @@ variable "webapp_count" {
   default     = 2
 }
 
+variable "domain" {
+  description = "Primary domain name for the deployment"
+  type        = string
+}
+
 variable "postgres_volume_size" {
   description = "Size of PostgreSQL volume in GB"
   type        = number

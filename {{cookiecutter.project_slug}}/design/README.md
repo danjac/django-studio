@@ -44,7 +44,7 @@ Light and dark variants are set automatically via the `@variant dark` media quer
 
 ## Global Rules
 
-- Use `heroicons` for all icons — see `docs/UI-Design-Patterns.md`
+- Use `heroicons` for all icons — see [Icons](../docs/UI-Design-Patterns.md#icons)
 - Use `btn`, `btn-primary`, `btn-secondary`, `btn-danger` for all buttons
 - Use `form-input`, `form-select`, `form-textarea` for all inputs
 - Prefer `{% include %}` with context variables over copy-pasting markup

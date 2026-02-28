@@ -2,7 +2,9 @@
 
 Add improvements here.
 
-## `title_tag` should handle lazy translation proxies (2026-02-28)
+~~## `title_tag` should handle lazy translation proxies (2026-02-28)~~
+
+**Resolved**: Changed `divider.join(...)` to `divider.join(str(e) for e in ...)` so lazy translation proxies are coerced to strings. Updated `*elements` type annotation to `*elements: "StrOrPromise"` (imported from `django_stubs_ext` under `TYPE_CHECKING`). New allauth templates use `{% title_tag _("...") %}` throughout.
 
 `photostash/templatetags.py` — `title_tag` uses `divider.join(...)` which requires `str` instances, so `{% title_tag _("Page Title") %}` raises `TypeError: sequence item N: expected str instance, __proxy__ found`. Fix: change `divider.join((site_name, *elements))` to `divider.join(str(e) for e in (site_name, *elements))`.
 
@@ -56,7 +58,9 @@ Add improvements here.
 
 **Resolved**: Switched to `package-ecosystem: "uv"` and added `github-actions` ecosystem entry, both on weekly schedule with 7-day cooldown and grouped updates.
 
-## `build.yml` workflow permissions too broad
+~~## `build.yml` workflow permissions too broad~~
+
+**Resolved**: Removed workflow-level `permissions` block. Scoped per-job: `checks` gets `contents: read`; `build` gets `attestations: write`, `contents: write`, `packages: write`, `id-token: write`.
 
 `build.yml:8-12` grants `contents: write` at workflow level but the `checks` job only needs `contents: read`. Permissions should be scoped per-job.
 
@@ -79,3 +83,9 @@ Add improvements here.
 ~~Rename the `e2e` just recipe to `test-e2e` (and `e2e-headed` to `test-e2e-headed`) for consistency with the `test` command naming convention. Update AGENTS.md/CLAUDE.md documentation to reference `just test-e2e` and `just test-e2e-headed` accordingly.~~
 
 **Resolved**: Renamed `e2e` → `test-e2e` and `e2e-headed` → `test-e2e-headed` in justfile; updated references in AGENTS.md, docs/Testing.md, and docs/Local-Development.md.
+
+~~## Add allauth account and socialaccount templates using base.html and project form design patterns (2026-03-01)~~
+
+**Resolved**: Added `templates/allauth/layouts/base.html` (extends `base.html` as fallback for un-overridden allauth pages). Added direct overrides extending `base.html` for: `account/logout.html`, `account/email_confirm.html`, `account/account_inactive.html`, `account/password_change.html`, `account/email.html`, `socialaccount/signup.html`, `socialaccount/connections.html`. All use `btn`/`btn-primary`/`btn-secondary`/`btn-danger` classes, `{{ form.as_div }}`, and `{% title_tag _("...") %}` for translated page titles.
+
+The generated project does not override allauth's built-in templates, so pages like email verification, password reset, and social auth flows render without the project's Tailwind CSS styling. Add `templates/allauth/layouts/base.html` (extending the project's `base.html`) and `templates/allauth/elements/` overrides using the project's form field design patterns (`form/field.html`, `btn`/`btn-primary` classes, etc.) so all allauth pages are consistently styled out of the box.

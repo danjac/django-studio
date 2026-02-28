@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% title_tag _("Account Connections") %}{% endblock title %}
+
+{% block content %}
+  <div class="mx-auto max-w-lg py-12">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      {% translate "Account Connections" %}
+    </h1>
+    {% if form.accounts %}
+      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+        {% translate "You can sign in to your account using any of the following third-party accounts:" %}
+      </p>
+      <form method="post" action="{% url 'socialaccount_connections' %}" class="space-y-4">
+        {% csrf_token %}
+        <div class="space-y-2">
+          {% for account_choice in form.fields.account.choices %}
+            {% with account=account_choice.0.instance.get_provider_account %}
+              <div class="flex items-center space-x-3">
+                <input
+                  type="radio"
+                  name="account"
+                  value="{{ account.account.pk }}"
+                  id="id_account_{{ account.account.pk }}"
+                  class="h-4 w-4 accent-indigo-600"
+                />
+                <label
+                  for="id_account_{{ account.account.pk }}"
+                  class="text-sm text-zinc-700 dark:text-zinc-300"
+                >{{ account }}</label>
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+        <div>
+          <button type="submit" class="btn btn-danger">{% translate "Remove" %}</button>
+        </div>
+      </form>
+    {% else %}
+      <p class="mb-6 text-sm text-zinc-600 dark:text-zinc-400">
+        {% translate "You currently have no third-party accounts connected to this account." %}
+      </p>
+    {% endif %}
+    <h2 class="mb-4 mt-8 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+      {% translate "Add a Third-Party Account" %}
+    </h2>
+    {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
+    {% include "socialaccount/snippets/login_extra.html" %}
+  </div>
+{% endblock content %}

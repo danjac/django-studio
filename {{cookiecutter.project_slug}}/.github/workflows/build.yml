@@ -3,16 +3,18 @@ name: {{cookiecutter.project_slug}}:build
 run-name: ${{ github.actor }} is building Docker image
 on:
   workflow_dispatch:
-permissions:
-  attestations: write
-  contents: write
-  packages: write
-  id-token: write
 jobs:
   checks:
     uses: ./.github/workflows/checks.yml
+    permissions:
+      contents: read
   build:
     uses: ./.github/workflows/docker.yml
     needs: checks
     secrets: inherit # pragma: allowlist secret
+    permissions:
+      attestations: write
+      contents: write
+      packages: write
+      id-token: write
 {%- endraw %}

@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from django.contrib.sites.models import Site
     from django.template.context import Context
     from django.utils.safestring import SafeString
+    from django_stubs_ext import StrOrPromise
 
     from {{cookiecutter.package_name}}.http.request import RequestContext
 
@@ -29,7 +30,7 @@ def cookie_banner(context: "RequestContext") -> dict:
 
 
 @register.simple_tag(takes_context=True)
-def title_tag(context: RequestContext, *elements: str, divider: str = " | ") -> str:
+def title_tag(context: RequestContext, *elements: "StrOrPromise", divider: str = " | ") -> str:
     """Renders <title> content including the site name.
 
     Example:
@@ -37,7 +38,7 @@ def title_tag(context: RequestContext, *elements: str, divider: str = " | ") -> 
     Results in:
         <title>My Site | About Us</title>
     """
-    content = divider.join((context.request.site.name, *elements))
+    content = divider.join(str(e) for e in (context.request.site.name, *elements))
     return format_html("<title>{}</title>", content)
 
 

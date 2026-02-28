@@ -18,7 +18,12 @@ update: pyupdate pyinstall precommitupdate
 # Install all Python dependencies
 [group('development')]
 pyinstall:
-   uv sync --frozen --all-extras --no-install-project
+   #!/usr/bin/env bash
+   if [ -f uv.lock ]; then
+       uv sync --frozen --all-extras --no-install-project
+   else
+       uv sync --all-extras --no-install-project
+   fi
 
 # Update all Python dependencies
 [group('development')]

@@ -138,6 +138,8 @@ just pyinstall                 # Install Python deps only (uv sync --frozen)
 just pyupdate                  # Update Python deps only (uv lock --upgrade)
 ```
 
+**NOTE**: on initial project generation, run `just install` to set up the environment before doing anything else. This will install Python dependencies and set up pre-commit hooks. You should then run `just update` to ensure all dependencies are up to date, as they may have been updated since the template was created.
+
 ### Docker Services
 
 ```bash

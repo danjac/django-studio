@@ -2,6 +2,10 @@
 
 Add improvements here.
 
+~~## Document sorl-thumbnail for image processing and thumbnails (2026-02-28)~~
+
+**Resolved**: Added "Image Processing and Thumbnails" section to the generated project's `AGENTS.md` covering when to use `sorl-thumbnail`, how to install it, and a `{% thumbnail %}` usage example with a note about Redis and storage backend requirements.
+
 ~~## `buttons.css` focus style removes outline with no visible replacement~~
 
 **Resolved**: Added `box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-indigo-500)` to focus variant for visible focus indicator; also changed disabled state to use `zinc-400` instead of `gray-400`.

@@ -196,6 +196,25 @@ When adding Pydantic (`uv add pydantic`), also add this to `pyproject.toml` to p
 runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 ```
 
+### Image Processing and Thumbnails
+
+Use **sorl-thumbnail** for image processing and thumbnail generation. Reach for it whenever the project involves user-uploaded images, gallery views, or anywhere a resized/cropped version of an image is needed in a template.
+
+```bash
+uv add sorl-thumbnail
+```
+
+Add `"sorl.thumbnail"` to `INSTALLED_APPS` and use the `{% thumbnail %}` template tag:
+
+```html
+{% raw %}{% load thumbnail %}
+{% thumbnail obj.image "300x200" crop="center" as thumb %}
+  <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="">
+{% endthumbnail %}{% endraw %}
+```
+
+sorl-thumbnail requires a cache backend (Redis is already configured) and stores generated thumbnails via the storage backend.
+
 ### Icons
 
 Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Load the tag at the top of any template that needs icons and prefer the built-in set over custom SVGs.

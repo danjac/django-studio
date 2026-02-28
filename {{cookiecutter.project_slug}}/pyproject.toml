@@ -178,7 +178,7 @@ lint.ignore = [
 [tool.ruff.lint.isort]
 known-first-party = ["{{cookiecutter.package_name}}"]
 
-[tool.isort]
+
 profile = "black"
 
 [tool.django-stubs]

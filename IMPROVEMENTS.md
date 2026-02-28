@@ -1,42 +1,48 @@
-## Improvements
+# Improvements
 
 Add improvements here.
 
-## `buttons.css` focus style removes outline with no visible replacement
+~~## `buttons.css` focus style removes outline with no visible replacement~~
 
-`.btn` focus variant sets `outline: 2px solid transparent` with no ring or box-shadow. Keyboard-focused buttons have no visible focus indicator — WCAG 2.1 AA failure (SC 2.4.7).
+**Resolved**: Added `box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-indigo-500)` to focus variant for visible focus indicator; also changed disabled state to use `zinc-400` instead of `gray-400`.
 
-## `base.css` and `tweaks.css` use `gray-*` tokens instead of `zinc-*`
+~~## `base.css` and `tweaks.css` use `gray-*` tokens instead of `zinc-*`~~
 
-`base.css:7` uses `--color-gray-200` and `tweaks.css` uses `--color-gray-600` in dark overrides. The rest of the design system uses `zinc`. These are different color scales in Tailwind v4.
+**Resolved**: Changed `base.css:7` to use `--color-zinc-200` and `tweaks.css` to use `zinc-600` consistently with the rest of the design system.
 
-## `tweaks.css` `@utility` overrides break Tailwind built-ins
+~~## `tweaks.css` `@utility` overrides break Tailwind built-ins~~
 
-`@utility divide-x`, `@utility divide-y`, etc. replace Tailwind's built-in utilities entirely rather than extending them. This can lose the default `border-width` behavior. Should use theme tokens or `@layer base` dark variants instead.
+**Resolved**: Replaced `@utility` declarations with `@layer base` class-based selectors to extend rather than replace Tailwind's built-in utilities.
 
-## `messages.html` has no manual dismiss button
+~~## `messages.html` has no manual dismiss button~~
 
-Messages auto-dismiss after 4 seconds with no way to pause or close. WCAG 2.1 SC 2.2.1 requires users can pause/stop/hide auto-updating content.
+**Resolved**: Added dismiss button (X icon) to each message with `@click="show = false"` handler; added `{% translate "Dismiss" %}` for i18n; wrapped message text in `<span>` for proper button adjacency.
 
-## `ACCOUNT_PREVENT_ENUMERATION = False` weakens user privacy
+~~## `ACCOUNT_PREVENT_ENUMERATION = False` weakens user privacy~~
 
-`config/settings.py:255` explicitly disables allauth's enumeration protection. The login/reset forms will reveal whether an email is registered. Should be removed to use the allauth default (`True`).
+**Resolved**: Removed `ACCOUNT_PREVENT_ENUMERATION = False` from `config/settings.py` to restore allauth's default enumeration protection.
 
-## Dead `[tool.isort]` config in `pyproject.toml`
+~~## Dead `[tool.isort]` config in `pyproject.toml`~~
 
-`pyproject.toml:181-183` configures `[tool.isort]` but the project uses ruff for import sorting. Dead config.
+**Resolved**: Removed `[tool.isort]` section from `pyproject.toml`; kept `[tool.ruff.lint.isort]` which is the actual ruff configuration.
 
-## Hardcoded `lang="en"` in base templates
+~~## Hardcoded `lang="en"` in base templates~~
 
-`default_base.html:3` and `error_base.html:3` hardcode `<html lang="en">`. When `use_i18n` is enabled, should use `{{ LANGUAGE_CODE }}` for correct screen-reader language detection.
+**Resolved**: Changed `default_base.html` and `error_base.html` to use `{{ LANGUAGE_CODE }}` instead of hardcoded `lang="en"`.
 
-## Mobile nav absent for unauthenticated users
+~~## Mobile nav absent for unauthenticated users~~
 
-`navbar.html` gates the hamburger button and mobile menu on `{% if user.is_authenticated %}`. Logged-out users on narrow screens get cramped desktop nav with no mobile alternative.
+**Resolved**: Moved hamburger button outside of `{% if user.is_authenticated %}` block; added mobile menu for unauthenticated users with Sign in/Sign up links.
 
-## `setInterval` in HTMX progress indicator never cleared
+~~## `setInterval` in HTMX progress indicator never cleared~~
 
-`default_base.html:17-27` — the progress bar animation uses `setInterval` in `x-init` but never stores or clears it. Potential memory leak if the element is removed via HTMX swap.
+**Not a bug**: The indicator is in the base template and persists for the page lifetime - no cleanup needed.
+
+**Resolved**: Stored interval ID in variable and added `$cleanup(() => clearInterval(interval))` to clear it when element is removed.
+
+~~## `form/field.html` password toggle icons missing `x-cloak`~~
+
+**Resolved**: Added `x_cloak` attribute to both eye and eye-slash heroicons.
 
 ~~## Dependabot configured for `pip` instead of `uv`~~
 
@@ -53,10 +59,6 @@ Messages auto-dismiss after 4 seconds with no way to pause or close. WCAG 2.1 SC
 ~~## Add `header.html` template and design doc~~
 
 **Resolved**: Created `templates/header.html` (title + optional subtitle), `design/headers.md`, updated `design/README.md` and `AGENTS.md`. `about.html` updated to use the component.
-
-## `form/field.html` password toggle icons missing `x-cloak`
-
-Both eye icons (`heroicon_mini "eye"` and `"eye-slash"`) render without `x-cloak`. Before Alpine initializes, both icons flash briefly on screen simultaneously.
 
 ~~## Document Pydantic for JSON serialization instead of DRF (2026-02-28)~~
 

@@ -1,51 +1,49 @@
-/* DIVIDES */
-
-@utility divide-x {
-    @variant dark {
-        & > * + *,
-        & > * {
-            border-color: var(--color-gray-600);
+@layer base {
+    .divide-x {
+        @variant dark {
+            & > * + *,
+            & > * {
+                border-color: var(--color-zinc-600);
+            }
         }
     }
-}
 
-@utility divide-y {
-    @variant dark {
-        & > * + *,
-        & > * {
-            border-color: var(--color-gray-600);
+    .divide-y {
+        @variant dark {
+            & > * + *,
+            & > * {
+                border-color: var(--color-zinc-600);
+            }
         }
     }
-}
 
-/* BORDERS */
-
-@utility border {
-    @variant dark {
-        border-color: var(--color-gray-600);
+    .border {
+        @variant dark {
+            border-color: var(--color-zinc-600);
+        }
     }
-}
 
-@utility border-t {
-    @variant dark {
-        border-color: var(--color-gray-600);
+    .border-t {
+        @variant dark {
+            border-color: var(--color-zinc-600);
+        }
     }
-}
 
-@utility border-l {
-    @variant dark {
-        border-color: var(--color-gray-600);
+    .border-l {
+        @variant dark {
+            border-color: var(--color-zinc-600);
+        }
     }
-}
 
-@utility border-r {
-    @variant dark {
-        border-color: var(--color-gray-600);
+    .border-r {
+        @variant dark {
+            border-color: var(--color-zinc-600);
+        }
     }
-}
 
-@utility border-b {
-    @variant dark {
-        border-color: var(--color-gray-600);
+    .border-b {
+        @variant dark {
+            border-color: var(--color-zinc-600);
+        }
     }
 }

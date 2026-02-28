@@ -82,7 +82,24 @@
             </div>
           </div>
         </li>
-        <li class="md:hidden">
+        </li>
+      {% endif %}
+      <li class="md:hidden">
+        <button
+          type="button"
+          class="rounded-xl p-2 text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          :aria-expanded="showMobileMenu.toString()"
+          aria-label="{% translate "Toggle navigation menu" %}"
+          @click="showMobileMenu = !showMobileMenu"
+        >
+          <span x-show="!showMobileMenu">
+            {% heroicon_outline "bars-3" class="size-6" aria-hidden="true" %}
+          </span>
+          <span x-cloak x-show="showMobileMenu">
+            {% heroicon_outline "x-mark" class="size-6" aria-hidden="true" %}
+          </span>
+        </button>
+      </li>
           <button
             type="button"
             class="rounded-xl p-2 text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
@@ -113,6 +130,49 @@
     </ul>
   </nav>
   {% if user.is_authenticated %}
+    <nav
+      class="absolute left-0 z-50 w-full border-b border-zinc-200 bg-white px-4 py-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 md:hidden"
+      aria-label="{% translate "Mobile navigation" %}"
+      x-cloak
+      x-show="showMobileMenu"
+      x-transition:enter="transition ease-out duration-100"
+      x-transition:enter-start="opacity-0 -translate-y-4"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-in duration-100"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-4"
+      @click.outside="showMobileMenu = false"
+    >
+      {% include "sidebar.html" %}
+    </nav>
+  {% else %}
+    <nav
+      class="absolute left-0 z-50 w-full border-b border-zinc-200 bg-white px-4 py-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 md:hidden"
+      aria-label="{% translate "Mobile navigation" %}"
+      x-cloak
+      x-show="showMobileMenu"
+      x-transition:enter="transition ease-out duration-100"
+      x-transition:enter-start="opacity-0 -translate-y-4"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-in duration-100"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-4"
+      @click.outside="showMobileMenu = false"
+    >
+      <ul class="flex flex-col gap-2">
+        <li>
+          <a href="{% url 'account_login' %}" class="btn btn-secondary w-full justify-center">
+            {% translate "Sign in" %}
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'account_signup' %}" class="btn btn-primary w-full justify-center">
+            {% translate "Sign up" %}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  {% endif %}
     <nav
       class="absolute left-0 z-50 w-full border-b border-zinc-200 bg-white px-4 py-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 md:hidden"
       aria-label="{% translate "Mobile navigation" %}"

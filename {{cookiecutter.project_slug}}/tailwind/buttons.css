@@ -14,13 +14,14 @@
         @variant focus {
             outline: 2px solid transparent;
             outline-offset: 2px;
+            box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-indigo-500);
             cursor: pointer;
         }
 
         @variant disabled {
-            background-color: var(--color-gray-400) !important;
+            background-color: var(--color-zinc-400) !important;
             color: var(--color-white) !important;
-            border-color: var(--color-gray-400) !important;
+            border-color: var(--color-zinc-400) !important;
             cursor: not-allowed !important;
         }
 

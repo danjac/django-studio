@@ -2,6 +2,10 @@
 
 Add improvements here.
 
+## `title_tag` should handle lazy translation proxies (2026-02-28)
+
+`photostash/templatetags.py` — `title_tag` uses `divider.join(...)` which requires `str` instances, so `{% title_tag _("Page Title") %}` raises `TypeError: sequence item N: expected str instance, __proxy__ found`. Fix: change `divider.join((site_name, *elements))` to `divider.join(str(e) for e in (site_name, *elements))`.
+
 ~~## Document sorl-thumbnail for image processing and thumbnails (2026-02-28)~~
 
 **Resolved**: Added "Image Processing and Thumbnails" section to the generated project's `AGENTS.md` covering when to use `sorl-thumbnail`, how to install it, and a `{% thumbnail %}` usage example with a note about Redis and storage backend requirements.

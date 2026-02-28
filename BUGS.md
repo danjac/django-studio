@@ -1,5 +1,17 @@
 <!-- All bugs resolved. Add new bugs below this line. -->
 
+~~## `x_cloak` bare positional arg in `form/field.html` passwordinput causes TemplateSyntaxError (2026-02-28)~~
+
+**Resolved**: used `x_cloak=True` instead of bare `x_cloak` in the `passwordinput` partial.
+
+`templates/form/field.html` — the `passwordinput` partial passes `x_cloak` as a bare positional argument to `heroicon_mini` after keyword arguments (`class=`, `x_show=`), which Django's `parse_bits` rejects with "received some positional argument(s) after some keyword argument(s)". Fix: replace `x_cloak` with `x_cloak=True`.
+
+~~## `sidebar.html` multi-line `{# #}` comment causes TemplateSyntaxError (2026-02-28)~~
+
+**Resolved**: use {% comment %}...{% endcomment %} instead of {# #} for multi-line comments containing template tags.
+
+`templates/sidebar.html` uses a `{# #}` multi-line comment containing `{% %}` template tag examples (e.g. `{% with %}`). Django's lexer tokenizes all `{% %}` patterns before evaluating comments, so the bare `{% with %}` inside the comment raises `'with' expected at least one variable assignment`. Replace the `{# #}` comment with `{% comment %}...{% endcomment %}`, which is skipped by the lexer.
+
 ~~## terraform linting fixes~~
 
 **Resolved**: `terraform/hetzner/outputs.tf` was missing `domain = var.domain` in the `templatefile` call for `ansible_inventory`. Added `variable "domain"` to `variables.tf` and `domain` to `terraform.tfvars.example`.

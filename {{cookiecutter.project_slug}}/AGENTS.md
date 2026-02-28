@@ -204,7 +204,7 @@ Use **sorl-thumbnail** for image processing and thumbnail generation. Reach for 
 uv add sorl-thumbnail
 ```
 
-Add `"sorl.thumbnail"` to `INSTALLED_APPS` and use the `{% thumbnail %}` template tag:
+Add `"sorl.thumbnail"` to `INSTALLED_APPS` and use the `thumbnail` template tag:
 
 ```html
 {% raw %}{% load thumbnail %}

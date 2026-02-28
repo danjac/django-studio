@@ -38,7 +38,8 @@ cd {{project_slug}}
 cp .env.example .env
 just start        # Start Docker services
 just install      # Install dependencies + pre-commit hooks
-just dj migrate
+just update       # Update dependencies
+just dj migrate   # Run Django migrations
 just serve        # Dev server + Tailwind watcher
 ```
 

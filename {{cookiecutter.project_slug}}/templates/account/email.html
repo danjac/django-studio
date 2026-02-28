@@ -70,7 +70,7 @@
       </h2>
       <form method="post" action="{% url 'account_email' %}" class="space-y-4">
         {% csrf_token %}
-        {{ form.as_div }}
+        {{ form }}
         <div>
           <button type="submit" name="action_add" class="btn btn-primary">
             {% translate "Add Email" %}

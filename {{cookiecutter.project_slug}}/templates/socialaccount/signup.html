@@ -16,7 +16,7 @@
     </p>
     <form method="post" action="{% url 'socialaccount_signup' %}" class="space-y-4">
       {% csrf_token %}
-      {{ form.as_div }}
+      {{ form }}
       {{ redirect_field }}
       <div>
         <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>

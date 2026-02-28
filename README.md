@@ -52,4 +52,4 @@ The `/django-studio` skill is used to provide feedback for this cookiecutter whi
 - `/django-studio improvement`: Add a suggestion to improve the cookiecutter template based on your experience using it.
 - `/django-studio bug`: Report a bug you encountered while using the generated project. Copy and paste any relevant stack traces or other error messages.
 
-These are added to the documents `IMPROVEMENTS.md` and `BUGS.md` respectively in this project. Bugs are prioritized over improvements, and the most upvoted items in each document are the ones that will be worked on first.
+These are added to the documents `IMPROVEMENTS.md` and `BUGS.md` respectively in this project. Bugs are prioritized over improvements.

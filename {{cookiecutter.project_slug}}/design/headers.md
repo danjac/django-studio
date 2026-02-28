@@ -7,14 +7,17 @@
 ```django
 {% include "header.html" with title="Privacy Policy" %}
 {% include "header.html" with title="About" subtitle="Learn more about this project" %}
+{% fragment "header.html" %}
+  content goes here
+{% endfragment %}
 ```
 
 ## Variables
 
-| Variable   | Required | Description                        |
-| ---------- | -------- | ---------------------------------- |
-| `title`    | yes      | Main page heading                  |
-| `subtitle` | no       | Secondary descriptive text below   |
+| Variable   | Required | Description                      |
+| ---------- | -------- | -------------------------------- |
+| `title`    | yes      | Main page heading                |
+| `subtitle` | no       | Secondary descriptive text below |
 
 ## Notes
 

@@ -113,6 +113,7 @@ custom_blocks = "cache,partialdef,fragment"
 [tool.ruff]
 target-version = "py314"
 
+
 lint.select = [
     "B",
     "C4",
@@ -178,8 +179,6 @@ lint.ignore = [
 [tool.ruff.lint.isort]
 known-first-party = ["{{cookiecutter.package_name}}"]
 
-
-profile = "black"
 
 [tool.django-stubs]
 django_settings_module = "config.settings"

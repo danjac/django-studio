@@ -183,6 +183,17 @@ A component library lives in `design/`. It documents every ready-made UI compone
 
 **Before writing new UI markup**, check `design/` first — the component you need likely already exists.
 
+### JSON Serialization and Validation
+
+Use **Pydantic** for JSON serialization and validation — both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
+
+When adding Pydantic (`uv add pydantic`), also add this to `pyproject.toml` to prevent ruff from moving Pydantic base class imports into `TYPE_CHECKING` blocks:
+
+```toml
+[tool.ruff.lint.flake8-type-checking]
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+```
+
 ### Icons
 
 Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Load the tag at the top of any template that needs icons and prefer the built-in set over custom SVGs.

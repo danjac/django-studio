@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -o errexit
+set -euo pipefail
 
 # Runs Django management commands to prepare the application for release:
 # - checks the deployment settings

@@ -2,9 +2,5 @@
 {% load i18n %}
 
 {% block content %}
-  <div class="py-12 text-center">
-    <h1 class="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-      {% translate "About" %}
-    </h1>
-  </div>
+  {% include "header.html" with title=_("About") %}
 {% endblock content %}

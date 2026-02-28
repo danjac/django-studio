@@ -43,7 +43,13 @@ def about(request: HttpRequest) -> TemplateResponse:
 @require_safe
 def privacy(request: HttpRequest) -> TemplateResponse:
     """Renders Privacy page."""
-    return TemplateResponse(request, "privacy.html")
+    return TemplateResponse(
+        request,
+        "privacy.html",
+        {
+            "contact_email": settings.CONTACT_EMAIL,
+        },
+    )
 
 
 @require_safe
@@ -82,7 +88,7 @@ def accept_cookies(_: HttpRequest) -> HttpResponse:
         settings.GDPR_COOKIE_NAME,
         value="true",
         expires=timezone.now() + datetime.timedelta(days=365),
-        secure=True,
+        secure=settings.USE_HTTPS,
         httponly=True,
         samesite="Lax",
     )

@@ -36,7 +36,9 @@
             </p>
             <h2 class="text-lg font-semibold lg:text-xl">Account Deletion</h2>
             <p class="prose dark:prose-invert">
-                The user can <a href="{% url "users:delete_account" %}" class="link">delete their account</a> at any time. All collected user-specific data will also be irrevocably deleted.
+                Users may request account deletion at any time by contacting us at
+                <a href="mailto:{{ contact_email }}" class="link">{{ contact_email }}</a>.
+                All collected user-specific data will also be irrevocably deleted.
             </p>
             <h2 class="text-lg font-semibold lg:text-xl">Our Cookie Policy</h2>
             <p class="prose dark:prose-invert">

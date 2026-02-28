@@ -3,8 +3,6 @@ name: {{cookiecutter.project_slug}}:deploy
 run-name: ${{ github.actor }} is deploying to production
 on:
   workflow_dispatch:
-    branches:
-      - main
 permissions:
   attestations: write
   contents: write
@@ -24,7 +22,7 @@ jobs:
       contents: read
     steps:
       - name: Deploy to Kubernetes
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@8743aa11bfbda97acb45c151ae7a2e0b203f1914  # master
         with:
           host: ${{ secrets.DEPLOY_IP }}
           username: ${{ secrets.DEPLOY_USER }}

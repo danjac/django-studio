@@ -88,7 +88,7 @@ class HtmxRedirectMiddleware(BaseMiddleware):
     def __call__(self, request: HttpRequest) -> HttpResponse:
         """Middleware implementation."""
         response = self.get_response(request)
-        if request.htmx and "Location" in response:
+        if request.htmx and "Location" in response and response.status_code in range(300, 400):
             return HttpResponseLocation(response["Location"])
         return response
 

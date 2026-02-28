@@ -4,7 +4,7 @@ import psutil
 
 # https://docs.gunicorn.org/en/stable/configure.html#configuration-file
 
-wsgi_app = "config.asgi"
+wsgi_app = "config.asgi:application"
 
 # ---- LOGGING ----
 

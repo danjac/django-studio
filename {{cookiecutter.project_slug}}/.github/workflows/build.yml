@@ -3,8 +3,6 @@ name: {{cookiecutter.project_slug}}:build
 run-name: ${{ github.actor }} is building Docker image
 on:
   workflow_dispatch:
-    branches:
-      - main
 permissions:
   attestations: write
   contents: write

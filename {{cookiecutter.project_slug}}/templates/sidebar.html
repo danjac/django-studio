@@ -1,5 +1,5 @@
 {% load heroicons i18n %}
-{#
+{% comment %}
   Sidebar navigation — replace the example items with your application's links.
   This template is also used by navbar.html for the mobile slide-in menu.
 
@@ -13,7 +13,7 @@
     {% with icon="home" label="Home" url=my_url %}
       {% partial item %}
     {% endwith %}
-#}
+{% endcomment %}
 <ul class="space-y-1">
   {% url 'index' as home_url %}
   {% with icon="home" label="Home" url=home_url %}

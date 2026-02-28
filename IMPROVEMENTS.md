@@ -18,33 +18,17 @@ Add improvements here.
 
 Messages auto-dismiss after 4 seconds with no way to pause or close. WCAG 2.1 SC 2.2.1 requires users can pause/stop/hide auto-updating content.
 
-## `markdown.html` output missing `|safe`
-
-`templates/markdown.html:23` outputs `{{ markdown }}` without `|safe`. Django auto-escaping will escape all HTML tags, rendering raw `&lt;h1&gt;` text instead of formatted prose.
-
 ## `ACCOUNT_PREVENT_ENUMERATION = False` weakens user privacy
 
 `config/settings.py:255` explicitly disables allauth's enumeration protection. The login/reset forms will reveal whether an email is registered. Should be removed to use the allauth default (`True`).
-
-## `HSTS` disabled by default even when `USE_HTTPS = True`
-
-`config/settings.py:343` defaults `SECURE_HSTS_SECONDS` to `0`. A production deployment with `USE_HTTPS=True` gets HTTPS redirect but no HSTS, which is incomplete.
 
 ## Dead `[tool.isort]` config in `pyproject.toml`
 
 `pyproject.toml:181-183` configures `[tool.isort]` but the project uses ruff for import sorting. Dead config.
 
-## `django-redis` dependency may be unused
-
-`pyproject.toml` lists `django-redis` but `env.dj_cache_url()` from environs sets the backend to Django's built-in `RedisCache`, not `django_redis.cache.RedisCache`. If no `django-redis`-specific features are used, the dependency can be removed.
-
 ## Hardcoded `lang="en"` in base templates
 
 `default_base.html:3` and `error_base.html:3` hardcode `<html lang="en">`. When `use_i18n` is enabled, should use `{{ LANGUAGE_CODE }}` for correct screen-reader language detection.
-
-## Sidebar has no active-link detection
-
-`sidebar.html` renders all nav items with identical styling. No `request.path` comparison is done to highlight the current page, despite `.link.active` CSS class existing in `links.css`.
 
 ## Mobile nav absent for unauthenticated users
 
@@ -61,10 +45,6 @@ Messages auto-dismiss after 4 seconds with no way to pause or close. WCAG 2.1 SC
 ## `build.yml` workflow permissions too broad
 
 `build.yml:8-12` grants `contents: write` at workflow level but the `checks` job only needs `contents: read`. Permissions should be scoped per-job.
-
-## `docker-compose.yml` PostgreSQL volume path
-
-`docker-compose.yml:15` mounts to `/var/lib/postgresql` instead of `/var/lib/postgresql/data`. The official `postgres` image uses the `/data` subdirectory.
 
 ~~## Remove modal pattern~~
 

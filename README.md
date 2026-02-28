@@ -44,3 +44,10 @@ just serve        # Dev server + Tailwind watcher
 ```
 
 See `docs/` for full documentation.
+
+## Skills
+
+The `/django-studio` skill is used to provide feedback for this cookiecutter while working on a generated project. It has two options:
+
+- `/django-studio improvement`: Add a suggestion to improve the cookiecutter template based on your experience using it.
+- `/django-studio bug`: Report a bug you encountered while using the generated project. Copy and paste any relevant stack traces or other error messages.

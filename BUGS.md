@@ -1,5 +1,32 @@
 <!-- All bugs resolved. Add new bugs below this line. -->
 
+Errors in generated pyproject.toml:
+
+```
+
+ruff failed
+  Cause: Failed to parse /home/danjac/Projects/side-projects/my-django-project/pyproject.toml
+  Cause: TOML parse error at line 183, column 1
+    |
+183 | profile = "black"
+    | ^^^^^^^
+unknown field `profile`, expected one of `force-wrap-aliases`, `force-single-line`, `single-line-exclusions`, `combine-as-imports`, `split-on-trailing-comma`, `order-by-type`, `force-sort-within-sections`, `case-sensitive`, `force-to-top`, `known-first-party`, `known-third-party`, `known-local-folder`, `extra-standard-library`, `relative-imports-order`, `required-imports`, `classes`, `constants`, `variables`, `no-lines-before`, `import-heading`, `lines-after-imports`, `lines-between-types`, `forced-separate`, `section-order`, `default-section`, `no-sections`, `detect-same-package`, `from-first`, `length-sort`, `length-sort-straight`, `sections`
+
+ruff format..............................................................Failed
+- hook id: ruff-format
+- exit code: 2
+
+ruff failed
+  Cause: Failed to parse /home/danjac/Projects/side-projects/my-django-project/pyproject.toml
+  Cause: TOML parse error at line 183, column 1
+    |
+183 | profile = "black"
+    | ^^^^^^^
+
+unknown field `profile`, expected one of `force-wrap-aliases`, `force-single-line`, `single-line-exclusions`, `combine-as-imports`, `split-on-trailing-comma`, `order-by-type`, `force-sort-within-sections`, `case-sensitive`, `force-to-top`, `known-first-party`, `known-third-party`, `known-local-folder`, `extra-standard-library`, `relative-imports-order`, `required-imports`, `classes`, `constants`, `variables`, `no-lines-before`, `import-heading`, `lines-after-imports`, `lines-between-types`, `forced-separate`, `section-order`, `default-section`, `no-sections`, `detect-same-package`, `from-first`, `length-sort`, `length-sort-straight`, `sections`
+```
+
+absolufy-imports.........................................................Passed
 ~~## `privacy` URL wired to `about` view~~
 
 **Resolved**: `config/urls.py` — changed `views.about` to `views.privacy` for the privacy path.
@@ -61,6 +88,7 @@
 ~~HINT: only process Ansible files we need to, and ignore the rest.~~
 
 **Resolved**: Fixed three issues:
+
 1. `terraform/hetzner/variables.tf` had duplicate `description`/`type`/`default` in `cluster_name` block — removed stale duplicate
 2. `terraform/hetzner/storage.tf` was a standalone module in the same dir as `variables.tf`, causing duplicate `variable "location"` — moved to `terraform/storage/main.tf`
 3. `cookiecutter.json` `_copy_without_render` had `"ansible/**"` preventing `group_vars/all.yml` and `k3s_observability/defaults/main.yml` from being rendered — replaced with specific task/template/vars/defaults patterns; added `{% raw %}` guards to `group_vars/all.yml` for Ansible-specific variables

@@ -54,9 +54,9 @@ Messages auto-dismiss after 4 seconds with no way to pause or close. WCAG 2.1 SC
 
 `default_base.html:17-27` — the progress bar animation uses `setInterval` in `x-init` but never stores or clears it. Potential memory leak if the element is removed via HTMX swap.
 
-## Dependabot configured for `pip` instead of `uv`
+~~## Dependabot configured for `pip` instead of `uv`~~
 
-`.github/dependabot.yml` uses `package-ecosystem: "pip"`. The project uses `uv` with `uv.lock`. Also missing a `github-actions` ecosystem entry.
+**Resolved**: Switched to `package-ecosystem: "uv"` and added `github-actions` ecosystem entry, both on weekly schedule with 7-day cooldown and grouped updates.
 
 ## `build.yml` workflow permissions too broad
 
@@ -66,13 +66,13 @@ Messages auto-dismiss after 4 seconds with no way to pause or close. WCAG 2.1 SC
 
 `docker-compose.yml:15` mounts to `/var/lib/postgresql` instead of `/var/lib/postgresql/data`. The official `postgres` image uses the `/data` subdirectory.
 
-## Remove modal pattern
+~~## Remove modal pattern~~
 
-`templates/modal.html` and `design/modals.md` were never requested and are untested. Remove the template, the design doc, and references in `design/README.md` component index. Also remove the `@alpinejs/focus` bug from BUGS.md once this is done (no modal means no `x-trap` dependency).
+**Resolved**: Removed `templates/modal.html`, `design/modals.md`, and related references in `design/README.md` and `AGENTS.md`.
 
-## Add `header.html` template and design doc
+~~## Add `header.html` template and design doc~~
 
-`privacy.html` references `{% include "header.html" %}` but the template doesn't exist. Rather than removing the include, add `header.html` as a reusable page header component (title + optional subtitle). Add a corresponding `design/headers.md` doc and entry in `design/README.md`. Update `about.html` to use `{% include "header.html" %}` as well for consistency.
+**Resolved**: Created `templates/header.html` (title + optional subtitle), `design/headers.md`, updated `design/README.md` and `AGENTS.md`. `about.html` updated to use the component.
 
 ## `form/field.html` password toggle icons missing `x-cloak`
 

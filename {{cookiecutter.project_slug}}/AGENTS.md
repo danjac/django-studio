@@ -254,15 +254,13 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself - a broken default, a missing utility, an antipattern - log it immediately using the `/django-studio` command:
 
 ```
-/django-studio bug: <what is broken and where>
-/django-studio improvement: <what to add or change and why>
+/django-studio cookiecutter <what to fix or improve and why>
 ```
 
 The justfile also has equivalent targets for use outside an agent session:
 
 ```bash
-just issue "Fix login redirect" "The redirect after login goes to the wrong URL"
-just studio "Missing pytest fixture" "Template should include a tmp_path fixture for media tests"
+just studio "Fix post_gen hook" "i18n files are not removed when use_i18n=n"
 ```
 
 Do not wait until the end of a session. Log it when you notice it.

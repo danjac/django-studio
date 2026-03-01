@@ -34,7 +34,7 @@ just stop                       # stop Docker services
 
 **Expected on first run:**
 
-- `just test` will report coverage below 100%. This is normal — the template ships utility
+- `just test` will report coverage below 100%. This is normal - the template ships utility
   modules (`admin.py`, `db/search.py`, `http/`) as starting points without tests. The 100%
   coverage target is a goal for developers to reach as they build their project, not a
   gate on the initial scaffold.
@@ -78,26 +78,26 @@ git init && git commit -A && pre-commit run --all-files
 | `use_i18n`     | `"n"`   | Removes i18n middleware and locale config |
 | `use_pwa`      | `"n"`   | Removes PWA manifest and service worker   |
 
-When adding template files that are conditional on a flag, update `hooks/post_gen_project.py` — do not hard-delete files from the template directory itself. When adding files that contain Django or Tailwind `{{ }}` syntax, add their paths to `_copy_without_render` in `cookiecutter.json` so cookiecutter copies them verbatim instead of treating them as Jinja2 templates.
+When adding template files that are conditional on a flag, update `hooks/post_gen_project.py` - do not hard-delete files from the template directory itself. When adding files that contain Django or Tailwind `{{ }}` syntax, add their paths to `_copy_without_render` in `cookiecutter.json` so cookiecutter copies them verbatim instead of treating them as Jinja2 templates.
 
 ## Design System
 
 The template includes a component library in `{{cookiecutter.project_slug}}/design/`. When modifying or adding UI components in the generated project, check the design system first:
 
-- `design/README.md` — component index and design tokens
-- `design/navigation.md` — navbar, sidebar, user dropdown
-- `design/forms.md` — form wrapper, field template, input classes
-- `design/buttons.md` — button variants
-- `design/messages.md` — toast alerts
-- `design/cards.md` — link card component
-- `design/pagination.md` — paginated list
-- `design/typography.md` — markdown/prose, heading scale
-- `design/layout.md` — base templates, page layout patterns
+- `design/README.md` - component index and design tokens
+- `design/navigation.md` - navbar, sidebar, user dropdown
+- `design/forms.md` - form wrapper, field template, input classes
+- `design/buttons.md` - button variants
+- `design/messages.md` - toast alerts
+- `design/cards.md` - link card component
+- `design/pagination.md` - paginated list
+- `design/typography.md` - markdown/prose, heading scale
+- `design/layout.md` - base templates, page layout patterns
 
 Components are sourced from the `radiofeed-app` production codebase and generalized for reuse. When adding a component to the template, add a corresponding doc to `design/`.
 
 ## Bugs and Improvements
 
-Use the `/django-studio cookiecutter` skill to report bugs or suggest improvements to this template — it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
+Use the `/django-studio cookiecutter` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
 
 After editing `{{cookiecutter.project_slug}}/.claude/commands/django-studio.md`, run `just sync-skills` to propagate the change to `~/.claude/commands/`.

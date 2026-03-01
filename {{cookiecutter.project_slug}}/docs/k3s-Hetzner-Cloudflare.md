@@ -166,11 +166,11 @@ args: ["send_digest_emails"]
 
 ### Best Practices
 
-1. **Set `concurrencyPolicy: Forbid`** — Prevents overlapping jobs
-2. **Configure history limits** — Keep 3 successful and 3 failed jobs for debugging
-3. **Use timezones** — CronJobs use the node's timezone; set `spec.timezone` if supported
-4. **Handle partial failures** — Exit with non-zero code on failure for retry behavior
-5. **Resource limits** — Set requests/limits to prevent resource exhaustion
+1. **Set `concurrencyPolicy: Forbid`** - Prevents overlapping jobs
+2. **Configure history limits** - Keep 3 successful and 3 failed jobs for debugging
+3. **Use timezones** - CronJobs use the node's timezone; set `spec.timezone` if supported
+4. **Handle partial failures** - Exit with non-zero code on failure for retry behavior
+5. **Resource limits** - Set requests/limits to prevent resource exhaustion
 
 ### With Custom Commands/Scripts
 

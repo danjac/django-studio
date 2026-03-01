@@ -17,7 +17,7 @@ Template: `templates/markdown.html`
 Pre-render markdown to HTML in the view, then pass it to the template:
 
 ```python
-# views.py — using python-markdown + bleach for sanitization
+# views.py - using python-markdown + bleach for sanitization
 import markdown
 import nh3
 from markdown_it import MarkdownIt
@@ -75,7 +75,7 @@ module.exports = {
 
 ### HTMX Disable
 
-The `hx-disable="true"` attribute on the prose wrapper prevents HTMX from intercepting links inside the markdown content. This is intentional — markdown often contains external links that should navigate normally.
+The `hx-disable="true"` attribute on the prose wrapper prevents HTMX from intercepting links inside the markdown content. This is intentional - markdown often contains external links that should navigate normally.
 
 ---
 

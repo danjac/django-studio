@@ -13,7 +13,7 @@ Template: `templates/card.html`
 | `url` | yes | Destination URL |
 | `title` | yes | Primary heading (bold, 2-line clamp) |
 | `subtitle` | no | Secondary line below title (1-line clamp) |
-| `image_url` | no | Thumbnail src — 64×64px, rounded |
+| `image_url` | no | Thumbnail src - 64×64px, rounded |
 | `target_blank` | no | If truthy, opens in a new tab |
 
 ## Usage
@@ -48,7 +48,7 @@ context = {
 
 ## Styling
 
-The card applies hover color via the `group` / `group-hover:` pattern — no JavaScript needed. Both title and subtitle shift to `indigo-600` (`indigo-400` in dark mode) on hover.
+The card applies hover color via the `group` / `group-hover:` pattern - no JavaScript needed. Both title and subtitle shift to `indigo-600` (`indigo-400` in dark mode) on hover.
 
 ## Custom Card Layouts
 

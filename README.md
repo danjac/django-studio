@@ -26,7 +26,7 @@ Before generating a project, install the following tools:
 | [just](https://just.systems/) | Task runner | `cargo install just` or via your OS package manager |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit | See Docker docs |
 
-Python 3.14 is managed automatically by `uv` — no separate install needed.
+Python 3.14 is managed automatically by `uv` - no separate install needed.
 
 ## Usage
 
@@ -61,8 +61,8 @@ See `docs/` for full documentation.
 
 The `/django-studio` skill is used to provide feedback while working on a generated project:
 
-- `/django-studio <feedback>` — posts an issue to the generated project's own repo
-- `/django-studio cookiecutter <feedback>` — posts an issue to this repo
+- `/django-studio <feedback>` - posts an issue to the generated project's own repo
+- `/django-studio cookiecutter <feedback>` - posts an issue to this repo
 
 The skill lives in `{{cookiecutter.project_slug}}/.claude/commands/django-studio.md` and is automatically included in every generated project. Run `just sync-skills` after editing it to propagate the change to `~/.claude/commands/` for use from any project.
 

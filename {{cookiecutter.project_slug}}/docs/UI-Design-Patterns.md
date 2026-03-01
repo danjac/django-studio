@@ -1,6 +1,6 @@
 # UI Design Patterns
 
-This project uses Tailwind CSS v4 with AlpineJS and HTMX. The component library lives in `design/` — check there before writing new markup.
+This project uses Tailwind CSS v4 with AlpineJS and HTMX. The component library lives in `design/` - check there before writing new markup.
 
 ## Design System
 
@@ -33,14 +33,14 @@ Uses Tailwind's `dark:` prefix driven by system preference via CSS media query. 
 }
 ```
 
-Always pair light and dark values — never use a bare class like `bg-white` without a `dark:` counterpart.
+Always pair light and dark values - never use a bare class like `bg-white` without a `dark:` counterpart.
 
 ## Color Palette
 
-- `zinc-50` → `zinc-950` — neutral scale (backgrounds, borders, text)
-- `indigo-500` / `indigo-600` — primary accent
-- `rose-500` / `rose-600` — error / destructive states
-- `zinc-500` / `zinc-400` — muted / secondary text
+- `zinc-50` → `zinc-950` - neutral scale (backgrounds, borders, text)
+- `indigo-500` / `indigo-600` - primary accent
+- `rose-500` / `rose-600` - error / destructive states
+- `zinc-500` / `zinc-400` - muted / secondary text
 
 ## Responsive Design
 
@@ -88,7 +88,7 @@ Use the right element for the job:
 
 ### Focus Rings
 
-Tailwind removes outlines by default — always restore them. Prefer `focus-visible:` to show the ring only for keyboard users:
+Tailwind removes outlines by default - always restore them. Prefer `focus-visible:` to show the ring only for keyboard users:
 
 ```html
 <button class="focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
@@ -147,7 +147,7 @@ Bind ARIA state to Alpine state:
 <button @click="open = !open" :aria-expanded="open.toString()">Toggle</button>
 <div x-show="open" role="region">...</div>
 
-<!-- Modal — use x-trap for focus lock (requires @alpinejs/focus) -->
+<!-- Modal - use x-trap for focus lock (requires @alpinejs/focus) -->
 <div x-show="open" role="dialog" aria-modal="true" aria-labelledby="dialog-title"
      x-trap.inert.noscroll="open">
   <h2 id="dialog-title">Confirm deletion</h2>
@@ -163,7 +163,7 @@ Bind ARIA state to Alpine state:
 Standard pairings that meet AA:
 - `text-zinc-900` on `bg-white` ✓
 - `text-zinc-100` on `bg-zinc-950` ✓
-- Avoid `text-zinc-400` on `bg-white` for body text — use `text-zinc-500` minimum
+- Avoid `text-zinc-400` on `bg-white` for body text - use `text-zinc-500` minimum
 
 ### Keyboard Navigation
 

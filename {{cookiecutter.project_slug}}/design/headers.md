@@ -1,6 +1,6 @@
 # Page Header
 
-`templates/header.html` — reusable page-level heading with optional subtitle.
+`templates/header.html` - reusable page-level heading with optional subtitle.
 
 ## Usage
 

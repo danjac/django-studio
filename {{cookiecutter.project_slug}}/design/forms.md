@@ -116,6 +116,6 @@ def my_view(request):
 
 ## Accessibility
 
-- Every field has an associated `<label>` via `field.id_for_label` — never omit it.
+- Every field has an associated `<label>` via `field.id_for_label` - never omit it.
 - Error messages are linked to the input via `aria-describedby` automatically.
-- The `form-control.has-errors` class changes input border to rose — do not rely on color alone; the error list provides the text.
+- The `form-control.has-errors` class changes input border to rose - do not rely on color alone; the error list provides the text.

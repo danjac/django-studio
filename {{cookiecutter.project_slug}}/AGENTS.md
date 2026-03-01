@@ -22,7 +22,7 @@ Before starting any work, have a "Session Zero" to set up the project structure 
 
 ### Process
 
-At the start of every session, follow this order — do not skip ahead:
+At the start of every session, follow this order - do not skip ahead:
 
 1. **Fix bugs first.** Check `BUGS.md` for open bugs. Fix every one before doing any roadmap work. A stable codebase is the baseline.
 2. **Resume the roadmap.** Open `ROADMAP.md`, find the next unchecked task, and continue from there.
@@ -40,9 +40,9 @@ Once clarity is established, create `ROADMAP.md` with milestones and tasks. Each
 Bugs are logged by the user in `BUGS.md`. For each bug:
 
 1. Create a branch: `git checkout -b fix/<short-description>`
-2. Diagnose — state root cause with `file:line` reference before touching code
+2. Diagnose - state root cause with `file:line` reference before touching code
 3. Fix and write a regression test
-4. Run `just lint && just typecheck && just test` — all must pass
+4. Run `just lint && just typecheck && just test` - all must pass
 5. Merge into `main` with: `fix: <description>`
 6. Mark the bug as resolved in `BUGS.md`
 
@@ -55,7 +55,7 @@ For each milestone:
 1. Create a branch: `git checkout -b milestone-<N>`
 2. Work through each task. When a task is done, mark it: `- [x] Task name`
 3. After each task, run `just lint && just typecheck && just test`
-4. When all tasks in the milestone are complete, **stop and report to the user** — do not merge or continue to the next milestone. Wait for explicit approval.
+4. When all tasks in the milestone are complete, **stop and report to the user** - do not merge or continue to the next milestone. Wait for explicit approval.
 5. After the user approves: tell the user to run `git rebase -i` themselves to squash the branch commits into logical units (this is interactive and cannot be done by the agent). Once they confirm it's done, run:
 
    ```bash
@@ -176,18 +176,18 @@ A component library lives in `design/`. It documents every ready-made UI compone
 | `design/messages.md`   | Django messages toast, HTMX OOB swap                |
 | `design/forms.md`      | `form.html`, `form/field.html`, widget classes      |
 | `design/navigation.md` | `navbar.html`, `sidebar.html`, user dropdown        |
-| `design/headers.md`    | `header.html` — page title with optional subtitle   |
-| `design/cards.md`      | `card.html` — link card with optional image         |
+| `design/headers.md`    | `header.html` - page title with optional subtitle   |
+| `design/cards.md`      | `card.html` - link card with optional image         |
 | `design/badges.md`     | Status badges, count chips, category tags           |
-| `design/pagination.md` | `paginate.html` — Previous/Next with HTMX           |
+| `design/pagination.md` | `paginate.html` - Previous/Next with HTMX           |
 | `design/typography.md` | `markdown.html`, prose, heading scale, link style   |
 | `design/layout.md`     | Base templates, two-column layout, HTMX indicator   |
 
-**Before writing new UI markup**, check `design/` first — the component you need likely already exists.
+**Before writing new UI markup**, check `design/` first - the component you need likely already exists.
 
 ### JSON Serialization and Validation
 
-Use **Pydantic** for JSON serialization and validation — both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
+Use **Pydantic** for JSON serialization and validation - both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
 
 When adding Pydantic (`uv add pydantic`), also add this to `pyproject.toml` to prevent ruff from moving Pydantic base class imports into `TYPE_CHECKING` blocks:
 
@@ -244,14 +244,14 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 
 ## Working Conventions
 
-- **Search before implementing** — Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/admin.py` for admin mixins, `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities.
-- **Scope discipline** — Only change what was explicitly requested.
-- **Diagnose before changing** — Read the code and state your diagnosis with a file:line reference before editing.
-- **Verify runtime behaviour** — Passing tests is necessary but not sufficient.
+- **Search before implementing** - Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/admin.py` for admin mixins, `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities.
+- **Scope discipline** - Only change what was explicitly requested.
+- **Diagnose before changing** - Read the code and state your diagnosis with a file:line reference before editing.
+- **Verify runtime behaviour** - Passing tests is necessary but not sufficient.
 
 ## Template Feedback
 
-This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself — a broken default, a missing utility, an antipattern — log it immediately using the `/django-studio` command:
+This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself - a broken default, a missing utility, an antipattern - log it immediately using the `/django-studio` command:
 
 ```
 /django-studio bug: <what is broken and where>

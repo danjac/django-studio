@@ -64,7 +64,7 @@ The `.btn[disabled]` style applies automatically when the element is disabled.
 ## Accessibility
 
 - Use `<button type="button">` for non-submit actions to prevent accidental form submission.
-- Always provide a text label or `aria-label` — icon-only buttons need `aria-label`.
+- Always provide a text label or `aria-label` - icon-only buttons need `aria-label`.
 - For destructive actions, consider a confirmation step (modal or `confirm()`) before submitting.
 
 ```html

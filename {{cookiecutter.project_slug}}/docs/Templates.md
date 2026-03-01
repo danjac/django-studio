@@ -2,7 +2,7 @@
 
 This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments.
 
-> **Design System** — Before writing new templates, check `design/` for ready-made components (navbar, sidebar, forms, cards, pagination, markdown, buttons, messages). See `design/README.md` for the full index.
+> **Design System** - Before writing new templates, check `design/` for ready-made components (navbar, sidebar, forms, cards, pagination, markdown, buttons, messages). See `design/README.md` for the full index.
 
 ## Template Structure
 

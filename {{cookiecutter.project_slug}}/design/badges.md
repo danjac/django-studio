@@ -1,6 +1,6 @@
 # Badges
 
-There is no dedicated `badge.html` template — badges are small enough to inline. This doc defines the standard patterns to use consistently.
+There is no dedicated `badge.html` template - badges are small enough to inline. This doc defines the standard patterns to use consistently.
 
 ## Colour Variants
 
@@ -46,12 +46,12 @@ Use `heroicon_micro` (16px) for icons inside badges.
 ## Count / Notification Dot
 
 ```html
-{# Numeric count — e.g. unread items #}
+{# Numeric count - e.g. unread items #}
 <span class="inline-flex size-5 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
   {{ count }}
 </span>
 
-{# Dot — presence indicator, no number #}
+{# Dot - presence indicator, no number #}
 <span class="size-2 rounded-full bg-emerald-500" aria-label="Online"></span>
 ```
 
@@ -65,7 +65,7 @@ Tags are interactive (filterable) or static:
   Python
 </span>
 
-{# Interactive tag — links to filtered list #}
+{# Interactive tag - links to filtered list #}
 <a
   href="{% url 'posts:list' %}?tag={{ tag.slug }}"
   class="inline-flex items-center rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-indigo-100 hover:text-indigo-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-indigo-950 dark:hover:text-indigo-300"
@@ -91,6 +91,6 @@ Badges commonly appear alongside card titles or table rows:
 
 ## Accessibility
 
-- Badges are purely visual — the surrounding context should convey the meaning in text.
+- Badges are purely visual - the surrounding context should convey the meaning in text.
 - For colour-only status indicators (dot), add `aria-label` to provide a text alternative.
-- Never use badge colour alone as the only signal — pair it with a text label.
+- Never use badge colour alone as the only signal - pair it with a text label.

@@ -291,7 +291,7 @@ class TestAnsibleRendering:
 
     def test_ansible_task_files_preserved_verbatim(self, project):
         """Task files (which contain Ansible {{ }} variables) must not be
-        processed by cookiecutter — they should arrive unchanged."""
+        processed by cookiecutter - they should arrive unchanged."""
         task_file = project / "ansible" / "roles" / "user" / "tasks" / "main.yml"
         content = task_file.read_text()
         # Ansible variables should be present as-is, not mangled
@@ -345,7 +345,7 @@ class TestTerraformRendering:
         assert "cookiecutter" not in content
 
     def test_storage_not_in_hetzner_module(self, project):
-        """storage.tf must not live alongside the cluster variables — it was
+        """storage.tf must not live alongside the cluster variables - it was
         moved to terraform/storage/ to avoid duplicate variable declarations."""
         assert not (project / "terraform" / "hetzner" / "storage.tf").exists()
 

@@ -10,7 +10,7 @@
 | [just](https://just.systems/) | Task runner | `cargo install just` or via your OS package manager |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit | See Docker docs |
 
-Python 3.14 is managed automatically by `uv` — no separate install needed.
+Python 3.14 is managed automatically by `uv` - no separate install needed.
 
 ## Setup
 
@@ -48,7 +48,7 @@ See `docs/` for detailed documentation on each part of the stack.
 
 The `/django-studio` skill is available in `.claude/commands/` and works from any Claude Code session in this project.
 
-- `/django-studio <feedback>` — posts an issue to this repo
-- `/django-studio cookiecutter <feedback>` — posts an issue to the [django-studio](https://github.com/danjac/django-studio) template repo
+- `/django-studio <feedback>` - posts an issue to this repo
+- `/django-studio cookiecutter <feedback>` - posts an issue to the [django-studio](https://github.com/danjac/django-studio) template repo
 
 Requires the `gh` CLI authenticated with GitHub access.

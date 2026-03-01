@@ -27,7 +27,7 @@ Template: `templates/paginate.html`
 {% endwith %}
 ```
 
-The `#results` element is created by the paginate template itself — you do not need a wrapping div.
+The `#results` element is created by the paginate template itself - you do not need a wrapping div.
 
 ## View Setup
 
@@ -47,7 +47,7 @@ def my_list_view(request):
 When a page link is clicked, HTMX swaps the entire `#results` container (including the pagination links) with the new page's content. The `show:window:top` modifier scrolls to the top of the page on swap.
 
 ```html
-{# Inside paginate.html — set automatically #}
+{# Inside paginate.html - set automatically #}
 <nav
   hx-swap="outerHTML show:window:top"
   hx-target="#{{ pagination_target }}"
@@ -68,4 +68,4 @@ Because `{% querystring page=N %}` merges into the existing query string, pagina
 /items/?q=django&category=web&page=2
 ```
 
-No extra setup is needed — just ensure filters are submitted as `GET` parameters.
+No extra setup is needed - just ensure filters are submitted as `GET` parameters.

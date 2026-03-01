@@ -6,11 +6,11 @@ Templates: `templates/navbar.html`, `templates/sidebar.html`
 
 `navbar.html` is a sticky, responsive site header included in `default_base.html`. It provides:
 
-- **Site logo** — links to `{% url 'index' %}`
-- **User dropdown** — account settings, admin link (staff only), sign out
-- **Mobile menu toggle** — hamburger/X button visible on `< md` screens
-- **Mobile slide-in nav** — renders `sidebar.html` content in a slide-down panel
-- **Auth links** — sign in / sign up when not authenticated
+- **Site logo** - links to `{% url 'index' %}`
+- **User dropdown** - account settings, admin link (staff only), sign out
+- **Mobile menu toggle** - hamburger/X button visible on `< md` screens
+- **Mobile slide-in nav** - renders `sidebar.html` content in a slide-down panel
+- **Auth links** - sign in / sign up when not authenticated
 
 ### How It's Included
 
@@ -66,7 +66,7 @@ When not authenticated, the navbar shows sign-in and sign-up buttons. To add mor
 
 `sidebar.html` is a navigation list used in two places:
 
-1. The **desktop sidebar** (if your layout has one — see [layout.md](layout.md))
+1. The **desktop sidebar** (if your layout has one - see [layout.md](layout.md))
 2. The **mobile slide-in menu** inside `navbar.html`
 
 ### Default Items

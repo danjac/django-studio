@@ -67,7 +67,7 @@ class Page:
 
     See: https://testdriven.io/blog/django-avoid-counting/
 
-    Object list access is lazy — no database query runs until the list is
+    Object list access is lazy - no database query runs until the list is
     iterated or accessed.
     """
 
@@ -126,7 +126,7 @@ class Page:
     def object_list_with_next_item(self) -> list:
         """Return page items plus one extra to determine if a next page exists.
 
-        Fetches ``per_page + 1`` items with LIMIT/OFFSET — no COUNT query.
+        Fetches ``per_page + 1`` items with LIMIT/OFFSET - no COUNT query.
         """
         start = (self.number - 1) * self.page_size
         end = start + self.page_size + 1

@@ -59,6 +59,13 @@ See `docs/` for full documentation.
 
 ## Skills
 
-The `/django-studio` skill is used to provide feedback for this cookiecutter while working on a generated project. Describe what you noticed and it will post a GitHub issue directly.
+The `/django-studio` skill is used to provide feedback while working on a generated project:
+
+- `/django-studio <feedback>` — posts an issue to the generated project's own repo
+- `/django-studio cookiecutter <feedback>` — posts an issue to this repo
+
+The skill ships in `skills/django-studio.md` and is automatically included in every generated project at `.claude/commands/django-studio.md`. It is also installed globally at `~/.claude/commands/django-studio.md` for use from any project.
+
+After editing `skills/django-studio.md`, run `just sync-skills` to propagate the change to both destinations.
 
 Requires the `gh` CLI tool authenticated with GitHub access.

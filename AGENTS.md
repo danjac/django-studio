@@ -96,14 +96,6 @@ The template includes a component library in `{{cookiecutter.project_slug}}/desi
 
 Components are sourced from the `radiofeed-app` production codebase and generalized for reuse. When adding a component to the template, add a corresponding doc to `design/`.
 
-## Improvements
+## Bugs and Improvements
 
-**NOTE** improvements have lower priority than bugs. Only work on improvements after all bugs are resolved and the project is stable.
-
-## Bugs
-
-User will keep track of bugs in `BUGS.md`. Check this and fix them first before adding new features. If you find a bug, report it in `BUGS.md` with a clear description and steps to reproduce it.
-
-```
-
-```
+Use the `/django-studio` skill to report bugs or suggest improvements — it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.

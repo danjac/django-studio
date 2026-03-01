@@ -16,6 +16,18 @@ This project is designed to be a starting point for building modern Django appli
 - Design pattern library
 - Full test coverage (pytest + Playright)
 
+## Requirements
+
+Before generating a project, install the following tools:
+
+| Tool | Purpose | Install |
+|------|---------|---------|
+| [uv](https://docs.astral.sh/uv/) | Python package manager (runs `uvx cookiecutter`) | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| [just](https://just.systems/) | Task runner | `cargo install just` or via your OS package manager |
+| [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit | See Docker docs |
+
+Python 3.14 is managed automatically by `uv` — no separate install needed.
+
 ## Usage
 
 ```bash

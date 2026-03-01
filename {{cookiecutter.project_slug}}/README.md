@@ -43,3 +43,12 @@ Run `just` with no arguments to list all available commands.
 - `django-allauth` for authentication
 
 See `docs/` for detailed documentation on each part of the stack.
+
+## Skills
+
+The `/django-studio` skill is available in `.claude/commands/` and works from any Claude Code session in this project.
+
+- `/django-studio <feedback>` — posts an issue to this repo
+- `/django-studio cookiecutter <feedback>` — posts an issue to the [django-studio](https://github.com/danjac/django-studio) template repo
+
+Requires the `gh` CLI authenticated with GitHub access.

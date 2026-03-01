@@ -9,7 +9,7 @@ Requires the `gh` CLI tool authenticated with GitHub access.
 Parse `$ARGUMENTS` to determine the subcommand and feedback text:
 
 - **`cookiecutter <feedback>`** — issue is about the cookiecutter template itself. Post to `danjac/django-studio`.
-- **`<feedback>`** (default, no subcommand) — issue is about the current (generated) project. Post to the current repo, detected by running `gh repo view --json nameWithOwner -q .nameWithOwner`.
+- **`<feedback>`** (default, no subcommand) — issue is about the current (generated) project.
 
 If the first word of `$ARGUMENTS` is `cookiecutter`, the subcommand is `cookiecutter` and the feedback is everything after it. Otherwise the subcommand is the default and the feedback is all of `$ARGUMENTS`.
 
@@ -21,20 +21,13 @@ Issue body: one or two sentences describing what to change, where, and why.
 **Cookiecutter subcommand** (posts to `danjac/django-studio`):
 
 ```bash
-gh issue create \
-  --repo danjac/django-studio \
-  --title "<concise title>" \
-  --body "<what to change, where, and why>"
+just studio "<concise title>" "<what to change, where, and why>"
 ```
 
-**Default — current project** (detect repo first):
+**Default — current project**:
 
 ```bash
-REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
-gh issue create \
-  --repo "$REPO" \
-  --title "<concise title>" \
-  --body "<what to change, where, and why>"
+just issue "<concise title>" "<what to change, where, and why>"
 ```
 
 Confirm to the user the issue was created and show the URL returned by `gh`.
@@ -43,8 +36,8 @@ Confirm to the user the issue was created and show the URL returned by `gh`.
 
 ## Requirements
 
+- `just` installed with a justfile containing the `issue` and `studio` targets
 - `gh` CLI installed and authenticated (`gh auth status`)
-- For the default subcommand: must be run from within a git repo with a GitHub remote
 
 ## Installation
 

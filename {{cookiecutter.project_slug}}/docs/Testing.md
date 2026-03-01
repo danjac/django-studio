@@ -5,7 +5,7 @@ This project uses pytest with pytest-django for unit tests and Playwright for E2
 ## Test Configuration
 
 ```ini
-# playright.ini (for E2E tests)
+# playwright.ini (for E2E tests)
 [pytest]
 DJANGO_SETTINGS_MODULE = config.settings
 asyncio_mode = auto

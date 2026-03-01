@@ -14,7 +14,7 @@ This project is designed to be a starting point for building modern Django appli
 - django-allauth for authentication
 - Hetzner Cloud for hosting (K3s)
 - Design pattern library
-- Full test coverage (pytest + Playright)
+- Full test coverage (pytest + Playwright)
 
 ## Requirements
 

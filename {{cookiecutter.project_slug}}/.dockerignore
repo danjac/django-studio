@@ -37,7 +37,7 @@ Makefile
 README.md
 SECURITY.md
 conftest.py
-playright.ini
+playwright.ini
 docker-compose.yml
 media
 node_modules

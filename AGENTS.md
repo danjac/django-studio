@@ -100,4 +100,4 @@ Components are sourced from the `radiofeed-app` production codebase and generali
 
 Use the `/django-studio cookiecutter` skill to report bugs or suggest improvements to this template — it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
 
-After editing `skills/django-studio.md`, run `just sync-skills` to propagate changes to `~/.claude/commands/` and the generated project template.
+After editing `{{cookiecutter.project_slug}}/.claude/commands/django-studio.md`, run `just sync-skills` to propagate the change to `~/.claude/commands/`.

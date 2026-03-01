@@ -15,6 +15,7 @@ Before starting any work, have a "Session Zero" to set up the project structure 
    - What are the key challenges the user anticipates?
    - What should the project **not** do (out of scope)?
    - What similar projects exist that can be used for inspiration or reference?
+   - What is the intended license? (MIT, BSD-3, GPL-3, AGPL-3, or proprietary/closed source)
 1. If required, update the `README.md` with a project overview and setup instructions.
 1. Create `ROADMAP.md` with milestones and tasks based on the project goals.
 1. Discuss roadmap priorities and get user approval on the initial plan.

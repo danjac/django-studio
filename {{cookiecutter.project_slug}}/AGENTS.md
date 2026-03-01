@@ -17,14 +17,13 @@ Before starting any work, have a "Session Zero" to set up the project structure 
    - What similar projects exist that can be used for inspiration or reference?
 1. If required, update the `README.md` with a project overview and setup instructions.
 1. Create `ROADMAP.md` with milestones and tasks based on the project goals.
-1. Create `BUGS.md` to track any bugs that arise during development.
 1. Discuss roadmap priorities and get user approval on the initial plan.
 
 ### Process
 
 At the start of every session, follow this order - do not skip ahead:
 
-1. **Fix bugs first.** Check `BUGS.md` for open bugs. Fix every one before doing any roadmap work. A stable codebase is the baseline.
+1. **Fix bugs first.** Check GitHub issues for open bugs. Fix every one before doing any roadmap work. A stable codebase is the baseline.
 2. **Resume the roadmap.** Open `ROADMAP.md`, find the next unchecked task, and continue from there.
 
 If `ROADMAP.md` does not exist yet, ask the user the following before creating it:
@@ -37,14 +36,14 @@ Once clarity is established, create `ROADMAP.md` with milestones and tasks. Each
 
 ## Bug Workflow
 
-Bugs are logged by the user in `BUGS.md`. For each bug:
+Bugs are tracked as GitHub issues. For each bug:
 
 1. Create a branch: `git checkout -b fix/<short-description>`
 2. Diagnose - state root cause with `file:line` reference before touching code
 3. Fix and write a regression test
 4. Run `just lint && just typecheck && just test` - all must pass
 5. Merge into `main` with: `fix: <description>`
-6. Mark the bug as resolved in `BUGS.md`
+6. Close the GitHub issue
 
 ## Roadmap Workflow
 
@@ -256,6 +255,13 @@ This project was generated from [django-studio](https://github.com/danjac/django
 ```
 /django-studio bug: <what is broken and where>
 /django-studio improvement: <what to add or change and why>
+```
+
+The justfile also has equivalent targets for use outside an agent session:
+
+```bash
+just issue "Fix login redirect" "The redirect after login goes to the wrong URL"
+just studio "Missing pytest fixture" "Template should include a tmp_path fixture for media tests"
 ```
 
 Do not wait until the end of a session. Log it when you notice it.

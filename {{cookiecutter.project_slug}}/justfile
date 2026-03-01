@@ -121,6 +121,16 @@ precommitupdate:
 precommitall:
    @just precommit run --all-files
 
+# Create a GitHub issue on this project (requires gh CLI)
+[group('development')]
+issue title body='':
+    gh issue create --title "{{ title }}" --body "{{ body }}"
+
+# Report a bug or improvement to the django-studio template (requires gh CLI)
+[group('development')]
+studio title body='':
+    gh issue create --repo danjac/django-studio --title "{{ title }}" --body "{{ body }}"
+
 # Run Ansible playbook
 [group('deployment')]
 apb playbook *args:

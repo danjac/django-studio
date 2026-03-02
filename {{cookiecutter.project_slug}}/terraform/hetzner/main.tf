@@ -19,6 +19,7 @@ locals {
   database_private_ip  = cidrhost(var.subnet_ip_range, 3) # 10.0.0.3
   jobrunner_private_ip = cidrhost(var.subnet_ip_range, 4) # 10.0.0.4
   webapp_private_ips   = [for i in range(var.webapp_count) : cidrhost(var.subnet_ip_range, 5 + i)]
+  monitor_private_ip   = cidrhost(var.subnet_ip_range, 10) # 10.0.0.10
 }
 
 # Private network for internal communication
@@ -70,6 +71,52 @@ resource "hcloud_firewall" "server" {
     direction  = "in"
     protocol   = "tcp"
     port       = "6443"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "any"
+    source_ips = [var.network_ip_range]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "udp"
+    port       = "any"
+    source_ips = [var.network_ip_range]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "icmp"
+    source_ips = [var.network_ip_range]
+  }
+}
+
+# Firewall for monitor node (needs HTTP/HTTPS open for Traefik ServiceLB ingress)
+resource "hcloud_firewall" "monitor" {
+  name = "${var.cluster_name}-monitor-firewall"
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "22"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "80"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "443"
     source_ips = ["0.0.0.0/0", "::/0"]
   }
 
@@ -286,6 +333,45 @@ resource "hcloud_server" "webapp" {
   network {
     network_id = hcloud_network.private_network.id
     ip         = local.webapp_private_ips[count.index]
+  }
+
+  depends_on = [hcloud_network_subnet.private_subnet]
+
+  lifecycle {
+    ignore_changes = [user_data, ssh_keys]
+  }
+}
+
+# Monitor node (observability stack: Prometheus, Grafana, Loki, Tempo, OTel)
+resource "hcloud_server" "monitor" {
+  name         = "${var.cluster_name}-monitor"
+  server_type  = var.agent_server_type
+  image        = var.server_image
+  location     = var.location
+  ssh_keys     = [hcloud_ssh_key.default.id]
+  firewall_ids = [hcloud_firewall.monitor.id]
+
+  user_data = templatefile("${path.module}/templates/cloud_init_agent.tftpl", {
+    hostname          = "${var.cluster_name}-monitor"
+    server_private_ip = local.server_private_ip
+    k3s_token         = var.k3s_token
+    ssh_public_key    = var.ssh_public_key
+    role              = "monitor"
+  })
+
+  labels = {
+    cluster = var.cluster_name
+    role    = "monitor"
+  }
+
+  public_net {
+    ipv4_enabled = true
+    ipv6_enabled = true
+  }
+
+  network {
+    network_id = hcloud_network.private_network.id
+    ip         = local.monitor_private_ip
   }
 
   depends_on = [hcloud_network_subnet.private_subnet]

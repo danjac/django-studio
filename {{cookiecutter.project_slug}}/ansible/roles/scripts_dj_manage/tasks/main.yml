@@ -1,5 +1,0 @@
-- name: Add manage script
-  ansible.builtin.template:
-      src: manage.sh.j2
-      dest: manage.sh
-      mode: "u+x"

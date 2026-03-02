@@ -1,8 +1,0 @@
-k3s_crons_cronjobs:
-    - name: "clear-sessions"
-      schedule: "20 5 * * *"
-      command: "{{ manage_cmd }} clearsessions"
-
-    - name: "prune-db-task-results"
-      schedule: "25 9 * * *"
-      command: "{{ manage_cmd }} prune_db_task_results --min-age-days=1"

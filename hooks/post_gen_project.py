@@ -4,6 +4,7 @@
 import os
 import shutil
 
+PROJECT_SLUG = "{{cookiecutter.project_slug}}"
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
 USE_STORAGE = "{{cookiecutter.use_storage}}"
 USE_I18N = "{{cookiecutter.use_i18n}}"
@@ -397,3 +398,9 @@ if USE_PWA == "y":
     setup_pwa()
 else:
     remove_pwa_static()
+
+# Inject project slug into justfile (which is _copy_without_render)
+with open("justfile") as f:
+    content = f.read()
+with open("justfile", "w") as f:
+    f.write(content.replace("PROJECT_SLUG", PROJECT_SLUG))

@@ -27,10 +27,7 @@ static/vendor/
 .envrc
 .tsvars
 .vault_pass
-ansible/.vault_pass
-ansible/hosts.yml
-ansible/certs/
-ansible/ssh-keys/
+helm/*/values.secret.yaml
 terraform/*.tfvars
 terraform/*.tfvars.json
 terraform/terraform.tfstate*

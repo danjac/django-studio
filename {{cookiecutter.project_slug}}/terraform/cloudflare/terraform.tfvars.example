@@ -15,6 +15,9 @@ server_ip = ""
 # Redirect www to main domain
 enable_www_redirect = true
 
+# Grafana subdomain (set to "" to skip)
+# grafana_subdomain = "grafana"
+
 # Mailgun configuration (optional)
 # mailgun_dkim_value = "k=rsa; p=..."
 # mailgun_mx_servers = ["mxa.eu.mailgun.org", "mxb.eu.mailgun.org"]

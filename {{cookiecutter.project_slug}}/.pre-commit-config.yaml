@@ -7,15 +7,22 @@ repos:
       - id: check-builtin-literals
       - id: check-merge-conflict
       - id: check-shebang-scripts-are-executable
-        exclude: '.*\.j2$'
       - id: check-toml
       - id: check-yaml
-        exclude: ^.github/
+        exclude: '^helm/.*/templates/.*\.yaml'
       - id: debug-statements
       - id: destroyed-symlinks
       - id: detect-private-key
+        exclude: '\.example'
   - repo: local
     hooks:
+      - id: helm-lint
+        name: Helm lint {{cookiecutter.project_slug}} chart
+        language: system
+        entry: helm lint
+        args: [helm/{{cookiecutter.project_slug}}/]
+        files: ^helm/{{cookiecutter.project_slug}}/
+        pass_filenames: false
       - id: rustywind
         name: rustywind Tailwind CSS class linter
         language: node
@@ -34,7 +41,7 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.15.2"
+    rev: "v0.15.4"
     hooks:
       - id: ruff-check
         args: ["--fix"]
@@ -47,22 +54,23 @@ repos:
     rev: 3.0.10
     hooks:
       - id: djhtml
-        exclude: (^static/vendor|(^|.*/)mocks/.*)
+        exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
       - id: djcss
-        exclude: (^static/vendor|(^|.*/)mocks/.*)
+        exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
       - id: djjs
-        exclude: (^static/vendor|(^|.*/)mocks/.*)
+        exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
   - repo: https://github.com/adamchainz/djade-pre-commit
-    rev: 1.8.0
+    rev: 1.9.0
     hooks:
       - id: djade
         args: [--target-version, "5.1"]
+        exclude: ^helm/
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: v1.36.4
     hooks:
       - id: djlint-django
         args: ["--lint"]
-        exclude: (^static/vendor|(^|.*/)mocks/.*)
+        exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
   - repo: https://github.com/hadolint/hadolint
     rev: v2.14.0
     hooks:
@@ -82,19 +90,9 @@ repos:
     hooks:
       - id: validate-pyproject
   - repo: https://github.com/owenlamont/uv-secure
-    rev: 0.16.0
+    rev: 0.17.0
     hooks:
       - id: uv-secure
-  - repo: https://github.com/ansible/ansible-lint
-    rev: v26.2.0
-    hooks:
-      - id: ansible-lint
-        language_version: "3.14"
-        always_run: false
-        files: ^ansible/
-        args: ['ansible/']
-        additional_dependencies:
-          - ansible
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.105.0
     hooks:

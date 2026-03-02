@@ -6,8 +6,6 @@
 !.pre-commit-config.yaml
 **/__pycache__
 **/tests
-.ansible
-.ansible-lint
 .claude
 .claudeignore
 .django_tailwind_cli

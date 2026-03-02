@@ -1,4 +1,0 @@
-ansible_user: "ubuntu"
-home_dir: "/home/{% raw %}{{ ansible_user }}{% endraw %}"
-kubeconfig: "{% raw %}{{ home_dir }}{% endraw %}/.kube/config"
-k3s_docker_image: "ghcr.io/{{ cookiecutter.project_slug }}/{{ cookiecutter.project_slug }}:latest"

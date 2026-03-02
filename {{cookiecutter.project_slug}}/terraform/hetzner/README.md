@@ -1,124 +1,79 @@
-# Hetzner Cloud Infrastructure with Terraform
+# terraform/hetzner
 
-This directory contains Terraform configuration for provisioning infrastructure on Hetzner Cloud. The infrastructure consists of multiple servers for running a K3s cluster with separate nodes for control plane, database, job processing, and web applications.
+Provisions the Hetzner Cloud infrastructure for the K3s cluster.
+K3s is installed automatically via cloud-init on first boot.
 
-## Architecture
+## What gets created
 
-The Terraform configuration creates the following infrastructure:
+| Resource | Count | Notes |
+|----------|-------|-------|
+| Private network + subnet | 1 | `10.0.0.0/16`, zone configurable |
+| Firewalls | 2 | server (80/443/22/6443 public) + agents (22 public, all private) |
+| SSH key | 1 | Registered in Hetzner for server access |
+| Server node | 1 | K3s control plane + Traefik; private IP `10.0.0.2` |
+| Database node | 1 | K3s agent, role=database; private IP `10.0.0.3` |
+| Job runner node | 1 | K3s agent, role=jobrunner; private IP `10.0.0.4` |
+| Webapp nodes | N | K3s agents, role=webapp; private IPs `10.0.0.5+` |
+| PostgreSQL volume | 1 | Hetzner block storage, ext4, attached to database node |
 
-- **1 Server Node** (k3s control plane + Traefik load balancer)
+Private IPs are fixed via `cidrhost()` so K3s agents can join the cluster during cloud-init.
 
-  - Ports: 22 (SSH), 80 (HTTP), 443 (HTTPS)
-  - Public IP for external access
-  - Private IP: 10.0.0.1 (configurable)
+## Cloud-init provisioning
 
-- **1 Database Node** (PostgreSQL + Redis)
+Each server type has a dedicated cloud-init template:
 
-  - Dedicated volume for PostgreSQL data
-  - Port 22 (SSH) for management
-  - All traffic within private network
+| Template | Used by | What it does |
+|----------|---------|--------------|
+| `cloud_init_server.tftpl` | server node | Installs K3s server, sets up kubeconfig, pins CoreDNS/Traefik/metrics-server to server node |
+| `cloud_init_agent.tftpl` | jobrunner, webapps | Polls for K3s server readiness, installs K3s agent with correct role label |
+| `cloud_init_database.tftpl` | database node | Same as agent + background script to set Postgres volume permissions |
 
-- **1 Job Runner Node** (for cron jobs)
-
-  - Runs scheduled tasks
-  - Port 22 (SSH) for management
-  - All traffic within private network
-
-- **N Web Application Nodes** (default: 2)
-
-  - Runs Django web application containers
-  - Port 22 (SSH) for management
-  - All traffic within private network
-
-- **Private Network** (10.0.0.0/16)
-
-  - Secure internal communication between nodes
-
-- **Firewall Rules**
-
-  - Server: SSH (22), HTTP (80), HTTPS (443) from internet
-  - Agents: SSH (22) from internet, all traffic from private network
-
-- **PostgreSQL Volume** (default: 50 GB)
-
-  - Persistent storage for database data
-
-## Prerequisites
-
-1. **Hetzner Cloud Account**
-
-    - Sign up at <https://www.hetzner.com/cloud>
-    - Create a new project
-
-2. **Hetzner Cloud API Token**
-
-    - Go to: Cloud Console → Project → Security → API Tokens
-    - Create a new token with Read & Write permissions
-
-3. **Terraform**
-
-    - Install Terraform >= 1.0: <https://www.terraform.io/downloads>
-
-4. **SSH Key Pair**
-
-    - Generate if you don't have one: `ssh-keygen -t rsa -b 4096 -C "your-email@example.com"`
+Cloud-init runs once on first boot. `lifecycle { ignore_changes = [user_data] }` prevents
+server recreation when templates are updated.
 
 ## Setup
-
-### 1. Configure Terraform Variables
 
 ```bash
 cd terraform/hetzner
 cp terraform.tfvars.example terraform.tfvars
-```
-
-Edit `terraform.tfvars` with your settings.
-
-### 2. Initialize Terraform
-
-```bash
+$EDITOR terraform.tfvars
 terraform init
-```
-
-### 3. Preview Changes
-
-```bash
 terraform plan
-```
-
-### 4. Create Infrastructure
-
-```bash
 terraform apply
 ```
 
-### 5. Generate Ansible Inventory
+## Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `hcloud_token` | yes | — | Hetzner Cloud API token (Read & Write) |
+| `ssh_public_key` | yes | — | SSH public key for server access |
+| `k3s_token` | yes | — | Pre-shared token for K3s cluster (`openssl rand -hex 32`) |
+| `cluster_name` | no | `{{cookiecutter.project_slug}}` | Name prefix for all resources |
+| `location` | no | `nbg1` | Hetzner datacenter |
+| `network_zone` | no | `eu-central` | Must match `location` |
+| `server_type` | no | `cx23` | Server node type |
+| `database_server_type` | no | `cx23` | Database node type |
+| `agent_server_type` | no | `cx23` | Jobrunner and webapp node type |
+| `webapp_count` | no | `2` | Number of webapp nodes |
+| `postgres_volume_size` | no | `50` | Postgres volume size in GB |
+
+## Outputs
 
 ```bash
-terraform output -raw ansible_inventory > ../../ansible/hosts.yml
-```
-
-## Scaling
-
-Edit `terraform.tfvars` and run `terraform apply`:
-
-```hcl
-webapp_count = 3  # Add more webapp nodes
-```
-
-## Destroying Infrastructure
-
-```bash
-terraform destroy
+terraform output server_public_ip          # for Cloudflare terraform.tfvars
+terraform output -raw postgres_volume_mount_path  # for helm values.secret.yaml
 ```
 
 ## Troubleshooting
 
-- **Authentication failed**: Check `hcloud_token` is correct
-- **SSH key already exists**: Change `cluster_name` in terraform.tfvars
-- **Resource limit exceeded**: Check Hetzner Cloud project limits
+**K3s not ready after apply** — cloud-init runs asynchronously. Check progress:
 
-## Resources
+```bash
+ssh ubuntu@$(terraform output -raw server_public_ip) 'tail -f /var/log/cloud-init-output.log'
+```
 
-- [Hetzner Cloud Documentation](https://docs.hetzner.com/cloud/)
-- [Terraform Hetzner Provider](https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs)
+**Nodes not joining** — verify `k3s_token` is identical and hasn't changed since initial provision.
+
+**Postgres volume permissions** — the background script logs to
+`/var/log/postgres-volume-perms.log` on the database node.

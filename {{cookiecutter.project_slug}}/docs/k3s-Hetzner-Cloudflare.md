@@ -73,10 +73,11 @@ terraform plan
 terraform apply
 ```
 
-### Application (Ansible)
+### Application (Helm)
 
 ```bash
-just apb site
+just helm-install    # first-time
+just helm-upgrade    # config changes
 ```
 
 ## Services
@@ -221,30 +222,18 @@ kubectl logs job/my-django-command-xxxxx
 kubectl delete jobs $(kubectl get jobs -o jsonpath='{.items[?(@.status.failed>0)].metadata.name}')
 ```
 
-### Integration with Ansible
+### Defining CronJobs
 
-Add CronJob manifests to your Ansible deploy templates:
-
-```yaml
-# ansible/templates/cronjob.yml.j2
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: {{ package_name }}-{{ task_name }}
-  namespace: {{ namespace }}
-spec:
-  schedule: {{ schedule }}
-  ...
-```
-
-Then include in your playbook:
+Add entries to the `cronjobs` section in `helm/{{cookiecutter.project_slug}}/values.yaml`:
 
 ```yaml
-- name: Deploy CronJobs
-  kubernetes.core.k8s:
-    state: present
-    definition: "{{ lookup('template', 'cronjob.yml.j2') }}"
+cronjobs:
+  my-command:
+    schedule: "0 2 * * *"
+    command: "./manage.sh my_command --arg value"
 ```
+
+Then run `just helm-upgrade` to apply.
 
 ### Alternatives
 
@@ -282,9 +271,9 @@ just rpsql
 - Cloudflare proxies all traffic
 
 ### Secrets
-- Environment variables in K3s secrets
-- Ansible vault for sensitive values
-- Never commit secrets to git
+- Environment variables stored in Kubernetes secrets via Helm
+- `values.secret.yaml` is gitignored — never commit it
+- Use GitHub Actions secrets for CI/CD (`KUBECONFIG_BASE64`, `HELM_VALUES_SECRET`)
 
 ### SSL/TLS
 - Cloudflare origin certificates
@@ -305,7 +294,7 @@ Optional observability stack via OpenTelemetry, Prometheus, Grafana, Loki, and T
 ### Deployment
 
 ```bash
-just apb observability
+just helm-upgrade-observability
 ```
 
 ### Access
@@ -328,9 +317,9 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 
 ## Scaling
 
-1. Add server in Terraform
-2. Run Terraform apply
-3. Run Ansible to join cluster
+1. Edit `terraform/hetzner/terraform.tfvars` (e.g. increase `webapp_count`)
+2. Run `terraform apply` — new nodes join the cluster automatically via cloud-init
+3. Run `just helm-upgrade` to apply the updated replica count
 
 ## Backup
 

@@ -52,8 +52,5 @@ Thumbs.db
 terraform/**/*.tfvars
 terraform/**/.terraform.lock.hcl
 
-# Ansible
-ansible/hosts.yml
-ansible/certs/
-ansible/ssh-keys/
-ansible/scripts/
+# Helm
+helm/*/values.secret.yaml

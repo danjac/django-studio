@@ -1,10 +1,10 @@
-# Cloudflare CDN and SSL Configuration with Terraform
+# terraform/cloudflare
 
-This directory contains Terraform configuration for setting up Cloudflare as a CDN and SSL/TLS provider.
+Sets up Cloudflare DNS, CDN caching, SSL/TLS, and security settings.
 
 ## What This Configures
 
-- **DNS Records**: A record pointing to your server
+- **DNS Records**: A record pointing to your Hetzner server (+ optional Grafana subdomain)
 - **CDN**: Caching for static assets
 - **SSL/TLS**: Full SSL mode with automatic HTTPS redirects
 - **Security**: Firewall rules, security headers
@@ -12,51 +12,54 @@ This directory contains Terraform configuration for setting up Cloudflare as a C
 
 ## Prerequisites
 
-1. **Cloudflare Account**
-
-    Sign up at <https://www.cloudflare.com/>
-
-2. **Add Domain to Cloudflare**
-
-    1. Log in to Cloudflare Dashboard
-    2. Click "Add a Site"
-    3. Enter your domain name
-
-3. **Cloudflare API Token**
-
-    Create a token with these permissions:
-    - Zone → Zone → Edit
-    - Zone → Zone Settings → Edit
-    - Zone → DNS → Edit
-    - Zone → Page Rules → Edit
-    - Zone → Zone WAF → Edit
-    - Zone → Transform Rules → Edit
-
-4. **Origin Certificates**
-
-    Generate in Cloudflare Dashboard → SSL/TLS → Origin Server and save to `ansible/certs/`.
+1. **Cloudflare Account** — sign up at <https://www.cloudflare.com/>
+2. **Domain added to Cloudflare** with nameservers updated
+3. **Cloudflare API Token** with these zone-level permissions:
+   - Zone → Zone → Edit
+   - Zone → Zone Settings → Edit
+   - Zone → DNS → Edit
+   - Zone → Page Rules → Edit
+   - Zone → Zone WAF → Edit
+   - Zone → Transform Rules → Edit
 
 ## Setup
-
-### 1. Configure Variables
 
 ```bash
 cd terraform/cloudflare
 cp terraform.tfvars.example terraform.tfvars
-```
-
-Edit with your values.
-
-### 2. Initialize and Apply
-
-```bash
+$EDITOR terraform.tfvars   # set cloudflare_api_token, domain, server_ip
 terraform init
 terraform plan
 terraform apply
 ```
 
+## Origin Certificates
+
+After `terraform apply`, create origin certificates for HTTPS:
+
+1. Cloudflare Dashboard → SSL/TLS → Origin Server → Create Certificate (15-year validity)
+2. Paste the certificate and key into `helm/{{cookiecutter.project_slug}}/values.secret.yaml` under
+   `secrets.cloudflare.cert` and `secrets.cloudflare.key`
+
 ## Troubleshooting
 
-- **Could not find zone**: Verify domain is added to Cloudflare
-- **Authentication error**: Check API token permissions
-- **DNS status shows "pending"**: Wait for nameserver propagation
+**Could not find zone** — verify domain is added to Cloudflare and `domain` in `terraform.tfvars` matches exactly.
+
+**Authentication error** — check API token has all required zone-level permissions.
+
+**ruleset already exists** — import existing rulesets into Terraform state:
+
+```bash
+ZONE_ID=$(terraform show -json | jq -r \
+  '.values.root_module.resources[] | select(.address == "data.cloudflare_zone.domain") | .values.id')
+
+# List rulesets and get IDs by phase
+curl -s "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets" \
+  -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  | jq '.result[] | select(.kind == "zone") | {id, phase}'
+
+terraform import cloudflare_ruleset.zone_level_firewall "zone/$ZONE_ID/<ID>"
+terraform import cloudflare_ruleset.transform_response_headers "zone/$ZONE_ID/<ID>"
+```
+
+**DNS status shows "pending"** — nameservers haven't propagated yet (can take up to 48 hours).

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: {{cookiecutter.project_slug}}
+description: {{cookiecutter.description}}
+type: application
+version: 0.1.0
+appVersion: "main"

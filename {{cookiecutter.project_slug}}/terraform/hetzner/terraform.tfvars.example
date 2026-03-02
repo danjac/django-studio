@@ -1,11 +1,11 @@
 # Hetzner Cloud API token (create in Cloud Console → Project → Security → API Tokens)
 hcloud_token = ""
 
-# SSH public key (content of ~/.ssh/id_rsa.pub)
+# SSH public key (content of ~/.ssh/id_ed25519.pub)
 ssh_public_key = ""
 
-# Primary domain name for the deployment (e.g. example.com)
-domain = ""
+# Pre-shared token for K3s cluster join (generate with: openssl rand -hex 32)
+k3s_token = "CHANGE_ME"
 
 # Name prefix for all resources
 cluster_name = "{{cookiecutter.project_slug}}"
@@ -14,7 +14,7 @@ cluster_name = "{{cookiecutter.project_slug}}"
 location = "nbg1"
 
 # Server types (cx11-cpx51, ccx13-ccx63, cax11-cax41)
-server_type         = "cx23"  # k3s control plane + Traefik
+server_type          = "cx23"  # k3s control plane + Traefik
 database_server_type = "cx23"  # PostgreSQL + Redis
 agent_server_type    = "cx23"  # Jobrunner + Webapps
 

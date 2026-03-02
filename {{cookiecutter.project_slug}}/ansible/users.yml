@@ -1,5 +1,0 @@
-- name: Manage users
-  hosts: all
-  become: true
-  roles:
-      - user

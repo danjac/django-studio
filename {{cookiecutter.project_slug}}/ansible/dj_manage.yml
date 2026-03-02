@@ -1,6 +1,0 @@
-- name: Run Django management commands
-  hosts: server
-  become: false
-  gather_facts: true
-  roles:
-      - scripts_dj_manage

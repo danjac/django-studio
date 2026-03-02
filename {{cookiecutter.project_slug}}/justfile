@@ -1,8 +1,9 @@
 # Justfile for Django project
 
-# Ansible configuration
-ansible_dir := invocation_directory() / "ansible"
-script_dir := ansible_dir / "scripts"
+# Project-specific deployment configuration (set by cookiecutter)
+project_slug := "PROJECT_SLUG"
+script_dir := justfile_directory() / "scripts"
+kubeconfig := env("KUBECONFIG", env("HOME") + "/.kube/" + project_slug + ".yaml")
 
 @_default:
     just --list
@@ -131,34 +132,52 @@ issue title body='':
 studio title body='':
     gh issue create --repo danjac/django-studio --title "{{ title }}" --body "{{ body }}"
 
-# Run Ansible playbook
+# Fetch kubeconfig from the production server
 [group('deployment')]
-apb playbook *args:
-    ansible-playbook -i {{ ansible_dir / "hosts.yml" }} {{ ansible_dir / playbook + ".yml" }} {{ args }}
+get-kubeconfig:
+    {{ script_dir }}/get-kubeconfig.sh
+
+# Fresh install of the Helm chart (first-time setup only)
+[group('deployment')]
+helm-install:
+    helm install {{ project_slug }} helm/{{ project_slug }}/ \
+        --kubeconfig {{ kubeconfig }} \
+        -f helm/{{ project_slug }}/values.yaml \
+        -f helm/{{ project_slug }}/values.secret.yaml
+
+# Upgrade the Helm chart config (preserves last deployed image)
+[group('deployment')]
+helm-upgrade:
+    helm upgrade {{ project_slug }} helm/{{ project_slug }}/ \
+        --kubeconfig {{ kubeconfig }} \
+        --reuse-values \
+        -f helm/{{ project_slug }}/values.yaml \
+        -f helm/{{ project_slug }}/values.secret.yaml
+
+# Install or upgrade the observability Helm chart
+[group('deployment')]
+helm-upgrade-observability:
+    helm dependency update helm/observability/
+    helm upgrade --install observability helm/observability/ \
+        --kubeconfig {{ kubeconfig }} \
+        --namespace monitoring \
+        --create-namespace \
+        -f helm/observability/values.yaml \
+        -f helm/observability/values.secret.yaml
 
 # Run Django manage.py commands on production server
 [group('production')]
 [confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
 rdj *args:
-    @just remote_script manage.sh dj_manage {{ args }}
+    {{ script_dir }}/manage.sh {{ args }}
 
 # Run Psql commands remotely on production database
 [group('production')]
 [confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
 rpsql *args:
-    @just remote_script psql.sh psql {{ args }}
+    {{ script_dir }}/psql.sh {{ args }}
 
-# Run Kubectl commands remotely on production cluster
+# Run kubectl commands on the production cluster
 [group('production')]
 kube *args:
-    @just remote_script kubectl.sh kubectl {{ args }}
-
-[private]
-remote_script script playbook *args:
-    #!/usr/bin/bash
-    if [ ! -f "{{ script_dir / script }}" ]; then
-        echo "{{ script }} not found, generating it..."
-        mkdir -p {{ script_dir }}
-        just apb {{ playbook }}
-    fi
-    {{ script_dir / script }} {{ args }}
+    kubectl --kubeconfig {{ kubeconfig }} {{ args }}

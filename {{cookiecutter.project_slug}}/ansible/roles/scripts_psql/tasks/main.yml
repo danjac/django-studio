@@ -1,5 +1,0 @@
-- name: Add psql script
-  ansible.builtin.template:
-      src: psql.sh.j2
-      dest: psql.sh
-      mode: "u+x"

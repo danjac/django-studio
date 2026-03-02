@@ -27,9 +27,6 @@
     "justfile",
     "design/**",
     "docs/**",
-    "ansible/roles/*/tasks/**",
-    "ansible/roles/*/templates/**",
-    "ansible/roles/*/vars/**",
-    "ansible/roles/k3s_deploy/defaults/**"
+    "helm/*/templates/**"
   ]
 }

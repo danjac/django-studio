@@ -3,6 +3,8 @@ name: {{cookiecutter.project_slug}}:deploy
 run-name: ${{ github.actor }} is deploying to production
 on:
   workflow_dispatch:
+    branches:
+      - main
 permissions:
   attestations: write
   contents: write
@@ -20,13 +22,40 @@ jobs:
     needs: build
     permissions:
       contents: read
+    env:
+{%- endraw %}
+      HELM_RELEASE: {{cookiecutter.project_slug}}
+      HELM_CHART: helm/{{cookiecutter.project_slug}}
+      KUBECONFIG_FILE: {{cookiecutter.project_slug}}.yaml
+{% raw -%}
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+      - name: Write kubeconfig
+        env:
+          KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
+        run: |
+          mkdir -p "$HOME/.kube"
+          echo "$KUBECONFIG_BASE64" | base64 -d > "$HOME/.kube/$KUBECONFIG_FILE"
+          chmod 600 "$HOME/.kube/$KUBECONFIG_FILE"
+      - name: Write Helm secret values
+        env:
+          HELM_VALUES_SECRET: ${{ secrets.HELM_VALUES_SECRET }}
+        run: |
+          printf '%s' "$HELM_VALUES_SECRET" > "$HELM_CHART/values.secret.yaml"
+          chmod 600 "$HELM_CHART/values.secret.yaml"
       - name: Deploy to Kubernetes
-        uses: appleboy/ssh-action@8743aa11bfbda97acb45c151ae7a2e0b203f1914  # master
-        with:
-          host: ${{ secrets.DEPLOY_IP }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            IMAGE=${{ needs.build.outputs.image }} ./deploy.sh
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+        run: |
+          helm upgrade "$HELM_RELEASE" "$HELM_CHART"/ \
+            --kubeconfig "$HOME/.kube/$KUBECONFIG_FILE" \
+            --rollback-on-failure \
+            --set "image=$IMAGE" \
+            -f "$HELM_CHART/values.yaml" \
+            -f "$HELM_CHART/values.secret.yaml"
 {%- endraw %}

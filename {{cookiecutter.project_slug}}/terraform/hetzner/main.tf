@@ -1,16 +1,3 @@
-# Terraform configuration for provisioning infrastructure on Hetzner Cloud.
-#
-# Creates a K3s cluster with separate nodes for control plane, database,
-# job processing, and web applications.
-#
-# Usage:
-#   terraform init
-#   terraform plan
-#   terraform apply
-#
-# After apply, generate Ansible inventory:
-#   terraform output -raw ansible_inventory > ../../ansible/hosts.yml
-#
 terraform {
   required_version = ">= 1.0"
 
@@ -24,6 +11,14 @@ terraform {
 
 provider "hcloud" {
   token = var.hcloud_token
+}
+
+locals {
+  # Fixed private IPs — deterministic, referenced in cloud-init templates
+  server_private_ip    = cidrhost(var.subnet_ip_range, 2) # 10.0.0.2
+  database_private_ip  = cidrhost(var.subnet_ip_range, 3) # 10.0.0.3
+  jobrunner_private_ip = cidrhost(var.subnet_ip_range, 4) # 10.0.0.4
+  webapp_private_ips   = [for i in range(var.webapp_count) : cidrhost(var.subnet_ip_range, 5 + i)]
 }
 
 # Private network for internal communication
@@ -49,64 +44,53 @@ resource "hcloud_ssh_key" "default" {
 resource "hcloud_firewall" "server" {
   name = "${var.cluster_name}-server-firewall"
 
-  # SSH access
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "22"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-
-  # HTTP
-  rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "80"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-
-  # HTTPS
-  rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "443"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-
-  # Allow all traffic within private network
-  rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "any"
-    source_ips = [
-      var.network_ip_range
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "22"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    direction = "in"
-    protocol  = "udp"
-    port      = "any"
-    source_ips = [
-      var.network_ip_range
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "80"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    direction = "in"
-    protocol  = "icmp"
-    source_ips = [
-      var.network_ip_range
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "443"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
+  # K3s API server — required for kubectl and Helm
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "6443"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "any"
+    source_ips = [var.network_ip_range]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "udp"
+    port       = "any"
+    source_ips = [var.network_ip_range]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "icmp"
+    source_ips = [var.network_ip_range]
   }
 }
 
@@ -114,46 +98,35 @@ resource "hcloud_firewall" "server" {
 resource "hcloud_firewall" "agents" {
   name = "${var.cluster_name}-agents-firewall"
 
-  # SSH access
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "22"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-
-  # Allow all traffic within private network
-  rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "any"
-    source_ips = [
-      var.network_ip_range
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "22"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    direction = "in"
-    protocol  = "udp"
-    port      = "any"
-    source_ips = [
-      var.network_ip_range
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "any"
+    source_ips = [var.network_ip_range]
   }
 
   rule {
-    direction = "in"
-    protocol  = "icmp"
-    source_ips = [
-      var.network_ip_range
-    ]
+    direction  = "in"
+    protocol   = "udp"
+    port       = "any"
+    source_ips = [var.network_ip_range]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "icmp"
+    source_ips = [var.network_ip_range]
   }
 }
 
-# Volume for PostgreSQL data
+# Volume for PostgreSQL data (pre-formatted ext4)
 resource "hcloud_volume" "postgres" {
   name     = "${var.cluster_name}-postgres-volume"
   size     = var.postgres_volume_size
@@ -170,6 +143,13 @@ resource "hcloud_server" "server" {
   ssh_keys     = [hcloud_ssh_key.default.id]
   firewall_ids = [hcloud_firewall.server.id]
 
+  user_data = templatefile("${path.module}/templates/cloud_init_server.tftpl", {
+    hostname       = "${var.cluster_name}-server"
+    private_ip     = local.server_private_ip
+    k3s_token      = var.k3s_token
+    ssh_public_key = var.ssh_public_key
+  })
+
   labels = {
     cluster = var.cluster_name
     role    = "server"
@@ -179,11 +159,17 @@ resource "hcloud_server" "server" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
-}
 
-resource "hcloud_server_network" "server_network" {
-  server_id  = hcloud_server.server.id
-  network_id = hcloud_network.private_network.id
+  network {
+    network_id = hcloud_network.private_network.id
+    ip         = local.server_private_ip
+  }
+
+  depends_on = [hcloud_network_subnet.private_subnet]
+
+  lifecycle {
+    ignore_changes = [user_data, ssh_keys]
+  }
 }
 
 # Database node (PostgreSQL + Redis)
@@ -195,6 +181,13 @@ resource "hcloud_server" "database" {
   ssh_keys     = [hcloud_ssh_key.default.id]
   firewall_ids = [hcloud_firewall.agents.id]
 
+  user_data = templatefile("${path.module}/templates/cloud_init_database.tftpl", {
+    hostname          = "${var.cluster_name}-database"
+    server_private_ip = local.server_private_ip
+    k3s_token         = var.k3s_token
+    ssh_public_key    = var.ssh_public_key
+  })
+
   labels = {
     cluster = var.cluster_name
     role    = "database"
@@ -204,11 +197,17 @@ resource "hcloud_server" "database" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
-}
 
-resource "hcloud_server_network" "database_network" {
-  server_id  = hcloud_server.database.id
-  network_id = hcloud_network.private_network.id
+  network {
+    network_id = hcloud_network.private_network.id
+    ip         = local.database_private_ip
+  }
+
+  depends_on = [hcloud_network_subnet.private_subnet]
+
+  lifecycle {
+    ignore_changes = [user_data, ssh_keys]
+  }
 }
 
 resource "hcloud_volume_attachment" "postgres_attachment" {
@@ -217,7 +216,7 @@ resource "hcloud_volume_attachment" "postgres_attachment" {
   automount = true
 }
 
-# Job runner node (for cron jobs)
+# Job runner node (for cron jobs and background workers)
 resource "hcloud_server" "jobrunner" {
   name         = "${var.cluster_name}-jobrunner"
   server_type  = var.agent_server_type
@@ -225,6 +224,14 @@ resource "hcloud_server" "jobrunner" {
   location     = var.location
   ssh_keys     = [hcloud_ssh_key.default.id]
   firewall_ids = [hcloud_firewall.agents.id]
+
+  user_data = templatefile("${path.module}/templates/cloud_init_agent.tftpl", {
+    hostname          = "${var.cluster_name}-jobrunner"
+    server_private_ip = local.server_private_ip
+    k3s_token         = var.k3s_token
+    ssh_public_key    = var.ssh_public_key
+    role              = "jobrunner"
+  })
 
   labels = {
     cluster = var.cluster_name
@@ -235,11 +242,17 @@ resource "hcloud_server" "jobrunner" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
-}
 
-resource "hcloud_server_network" "jobrunner_network" {
-  server_id  = hcloud_server.jobrunner.id
-  network_id = hcloud_network.private_network.id
+  network {
+    network_id = hcloud_network.private_network.id
+    ip         = local.jobrunner_private_ip
+  }
+
+  depends_on = [hcloud_network_subnet.private_subnet]
+
+  lifecycle {
+    ignore_changes = [user_data, ssh_keys]
+  }
 }
 
 # Web application nodes
@@ -252,6 +265,14 @@ resource "hcloud_server" "webapp" {
   ssh_keys     = [hcloud_ssh_key.default.id]
   firewall_ids = [hcloud_firewall.agents.id]
 
+  user_data = templatefile("${path.module}/templates/cloud_init_agent.tftpl", {
+    hostname          = "${var.cluster_name}-webapp-${count.index + 1}"
+    server_private_ip = local.server_private_ip
+    k3s_token         = var.k3s_token
+    ssh_public_key    = var.ssh_public_key
+    role              = "webapp"
+  })
+
   labels = {
     cluster = var.cluster_name
     role    = "webapp"
@@ -261,10 +282,15 @@ resource "hcloud_server" "webapp" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
-}
 
-resource "hcloud_server_network" "webapp_network" {
-  count      = var.webapp_count
-  server_id  = hcloud_server.webapp[count.index].id
-  network_id = hcloud_network.private_network.id
+  network {
+    network_id = hcloud_network.private_network.id
+    ip         = local.webapp_private_ips[count.index]
+  }
+
+  depends_on = [hcloud_network_subnet.private_subnet]
+
+  lifecycle {
+    ignore_changes = [user_data, ssh_keys]
+  }
 }

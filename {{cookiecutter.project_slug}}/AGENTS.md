@@ -225,6 +225,16 @@ Add `"sorl.thumbnail"` to `INSTALLED_APPS` and use the `thumbnail` template tag:
 
 sorl-thumbnail requires a cache backend (Redis is already configured) and stores generated thumbnails via the storage backend.
 
+### Frontend Dependencies
+
+**Never use CDNs** for third-party frontend dependencies (JS, CSS, icons, fonts, etc.), and do not introduce `npm` or any Node-based build tooling unless the user explicitly requests it.
+
+Instead, always vendor the latest stable minified library file directly into the project:
+
+- Place vendored files under `static/vendor/` (e.g. `static/vendor/htmx.min.js`).
+- Reference them with Django's `static` template tag in templates.
+- See the existing HTMX and AlpineJS files in `static/vendor/` as examples.
+
 ### Icons
 
 Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Load the tag at the top of any template that needs icons and prefer the built-in set over custom SVGs.

@@ -10,7 +10,8 @@ Parse the first word of `$ARGUMENTS` to determine the subcommand:
 | Subcommand | Purpose |
 |------------|---------|
 | `issue`    | File a GitHub issue |
-| `create`   | Scaffold a new Django app |
+| `create`   | Create a new Django project |
+| `app`      | Scaffold a new Django app |
 | `init`     | Run Session Zero |
 
 If `$ARGUMENTS` is empty or the first word is not a recognised subcommand, print usage and stop.
@@ -46,14 +47,60 @@ Log feedback immediately when you notice it — do not wait until the end of a s
 
 ---
 
-## `create` — Scaffold a New Django App
+## `create` — Create a New Django Project
 
-`$ARGUMENTS` after `create` is the app name (snake_case, e.g. `blog`, `shop`).
+Ask the user **all** of the following questions in a single message:
+
+1. **Project name** — human-readable title (e.g. `My Blog`). **Required.**
+2. **Project slug** — directory/repo name in kebab-case (e.g. `my-blog`). Default: project name lowercased with spaces replaced by hyphens.
+3. **Package name** — Python package identifier in snake_case (e.g. `myblog`). Default: project slug with hyphens replaced by underscores.
+4. **Description** — one-sentence description of the project.
+5. **Author name** — run `git config user.name` to get the default; ask if not set.
+6. **Author email** — run `git config user.email` to get the default; ask if not set.
+7. **Use HTMX Boost?** — SPA-like navigation via `hx-boost` (y/n, default `y`)
+8. **Use S3/Hetzner Storage?** — object storage for media files (y/n, default `y`)
+9. **Use i18n?** — Django internationalisation support (y/n, default `n`)
+10. **Use PWA?** — PWA manifest and service worker (y/n, default `n`)
+
+Wait for the user to provide their answers, then confirm the choices and run:
+
+```bash
+uvx cookiecutter gh:danjac/django-studio \
+  --no-input \
+  project_name="<project_name>" \
+  project_slug="<project_slug>" \
+  package_name="<package_name>" \
+  description="<description>" \
+  author="<author>" \
+  author_email="<author_email>" \
+  use_hx_boost="<y_or_n>" \
+  use_storage="<y_or_n>" \
+  use_i18n="<y_or_n>" \
+  use_pwa="<y_or_n>"
+```
+
+After the project is created, report the path to the new directory and remind the user to:
+
+```bash
+cd <project_slug>
+cp .env.example .env
+# Edit .env with your local settings, then:
+just start              # start Docker services
+just install            # install Python deps + pre-commit hooks
+just dj makemigrations  # generate the initial users app migration
+just test               # run the test suite
+```
+
+---
+
+## `app` — Scaffold a New Django App
+
+`$ARGUMENTS` after `app` is the app name (snake_case, e.g. `blog`, `shop`).
 
 ### 1. Detect the package name
 
-Read `conftest.py`. The first-party package is the prefix in `pytest_plugins` entries before
-`.tests.fixtures` (e.g. `myproject.users.tests.fixtures` → `myproject`).
+Find the first-party package by listing top-level directories that contain an `__init__.py`
+and are not named `config`. There will be exactly one such directory — that is the package name.
 
 ### 2. Create the app files
 

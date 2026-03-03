@@ -84,6 +84,8 @@ MIDDLEWARE: list[str] = [
 ]
 
 # Databases
+#
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DATABASES = {
     "default": env.dj_db_url(

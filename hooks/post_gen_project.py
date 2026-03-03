@@ -3,6 +3,7 @@
 
 import os
 import shutil
+import subprocess
 
 PROJECT_SLUG = "{{cookiecutter.project_slug}}"
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
@@ -404,3 +405,6 @@ with open("justfile") as f:
     content = f.read()
 with open("justfile", "w") as f:
     f.write(content.replace("PROJECT_SLUG", PROJECT_SLUG))
+
+# Generate uv.lock so CI's `uv sync --frozen` works without an extra manual step
+subprocess.run(["uv", "lock"], check=True)

@@ -84,6 +84,8 @@ MIDDLEWARE: list[str] = [
 ]
 
 # Databases
+#
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DATABASES = {
     "default": env.dj_db_url(
@@ -361,6 +363,7 @@ PERMISSIONS_POLICY: dict[str, list] = {
 
 CSP_SCRIPT_WHITELIST = env.list("CSP_SCRIPT_WHITELIST", default=[])
 
+# NOTE: HTMX and Alpine require 'unsafe-inline' and 'unsafe-eval'
 SCRIPT_SCP = [
     CSP.SELF,
     CSP.UNSAFE_EVAL,
@@ -516,7 +519,7 @@ if SENTRY_URL := env("SENTRY_URL", default=None):
         traces_sample_rate=0.5,
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True,
+        send_default_pii=env.bool("SENTRY_SEND_PII", default=False),
     )
 
 # Dev tools

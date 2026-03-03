@@ -12,6 +12,9 @@ This project is designed to be a starting point for building modern Django appli
 - just for task running
 - django-tasks-db for background tasks (not Celery)
 - django-allauth for authentication
+
+- Cloudflare for DNS, CDN, SSL, and DDoS protection
+
 - Hetzner Cloud for hosting (K3s)
 - Design pattern library
 - Full test coverage (pytest + Playwright)
@@ -22,23 +25,23 @@ Note that while this is an opinionated stack, you can easily swap out any of the
 
 ### Development
 
-| Tool                                                    | Purpose                                          | Install                                             |
-| ------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------- |
-| [uv](https://docs.astral.sh/uv/)                        | Python package manager (runs `uvx cookiecutter`) | `curl -LsSf https://astral.sh/uv/install.sh \| sh`  |
-| [just](https://just.systems/)                           | Task runner                                      | `cargo install just` or via your OS package manager |
-| [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit                       | See Docker docs                                     |
+| Tool                                                    | Purpose                                          | Install                                                     |
+| ------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------- |
+| [uv](https://docs.astral.sh/uv/)                        | Python package manager (runs `uvx cookiecutter`) | `curl -LsSf https://astral.sh/uv/install.sh \| sh`          |
+| [just](https://just.systems/)                           | Task runner                                      | `cargo install just` or via your OS package manager         |
+| [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit                       | See Docker docs                                             |
 | [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs, `/django-studio` skill) | See [install docs](https://github.com/cli/cli#installation) |
 
 Python 3.14 is managed automatically by `uv` - no separate install needed.
 
 ### Deployment
 
-| Tool                                                                          | Purpose                              | Install          |
-| ----------------------------------------------------------------------------- | ------------------------------------ | ---------------- |
-| [Terraform](https://developer.hashicorp.com/terraform/install)                | Provision Hetzner infrastructure and Cloudflare DNS | See install docs |
-| [Helm](https://helm.sh/docs/intro/install/)                                   | Deploy Kubernetes workloads          | See install docs |
-| [kubectl](https://kubernetes.io/docs/tasks/tools/)                            | Kubernetes CLI                       | See install docs |
-| [hcloud](https://github.com/hetznercloud/cli)                                 | Hetzner Cloud CLI                    | See install docs |
+| Tool                                                           | Purpose                                             | Install          |
+| -------------------------------------------------------------- | --------------------------------------------------- | ---------------- |
+| [Terraform](https://developer.hashicorp.com/terraform/install) | Provision Hetzner infrastructure and Cloudflare DNS | See install docs |
+| [Helm](https://helm.sh/docs/intro/install/)                    | Deploy Kubernetes workloads                         | See install docs |
+| [kubectl](https://kubernetes.io/docs/tasks/tools/)             | Kubernetes CLI                                      | See install docs |
+| [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                   | See install docs |
 
 See `DEPLOYMENT.md` in the generated project for full deployment instructions.
 

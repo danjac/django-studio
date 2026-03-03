@@ -255,6 +255,24 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 - `djade` for Django template formatting
 - `rustywind` for Tailwind CSS class ordering
 
+#### Form field rendering
+
+Use Django 5+'s `as_field_group` method when you need fine-grained control over which fields are rendered and in what order. Do **not** use the `include "form/field.html"` approach and do not rely on rendering the whole form object when field ordering matters.
+
+```html
+{% raw %}{# Preferred: explicit order via as_field_group #}
+{{ form.title.as_field_group }}
+{{ form.body.as_field_group }}
+{{ form.published.as_field_group }}
+
+{# Acceptable when order does not matter and all fields should be shown #}
+{% for field in form %}
+  {{ field.as_field_group }}
+{% endfor %}{% endraw %}
+```
+
+See `design/forms.md` for full field template documentation.
+
 ## Testing Conventions
 
 - Tests use `factory-boy` and `faker` for test data

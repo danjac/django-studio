@@ -53,6 +53,19 @@ CSS source: `tailwind/forms.css`
 {% endfor %}
 ```
 
+### Field Ordering
+
+Prefer Django 5+'s `as_field_group` for fine-grained control over which fields appear and in what order, rather than rendering `{{ form }}` wholesale or always iterating every field:
+
+```html
+{# Render specific fields in a chosen order #}
+{{ form.title.as_field_group }}
+{{ form.body.as_field_group }}
+{{ form.published.as_field_group }}
+```
+
+`as_field_group` delegates to `django/forms/field.html`, which in turn renders via `form/field.html`, so all label, error, and help-text handling is identical to the loop pattern.
+
 ### Rendered Structure
 
 Each field outputs a `<fieldset>` with the `form-control` class:

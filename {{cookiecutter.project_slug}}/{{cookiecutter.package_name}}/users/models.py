@@ -8,6 +8,6 @@ class User(AbstractUser):
     send_email_notifications = models.BooleanField(default=True)
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the user's first name or username."""
         return self.first_name or self.username

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import py_compile
 import shutil
+import subprocess
 import tempfile
 from pathlib import Path
 
@@ -388,3 +390,30 @@ class TestPwaFeatureFlag:
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": "n"})
         content = (project / "config" / "urls.py").read_text()
         assert "manifest" not in content
+
+
+class TestRenderedPythonLinting:
+    """Verify rendered Python files are syntactically valid and pass linting."""
+
+    def test_python_files_compile(self, project):
+        """All rendered .py files must be syntactically valid Python."""
+        py_files = list(project.rglob("*.py"))
+        assert py_files, "No .py files found in rendered project"
+        errors = []
+        for py_file in py_files:
+            try:
+                py_compile.compile(str(py_file), doraise=True)
+            except py_compile.PyCompileError as exc:
+                errors.append(str(exc))
+        assert not errors, "Syntax errors found:\n" + "\n".join(errors)
+
+    def test_python_files_pass_ruff(self, project):
+        """All rendered .py files must pass ruff check (F rules)."""
+        result = subprocess.run(
+            ["ruff", "check", "--select", "F", "--no-cache", str(project)],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, (
+            f"ruff check failed:\n{result.stdout}\n{result.stderr}"
+        )

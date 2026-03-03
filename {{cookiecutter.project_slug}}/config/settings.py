@@ -363,6 +363,7 @@ PERMISSIONS_POLICY: dict[str, list] = {
 
 CSP_SCRIPT_WHITELIST = env.list("CSP_SCRIPT_WHITELIST", default=[])
 
+# NOTE: HTMX and Alpine require 'unsafe-inline' and 'unsafe-eval'
 SCRIPT_SCP = [
     CSP.SELF,
     CSP.UNSAFE_EVAL,

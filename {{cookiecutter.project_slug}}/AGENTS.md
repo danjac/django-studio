@@ -264,6 +264,22 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 
 ## Working Conventions
 
+### Required reading before implementation
+
+| What you are about to implement | Read first |
+| ------------------------------- | ---------- |
+| Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/` |
+| Background task                 | `docs/Django-Tasks.md` |
+| HTMX interaction                | `docs/HTMX.md` |
+| AlpineJS component              | `docs/Alpine.md` |
+| Tailwind / CSS                  | `docs/Tailwind.md` |
+| Authentication / allauth        | `docs/Authentication.md` |
+| Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/k3s-Hetzner-Cloudflare.md` |
+| Testing patterns                | `docs/Testing.md` |
+| Any of the above                | `docs/Project-Structure.md` (once per session) |
+
+If a doc contradicts what you see in existing code, flag it — do not silently pick one.
+
 - **Search before implementing** - Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/admin.py` for admin mixins, `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities.
 - **Scope discipline** - Only change what was explicitly requested.
 - **Diagnose before changing** - Read the code and state your diagnosis with a file:line reference before editing.

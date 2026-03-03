@@ -22,7 +22,7 @@ db.sqlite3
 staticfiles/
 media/
 static/app.css
- .django_tailwind_cli/
+.django_tailwind_cli/
 
 # Environment
 .env

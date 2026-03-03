@@ -87,7 +87,6 @@ Every generated project ships with the `/django-studio` skill at `.claude/comman
 | `/django-studio issue <feedback>`              | File an issue against the current project                                    |
 | `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                     |
 | `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and settings)  |
-| `/django-studio app <app-name>`                | Scaffold a new Django app (wires `INSTALLED_APPS`, `conftest.py`, `urls.py`) |
 | `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`           |
 
 Run `just sync-skills` after editing the skill to propagate changes to `~/.claude/commands/`.

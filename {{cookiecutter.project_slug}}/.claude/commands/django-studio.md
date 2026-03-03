@@ -11,7 +11,6 @@ Parse the first word of `$ARGUMENTS` to determine the subcommand:
 |------------|---------|
 | `issue`    | File a GitHub issue |
 | `create`   | Create a new Django project |
-| `app`      | Scaffold a new Django app |
 | `init`     | Run Session Zero |
 
 If `$ARGUMENTS` is empty or the first word is not a recognised subcommand, print usage and stop.
@@ -90,85 +89,6 @@ just install            # install Python deps + pre-commit hooks
 just dj makemigrations  # generate the initial users app migration
 just test               # run the test suite
 ```
-
----
-
-## `app` — Scaffold a New Django App
-
-`$ARGUMENTS` after `app` is the app name (snake_case, e.g. `blog`, `shop`).
-
-### 1. Detect the package name
-
-Find the first-party package by listing top-level directories that contain an `__init__.py`
-and are not named `config`. There will be exactly one such directory — that is the package name.
-
-### 2. Create the app files
-
-Create these files under `<package>/<app>/`:
-
-**`__init__.py`** — empty
-
-**`apps.py`**:
-```python
-from django.apps import AppConfig
-
-
-class <AppName>Config(AppConfig):
-    name = "<package>.<app>"
-    default_auto_field = "django.db.models.BigAutoField"
-```
-(Convert the app name to CamelCase for the class name, e.g. `blog_posts` → `BlogPostsConfig`.)
-
-**`models.py`** — empty
-
-**`admin.py`** — empty
-
-**`views.py`** — empty
-
-**`urls.py`**:
-```python
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from django.urls import URLPattern, URLResolver
-
-app_name = "<app>"
-
-urlpatterns: list[URLPattern | URLResolver] = []
-```
-
-**`tests/__init__.py`** — empty
-
-**`tests/factories.py`** — empty
-
-**`tests/fixtures.py`** — empty
-
-### 3. Update `config/settings.py`
-
-Add `"<package>.<app>"` to `INSTALLED_APPS` after the last existing first-party app entry
-(the block of entries beginning with the package name prefix).
-
-### 4. Update `conftest.py`
-
-Add `"<package>.<app>.tests.fixtures"` to the `pytest_plugins` list.
-
-### 5. Update `config/urls.py`
-
-Add an include for the new app immediately after the last first-party `include()`:
-
-```python
-path("", include("<package>.<app>.urls")),
-```
-
-### 6. Confirm
-
-Report what was created and remind the user to:
-- Define models in `models.py` then run `just dj makemigrations <app>`
-- Add views in `views.py` and URL patterns in `urls.py`
-- Add tests in `tests/`
-- Run `/django-studio init` to set up the project roadmap if not already done
 
 ---
 

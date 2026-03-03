@@ -122,6 +122,16 @@ precommitupdate:
 precommitall:
    @just precommit run --all-files
 
+# File a GitHub issue in the current project
+[group('development')]
+issue title body:
+   gh issue create --title "{{ title }}" --body "{{ body }}"
+
+# File a GitHub issue in the django-studio template repo
+[group('development')]
+studio title body:
+   gh issue create --repo danjac/django-studio --title "{{ title }}" --body "{{ body }}"
+
 # Run Github workflow
 [group('deployment')]
 gh workflow *args:

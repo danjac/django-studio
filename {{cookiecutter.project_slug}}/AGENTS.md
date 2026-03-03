@@ -150,6 +150,16 @@ just psql                      # Connect to PostgreSQL
 
 ## Git Workflow
 
+### Initial Setup
+
+`.claude/` is gitignored to keep session data and memory out of version control. The
+skill file at `.claude/commands/django-studio.md` is project configuration and should
+be tracked. Force-add it once after `git init`:
+
+```bash
+git add -f .claude/commands/django-studio.md
+```
+
 ### Commit Messages
 
 Conventional commits enforced by commitlint. Format: `type: subject`
@@ -254,7 +264,7 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself - a broken default, a missing utility, an antipattern - log it immediately using the `/django-studio` command:
 
 ```
-/django-studio cookiecutter <what to fix or improve and why>
+/django-studio issue cookiecutter <what to fix or improve and why>
 ```
 
 The justfile also has equivalent targets for use outside an agent session:

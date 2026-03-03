@@ -17,6 +17,7 @@
               class="btn btn-primary border border-white py-1 !px-6 text-base md:text-lg"
               aria-label="Accept cookies and close banner"
               hx-post="{% url 'accept_cookies' %}"
+              hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'
               hx-target="#{{ target }}"
               hx-push-url="false"
               hx-swap="delete"

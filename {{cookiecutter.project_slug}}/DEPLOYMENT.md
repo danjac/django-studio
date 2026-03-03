@@ -4,12 +4,12 @@ Fresh install of {{cookiecutter.project_name}} on a Hetzner Cloud K3s cluster wi
 
 ## Architecture
 
-| Layer | Tool | What it does |
-|-------|------|--------------|
-| Infrastructure | Terraform (hetzner) | Servers, network, firewall, Postgres volume; K3s installed via cloud-init |
-| DNS / CDN / SSL | Terraform (cloudflare) | DNS A record, CDN caching, TLS settings |
-| Kubernetes objects | Helm (`helm/{{cookiecutter.project_slug}}/`) | Postgres, Redis, Django app, workers, cron jobs, ingress |
-| Observability | Helm (`helm/observability/`) | Prometheus, Grafana, Loki, Tempo, OTel |
+| Layer              | Tool                                         | What it does                                                              |
+| ------------------ | -------------------------------------------- | ------------------------------------------------------------------------- |
+| Infrastructure     | Terraform (hetzner)                          | Servers, network, firewall, Postgres volume; K3s installed via cloud-init |
+| DNS / CDN / SSL    | Terraform (cloudflare)                       | DNS A record, CDN caching, TLS settings                                   |
+| Kubernetes objects | Helm (`helm/{{cookiecutter.project_slug}}/`) | Postgres, Redis, Django app, workers, cron jobs, ingress                  |
+| Observability      | Helm (`helm/observability/`)                 | Prometheus, Grafana, Loki, Tempo, OTel                                    |
 
 ## Prerequisites
 
@@ -17,9 +17,11 @@ Fresh install of {{cookiecutter.project_name}} on a Hetzner Cloud K3s cluster wi
 - [Helm](https://helm.sh/docs/intro/install/) >= 3.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [hcloud CLI](https://github.com/hetznercloud/cli) — install then:
+
   ```bash
   hcloud context create {{cookiecutter.project_slug}}   # paste a Read & Write API token when prompted
   ```
+
   Get the token: Hetzner Console → your project → Security → API Tokens → Generate.
 - [just](https://github.com/casey/just)
 - SSH key pair (`ssh-keygen -t ed25519`)
@@ -37,12 +39,12 @@ $EDITOR terraform.tfvars
 
 Required values:
 
-| Variable | Description |
-|----------|-------------|
-| `hcloud_token` | Hetzner Cloud API token (Read & Write) |
-| `ssh_public_key` | Contents of `~/.ssh/id_ed25519.pub` |
-| `k3s_token` | Random string for K3s cluster auth — `openssl rand -hex 32` |
-| `cluster_name` | Name prefix for all resources (e.g. `{{cookiecutter.project_slug}}`) |
+| Variable         | Description                                                          |
+| ---------------- | -------------------------------------------------------------------- |
+| `hcloud_token`   | Hetzner Cloud API token (Read & Write)                               |
+| `ssh_public_key` | Contents of `~/.ssh/id_ed25519.pub`                                  |
+| `k3s_token`      | Random string for K3s cluster auth — `openssl rand -hex 32`          |
+| `cluster_name`   | Name prefix for all resources (e.g. `{{cookiecutter.project_slug}}`) |
 
 ```bash
 terraform init
@@ -178,7 +180,7 @@ Grafana is available at the hostname set in `helm/observability/values.secret.ya
 ### Deploy a new image
 
 ```bash
-just gh workflow deploy
+just gh deploy
 ```
 
 Triggers the `deploy` GitHub Actions workflow, which runs tests, builds a new image, then runs
@@ -189,9 +191,9 @@ Triggers the `deploy` GitHub Actions workflow, which runs tests, builds a new im
 The `deploy` workflow (`.github/workflows/deploy.yml`) runs `helm upgrade --rollback-on-failure`
 directly on the GitHub Actions runner. Two repository secrets are required:
 
-| Secret | Description |
-|--------|-------------|
-| `KUBECONFIG_BASE64` | Base64-encoded kubeconfig (see below) |
+| Secret               | Description                                                              |
+| -------------------- | ------------------------------------------------------------------------ |
+| `KUBECONFIG_BASE64`  | Base64-encoded kubeconfig (see below)                                    |
 | `HELM_VALUES_SECRET` | Full contents of `helm/{{cookiecutter.project_slug}}/values.secret.yaml` |
 
 Generate `KUBECONFIG_BASE64`:
@@ -205,9 +207,9 @@ Set these in GitHub → repository **Settings → Secrets and variables → Acti
 
 ### Helm command reference
 
-| Command | When to use |
-|---------|-------------|
-| `just helm-install` | First-time install on a fresh cluster |
+| Command             | When to use                                                                   |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `just helm-install` | First-time install on a fresh cluster                                         |
 | `just helm-upgrade` | Config or resource changes — preserves the running image via `--reuse-values` |
 
 ### Run management commands

@@ -57,6 +57,12 @@
 {% partialdef fileinput %}{% partial input %}{% endpartialdef %}
 {% partialdef urlinput %}{% partial input %}{% endpartialdef %}
 
+{# Textarea #}
+{% partialdef textarea %}
+  {% partial label %}
+  {% render_field field class="form-textarea" %}
+{% endpartialdef %}
+
 {# Checkbox #}
 {% partialdef checkboxinput %}
   <div class="flex w-full items-center space-x-3">

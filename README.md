@@ -27,7 +27,7 @@ Before generating a project, install the following tools:
 | [uv](https://docs.astral.sh/uv/)                        | Python package manager (runs `uvx cookiecutter`) | `curl -LsSf https://astral.sh/uv/install.sh \| sh`  |
 | [just](https://just.systems/)                           | Task runner                                      | `cargo install just` or via your OS package manager |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit                       | See Docker docs                                     |
-| [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs, `/django-studio` skill) | `sudo dnf install gh` or via your OS package manager |
+| [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs, `/django-studio` ski    | See instructions                                    |
 
 Python 3.14 is managed automatically by `uv` - no separate install needed.
 
@@ -64,12 +64,12 @@ See `docs/` for full documentation.
 
 Every generated project ships with the `/django-studio` skill at `.claude/commands/django-studio.md`.
 
-| Command | Effect |
-|---------|--------|
-| `/django-studio issue <feedback>` | File an issue against the current project |
-| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo |
-| `/django-studio create <app-name>` | Scaffold a new Django app (wires `INSTALLED_APPS`, `conftest.py`, `urls.py`) |
-| `/django-studio init` | Run Session Zero — define goals, write README, create `ROADMAP.md` |
+| Command                                        | Effect                                                                       |
+| ---------------------------------------------- | ---------------------------------------------------------------------------- |
+| `/django-studio issue <feedback>`              | File an issue against the current project                                    |
+| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                     |
+| `/django-studio create <app-name>`             | Scaffold a new Django app (wires `INSTALLED_APPS`, `conftest.py`, `urls.py`) |
+| `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`           |
 
 Run `just sync-skills` after editing the skill to propagate changes to `~/.claude/commands/`.
 

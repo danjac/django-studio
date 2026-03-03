@@ -10,7 +10,7 @@ Parse the first word of `$ARGUMENTS` to determine the subcommand:
 | Subcommand | Purpose |
 |------------|---------|
 | `issue`    | File a GitHub issue |
-| `create`   | Scaffold a new Django app |
+| `create`   | Create a new Django project |
 | `init`     | Run Session Zero |
 
 If `$ARGUMENTS` is empty or the first word is not a recognised subcommand, print usage and stop.
@@ -46,82 +46,49 @@ Log feedback immediately when you notice it — do not wait until the end of a s
 
 ---
 
-## `create` — Scaffold a New Django App
+## `create` — Create a New Django Project
 
-`$ARGUMENTS` after `create` is the app name (snake_case, e.g. `blog`, `shop`).
+Run `git config user.name` and `git config user.email` to get author defaults, then ask the user **all** of the following questions in a single conversational message:
 
-### 1. Detect the package name
+1. What is the name of your project? *(e.g. "My Blog" — required)*
+2. What should the project directory / repo be called? *(kebab-case, e.g. `my-blog` — default: project name lowercased with spaces replaced by hyphens)*
+3. What should the top-level Python package be called? *(snake_case, e.g. `myblog` — default: directory name with hyphens replaced by underscores)*
+4. Describe the project in one sentence.
+5. What is your name? *(default: value from `git config user.name`, if available)*
+6. What is your email address? *(default: value from `git config user.email`, if available)*
+7. Will this project use SPA-like navigation without full page reloads? *(enables HTMX Boost — default: yes)*
+8. Will this project need to store user-uploaded files or media in the cloud? *(enables S3/Hetzner object storage — default: yes)*
+9. Will this project need to support multiple languages? *(enables Django i18n/l10n — default: no)*
+10. Should this project work as a Progressive Web App (installable, offline-capable)? *(adds PWA manifest and service worker — default: no)*
 
-Read `conftest.py`. The first-party package is the prefix in `pytest_plugins` entries before
-`.tests.fixtures` (e.g. `myproject.users.tests.fixtures` → `myproject`).
+Wait for the user to provide their answers, then confirm the choices and run:
 
-### 2. Create the app files
-
-Create these files under `<package>/<app>/`:
-
-**`__init__.py`** — empty
-
-**`apps.py`**:
-```python
-from django.apps import AppConfig
-
-
-class <AppName>Config(AppConfig):
-    name = "<package>.<app>"
-    default_auto_field = "django.db.models.BigAutoField"
-```
-(Convert the app name to CamelCase for the class name, e.g. `blog_posts` → `BlogPostsConfig`.)
-
-**`models.py`** — empty
-
-**`admin.py`** — empty
-
-**`views.py`** — empty
-
-**`urls.py`**:
-```python
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from django.urls import URLPattern, URLResolver
-
-app_name = "<app>"
-
-urlpatterns: list[URLPattern | URLResolver] = []
+```bash
+uvx cookiecutter gh:danjac/django-studio \
+  --no-input \
+  project_name="<project_name>" \
+  project_slug="<project_slug>" \
+  package_name="<package_name>" \
+  description="<description>" \
+  author="<author>" \
+  author_email="<author_email>" \
+  use_hx_boost="<y_or_n>" \
+  use_storage="<y_or_n>" \
+  use_i18n="<y_or_n>" \
+  use_pwa="<y_or_n>"
 ```
 
-**`tests/__init__.py`** — empty
+After the project is created, report the path to the new directory and remind the user to:
 
-**`tests/factories.py`** — empty
-
-**`tests/fixtures.py`** — empty
-
-### 3. Update `config/settings.py`
-
-Add `"<package>.<app>"` to `INSTALLED_APPS` after the last existing first-party app entry
-(the block of entries beginning with the package name prefix).
-
-### 4. Update `conftest.py`
-
-Add `"<package>.<app>.tests.fixtures"` to the `pytest_plugins` list.
-
-### 5. Update `config/urls.py`
-
-Add an include for the new app immediately after the last first-party `include()`:
-
-```python
-path("", include("<package>.<app>.urls")),
+```bash
+cd <project_slug>
+cp .env.example .env
+# Edit .env with your local settings, then:
+just start              # start Docker services
+just install            # install Python deps + pre-commit hooks
+just dj makemigrations  # generate the initial users app migration
+just test               # run the test suite
 ```
-
-### 6. Confirm
-
-Report what was created and remind the user to:
-- Define models in `models.py` then run `just dj makemigrations <app>`
-- Add views in `views.py` and URL patterns in `urls.py`
-- Add tests in `tests/`
-- Run `/django-studio init` to set up the project roadmap if not already done
 
 ---
 

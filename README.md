@@ -61,11 +61,15 @@ See `docs/` for full documentation.
 
 ## Skills
 
-The `/django-studio` skill is used to provide feedback while working on a generated project:
+Every generated project ships with the `/django-studio` skill at `.claude/commands/django-studio.md`.
 
-- `/django-studio <feedback>` - posts an issue to the generated project's own repo
-- `/django-studio cookiecutter <feedback>` - posts an issue to this repo
+| Command | Effect |
+|---------|--------|
+| `/django-studio issue <feedback>` | File an issue against the current project |
+| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo |
+| `/django-studio create <app-name>` | Scaffold a new Django app (wires `INSTALLED_APPS`, `conftest.py`, `urls.py`) |
+| `/django-studio init` | Run Session Zero — define goals, write README, create `ROADMAP.md` |
 
-The skill lives in `{{cookiecutter.project_slug}}/.claude/commands/django-studio.md` and is automatically included in every generated project. Run `just sync-skills` after editing it to propagate the change to `~/.claude/commands/` for use from any project.
+Run `just sync-skills` after editing the skill to propagate changes to `~/.claude/commands/`.
 
-Requires the `gh` CLI tool authenticated with GitHub access.
+Requires the `gh` CLI authenticated with GitHub access.

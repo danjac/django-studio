@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% title_tag _("Sign Up Closed") %}{% endblock title %}
+
+{% block content %}
+  <div class="mx-auto max-w-md py-12">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      {% translate "Sign Up Closed" %}
+    </h1>
+    <p class="text-sm text-zinc-600 dark:text-zinc-400">
+      {% translate "We are sorry, but the sign up is currently closed." %}
+    </p>
+  </div>
+{% endblock content %}

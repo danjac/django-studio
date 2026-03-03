@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% title_tag _("Confirm Access") %}{% endblock title %}
+
+{% block content %}
+  <div class="mx-auto max-w-md py-12">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      {% translate "Confirm Access" %}
+    </h1>
+    <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      {% translate "Enter your password:" %}
+    </p>
+    <form method="post" action="{% url 'account_reauthenticate' %}" class="space-y-4">
+      {% csrf_token %}
+      {{ redirect_field }}
+      {{ form }}
+      <div>
+        <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
+      </div>
+    </form>
+  </div>
+{% endblock content %}

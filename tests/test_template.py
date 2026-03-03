@@ -493,6 +493,7 @@ class TestFeatureFlagCombinations:
         assert "USE_I18N = False" in settings_content
 
 
+
 class TestRenderedPythonLinting:
     """Verify rendered Python files are syntactically valid and pass linting."""
 

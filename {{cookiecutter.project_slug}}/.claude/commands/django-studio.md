@@ -48,18 +48,18 @@ Log feedback immediately when you notice it — do not wait until the end of a s
 
 ## `create` — Create a New Django Project
 
-Ask the user **all** of the following questions in a single message:
+Run `git config user.name` and `git config user.email` to get author defaults, then ask the user **all** of the following questions in a single conversational message:
 
-1. **Project name** — human-readable title (e.g. `My Blog`). **Required.**
-2. **Project slug** — directory/repo name in kebab-case (e.g. `my-blog`). Default: project name lowercased with spaces replaced by hyphens.
-3. **Package name** — Python package identifier in snake_case (e.g. `myblog`). Default: project slug with hyphens replaced by underscores.
-4. **Description** — one-sentence description of the project.
-5. **Author name** — run `git config user.name` to get the default; ask if not set.
-6. **Author email** — run `git config user.email` to get the default; ask if not set.
-7. **Use HTMX Boost?** — SPA-like navigation via `hx-boost` (y/n, default `y`)
-8. **Use S3/Hetzner Storage?** — object storage for media files (y/n, default `y`)
-9. **Use i18n?** — Django internationalisation support (y/n, default `n`)
-10. **Use PWA?** — PWA manifest and service worker (y/n, default `n`)
+1. What is the name of your project? *(e.g. "My Blog" — required)*
+2. What should the project directory / repo be called? *(kebab-case, e.g. `my-blog` — default: project name lowercased with spaces replaced by hyphens)*
+3. What should the top-level Python package be called? *(snake_case, e.g. `myblog` — default: directory name with hyphens replaced by underscores)*
+4. Describe the project in one sentence.
+5. What is your name? *(default: value from `git config user.name`, if available)*
+6. What is your email address? *(default: value from `git config user.email`, if available)*
+7. Will this project use SPA-like navigation without full page reloads? *(enables HTMX Boost — default: yes)*
+8. Will this project need to store user-uploaded files or media in the cloud? *(enables S3/Hetzner object storage — default: yes)*
+9. Will this project need to support multiple languages? *(enables Django i18n/l10n — default: no)*
+10. Should this project work as a Progressive Web App (installable, offline-capable)? *(adds PWA manifest and service worker — default: no)*
 
 Wait for the user to provide their answers, then confirm the choices and run:
 

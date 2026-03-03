@@ -88,3 +88,17 @@
     </button>
   </div>
 {% endpartialdef %}
+
+
+{# Select dropdown #}
+{% partialdef select %}
+  {% partial label %}
+  {% render_field field class="form-select" %}
+{% endpartialdef %}
+
+{# Multi-select #}
+{% partialdef selectmultiple %}
+  {% partial label %}
+  {% render_field field class="form-multiselect" %}
+{% endpartialdef %}
+

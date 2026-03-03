@@ -217,6 +217,19 @@ class TestTemplateContent:
         # The .env.example uses project_slug for OPEN_TELEMETRY_SERVICE_NAME and HETZNER_STORAGE_BUCKET
         assert "test-project" in content
 
+    def test_default_auto_field_is_big_auto_field(self, output_dir, default_context):
+        """Test that settings.py sets DEFAULT_AUTO_FIELD to BigAutoField."""
+        cookiecutter(
+            ".",
+            no_input=True,
+            output_dir=str(output_dir),
+            extra_context=default_context,
+        )
+
+        settings_path = output_dir / "test-project" / "config" / "settings.py"
+        content = settings_path.read_text()
+        assert 'DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"' in content
+
 
 class TestCustomPackageName:
     """Test that custom package names work correctly."""

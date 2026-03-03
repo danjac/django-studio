@@ -4,6 +4,7 @@
 import os
 import shutil
 import subprocess
+from pathlib import Path
 
 PROJECT_SLUG = "{{cookiecutter.project_slug}}"
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
@@ -383,17 +384,13 @@ def remove_pwa_static() -> None:
 
 def install_skills() -> None:
     """Copy skills from the template's skills/ directory to .claude/commands/."""
-    skills_src = os.path.join("{{cookiecutter._repo_dir}}", "skills")
-    if not os.path.isdir(skills_src):
+    skills_src = Path("{{cookiecutter._repo_dir}}") / "skills"
+    if not skills_src.is_dir():
         return
-    commands_dst = os.path.join(".claude", "commands")
-    os.makedirs(commands_dst, exist_ok=True)
-    for skill_file in os.listdir(skills_src):
-        if skill_file.endswith(".md"):
-            shutil.copy(
-                os.path.join(skills_src, skill_file),
-                os.path.join(commands_dst, skill_file),
-            )
+    commands_dst = Path(".claude") / "commands"
+    commands_dst.mkdir(parents=True, exist_ok=True)
+    for skill_file in skills_src.glob("*.md"):
+        shutil.copy(skill_file, commands_dst / skill_file.name)
 
 
 # ── main ──────────────────────────────────────────────────────────────────────

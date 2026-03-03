@@ -51,7 +51,7 @@
   {% render_field field class="form-input" %}
 {% endpartialdef %}
 
-{# Text, URL, and file inputs - same as default #}
+{# Simple text and file inputs - same as default #}
 {% partialdef textinput %}{% partial input %}{% endpartialdef %}
 {% partialdef emailinput %}{% partial input %}{% endpartialdef %}
 {% partialdef dateinput %}{% partial input %}{% endpartialdef %}
@@ -69,6 +69,14 @@
   <div class="flex w-full items-center space-x-3">
     {% render_field field class="form-checkbox" %}
     {% partial label %}
+  </div>
+{% endpartialdef %}
+
+{# Checkbox select multiple (e.g. M2M fields) #}
+{% partialdef checkboxselectmultiple %}
+  {% partial label %}
+  <div class="space-y-2">
+    {% render_field field %}
   </div>
 {% endpartialdef %}
 
@@ -90,7 +98,6 @@
   </div>
 {% endpartialdef %}
 
-
 {# Select dropdown #}
 {% partialdef select %}
   {% partial label %}
@@ -103,11 +110,4 @@
   {% render_field field class="form-multiselect" %}
 {% endpartialdef %}
 
-{# Checkbox select multiple (e.g. M2M fields) #}
-{% partialdef checkboxselectmultiple %}
-  {% partial label %}
-  <div class="space-y-2">
-    {% render_field field %}
-  </div>
-{% endpartialdef %}
 

@@ -102,3 +102,12 @@
   {% render_field field class="form-multiselect" %}
 {% endpartialdef %}
 
+{# Checkbox select multiple (e.g. M2M fields) #}
+{% partialdef checkboxselectmultiple %}
+  {% partial label %}
+  <div class="space-y-2">
+    {% render_field field %}
+  </div>
+{% endpartialdef %}
+
+{

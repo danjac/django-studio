@@ -11,47 +11,32 @@
     <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
       {% blocktranslate with email=email %}We've sent a verification code to <a class="underline" href="mailto:{{ email }}">{{ email }}</a>. The code expires shortly, so please enter it soon.{% endblocktranslate %}
     </p>
-    <form method="post" action="{% url 'account_email_verification_sent' %}" class="space-y-4">
+    <form method="post" class="space-y-4">
       {% csrf_token %}
-      {{ redirect_field }}
       {{ verify_form }}
       <div class="flex flex-wrap gap-3">
         <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
         {% if can_resend %}
-          <button type="submit" form="resend-form" class="btn btn-secondary">{% translate "Request new code" %}</button>
+          <button type="submit" name="action" value="resend" class="btn btn-secondary">{% translate "Request new code" %}</button>
         {% endif %}
         {% if cancel_url %}
           <a href="{{ cancel_url }}" class="btn btn-secondary">{% translate "Cancel" %}</a>
-        {% else %}
-          <button type="submit" form="logout-from-stage-form" class="btn btn-secondary">{% translate "Cancel" %}</button>
         {% endif %}
       </div>
     </form>
-    {% if can_resend %}
-      <form id="resend-form" method="post" action="{% url 'account_email_verification_sent' %}">
-        <input type="hidden" name="action" value="resend" />
-        {{ redirect_field }}
-        {% csrf_token %}
-      </form>
-    {% endif %}
-    {% if not cancel_url %}
-      <form id="logout-from-stage-form" method="post" action="{% url 'account_logout' %}">
-        <input type="hidden" name="next" value="{% url 'account_login' %}" />
-        {% csrf_token %}
-      </form>
-    {% endif %}
     {% if can_change %}
-      <h2 class="mb-4 mt-8 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-        {% translate "Use a different email address" %}
-      </h2>
-      <form method="post" action="{% url 'account_email_verification_sent' %}" class="space-y-4">
-        {% csrf_token %}
-        {{ redirect_field }}
-        {{ change_form }}
-        <div>
-          <button type="submit" name="action" value="change" class="btn btn-primary">{% translate "Change" %}</button>
-        </div>
-      </form>
+      <details class="mt-8">
+        <summary class="cursor-pointer text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          {% translate "Use a different email address" %}
+        </summary>
+        <form method="post" class="mt-4 space-y-4">
+          {% csrf_token %}
+          {{ change_form }}
+          <div>
+            <button type="submit" name="action" value="change" class="btn btn-primary">{% translate "Change" %}</button>
+          </div>
+        </form>
+      </details>
     {% endif %}
   </div>
 {% endblock content %}

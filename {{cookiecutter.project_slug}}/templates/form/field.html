@@ -54,9 +54,14 @@
 {# Simple text and file inputs - same as default #}
 {% partialdef textinput %}{% partial input %}{% endpartialdef %}
 {% partialdef emailinput %}{% partial input %}{% endpartialdef %}
-{% partialdef dateinput %}{% partial input %}{% endpartialdef %}
 {% partialdef fileinput %}{% partial input %}{% endpartialdef %}
 {% partialdef urlinput %}{% partial input %}{% endpartialdef %}
+
+{# Date #}
+{% partialdef dateinput %}
+  {% partial label %}
+  {% render_field field class="form-input" type="date" %}
+{% endpartialdef %}
 
 {# Textarea #}
 {% partialdef textarea %}

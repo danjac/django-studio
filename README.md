@@ -2,7 +2,7 @@
 
 Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS.
 
-This project is designed to be a starting point for building modern Django applications with a focus on simplicity, performance, and developer experience. It includes an opinionated and carefully curated stack of tools and libraries to help you get up and running quickly while following best practices. It includes Markdown documentation and a design pattern library to assist with AI-driven development and code generation while keeping skilled developers in the loop.
+This project is designed to be a starting point for building modern Django applications with a focus on simplicity, performance, and developer experience. It includes an opinionated and carefully curated stack of tools and libraries to help you get up and running quickly while following best practices. It includes Markdown documentation, MCP support, custom Skills and a design pattern library to assist with AI-driven development and code generation while keeping skilled developers in the loop.
 
 ## Stack
 

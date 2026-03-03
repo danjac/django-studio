@@ -4,6 +4,7 @@
 import os
 import shutil
 import subprocess
+from pathlib import Path
 
 PROJECT_SLUG = "{{cookiecutter.project_slug}}"
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
@@ -378,6 +379,20 @@ def remove_pwa_static() -> None:
         os.remove(SERVICE_WORKER_JS)
 
 
+# ── skills ────────────────────────────────────────────────────────────────────
+
+
+def install_skills() -> None:
+    """Copy skills from the template's skills/ directory to .claude/commands/."""
+    skills_src = Path("{{cookiecutter._repo_dir}}") / "skills"
+    if not skills_src.is_dir():
+        return
+    commands_dst = Path(".claude") / "commands"
+    commands_dst.mkdir(parents=True, exist_ok=True)
+    for skill_file in skills_src.glob("*.md"):
+        shutil.copy(skill_file, commands_dst / skill_file.name)
+
+
 # ── main ──────────────────────────────────────────────────────────────────────
 
 if USE_HX_BOOST == "y":
@@ -405,6 +420,8 @@ with open("justfile") as f:
     content = f.read()
 with open("justfile", "w") as f:
     f.write(content.replace("PROJECT_SLUG", PROJECT_SLUG))
+
+install_skills()
 
 # Generate uv.lock so CI's `uv sync --frozen` works without an extra manual step
 subprocess.run(["uv", "lock"], check=True)

@@ -17,4 +17,4 @@ check: lint format test
 
 # Sync skills from generated project template to global Claude commands
 sync-skills:
-    cp "{{cookiecutter.project_slug}}/.claude/commands/django-studio.md" ~/.claude/commands/django-studio.md
+    cp skills/django-studio.md ~/.claude/commands/django-studio.md

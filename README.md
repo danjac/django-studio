@@ -82,6 +82,12 @@ See `docs/` for full documentation.
 
 Every generated project ships with the `/django-studio` skill at `.claude/commands/django-studio.md`.
 
+The skill source lives in `skills/django-studio.md` at the repo root.  Run `just sync-skills` to install or update it in `~/.claude/commands/`:
+
+```bash
+just sync-skills
+```
+
 | Command                                        | Effect                                                                       |
 | ---------------------------------------------- | ---------------------------------------------------------------------------- |
 | `/django-studio issue <feedback>`              | File an issue against the current project                                    |

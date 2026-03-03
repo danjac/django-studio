@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% if process == "connect" %}
+    {% title_tag _("Connect Account") %}
+  {% else %}
+    {% title_tag _("Sign In") %}
+  {% endif %}
+{% endblock title %}
+
+{% block content %}
+  <div class="mx-auto max-w-md py-12">
+    {% if process == "connect" %}
+      <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+        {% blocktranslate with provider=provider.name %}Connect {{ provider }}{% endblocktranslate %}
+      </h1>
+      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+        {% blocktranslate with provider=provider.name %}You are about to connect a new third-party account from {{ provider }}.{% endblocktranslate %}
+      </p>
+    {% else %}
+      <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+        {% blocktranslate with provider=provider.name %}Sign In Via {{ provider }}{% endblocktranslate %}
+      </h1>
+      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+        {% blocktranslate with provider=provider.name %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktranslate %}
+      </p>
+    {% endif %}
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <button type="submit" class="btn btn-primary">{% translate "Continue" %}</button>
+      </div>
+    </form>
+  </div>
+{% endblock content %}

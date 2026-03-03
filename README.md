@@ -8,10 +8,10 @@ This project is designed to be a starting point for building modern Django appli
 
 - Python 3.14, Django 6.0, PostgreSQL 18, Redis 8
 - HTMX + Alpine.js + Tailwind CSS (no JS build step)
-- uv for dependency management
-- just for task running
-- django-tasks-db for background tasks (not Celery)
-- django-allauth for authentication
+- `uv` for dependency management
+- `just` for task running
+- `django-tasks-db` for background tasks (not Celery)
+- `django-allauth` for authentication
 
 - Cloudflare for DNS, CDN, SSL, and DDoS protection
 

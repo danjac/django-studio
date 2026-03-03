@@ -378,6 +378,24 @@ def remove_pwa_static() -> None:
         os.remove(SERVICE_WORKER_JS)
 
 
+# ── skills ────────────────────────────────────────────────────────────────────
+
+
+def install_skills() -> None:
+    """Copy skills from the template's skills/ directory to .claude/commands/."""
+    skills_src = os.path.join("{{cookiecutter._repo_dir}}", "skills")
+    if not os.path.isdir(skills_src):
+        return
+    commands_dst = os.path.join(".claude", "commands")
+    os.makedirs(commands_dst, exist_ok=True)
+    for skill_file in os.listdir(skills_src):
+        if skill_file.endswith(".md"):
+            shutil.copy(
+                os.path.join(skills_src, skill_file),
+                os.path.join(commands_dst, skill_file),
+            )
+
+
 # ── main ──────────────────────────────────────────────────────────────────────
 
 if USE_HX_BOOST == "y":
@@ -405,6 +423,8 @@ with open("justfile") as f:
     content = f.read()
 with open("justfile", "w") as f:
     f.write(content.replace("PROJECT_SLUG", PROJECT_SLUG))
+
+install_skills()
 
 # Generate uv.lock so CI's `uv sync --frozen` works without an extra manual step
 subprocess.run(["uv", "lock"], check=True)

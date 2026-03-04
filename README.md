@@ -34,9 +34,7 @@ Prices are subject to change, but the current hosting costs based on the default
 - `just` for task running
 - `django-tasks-db` for background tasks (not Celery)
 - `django-allauth` for authentication
-
 - `pre-commit` hooks for linting
-
 - Cloudflare for DNS, CDN, SSL, and DDoS protection
 - Hetzner Cloud for hosting (K3s)
 - Full test coverage (pytest + Playwright)

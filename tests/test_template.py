@@ -372,28 +372,6 @@ class TestHxBoostFeatureFlag:
         assert not (project / "templates" / "default_base.html").exists()
 
 
-class TestI18nFeatureFlag:
-    """Test use_i18n flag behaviour."""
-
-    def test_locale_dir_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "y"})
-        assert (project / "locale").is_dir()
-
-    def test_locale_dir_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "n"})
-        assert not (project / "locale").exists()
-
-    def test_use_i18n_true_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "y"})
-        content = (project / "config" / "settings.py").read_text()
-        assert "USE_I18N = True" in content
-
-    def test_use_i18n_false_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_i18n": "n"})
-        content = (project / "config" / "settings.py").read_text()
-        assert "USE_I18N = False" in content
-
-
 class TestPwaFeatureFlag:
     """Test use_pwa flag behaviour."""
 
@@ -437,10 +415,10 @@ class TestFeatureFlagCombinations:
         assert (project / "static" / "service-worker.js").exists()
 
     def test_storage_and_i18n_enabled_together(self, output_dir):
-        """use_storage=y + use_i18n=y: both feature blocks must be present."""
+        """use_storage=y: storage and i18n (always on) blocks must be present."""
         project = _render(
             output_dir,
-            {**_DEFAULT_CONTEXT, "use_storage": "y", "use_i18n": "y"},
+            {**_DEFAULT_CONTEXT, "use_storage": "y"},
         )
         settings_content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" in settings_content
@@ -449,14 +427,13 @@ class TestFeatureFlagCombinations:
         assert (project / "locale").is_dir()
 
     def test_all_flags_enabled(self, output_dir):
-        """All four flags on: every feature must be wired up."""
+        """All three flags on: every feature must be wired up."""
         project = _render(
             output_dir,
             {
                 **_DEFAULT_CONTEXT,
                 "use_hx_boost": "y",
                 "use_storage": "y",
-                "use_i18n": "y",
                 "use_pwa": "y",
             },
         )
@@ -479,14 +456,13 @@ class TestFeatureFlagCombinations:
         assert "USE_I18N = True" in settings_content
 
     def test_all_flags_disabled(self, output_dir):
-        """All four flags off: none of the optional features must be present."""
+        """All three optional flags off: none of the optional features must be present."""
         project = _render(
             output_dir,
             {
                 **_DEFAULT_CONTEXT,
                 "use_hx_boost": "n",
                 "use_storage": "n",
-                "use_i18n": "n",
                 "use_pwa": "n",
             },
         )
@@ -500,9 +476,9 @@ class TestFeatureFlagCombinations:
         assert not (project / "terraform" / "storage").exists()
         settings_content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" not in settings_content
-        # i18n absent
-        assert not (project / "locale").exists()
-        assert "USE_I18N = False" in settings_content
+        # i18n always present
+        assert (project / "locale").is_dir()
+        assert "USE_I18N = True" in settings_content
 
 
 class TestRenderedPythonLinting:

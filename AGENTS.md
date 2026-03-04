@@ -75,7 +75,6 @@ git init && git commit -A && pre-commit run --all-files
 | -------------- | ------- | ----------------------------------------- |
 | `use_hx_boost` | `"y"`   | Removes HTMX boost config                 |
 | `use_storage`  | `"y"`   | Removes `terraform/storage/`              |
-| `use_i18n`     | `"n"`   | Removes i18n middleware and locale config |
 | `use_pwa`      | `"n"`   | Removes PWA manifest and service worker   |
 
 When adding template files that are conditional on a flag, update `hooks/post_gen_project.py` - do not hard-delete files from the template directory itself. When adding files that contain Django or Tailwind `{{ }}` syntax, add their paths to `_copy_without_render` in `cookiecutter.json` so cookiecutter copies them verbatim instead of treating them as Jinja2 templates.

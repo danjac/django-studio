@@ -29,6 +29,9 @@ static/app.css
 .env.local
 .env.*.local
 
+# MCP
+.mcp.json
+
 # uv
 uv.lock
 

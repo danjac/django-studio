@@ -25,6 +25,9 @@ Walks through a pre-deployment checklist to ensure the project is ready for prod
 - All local requirements are installed: `hcloud`, `gh`, `terraform`, `helm`
 - Code has been committed to Github repo and is passing CI checks
 - Docker image has been built successfully on CI: `just gh build`
+
+- User has set `KUBECONFIG_BASE64` and `HELM_VALUES_SECRET` Github secrets
+
 - User has active Hetzner Cloud and Cloudflare accounts
 - User has registered a domain on Cloudflare (or if other DNS provider)
 - User has requested Cloudflare Origin CA certificates for the domain
@@ -32,9 +35,7 @@ Walks through a pre-deployment checklist to ensure the project is ready for prod
 If project meets these requirements, walk through the deployment steps with the user:
 
 - Configure Terraform Hetzner configuration(`terraform/hetzner`) and run `terraform init/plan/apply`
-
 - Configure Terraform Object Storage (`terraform/storage`) (if applicable) and run `terraform init/plan/apply`
-
 - Configure Terraform Cloudflare configuration (`terraform/cloudflare`) and run `terraform init/plan/apply`
 - Run `helm upgrade` to deploy the project to the Hetzner cluster
 - Run `helm upgrade-observability` to deploy monitoring and alerting

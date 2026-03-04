@@ -7,15 +7,24 @@
 
 Parse the first word of `$ARGUMENTS` to determine the subcommand:
 
-| Subcommand | Purpose |
-|------------|---------|
-| `issue`    | File a GitHub issue |
-| `create`   | Create a new Django project |
-| `init`     | Run Session Zero |
+| Subcommand    | Purpose                     |
+| ------------- | --------------------------- |
+| `issue`       | File a GitHub issue         |
+| `create`      | Create a new Django project |
+| `init`        | Run Session Zero            |
+| `walkthrough` | Run linear walkthrough      |
 
 If `$ARGUMENTS` is empty or the first word is not a recognised subcommand, print usage and stop.
 
 ---
+
+## walkthrough — Linear Walkthrough
+
+Read the source and then plan a linear walkthrough of the code that explains how it all works in detail
+
+Then run `uvx showboat –help` to learn showboat - use showboat to create a `walkthrough.md` file in the repo and build the walkthrough in there, using showboat note for commentary and showboat exec plus sed or grep or cat or whatever you need to include snippets of code you are talking about.
+
+[Source](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/)
 
 ## `issue` — File a GitHub Issue
 
@@ -31,11 +40,13 @@ Parse `$ARGUMENTS` after `issue`:
 3. Create the issue:
 
    **Current project** — run from the project root:
+
    ```bash
    gh issue create --title "<title>" --body "<body>"
    ```
 
    **Template repo** (`danjac/django-studio`):
+
    ```bash
    gh issue create --repo danjac/django-studio --title "<title>" --body "<body>"
    ```
@@ -50,16 +61,16 @@ Log feedback immediately when you notice it — do not wait until the end of a s
 
 Run `git config user.name` and `git config user.email` to get author defaults, then ask the user **all** of the following questions in a single conversational message:
 
-1. What is the name of your project? *(e.g. "My Blog" — required)*
-2. What should the project directory / repo be called? *(kebab-case, e.g. `my-blog` — default: project name lowercased with spaces replaced by hyphens)*
-3. What should the top-level Python package be called? *(snake_case, e.g. `myblog` — default: directory name with hyphens replaced by underscores)*
+1. What is the name of your project? _(e.g. "My Blog" — required)_
+2. What should the project directory / repo be called? _(kebab-case, e.g. `my-blog` — default: project name lowercased with spaces replaced by hyphens)_
+3. What should the top-level Python package be called? _(snake_case, e.g. `myblog` — default: directory name with hyphens replaced by underscores)_
 4. Describe the project in one sentence.
-5. What is your name? *(default: value from `git config user.name`, if available)*
-6. What is your email address? *(default: value from `git config user.email`, if available)*
-7. Will this project use SPA-like navigation without full page reloads? *(enables HTMX Boost — default: yes)*
-8. Will this project need to store user-uploaded files or media in the cloud? *(enables S3/Hetzner object storage — default: yes)*
-9. Will this project need to support multiple languages? *(enables Django i18n/l10n — default: no)*
-10. Should this project work as a Progressive Web App (installable, offline-capable)? *(adds PWA manifest and service worker — default: no)*
+5. What is your name? _(default: value from `git config user.name`, if available)_
+6. What is your email address? _(default: value from `git config user.email`, if available)_
+7. Will this project use SPA-like navigation without full page reloads? _(enables HTMX Boost — default: yes)_
+8. Will this project need to store user-uploaded files or media in the cloud? _(enables S3/Hetzner object storage — default: yes)_
+9. Will this project need to support multiple languages? _(enables Django i18n/l10n — default: no)_
+10. Should this project work as a Progressive Web App (installable, offline-capable)? _(adds PWA manifest and service worker — default: no)_
 
 Wait for the user to provide their answers, then confirm the choices and run:
 
@@ -99,6 +110,7 @@ Run Session Zero to establish the project's purpose and roadmap before any devel
 **Steps:**
 
 1. Ask all of these questions in a single message:
+
    - What problem is this project solving?
    - Who are the users and stakeholders?
    - What are the key features and success criteria?

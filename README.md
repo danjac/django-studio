@@ -110,13 +110,13 @@ The skill source lives in `skills/django-studio.md` at the repo root. Run `just 
 just sync-skills
 ```
 
-| Command                                        | Effect                                                                                                                      |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `/django-studio issue <feedback>`              | File an issue against the current project                                                                                   |
-| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                                                                    |
-| `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and settings)                                                 |
-| `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`                                                          |
-| `/django-studio walkthrough`                   | Runs a [linear walkthrough](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/) on the code |
+| Command                                        | Effect                                                                      |
+| ---------------------------------------------- | --------------------------------------------------------------------------- |
+| `/django-studio issue <feedback>`              | File an issue against the current project                                   |
+| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                    |
+| `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and settings) |
+| `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`          |
+| `/django-studio prelaunch`                     | Runs prelaunch checks before first deployment                               |
 
 Run `just sync-skills` after editing the skill to propagate changes to `~/.claude/commands/`.
 

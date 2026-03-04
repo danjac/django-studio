@@ -7,22 +7,27 @@
 
 Parse the first word of `$ARGUMENTS` to determine the subcommand:
 
-| Subcommand    | Purpose                     |
-| ------------- | --------------------------- |
-| `issue`       | File a GitHub issue         |
-| `create`      | Create a new Django project |
-| `init`        | Run Session Zero            |
-| `walkthrough` | Run linear walkthrough      |
+| Subcommand  | Purpose                     |
+| ----------- | --------------------------- |
+| `issue`     | File a GitHub issue         |
+| `create`    | Create a new Django project |
+| `init`      | Run Session Zero            |
+| `prelaunch` | Pre-deployment checks       |
 
 If `$ARGUMENTS` is empty or the first word is not a recognised subcommand, print usage and stop.
 
 ---
 
-## walkthrough — Linear Walkthrough
+## prelaunch — Pre-deployment Checklist
 
-Read the source and then plan a linear walkthrough of the code that explains how it all works in detail
+Walks through a pre-deployment checklist to ensure the project is ready for production. Checks include:
 
-Then run `uvx showboat –help` to learn showboat - use showboat to create a `walkthrough.md` file in the repo and build the walkthrough in there, using showboat note for commentary and showboat exec plus sed or grep or cat or whatever you need to include snippets of code you are talking about.
+- Code has been committed to Github repo and is passing CI checks
+- Docker image has been built successfully on CI: `just gh build`
+- All local requirements are installed: `hcloud`, `gh`, `terraform`, `helm`
+- User has Hetzner Cloud and Cloudflare accounts
+- User has registered a domain on Cloudflare (or if other DNS provider)
+- User has requested Origin CA certificates for the domain
 
 [Source](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/)
 

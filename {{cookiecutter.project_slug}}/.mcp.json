@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "django": {
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_django"
+      ],
+      "cwd": "{{cookiecutter._repo_dir}}",
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "config.settings"
+      }
+    }
+  }
+}

@@ -65,7 +65,6 @@ dev = [
   "pytest>=8.3.2",
   "ruff>=0.15.2",
   "djlint>=1.36.4",
-  "mcp-django>=0.13.0",
 ]
 
 [tool.pytest.ini_options]

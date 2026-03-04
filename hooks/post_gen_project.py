@@ -12,7 +12,6 @@ USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
 USE_STORAGE = "{{cookiecutter.use_storage}}"
 USE_I18N = "{{cookiecutter.use_i18n}}"
 USE_PWA = "{{cookiecutter.use_pwa}}"
-USE_MCP = "{{cookiecutter.use_mcp}}"
 
 BASE_DIR = Path()
 
@@ -187,34 +186,6 @@ makemessages *args:
 compilemessages *args:
    @just dj compilemessages {_args}
 """
-
-_MCP_JSON = {
-  "mcpServers": {
-    "django": {
-      "command": "python",
-      "args": [
-        "-m",
-        "mcp_django"
-      ],
-      "cwd": str(BASE_DIR.absolute()), # current dir
-      "env": {
-        "DJANGO_SETTINGS_MODULE": "config.settings"
-      }
-    }
-  }
-}
-
-def setup_mcp() -> None:
-    """Add MCP server."""
-    with MCP_PATH.open("w") as f:
-        json.dump(_MCP_JSON, f, indent=2)
-
-def remove_scp() -> None:
-    """Remove MCP server."""
-    if MCP_PATH.exists():
-        MCP_PATH.unlink()
-
-
 
 def setup_i18n() -> None:
     """Add LOCALE_PATHS, LANGUAGES, i18n URLs, locale dir, and justfile commands."""
@@ -446,11 +417,6 @@ if USE_I18N == "y":
     setup_i18n()
 else:
     remove_i18n()
-
-if USE_MCP == "y":
-    setup_mcp()
-else:
-    remove_scp()
 
 if USE_PWA == "y":
     setup_pwa()

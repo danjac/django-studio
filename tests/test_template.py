@@ -394,18 +394,6 @@ class TestI18nFeatureFlag:
         assert "USE_I18N = False" in content
 
 
-class TestMcpFeatureFlag:
-    """Test use_mcp flag behaviour."""
-
-    def test_mcp_settings_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_mcp": "y"})
-        assert (project / ".mcp.json").exists()
-
-    def test_mcp_settings_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_mcp": "n"})
-        assert not (project / ".mcp.json").exists()
-
-
 class TestPwaFeatureFlag:
     """Test use_pwa flag behaviour."""
 

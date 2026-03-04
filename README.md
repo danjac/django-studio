@@ -1,4 +1,4 @@
-# django-studio
+# Django Studio
 
 ![Photo by James Kovin on Unsplash](images/studio.jpg)
 

@@ -27,7 +27,7 @@ Walks through a pre-deployment checklist to ensure the project is ready for prod
 - Docker image has been built successfully on CI: `just gh build`
 - User has active Hetzner Cloud and Cloudflare accounts
 - User has registered a domain on Cloudflare (or if other DNS provider)
-- User has requested Origin CA certificates for the domain
+- User has requested Cloudflare Origin CA certificates for the domain
 
 If project meets these requirements, walk through the deployment steps with the user:
 

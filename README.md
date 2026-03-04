@@ -6,7 +6,25 @@ _Photo by James Kovin on [Unsplash](https://unsplash.com/photos/black-and-green-
 
 Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS.
 
-This project is designed to be a starting point for building modern Django applications with a focus on simplicity, performance, and developer experience. It includes an opinionated and carefully curated stack of tools and libraries to help you get up and running quickly while following best practices. It includes Markdown documentation, MCP support, custom Skills and a design pattern library to assist with AI-driven development and code generation while keeping skilled developers in the loop.
+This project is designed to be a starting point for building modern Django applications with a focus on simplicity, performance, and developer experience. It includes an opinionated and carefully curated stack of tools and libraries to help you get up and running quickly while following best practices, a design pattern library with tried-and-tested components and Markdown documentation, MCP support and custom Skills for AI-assisted development.
+
+## Philosophy
+
+### Purpose
+
+The goal is to provide a low-friction, high velocity starting point for building and launching your project using tried-and-tested tools and best practices.
+
+### Stack
+
+The focus of this project is a simple and robust foundation for both user and developer experience. Django is a tried and tested framework with a strong emphasis on convention and best practices, making it an ideal choice for the backend. For the frontend, HTMX and Alpine.js provide a powerful combination for building dynamic interfaces without the complexity of a full JavaScript framework, while Tailwind CSS offers a utility-first approach to styling that promotes consistency and rapid development.
+
+[K3S](https://k3s.io) is a lightweight Kubernetes distribution that allows for easy deployment and scaling of applications. By using K3S, we can ensure that our application is production-ready and can handle increased traffic as needed. Helm Charts have been provided to deploy your project along with Grafana dashboards for monitoring. Full Github Actions CI/CD pipelines are included for testing and deployment.
+
+### Hosting
+
+[Hetzner Cloud](https://hetzner.com) is a very cost-effective, EU-based hosting provider. Cloudflare is currently the cheapest and most secure option for DNS, CDN, SSL, and DDoS protection. These solutions will be reviewed on a regular basis - if better options become available, they will be offered instead of or addition to these choices.
+
+Prices are subject to change, but the current hosting costs based on the default settings should range between 20-40 EUR per month.
 
 ## Stack
 
@@ -17,13 +35,17 @@ This project is designed to be a starting point for building modern Django appli
 - `django-tasks-db` for background tasks (not Celery)
 - `django-allauth` for authentication
 
-- Cloudflare for DNS, CDN, SSL, and DDoS protection
+- `pre-commit` hooks for linting
 
+- Cloudflare for DNS, CDN, SSL, and DDoS protection
 - Hetzner Cloud for hosting (K3s)
-- Design pattern library
 - Full test coverage (pytest + Playwright)
 
 Note that while this is an opinionated stack, you can easily swap out any of these choices after generating the project to craft it to your specific needs.
+
+## Status
+
+This project is best described as "pre-alpha". While based on working projects in production, this is a new repo and the cookiecutter template has not yet been tested by external users. Expect many breaking changes and rough edges.
 
 ## Requirements
 
@@ -82,18 +104,18 @@ See `docs/` for full documentation.
 
 Every generated project ships with the `/django-studio` skill at `.claude/commands/django-studio.md`.
 
-The skill source lives in `skills/django-studio.md` at the repo root.  Run `just sync-skills` to install or update it in `~/.claude/commands/`:
+The skill source lives in `skills/django-studio.md` at the repo root. Run `just sync-skills` to install or update it in `~/.claude/commands/`:
 
 ```bash
 just sync-skills
 ```
 
-| Command                                        | Effect                                                                       |
-| ---------------------------------------------- | ---------------------------------------------------------------------------- |
-| `/django-studio issue <feedback>`              | File an issue against the current project                                    |
-| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                     |
-| `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and settings)  |
-| `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`           |
+| Command                                        | Effect                                                                      |
+| ---------------------------------------------- | --------------------------------------------------------------------------- |
+| `/django-studio issue <feedback>`              | File an issue against the current project                                   |
+| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                    |
+| `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and settings) |
+| `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`          |
 
 Run `just sync-skills` after editing the skill to propagate changes to `~/.claude/commands/`.
 

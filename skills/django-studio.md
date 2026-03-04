@@ -36,8 +36,6 @@ If project meets these requirements, walk through the deployment steps with the 
 - Run `helm upgrade` to deploy the project to the Hetzner cluster
 - Run `helm upgrade-observability` to deploy monitoring and alerting
 
-[Source](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/)
-
 ## `issue` — File a GitHub Issue
 
 Parse `$ARGUMENTS` after `issue`:

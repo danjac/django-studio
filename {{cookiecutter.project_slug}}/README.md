@@ -68,6 +68,7 @@ The `/django-studio` skill is available in `.claude/commands/` and works from an
 | `/django-studio issue cookiecutter <feedback>` | File an issue against the [django-studio](https://github.com/danjac/django-studio) template repo |
 | `/django-studio create <app-name>`             | Scaffold a new Django app (wires `INSTALLED_APPS`, `conftest.py`, `urls.py`)                     |
 | `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`                               |
+| `/django-studio prelaunch`                     | Run pre-launch checks`                                                                           |
 
 Requires the `gh` CLI authenticated with GitHub access.
 

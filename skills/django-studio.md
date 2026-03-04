@@ -18,7 +18,7 @@ If `$ARGUMENTS` is empty or the first word is not a recognised subcommand, print
 
 ---
 
-## prelaunch — Pre-deployment Checklist
+## `prelaunch` — Pre-deployment Checklist
 
 Walks through a pre-deployment checklist to ensure the project is ready for production. Checks include:
 

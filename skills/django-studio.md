@@ -32,6 +32,9 @@ Walks through a pre-deployment checklist to ensure the project is ready for prod
 If project meets these requirements, walk through the deployment steps with the user:
 
 - Configure Terraform Hetzner configuration(`terraform/hetzner`) and run `terraform init/plan/apply`
+
+- Configure Terraform Object Storage (`terraform/storage`) (if applicable) and run `terraform init/plan/apply`
+
 - Configure Terraform Cloudflare configuration (`terraform/cloudflare`) and run `terraform init/plan/apply`
 - Run `helm upgrade` to deploy the project to the Hetzner cluster
 - Run `helm upgrade-observability` to deploy monitoring and alerting

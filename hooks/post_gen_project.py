@@ -10,7 +10,6 @@ from pathlib import Path
 PROJECT_SLUG = "{{cookiecutter.project_slug}}"
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
 USE_STORAGE = "{{cookiecutter.use_storage}}"
-USE_I18N = "{{cookiecutter.use_i18n}}"
 USE_PWA = "{{cookiecutter.use_pwa}}"
 
 BASE_DIR = Path()
@@ -207,21 +206,6 @@ def setup_i18n() -> None:
         f.write(_JUSTFILE_I18N)
 
 
-def remove_i18n() -> None:
-    """Disable i18n: set USE_I18N=False, remove LocaleMiddleware and i18n context processor."""
-    with SETTINGS_PY.open() as f:
-        content = f.read()
-    content = content.replace("USE_I18N = True\n", "USE_I18N = False\n")
-    content = content.replace(
-        '    "django.middleware.locale.LocaleMiddleware",\n', ""
-    )
-    content = content.replace(
-        '        "django.template.context_processors.i18n",\n', ""
-    )
-    with SETTINGS_PY.open("w") as f:
-        f.write(content)
-
-
 # ── pwa ───────────────────────────────────────────────────────────────────────
 
 PACKAGE_NAME = BASE_DIR / "{{cookiecutter.package_name}}"
@@ -413,10 +397,7 @@ if USE_STORAGE == "y":
 else:
     remove_storage_terraform()
 
-if USE_I18N == "y":
-    setup_i18n()
-else:
-    remove_i18n()
+setup_i18n()
 
 if USE_PWA == "y":
     setup_pwa()

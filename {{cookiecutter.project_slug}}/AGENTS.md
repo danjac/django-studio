@@ -314,7 +314,7 @@ This project was generated from [django-studio](https://github.com/danjac/django
 The justfile also has equivalent targets for use outside an agent session:
 
 ```bash
-just studio "Fix post_gen hook" "i18n files are not removed when use_i18n=n"
+just studio "Fix post_gen hook" "service-worker.js is not removed when use_pwa=n"
 ```
 
 Do not wait until the end of a session. Log it when you notice it.

@@ -81,8 +81,7 @@ Run `git config user.name` and `git config user.email` to get author defaults, t
 6. What is your email address? _(default: value from `git config user.email`, if available)_
 7. Will this project use SPA-like navigation without full page reloads? _(enables HTMX Boost — default: yes)_
 8. Will this project need to store user-uploaded files or media in the cloud? _(enables S3/Hetzner object storage — default: yes)_
-9. Will this project need to support multiple languages? _(enables Django i18n/l10n — default: no)_
-10. Should this project work as a Progressive Web App (installable, offline-capable)? _(adds PWA manifest and service worker — default: no)_
+9. Should this project work as a Progressive Web App (installable, offline-capable)? _(adds PWA manifest and service worker — default: no)_
 
 Wait for the user to provide their answers, then confirm the choices and run:
 
@@ -97,7 +96,6 @@ uvx cookiecutter gh:danjac/django-studio \
   author_email="<author_email>" \
   use_hx_boost="<y_or_n>" \
   use_storage="<y_or_n>" \
-  use_i18n="<y_or_n>" \
   use_pwa="<y_or_n>"
 ```
 

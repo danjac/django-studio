@@ -22,12 +22,19 @@ If `$ARGUMENTS` is empty or the first word is not a recognised subcommand, print
 
 Walks through a pre-deployment checklist to ensure the project is ready for production. Checks include:
 
+- All local requirements are installed: `hcloud`, `gh`, `terraform`, `helm`
 - Code has been committed to Github repo and is passing CI checks
 - Docker image has been built successfully on CI: `just gh build`
-- All local requirements are installed: `hcloud`, `gh`, `terraform`, `helm`
-- User has Hetzner Cloud and Cloudflare accounts
+- User has active Hetzner Cloud and Cloudflare accounts
 - User has registered a domain on Cloudflare (or if other DNS provider)
 - User has requested Origin CA certificates for the domain
+
+If project meets these requirements, walk through the deployment steps with the user:
+
+- Configure Terraform Hetzner configuration(`terraform/hetzner`) and run `terraform init/plan/apply`
+- Configure Terraform Cloudflare configuration (`terraform/cloudflare`) and run `terraform init/plan/apply`
+- Run `helm upgrade` to deploy the project to the Hetzner cluster
+- Run `helm upgrade-observability` to deploy monitoring and alerting
 
 [Source](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/)
 

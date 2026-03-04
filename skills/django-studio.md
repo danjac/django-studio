@@ -25,9 +25,7 @@ Walks through a pre-deployment checklist to ensure the project is ready for prod
 - All local requirements are installed: `hcloud`, `gh`, `terraform`, `helm`
 - Code has been committed to Github repo and is passing CI checks
 - Docker image has been built successfully on CI: `just gh build`
-
 - User has set `KUBECONFIG_BASE64` and `HELM_VALUES_SECRET` Github secrets
-
 - User has active Hetzner Cloud and Cloudflare accounts
 - User has registered a domain on Cloudflare (or if other DNS provider)
 - User has requested Cloudflare Origin CA certificates for the domain

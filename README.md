@@ -22,6 +22,16 @@ This project is best described as "pre-alpha". While based on working projects i
 - **High velocity**: Opinionated defaults so you can focus on business logic and end-user needs.
 - **Best practices**: Uses proven tools and patterns for security, performance, and observability.
 
+## Features
+
+- Django 6 with a modern stack (HTMX, Alpine.js, Tailwind CSS)
+- Docker Compose setup for local development (PostgreSQL, Redis, Mailpit)
+- Kubernetes deployment with Helm Charts
+- Grafana dashboards for monitoring
+- Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
+- Design pattern library with reusable components and templates using Django templates and Tailwind CSS
+- AI-assisted development with custom Skills for common tasks (e.g. issue creation, project setup, prelaunch checks)
+
 ## Stack
 
 - Python 3.14, Django 6.0, PostgreSQL 18, Redis 8

@@ -29,7 +29,7 @@ This project is best described as "pre-alpha". While based on working projects i
 - Kubernetes deployment with Helm Charts
 - Grafana dashboards for monitoring
 - Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
-- Design pattern library with reusable components and templates
+- Design system with reusable components
 - AI-assisted development with custom Skills
 
 ## Stack

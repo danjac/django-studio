@@ -4,7 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Final
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse{% if cookiecutter.use_pwa == 'y' %}, JsonResponse{% endif %}
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
@@ -93,3 +93,51 @@ def accept_cookies(_: HttpRequest) -> HttpResponse:
         samesite="Lax",
     )
     return response
+{% if cookiecutter.use_pwa == 'y' %}
+
+
+@require_safe
+@_cache_control
+@_cache_page
+def manifest(request: HttpRequest) -> JsonResponse:
+    """Serve PWA manifest.json."""
+    pwa = settings.PWA_CONFIG
+    return JsonResponse(
+        {
+            "background_color": pwa["background_color"],
+            "description": pwa["description"],
+            "dir": "ltr",
+            "display": "minimal-ui",
+            "id": "?homescreen=1",
+            "lang": "en",
+            "name": request.site.name,
+            "orientation": "any",
+            "prefer_related_applications": False,
+            "scope": reverse("index"),
+            "short_name": request.site.name[:12],
+            "start_url": reverse("index"),
+            "theme_color": pwa["theme_color"],
+        }
+    )
+
+
+@require_safe
+@_cache_control
+@_cache_page
+def assetlinks(_) -> JsonResponse:
+    """Serve PWA .well-known/assetlinks.json."""
+    pwa = settings.PWA_CONFIG["assetlinks"]
+    return JsonResponse(
+        [
+            {
+                "relation": ["delegate_permission/common.handle_all_urls"],
+                "target": {
+                    "namespace": "android_app",
+                    "package_name": pwa["package_name"],
+                    "sha256_cert_fingerprints": pwa["sha256_fingerprints"],
+                },
+            }
+        ],
+        safe=False,
+    )
+{%- endif %}

@@ -586,3 +586,48 @@ META_TAGS = {
     "description": env("META_DESCRIPTION", default="{{cookiecutter.description}}"),
     "keywords": env("META_KEYWORDS", default=""),
 }
+
+# i18n
+
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
+LANGUAGES = [
+    ("en", "English"),
+]
+{% if cookiecutter.use_storage == 'y' %}
+
+# Media files / Object Storage
+
+MEDIA_URL = env("MEDIA_URL", default="/media/")
+MEDIA_ROOT = BASE_DIR / "media"
+
+if env.bool("USE_S3_STORAGE", default=False):
+    _base_storages = vars().get("STORAGES", {})
+    STORAGES = {
+        **_base_storages,
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        },
+    }
+    AWS_ACCESS_KEY_ID = env("HETZNER_STORAGE_ACCESS_KEY")
+    AWS_SECRET_ACCESS_KEY = env("HETZNER_STORAGE_SECRET_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("HETZNER_STORAGE_BUCKET")
+    AWS_S3_ENDPOINT_URL = env("HETZNER_STORAGE_ENDPOINT")
+    AWS_S3_REGION_NAME = env("HETZNER_STORAGE_REGION", default="fsn1")
+    AWS_DEFAULT_ACL = "public-read"
+    MEDIA_URL = f"{AWS_S3_ENDPOINT_URL.rstrip('/')}/{AWS_STORAGE_BUCKET_NAME}/"
+{%- endif %}
+{%- if cookiecutter.use_pwa == 'y' %}
+
+# PWA
+
+PWA_CONFIG = {
+    "background_color": env("PWA_BACKGROUND_COLOR", default="#ffffff"),
+    "description": env("PWA_DESCRIPTION", default="{{cookiecutter.description}}"),
+    "theme_color": env("PWA_THEME_COLOR", default="#000000"),
+    "assetlinks": {
+        "package_name": env("PWA_PACKAGE_NAME", default=""),
+        "sha256_fingerprints": env.list("PWA_SHA256_FINGERPRINTS", default=[]),
+    },
+}
+{%- endif %}

@@ -1,4 +1,7 @@
 from django.conf import settings
+{%- if cookiecutter.use_storage == 'y' %}
+from django.conf.urls.static import static
+{%- endif %}
 from django.contrib import admin
 from django.urls import include, path
 from health_check.views import HealthCheckView
@@ -11,7 +14,12 @@ urlpatterns = [
     path("privacy/", views.privacy, name="privacy"),
     path("robots.txt", views.robots, name="robots"),
     path(".well-known/security.txt", views.security, name="security"),
+{%- if cookiecutter.use_pwa == 'y' %}
+    path("manifest.json", views.manifest, name="manifest"),
+    path(".well-known/assetlinks.json", views.assetlinks, name="assetlinks"),
+{%- endif %}
     path("accept-cookies/", views.accept_cookies, name="accept_cookies"),
+    path("i18n/", include("django.conf.urls.i18n")),
     path("", include("{{cookiecutter.package_name}}.users.urls")),
     path("account/", include("allauth.urls")),
     path(
@@ -41,3 +49,7 @@ if "debug_toolbar" in settings.INSTALLED_APPS:  # pragma: no cover
     urlpatterns += [
         path("__debug__/", include("debug_toolbar.urls")),
     ]
+{% if cookiecutter.use_storage == 'y' %}
+if settings.DEBUG:  # pragma: no cover
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+{%- endif %}

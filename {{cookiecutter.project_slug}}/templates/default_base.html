@@ -6,11 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {% meta_tags %}
+    [[ HOOK:pwa-manifest ]]
     <link rel="stylesheet" href="{% static 'app.css' %}" />
     <script src="{% static 'vendor/htmx-2.0.8.min.js' %}" defer></script>
     <script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
   </head>
-  <body>
+  [[ HOOK:body-open ]]
     <div
       id="hx-indicator"
       x-data="{ width: 0 }"
@@ -33,5 +34,6 @@
       {% block content %}
       {% endblock content %}
     </main>
+    [[ HOOK:pwa-sw ]]
   </body>
 </html>

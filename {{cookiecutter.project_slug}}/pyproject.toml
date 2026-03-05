@@ -39,6 +39,9 @@ dependencies = [
   "sentry-sdk>=2.13.0",
   "uvicorn[standard]>=0.41.0",
   "whitenoise[brotli]>=6.11.0",
+{%- if cookiecutter.use_storage == 'y' %}
+  "django-storages[s3]>=1.14.4",
+{%- endif %}
 ]
 
 [dependency-groups]

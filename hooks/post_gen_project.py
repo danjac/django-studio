@@ -1,9 +1,18 @@
 #!/usr/bin/env python
-"""Post-generation hook: adjusts files based on cookiecutter choices."""
+"""Post-generation hook: adjusts files based on cookiecutter choices.
+
+Most feature-flag logic is handled by Jinja2 conditionals in the template
+files themselves (settings.py, urls.py, views.py, pyproject.toml, .env.example).
+
+This hook handles only what Jinja2 cannot:
+- HTML template manipulation (files in _copy_without_render)
+- File/directory creation and deletion
+- Justfile PROJECT_SLUG replacement (_copy_without_render)
+- Skill installation and uv lock
+"""
 
 import os
 import shutil
-import json
 import subprocess
 from pathlib import Path
 
@@ -17,39 +26,76 @@ BASE_DIR = Path()
 TEMPLATES_DIR = BASE_DIR / "templates"
 BASE_HTML = TEMPLATES_DIR / "base.html"
 DEFAULT_BASE_HTML = TEMPLATES_DIR / "default_base.html"
-HX_BASE_HTML = TEMPLATES_DIR /  "hx_base.html"
+HX_BASE_HTML = TEMPLATES_DIR / "hx_base.html"
 
-CONFIG_DIR = BASE_DIR / "config"
-SETTINGS_PY = CONFIG_DIR / "settings.py"
-URLS_PY = CONFIG_DIR / "urls.py"
+JUSTFILE = BASE_DIR / "justfile"
+TERRAFORM_STORAGE_DIR = BASE_DIR / "terraform" / "storage"
+SERVICE_WORKER_JS = BASE_DIR / "static" / "service-worker.js"
 
-PYPROJECT_TOML = BASE_DIR / "pyproject.toml"
-ENV_EXAMPLE = BASE_DIR / ".env.example"
-MCP_PATH = BASE_DIR / ".mcp.json"
-TERRAFORM_DIR = BASE_DIR / "terraform"
-TERRAFORM_STORAGE_DIR = TERRAFORM_DIR / "storage"
-TERRAFORM_STORAGE = TERRAFORM_STORAGE_DIR / "main.tf"
+# Markers in default_base.html (which is _copy_without_render).
+# These use [[ ]] syntax so Jinja2 ignores them during hook rendering.
+_MARKER_BODY_OPEN = "  [[ HOOK:body-open ]]"
+_MARKER_PWA_MANIFEST = "    [[ HOOK:pwa-manifest ]]"
+_MARKER_PWA_SW = "    [[ HOOK:pwa-sw ]]"
 
-# ── hx-boost ──────────────────────────────────────────────────────────────────
+_BODY_PLAIN = "  <body>"
+_BODY_HX_BOOST = '  <body\n    hx-boost="true">'
+
+# Django template syntax must be wrapped in a raw block so Jinja2 does not
+# process it when rendering this hook file.
+{% raw %}
+_PWA_MANIFEST_LINK = '    <link rel="manifest" href="{% url \'manifest\' %}">'
+
+_PWA_SW_SCRIPT = """\
+    <script>
+      if (typeof navigator.serviceWorker !== 'undefined') {
+        navigator.serviceWorker.register('{% static "service-worker.js" %}')
+      }
+    </script>"""
+{% endraw %}
 
 
-def enable_hx_boost() -> None:
-    """Wire up hx-boost when the user opts in."""
-    # base.html: switch between hx_base and default_base based on request type
-    with BASE_HTML.open("w") as f:
-        f.write("{" + '% extends request.htmx|yesno:"hx_base.html,default_base.html" %}\n')
+def _replace_marker(content: str, marker: str, replacement: str) -> str:
+    """Replace a marker line with replacement content, removing the line if empty."""
+    if replacement:
+        return content.replace(marker, replacement)
+    # Remove the entire line (including newline) when replacement is empty
+    return content.replace(marker + "\n", "")
 
-    # default_base.html: expand <body> to multi-attribute form with hx-boost
+
+def resolve_markers() -> None:
+    """Replace all marker comments in default_base.html with actual content.
+
+    This runs BEFORE any file renames so default_base.html always exists.
+    """
     with DEFAULT_BASE_HTML.open() as f:
         content = f.read()
 
-    content = content.replace(
-        "  <body hx-headers=",
-        '  <body\n    hx-boost="true"\n    hx-headers=',
-    )
+    # Body tag: add hx-boost attribute when enabled
+    body_replacement = _BODY_HX_BOOST if USE_HX_BOOST == "y" else _BODY_PLAIN
+    content = _replace_marker(content, _MARKER_BODY_OPEN, body_replacement)
+
+    # PWA manifest link: insert before CSS link when enabled
+    pwa_manifest = _PWA_MANIFEST_LINK if USE_PWA == "y" else ""
+    content = _replace_marker(content, _MARKER_PWA_MANIFEST, pwa_manifest)
+
+    # PWA service worker script: insert before </body> when enabled
+    pwa_sw = _PWA_SW_SCRIPT if USE_PWA == "y" else ""
+    content = _replace_marker(content, _MARKER_PWA_SW, pwa_sw)
 
     with DEFAULT_BASE_HTML.open("w") as f:
         f.write(content)
+
+
+# ── hx-boost ─────────────────────────────────────────────────────────────────
+
+
+def enable_hx_boost() -> None:
+    """Wire up hx-boost: base.html dynamically extends hx_base or default_base."""
+    with BASE_HTML.open("w") as f:
+        f.write(
+            "{" + '% extends request.htmx|yesno:"hx_base.html,default_base.html" %}\n'
+        )
 
 
 def remove_hx_base() -> None:
@@ -60,95 +106,10 @@ def remove_hx_base() -> None:
     """
     if HX_BASE_HTML.exists():
         HX_BASE_HTML.unlink()
-    # Replace the extends-stub with the actual full layout.
-    DEFAULT_BASE_HTML.rename(BASE_HTML)
+    DEFAULT_BASE_HTML.replace(BASE_HTML)
 
 
-# ── storage ───────────────────────────────────────────────────────────────────
-
-_SETTINGS_STORAGE_BLOCK = """
-# Media files / Object Storage
-
-MEDIA_URL = env("MEDIA_URL", default="/media/")
-MEDIA_ROOT = BASE_DIR / "media"
-
-if env.bool("USE_S3_STORAGE", default=False):
-    _base_storages = vars().get("STORAGES", {})
-    STORAGES = {
-        **_base_storages,
-        "default": {
-            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-        },
-    }
-    AWS_ACCESS_KEY_ID = env("HETZNER_STORAGE_ACCESS_KEY")
-    AWS_SECRET_ACCESS_KEY = env("HETZNER_STORAGE_SECRET_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("HETZNER_STORAGE_BUCKET")
-    AWS_S3_ENDPOINT_URL = env("HETZNER_STORAGE_ENDPOINT")
-    AWS_S3_REGION_NAME = env("HETZNER_STORAGE_REGION", default="fsn1")
-    AWS_DEFAULT_ACL = "public-read"
-    MEDIA_URL = f"{AWS_S3_ENDPOINT_URL.rstrip('/')}/{AWS_STORAGE_BUCKET_NAME}/"
-"""
-
-_URLS_MEDIA_IMPORT = "from django.conf.urls.static import static\n"
-
-_URLS_MEDIA_BLOCK = """
-if settings.DEBUG:  # pragma: no cover
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-"""
-
-_ENV_STORAGE_BLOCK = """
-# Object Storage (Hetzner S3-compatible)
-# Enable in production once the bucket is provisioned (see terraform/hetzner/storage.tf)
-# USE_S3_STORAGE=true
-# HETZNER_STORAGE_ACCESS_KEY=
-# HETZNER_STORAGE_SECRET_KEY=
-# HETZNER_STORAGE_BUCKET={{cookiecutter.project_slug}}-media
-# HETZNER_STORAGE_ENDPOINT=https://fsn1.your-objectstorage.com
-# HETZNER_STORAGE_REGION=fsn1
-"""
-
-_PYPROJECT_STORAGES_DEP = '    "django-storages[s3]>=1.14.4",\n'
-# Insert after this anchor line in the dependencies array
-_PYPROJECT_ANCHOR = '    "whitenoise[brotli]>=6.11.0",\n'
-
-
-def setup_storage() -> None:
-    """Wire up django-storages, media settings, and Hetzner terraform config."""
-
-    # pyproject.toml: insert django-storages into dependencies
-    with open(PYPROJECT_TOML) as f:
-        content = f.read()
-    if _PYPROJECT_ANCHOR in content:
-        content = content.replace(
-            _PYPROJECT_ANCHOR,
-            _PYPROJECT_ANCHOR + _PYPROJECT_STORAGES_DEP,
-        )
-        with open(PYPROJECT_TOML, "w") as f:
-            f.write(content)
-
-    # config/settings.py: append media + S3 block
-    with open(SETTINGS_PY, "a") as f:
-        f.write(_SETTINGS_STORAGE_BLOCK)
-
-    # config/urls.py: add static media serving import + urlpattern
-
-    with URLS_PY.open() as f:
-        urls_content = f.read()
-    # Insert import after the existing static-related import line
-    urls_content = urls_content.replace(
-        "from django.conf import settings\n",
-        "from django.conf import settings\n" + _URLS_MEDIA_IMPORT,
-    )
-    urls_content += _URLS_MEDIA_BLOCK
-    with URLS_PY.open("w") as f:
-        f.write(urls_content)
-
-    # .env.example: append storage vars
-    with ENV_EXAMPLE.open("a") as f:
-        f.write(_ENV_STORAGE_BLOCK)
-
-    # terraform/storage/main.tf already generated by cookiecutter;
-    # nothing to do - the file is included in the template tree.
+# ── storage ──────────────────────────────────────────────────────────────────
 
 
 def remove_storage_terraform() -> None:
@@ -157,210 +118,7 @@ def remove_storage_terraform() -> None:
         shutil.rmtree(TERRAFORM_STORAGE_DIR)
 
 
-
-# ── i18n ──────────────────────────────────────────────────────────────────────
-
-LOCALE_DIR = BASE_DIR / "locale"
-JUSTFILE = BASE_DIR / "justfile"
-
-_SETTINGS_I18N_BLOCK = """
-LOCALE_PATHS = [BASE_DIR / "locale"]
-
-LANGUAGES = [
-    ("en", "English"),
-]
-"""
-
-_URLS_I18N_PATH = '    path("i18n/", include("django.conf.urls.i18n")),\n'
-
-_args = "{" + "{ args }}"
-_JUSTFILE_I18N = f"""
-# Extract translatable strings
-[group('i18n')]
-makemessages *args:
-   @just dj makemessages -l en {_args}
-
-# Compile message files
-[group('i18n')]
-compilemessages *args:
-   @just dj compilemessages {_args}
-"""
-
-def setup_i18n() -> None:
-    """Add LOCALE_PATHS, LANGUAGES, i18n URLs, locale dir, and justfile commands."""
-    with SETTINGS_PY.open("a") as f:
-        f.write(_SETTINGS_I18N_BLOCK)
-
-    with URLS_PY.open() as f:
-        content = f.read()
-    content = content.replace(
-        '    path("account/',
-        _URLS_I18N_PATH + '    path("account/',
-    )
-    with URLS_PY.open("w") as f:
-        f.write(content)
-
-    LOCALE_DIR.mkdir(exist_ok=True)
-
-    with JUSTFILE.open("a") as f:
-        f.write(_JUSTFILE_I18N)
-
-
-# ── pwa ───────────────────────────────────────────────────────────────────────
-
-PACKAGE_NAME = BASE_DIR / "{{cookiecutter.package_name}}"
-VIEWS_PY = PACKAGE_NAME / "views.py"
-TEST_VIEWS_PY = PACKAGE_NAME / "tests" / "test_views.py"
-SERVICE_WORKER_JS = BASE_DIR / "static" / "service-worker.js"
-
-_VIEWS_IMPORT_BEFORE = "from django.http import HttpResponse\n"
-_VIEWS_IMPORT_AFTER = "from django.http import HttpResponse, JsonResponse\n"
-
-_VIEWS_PWA_BLOCK = """
-
-@require_safe
-@_cache_control
-@_cache_page
-def manifest(request: HttpRequest) -> JsonResponse:
-    \"\"\"Serve PWA manifest.json.\"\"\"
-    pwa = settings.PWA_CONFIG
-    return JsonResponse(
-        {
-            "background_color": pwa["background_color"],
-            "description": pwa["description"],
-            "dir": "ltr",
-            "display": "minimal-ui",
-            "id": "?homescreen=1",
-            "lang": "en",
-            "name": request.site.name,
-            "orientation": "any",
-            "prefer_related_applications": False,
-            "scope": reverse("index"),
-            "short_name": request.site.name[:12],
-            "start_url": reverse("index"),
-            "theme_color": pwa["theme_color"],
-        }
-    )
-
-
-@require_safe
-@_cache_control
-@_cache_page
-def assetlinks(_) -> JsonResponse:
-    \"\"\"Serve PWA .well-known/assetlinks.json.\"\"\"
-    pwa = settings.PWA_CONFIG["assetlinks"]
-    return JsonResponse(
-        [
-            {
-                "relation": ["delegate_permission/common.handle_all_urls"],
-                "target": {
-                    "namespace": "android_app",
-                    "package_name": pwa["package_name"],
-                    "sha256_cert_fingerprints": pwa["sha256_fingerprints"],
-                },
-            }
-        ],
-        safe=False,
-    )
-"""
-
-_URLS_PWA_ANCHOR = '    path("accept-cookies/", views.accept_cookies, name="accept_cookies"),\n'
-_URLS_PWA_PATHS = (
-    '    path("manifest.json", views.manifest, name="manifest"),\n'
-    '    path(".well-known/assetlinks.json", views.assetlinks, name="assetlinks"),\n'
-    '    path("accept-cookies/", views.accept_cookies, name="accept_cookies"),\n'
-)
-
-_SETTINGS_PWA_BLOCK = """
-# PWA
-
-PWA_CONFIG = {
-    "background_color": env("PWA_BACKGROUND_COLOR", default="#ffffff"),
-    "description": env("PWA_DESCRIPTION", default="{{cookiecutter.description}}"),
-    "theme_color": env("PWA_THEME_COLOR", default="#000000"),
-    "assetlinks": {
-        "package_name": env("PWA_PACKAGE_NAME", default=""),
-        "sha256_fingerprints": env.list("PWA_SHA256_FINGERPRINTS", default=[]),
-    },
-}
-"""
-
-_TEST_PWA_BLOCK = """
-
-@pytest.mark.django_db
-class TestManifest:
-    def test_get(self, client):
-        response = client.get(reverse("manifest"))
-        assert response.status_code == 200
-        assert response.json()["start_url"] == "/"
-
-    def test_post_not_allowed(self, client):
-        response = client.post(reverse("manifest"))
-        assert response.status_code == 405
-
-
-@pytest.mark.django_db
-class TestAssetlinks:
-    def test_get(self, client):
-        response = client.get(reverse("assetlinks"))
-        assert response.status_code == 200
-        assert isinstance(response.json(), list)
-
-    def test_post_not_allowed(self, client):
-        response = client.post(reverse("assetlinks"))
-        assert response.status_code == 405
-"""
-
-
-{% raw %}_DEFAULT_BASE_MANIFEST_ANCHOR = "    <link rel=\"stylesheet\" href=\"{% static 'app.css' %}\" />\n"
-_DEFAULT_BASE_MANIFEST_REPLACEMENT = (
-    "    <link rel=\"manifest\" href=\"{% url 'manifest' %}\">\n"
-    "    <link rel=\"stylesheet\" href=\"{% static 'app.css' %}\" />\n"
-)
-
-_DEFAULT_BASE_SW_ANCHOR = "  </body>\n"
-_DEFAULT_BASE_SW_REPLACEMENT = """\
-    <script>
-      if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('{% static "service-worker.js" %}')
-      }
-    </script>
-  </body>
-"""
-{% endraw %}
-
-
-def setup_pwa() -> None:
-    """Add PWA manifest/assetlinks views, URLs, settings, tests, and template wiring."""
-
-    with VIEWS_PY.open() as f:
-        content = f.read()
-    content = content.replace(_VIEWS_IMPORT_BEFORE, _VIEWS_IMPORT_AFTER)
-    content += _VIEWS_PWA_BLOCK
-    with VIEWS_PY.open("w") as f:
-        f.write(content)
-
-    with URLS_PY.open() as f:
-        content = f.read()
-    content = content.replace(_URLS_PWA_ANCHOR, _URLS_PWA_PATHS)
-    with URLS_PY.open("w") as f:
-        f.write(content)
-
-    with SETTINGS_PY.open("a") as f:
-        f.write(_SETTINGS_PWA_BLOCK)
-
-    with TEST_VIEWS_PY.open("a") as f:
-        f.write(_TEST_PWA_BLOCK)
-
-    # When hx-boost is off, default_base.html is renamed to base.html by
-    # remove_hx_base(), so we modify whichever file actually holds the full HTML.
-    full_html = DEFAULT_BASE_HTML if DEFAULT_BASE_HTML.exists() else BASE_HTML
-    with full_html.open() as f:
-        content = f.read()
-    content = content.replace(_DEFAULT_BASE_MANIFEST_ANCHOR, _DEFAULT_BASE_MANIFEST_REPLACEMENT)
-    content = content.replace(_DEFAULT_BASE_SW_ANCHOR, _DEFAULT_BASE_SW_REPLACEMENT)
-    with full_html.open("w") as f:
-        f.write(content)
+# ── pwa ──────────────────────────────────────────────────────────────────────
 
 
 def remove_pwa_static() -> None:
@@ -369,7 +127,7 @@ def remove_pwa_static() -> None:
         os.remove(SERVICE_WORKER_JS)
 
 
-# ── skills ────────────────────────────────────────────────────────────────────
+# ── skills ───────────────────────────────────────────────────────────────────
 
 
 def install_skills() -> None:
@@ -383,31 +141,30 @@ def install_skills() -> None:
         shutil.copy(skill_file, commands_dst / skill_file.name)
 
 
-# ── main ──────────────────────────────────────────────────────────────────────
+# ── main ─────────────────────────────────────────────────────────────────────
 
+# 1. Resolve all HTML marker comments (must happen before file renames)
+resolve_markers()
+
+# 2. Feature-flag file operations
 if USE_HX_BOOST == "y":
     enable_hx_boost()
 else:
     remove_hx_base()
 
-if USE_STORAGE == "y":
-    setup_storage()
-else:
+if USE_STORAGE != "y":
     remove_storage_terraform()
 
-setup_i18n()
-
-if USE_PWA == "y":
-    setup_pwa()
-else:
+if USE_PWA != "y":
     remove_pwa_static()
 
-# Inject project slug into justfile (which is _copy_without_render)
+# 3. Inject project slug into justfile (which is _copy_without_render)
 with JUSTFILE.open() as f:
     content = f.read()
 with JUSTFILE.open("w") as f:
     f.write(content.replace("PROJECT_SLUG", PROJECT_SLUG))
 
+# 4. Install skills and generate lock file
 install_skills()
 
 # Generate uv.lock so CI's `uv sync --frozen` works without an extra manual step

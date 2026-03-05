@@ -29,7 +29,7 @@ This project is best described as "pre-alpha". While based on working projects i
 - Kubernetes deployment with Helm Charts
 - Grafana dashboards for monitoring
 - Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
-- Design pattern library with reusable components and templates following accessibility and UX best practices
+- Design pattern library with reusable components and templates
 - AI-assisted development with custom Skills
 
 ## Stack
@@ -48,6 +48,14 @@ This project is best described as "pre-alpha". While based on working projects i
 The focus of this project is a simple and robust foundation for both user and developer experience. Django is a tried and tested framework with a strong emphasis on convention and best practices, making it an ideal choice for the backend. For the frontend, HTMX and Alpine.js provide a powerful combination for building dynamic interfaces without the complexity of a full JavaScript framework, while Tailwind CSS offers a utility-first approach to styling that promotes consistency and rapid development.
 
 [K3s](https://k3s.io) is a lightweight Kubernetes distribution that allows for easy deployment and scaling of applications. By using K3s, we can ensure that our application is production-ready and can handle increased traffic as needed. Helm Charts have been provided to deploy your project along with Grafana dashboards for monitoring. Full Github Actions CI/CD pipelines are included for testing and deployment.
+
+## Design pattern library
+
+- Sample code using Django templates, AlpineJS and Tailwind CSS
+- Common UI patterns (forms, buttons, navigation, etc.)
+- Focus on accessibility
+- Responsive layouts
+- Dark/light modes
 
 ## Hosting
 

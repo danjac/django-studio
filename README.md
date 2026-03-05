@@ -18,9 +18,9 @@ This project is best described as "pre-alpha". While based on working projects i
 
 ## Philosophy
 
-- Low friction: Minimal setup steps; generate a project with a single command.
-- High velocity: Opinionated defaults so you can focus on business logic and end-user needs.
-- Best practices: Uses proven tools and patterns for security, performance, and observability.
+- **Low friction**: Minimal setup steps; generate a project with a single command.
+- **High velocity**: Opinionated defaults so you can focus on business logic and end-user needs.
+- **Best practices**: Uses proven tools and patterns for security, performance, and observability.
 
 ## Stack
 

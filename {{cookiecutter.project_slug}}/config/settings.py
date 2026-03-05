@@ -382,8 +382,7 @@ SECURE_CSP = {
     "script-src": SCRIPT_SCP,
     "script-src-elem": SCRIPT_SCP,
     "img-src": [CSP.SELF, CSP_DATA],
-    # Allow all audio files
-    "media-src": ["*"],
+    "media-src": [CSP.SELF],
 }
 
 # Tasks

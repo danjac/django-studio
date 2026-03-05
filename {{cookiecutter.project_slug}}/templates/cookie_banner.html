@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if not cookies_accepted %}
   {% with target="cookie-banner" %}
     <div
@@ -7,21 +8,19 @@
       <div class="flex w-full justify-center p-3 text-center md:w-3/4">
         <div class="space-y-3">
           <p class="font-semibold">
-            This site uses cookies for essential features such as logins and
-            security. We do not share cookies or any other user information with
-            third parties. For more information, please see our
-            <a href="{% url 'privacy' %}" class="underline">Privacy Policy</a>.
+            {% url 'privacy' as privacy_url %}
+            {% blocktranslate with url=privacy_url %}This site uses cookies for essential features such as logins and security. We do not share cookies or any other user information with third parties. For more information, please see our <a href="{{ url }}" class="underline">Privacy Policy</a>.{% endblocktranslate %}
           </p>
           <div>
             <button
               class="btn btn-primary border border-white py-1 !px-6 text-base md:text-lg"
-              aria-label="Accept cookies and close banner"
+              aria-label="{% translate "Accept cookies and close banner" %}"
               hx-post="{% url 'accept_cookies' %}"
               hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'
               hx-target="#{{ target }}"
               hx-push-url="false"
               hx-swap="delete"
-            >Accept and close</button>
+            >{% translate "Accept and close" %}</button>
           </div>
         </div>
       </div>

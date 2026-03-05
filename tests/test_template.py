@@ -371,6 +371,20 @@ class TestHxBoostFeatureFlag:
         assert (project / "templates" / "base.html").exists()
         assert not (project / "templates" / "default_base.html").exists()
 
+    def test_base_html_contains_full_html_when_disabled(self, output_dir):
+        """default_base.html must be renamed (not just deleted) into base.html.
+
+        This test guards against the Path.move() crash (pathlib.Path has no
+        .move() method) that previously caused every use_hx_boost=n project
+        generation to fail.
+        """
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": "n"})
+        content = (project / "templates" / "base.html").read_text()
+        # The full layout from default_base.html starts with a doctype; the
+        # old extends-stub did not.
+        assert "<!doctype html>" in content
+        assert "extends" not in content
+
 
 class TestPwaFeatureFlag:
     """Test use_pwa flag behaviour."""

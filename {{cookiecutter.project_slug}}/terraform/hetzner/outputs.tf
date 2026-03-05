@@ -38,6 +38,7 @@ output "webapp_private_ips" {
   value       = local.webapp_private_ips
 }
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 output "monitor_public_ip" {
   description = "Public IPv4 address of the monitor node"
   value       = hcloud_server.monitor.ipv4_address
@@ -47,6 +48,7 @@ output "monitor_private_ip" {
   description = "Private IP address of the monitor node"
   value       = local.monitor_private_ip
 }
+{%- endif %}
 
 output "postgres_volume_id" {
   description = "ID of the PostgreSQL volume"

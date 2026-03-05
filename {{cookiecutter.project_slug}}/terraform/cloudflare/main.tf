@@ -39,6 +39,7 @@ resource "cloudflare_record" "server" {
   comment         = "Server node - managed by Terraform"
 }
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 # Grafana monitoring UI — proxied through Cloudflare so the Cloudflare origin cert is valid
 resource "cloudflare_record" "grafana" {
   count           = var.grafana_subdomain != "" ? 1 : 0
@@ -51,6 +52,7 @@ resource "cloudflare_record" "grafana" {
   allow_overwrite = true
   comment         = "Grafana observability UI - managed by Terraform"
 }
+{%- endif %}
 
 # Optional: WWW redirect
 resource "cloudflare_record" "www" {

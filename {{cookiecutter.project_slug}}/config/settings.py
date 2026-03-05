@@ -2,10 +2,13 @@ import logging
 import pathlib
 from email.utils import getaddresses
 
+{%- if cookiecutter.use_sentry == 'y' %}
 import sentry_sdk
+{%- endif %}
 from django.urls import reverse_lazy
 from django.utils.csp import CSP  # type: ignore[reportMissingTypeStubs]
 from environs import Env
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
@@ -15,8 +18,11 @@ from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+{%- endif %}
+{%- if cookiecutter.use_sentry == 'y' %}
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
+{%- endif %}
 
 BASE_DIR = pathlib.Path(__file__).resolve(strict=True).parents[1]
 
@@ -474,6 +480,8 @@ LOGGING = {
     },
 }
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
+
 # OpenTelemetry
 # https://opentelemetry.io/docs/instrumentation/python/automatic/
 
@@ -511,6 +519,9 @@ if OPEN_TELEMETRY_URL := env("OPEN_TELEMETRY_URL", default=None):
     # Suppress noise from OpenTelemetry libraries
     logging.getLogger("opentelemetry").setLevel(logging.WARNING)
     logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
+{%- endif %}
+
+{%- if cookiecutter.use_sentry == 'y' %}
 
 # Sentry
 # https://docs.sentry.io/platforms/python/guides/django/
@@ -526,6 +537,7 @@ if SENTRY_URL := env("SENTRY_URL", default=None):
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=env.bool("SENTRY_SEND_PII", default=False),
     )
+{%- endif %}
 
 # Dev tools
 

@@ -20,6 +20,8 @@ PROJECT_SLUG = "{{cookiecutter.project_slug}}"
 USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
 USE_STORAGE = "{{cookiecutter.use_storage}}"
 USE_PWA = "{{cookiecutter.use_pwa}}"
+USE_OPENTELEMETRY = "{{cookiecutter.use_opentelemetry}}"
+USE_SENTRY = "{{cookiecutter.use_sentry}}"
 
 BASE_DIR = Path()
 
@@ -30,6 +32,7 @@ HX_BASE_HTML = TEMPLATES_DIR / "hx_base.html"
 
 JUSTFILE = BASE_DIR / "justfile"
 TERRAFORM_STORAGE_DIR = BASE_DIR / "terraform" / "storage"
+OBSERVABILITY_HELM_DIR = BASE_DIR / "helm" / "observability"
 SERVICE_WORKER_JS = BASE_DIR / "static" / "service-worker.js"
 
 # Markers in default_base.html (which is _copy_without_render).
@@ -118,6 +121,15 @@ def remove_storage_terraform() -> None:
         shutil.rmtree(TERRAFORM_STORAGE_DIR)
 
 
+# ── observability ────────────────────────────────────────────────────────────
+
+
+def remove_observability_helm() -> None:
+    """Remove the observability helm chart when OpenTelemetry is not used."""
+    if OBSERVABILITY_HELM_DIR.is_dir():
+        shutil.rmtree(OBSERVABILITY_HELM_DIR)
+
+
 # ── pwa ──────────────────────────────────────────────────────────────────────
 
 
@@ -154,6 +166,9 @@ else:
 
 if USE_STORAGE != "y":
     remove_storage_terraform()
+
+if USE_OPENTELEMETRY != "y":
+    remove_observability_helm()
 
 if USE_PWA != "y":
     remove_pwa_static()

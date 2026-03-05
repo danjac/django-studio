@@ -19,7 +19,9 @@ locals {
   database_private_ip  = cidrhost(var.subnet_ip_range, 3) # 10.0.0.3
   jobrunner_private_ip = cidrhost(var.subnet_ip_range, 4) # 10.0.0.4
   webapp_private_ips   = [for i in range(var.webapp_count) : cidrhost(var.subnet_ip_range, 5 + i)]
+  {%- if cookiecutter.use_opentelemetry == 'y' %}
   monitor_private_ip   = cidrhost(var.subnet_ip_range, 10) # 10.0.0.10
+{%- endif %}
 }
 
 # Private network for internal communication
@@ -95,6 +97,7 @@ resource "hcloud_firewall" "server" {
   }
 }
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 # Firewall for monitor node (needs HTTP/HTTPS open for Traefik ServiceLB ingress)
 resource "hcloud_firewall" "monitor" {
   name = "${var.cluster_name}-monitor-firewall"
@@ -140,6 +143,7 @@ resource "hcloud_firewall" "monitor" {
     source_ips = [var.network_ip_range]
   }
 }
+{%- endif %}
 
 # Firewall for agent nodes (database, jobrunner, webapps)
 resource "hcloud_firewall" "agents" {
@@ -342,6 +346,7 @@ resource "hcloud_server" "webapp" {
   }
 }
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 # Monitor node (observability stack: Prometheus, Grafana, Loki, Tempo, OTel)
 resource "hcloud_server" "monitor" {
   name         = "${var.cluster_name}-monitor"
@@ -380,3 +385,4 @@ resource "hcloud_server" "monitor" {
     ignore_changes = [user_data, ssh_keys]
   }
 }
+{%- endif %}

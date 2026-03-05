@@ -17,6 +17,14 @@
     "y",
     "n"
   ],
+  "use_opentelemetry": [
+    "y",
+    "n"
+  ],
+  "use_sentry": [
+    "y",
+    "n"
+  ],
   "_copy_without_render": [
     "templates/**",
     "static/**",

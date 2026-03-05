@@ -15,8 +15,13 @@ server_ip = ""
 # Redirect www to main domain
 enable_www_redirect = true
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
+# Monitor IP from Hetzner Terraform output
+monitor_ip = ""
+
 # Grafana subdomain (set to "" to skip)
 # grafana_subdomain = "grafana"
+{%- endif %}
 
 # Mailgun configuration (optional)
 # mailgun_dkim_value = "k=rsa; p=..."

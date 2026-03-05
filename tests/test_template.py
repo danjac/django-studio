@@ -230,7 +230,7 @@ class TestTemplateContent:
         assert "test-project" in content
 
     def test_env_example_has_project_slug(self, output_dir, default_context):
-        """Test that .env.example has correct project slug in OpenTelemetry config."""
+        """Test that .env.example has correct project slug."""
         cookiecutter(
             _TEMPLATE_DIR,
             no_input=True,
@@ -240,7 +240,7 @@ class TestTemplateContent:
 
         env_path = output_dir / "test-project" / ".env.example"
         content = env_path.read_text()
-        # The .env.example uses project_slug for OPEN_TELEMETRY_SERVICE_NAME and HETZNER_STORAGE_BUCKET
+        # project_slug appears in HETZNER_STORAGE_BUCKET and OPEN_TELEMETRY_SERVICE_NAME
         assert "test-project" in content
 
 
@@ -408,6 +408,135 @@ class TestPwaFeatureFlag:
         assert "manifest" not in content
 
 
+class TestOpenTelemetryFeatureFlag:
+    """Test use_opentelemetry flag behaviour."""
+
+    def test_otel_deps_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
+        content = (project / "pyproject.toml").read_text()
+        assert "opentelemetry-api" in content
+        assert "opentelemetry-sdk" in content
+
+    def test_otel_deps_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / "pyproject.toml").read_text()
+        assert "opentelemetry-api" not in content
+        assert "opentelemetry-sdk" not in content
+
+    def test_otel_settings_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "from opentelemetry" in content
+        assert "OPEN_TELEMETRY_URL" in content
+
+    def test_otel_settings_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "from opentelemetry" not in content
+        assert "OPEN_TELEMETRY_URL" not in content
+
+    def test_otel_env_vars_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
+        content = (project / ".env.example").read_text()
+        assert "OPEN_TELEMETRY_URL" in content
+
+    def test_otel_env_vars_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / ".env.example").read_text()
+        assert "OPEN_TELEMETRY_URL" not in content
+
+    def test_observability_helm_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
+        assert (project / "helm" / "observability").is_dir()
+
+    def test_observability_helm_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        assert not (project / "helm" / "observability").exists()
+
+    def test_monitor_node_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
+        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
+        assert 'resource "hcloud_server" "monitor"' in content
+        assert 'resource "hcloud_firewall" "monitor"' in content
+
+    def test_monitor_node_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
+        assert 'resource "hcloud_server" "monitor"' not in content
+        assert 'resource "hcloud_firewall" "monitor"' not in content
+        assert "monitor_private_ip" not in content
+
+    def test_monitor_outputs_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
+        content = (project / "terraform" / "hetzner" / "outputs.tf").read_text()
+        assert '"monitor_public_ip"' in content
+        assert '"monitor_private_ip"' in content
+
+    def test_monitor_outputs_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / "terraform" / "hetzner" / "outputs.tf").read_text()
+        assert '"monitor_public_ip"' not in content
+        assert '"monitor_private_ip"' not in content
+
+    def test_cloudflare_grafana_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
+        main_content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
+        assert 'resource "cloudflare_record" "grafana"' in main_content
+        vars_content = (project / "terraform" / "cloudflare" / "variables.tf").read_text()
+        assert '"monitor_ip"' in vars_content
+        assert '"grafana_subdomain"' in vars_content
+
+    def test_cloudflare_grafana_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        main_content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
+        assert 'resource "cloudflare_record" "grafana"' not in main_content
+        vars_content = (project / "terraform" / "cloudflare" / "variables.tf").read_text()
+        assert '"monitor_ip"' not in vars_content
+        assert '"grafana_subdomain"' not in vars_content
+
+    def test_no_cookiecutter_literals_in_terraform(self, output_dir):
+        """Rendered terraform files must not contain cookiecutter template tags."""
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        for tf_file in (project / "terraform").rglob("*.tf"):
+            content = tf_file.read_text()
+            assert "cookiecutter" not in content, f"{tf_file} contains cookiecutter literal"
+
+
+class TestSentryFeatureFlag:
+    """Test use_sentry flag behaviour."""
+
+    def test_sentry_dep_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": "y"})
+        content = (project / "pyproject.toml").read_text()
+        assert "sentry-sdk" in content
+
+    def test_sentry_dep_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": "n"})
+        content = (project / "pyproject.toml").read_text()
+        assert "sentry-sdk" not in content
+
+    def test_sentry_settings_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": "y"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "import sentry_sdk" in content
+        assert "SENTRY_URL" in content
+
+    def test_sentry_settings_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": "n"})
+        content = (project / "config" / "settings.py").read_text()
+        assert "import sentry_sdk" not in content
+        assert "SENTRY_URL" not in content
+
+    def test_sentry_env_vars_present_when_enabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": "y"})
+        content = (project / ".env.example").read_text()
+        assert "SENTRY_URL" in content
+
+    def test_sentry_env_vars_absent_when_disabled(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": "n"})
+        content = (project / ".env.example").read_text()
+        assert "SENTRY_URL" not in content
+
 class TestFeatureFlagCombinations:
     """Test interactions between feature flags."""
 
@@ -441,7 +570,7 @@ class TestFeatureFlagCombinations:
         assert (project / "locale").is_dir()
 
     def test_all_flags_enabled(self, output_dir):
-        """All three flags on: every feature must be wired up."""
+        """All flags on: every feature must be wired up."""
         project = _render(
             output_dir,
             {
@@ -449,6 +578,8 @@ class TestFeatureFlagCombinations:
                 "use_hx_boost": "y",
                 "use_storage": "y",
                 "use_pwa": "y",
+                "use_opentelemetry": "y",
+                "use_sentry": "y",
             },
         )
         # hx-boost
@@ -468,9 +599,17 @@ class TestFeatureFlagCombinations:
         # i18n
         assert (project / "locale").is_dir()
         assert "USE_I18N = True" in settings_content
+        # opentelemetry
+        assert "opentelemetry" in settings_content
+        assert (project / "helm" / "observability").is_dir()
+        pyproject_content = (project / "pyproject.toml").read_text()
+        assert "opentelemetry-api" in pyproject_content
+        # sentry
+        assert "sentry_sdk" in settings_content
+        assert "sentry-sdk" in pyproject_content
 
     def test_all_flags_disabled(self, output_dir):
-        """All three optional flags off: none of the optional features must be present."""
+        """All optional flags off: none of the optional features must be present."""
         project = _render(
             output_dir,
             {
@@ -478,6 +617,8 @@ class TestFeatureFlagCombinations:
                 "use_hx_boost": "n",
                 "use_storage": "n",
                 "use_pwa": "n",
+                "use_opentelemetry": "n",
+                "use_sentry": "n",
             },
         )
         # hx-boost absent
@@ -493,6 +634,14 @@ class TestFeatureFlagCombinations:
         # i18n always present
         assert (project / "locale").is_dir()
         assert "USE_I18N = True" in settings_content
+        # opentelemetry absent
+        assert "opentelemetry" not in settings_content
+        assert not (project / "helm" / "observability").exists()
+        pyproject_content = (project / "pyproject.toml").read_text()
+        assert "opentelemetry-api" not in pyproject_content
+        # sentry absent
+        assert "sentry_sdk" not in settings_content
+        assert "sentry-sdk" not in pyproject_content
 
 
 class TestRenderedPythonLinting:

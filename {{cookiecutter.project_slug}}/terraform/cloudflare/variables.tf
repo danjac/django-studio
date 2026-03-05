@@ -20,10 +20,12 @@ variable "server_ip" {
   type        = string
 }
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 variable "monitor_ip" {
   description = "Public IP address of the monitor node (from Hetzner Terraform output)"
   type        = string
 }
+{%- endif %}
 
 variable "enable_www_redirect" {
   description = "Enable www subdomain redirect to main domain"
@@ -31,11 +33,13 @@ variable "enable_www_redirect" {
   default     = true
 }
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 variable "grafana_subdomain" {
   description = "Subdomain for Grafana UI (e.g. 'grafana' → grafana.example.com). Leave empty to skip."
   type        = string
   default     = "grafana"
 }
+{%- endif %}
 
 variable "mailgun_dkim_value" {
   description = "Mailgun DKIM public key (leave empty to skip Mailgun DNS)"

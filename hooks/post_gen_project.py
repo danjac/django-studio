@@ -61,7 +61,7 @@ def remove_hx_base() -> None:
     if HX_BASE_HTML.exists():
         HX_BASE_HTML.unlink()
     # Replace the extends-stub with the actual full layout.
-    DEFAULT_BASE_HTML.move(BASE_HTML)
+    DEFAULT_BASE_HTML.rename(BASE_HTML)
 
 
 # ── storage ───────────────────────────────────────────────────────────────────

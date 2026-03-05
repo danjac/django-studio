@@ -287,27 +287,25 @@ PWA_CONFIG = {
 
 _TEST_PWA_BLOCK = """
 
+@pytest.mark.django_db
 class TestManifest:
-    @pytest.mark.django_db
     def test_get(self, client):
         response = client.get(reverse("manifest"))
         assert response.status_code == 200
         assert response.json()["start_url"] == "/"
 
-    @pytest.mark.django_db
     def test_post_not_allowed(self, client):
         response = client.post(reverse("manifest"))
         assert response.status_code == 405
 
 
+@pytest.mark.django_db
 class TestAssetlinks:
-    @pytest.mark.django_db
     def test_get(self, client):
         response = client.get(reverse("assetlinks"))
         assert response.status_code == 200
         assert isinstance(response.json(), list)
 
-    @pytest.mark.django_db
     def test_post_not_allowed(self, client):
         response = client.post(reverse("assetlinks"))
         assert response.status_code == 405

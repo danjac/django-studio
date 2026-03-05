@@ -84,6 +84,8 @@ Then follow the prompts:
 - `author`: Your name
 - `author_email`: Your email
 
+The generated `README.md` will include instructions to get started with development, testing, and deployment.
+
 ## Skills
 
 Every generated project ships with the `/django-studio` skill at `.claude/commands/django-studio.md`.

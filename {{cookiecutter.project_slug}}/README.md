@@ -30,6 +30,7 @@ See `DEPLOYMENT.md` for full deployment instructions.
 
 ```bash
 cp .env.example .env        # configure environment variables
+git init                    # initialise Git repository
 just start                  # start Docker services (PostgreSQL, Redis, Mailpit)
 just install                # install Python deps + pre-commit hooks
 just dj migrate             # run database migrations

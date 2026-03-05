@@ -24,7 +24,7 @@ CSS source: `tailwind/forms.css`
 ```html
 {% fragment "form.html" %}
   {% for field in form %}
-    {% include "form/field.html" with field=field %}
+    {{ field.as_field_group }}
   {% endfor %}
   <button type="submit" class="btn btn-primary">Save</button>
 {% endfragment %}
@@ -35,7 +35,7 @@ CSS source: `tailwind/forms.css`
 ```html
 {% fragment "form.html" action=url htmx=True hx_target="#my-form" %}
   {% for field in form %}
-    {% include "form/field.html" with field=field %}
+    {{ field.as_field_group }}
   {% endfor %}
   <button type="submit" class="btn btn-primary" hx-disabled-elt="this">Save</button>
 {% endfragment %}
@@ -47,9 +47,12 @@ CSS source: `tailwind/forms.css`
 
 ### Usage
 
+Use Django's `as_field_group` method rather than including `form/field.html` directly. This is the preferred approach — `as_field_group` delegates to `form/field.html` internally, so all label, error, and help-text handling is identical.
+
 ```html
+{# Render all fields in form order #}
 {% for field in form %}
-  {% include "form/field.html" with field=field %}
+  {{ field.as_field_group }}
 {% endfor %}
 ```
 

@@ -10,7 +10,7 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 | ----------------- | -------------------------------------------------- | ----------------------- | ------------------------------ |
 | Buttons           | _(utility classes only)_                           | `tailwind/buttons.css`  | [buttons.md](buttons.md)       |
 | Messages / Alerts | `templates/messages.html`                          | `tailwind/messages.css` | [messages.md](messages.md)     |
-| Forms             | `templates/form/field.html`, `templates/form.html` | `tailwind/forms.css`    | [forms.md](forms.md)           |
+| Forms             | `templates/form.html` _(fields via `as_field_group`)_ | `tailwind/forms.css`    | [forms.md](forms.md)           |
 | Navbar            | `templates/navbar.html`                            | -                       | [navigation.md](navigation.md) |
 | Sidebar           | `templates/sidebar.html`                           | -                       | [navigation.md](navigation.md) |
 | User Dropdown     | _(inside navbar.html)_                             | -                       | [navigation.md](navigation.md) |

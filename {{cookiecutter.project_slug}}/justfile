@@ -165,6 +165,7 @@ helm-upgrade:
         -f helm/{{ project_slug }}/values.yaml \
         -f helm/{{ project_slug }}/values.secret.yaml
 
+{%- if cookiecutter.use_opentelemetry == 'y' %}
 # Install or upgrade the observability Helm chart
 [group('deployment')]
 helm-upgrade-observability:
@@ -175,6 +176,7 @@ helm-upgrade-observability:
         --create-namespace \
         -f helm/observability/values.yaml \
         -f helm/observability/values.secret.yaml
+  {%- endif %}
 
 # Run Django manage.py commands on production server
 [group('production')]

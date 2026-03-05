@@ -30,7 +30,7 @@ This project is best described as "pre-alpha". While based on working projects i
 - Grafana dashboards for monitoring
 - Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
 - Design pattern library with reusable components and templates using Django templates and Tailwind CSS
-- AI-assisted development with custom Skills for common tasks (e.g. issue creation, project setup, prelaunch checks)
+- AI-assisted development with custom Skills
 
 ## Stack
 

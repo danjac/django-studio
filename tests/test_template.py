@@ -482,7 +482,9 @@ class TestOpenTelemetryFeatureFlag:
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "y"})
         main_content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
         assert 'resource "cloudflare_record" "grafana"' in main_content
-        vars_content = (project / "terraform" / "cloudflare" / "variables.tf").read_text()
+        vars_content = (
+            project / "terraform" / "cloudflare" / "variables.tf"
+        ).read_text()
         assert '"monitor_ip"' in vars_content
         assert '"grafana_subdomain"' in vars_content
 
@@ -490,7 +492,9 @@ class TestOpenTelemetryFeatureFlag:
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
         main_content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
         assert 'resource "cloudflare_record" "grafana"' not in main_content
-        vars_content = (project / "terraform" / "cloudflare" / "variables.tf").read_text()
+        vars_content = (
+            project / "terraform" / "cloudflare" / "variables.tf"
+        ).read_text()
         assert '"monitor_ip"' not in vars_content
         assert '"grafana_subdomain"' not in vars_content
 
@@ -499,7 +503,9 @@ class TestOpenTelemetryFeatureFlag:
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
         for tf_file in (project / "terraform").rglob("*.tf"):
             content = tf_file.read_text()
-            assert "cookiecutter" not in content, f"{tf_file} contains cookiecutter literal"
+            assert "cookiecutter" not in content, (
+                f"{tf_file} contains cookiecutter literal"
+            )
 
 
 class TestSentryFeatureFlag:
@@ -536,6 +542,7 @@ class TestSentryFeatureFlag:
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": "n"})
         content = (project / ".env.example").read_text()
         assert "SENTRY_URL" not in content
+
 
 class TestFeatureFlagCombinations:
     """Test interactions between feature flags."""

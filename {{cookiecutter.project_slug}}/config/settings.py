@@ -467,16 +467,6 @@ LOGGING = {
             "level": "CRITICAL",
             "propagate": False,
         },
-        "httpx": {
-            "handlers": ["console"],
-            "level": "CRITICAL",
-            "propagate": False,
-        },
-        "httpcore": {
-            "handlers": ["console"],
-            "level": "CRITICAL",
-            "propagate": False,
-        },
     },
 }
 

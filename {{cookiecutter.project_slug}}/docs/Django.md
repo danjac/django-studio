@@ -258,23 +258,20 @@ async def search_items(request):
 **Prefer synchronous code unless async is specifically required.**
 
 Use async when:
+
 - Making API calls to third-party services
 - Using Django Channels/WebSockets
 - I/O-bound operations that benefit from concurrency
 
 ### HTTP Client
 
-Always use `httpx` for HTTP requests - never `requests`:
+Always use [aiohttp](https://pypi.org/project/aiohttp/) for HTTP requests - never `requests`:
 
 ```python
-import httpx
+import aiohttp
 
-# Sync (preferred unless async is needed)
-response = httpx.get("https://api.example.com/data")
-
-# Async
-async with httpx.AsyncClient() as client:
-    response = await client.get("https://api.example.com/data")
+async with aiohttp.ClientSession() as session:
+    async with session.get('http://python.org') as response:
 ```
 
 ### Running Async Code
@@ -291,6 +288,7 @@ application = get_asgi_application()
 ```
 
 Gunicorn with Uvicorn worker:
+
 ```bash
 gunicorn --worker-class uvicorn.workers.UvicornWorker config.asgi:application
 ```
@@ -435,26 +433,19 @@ class ItemForm(forms.ModelForm):
 Classes added in templates using `widget_tweaks`:
 
 ```html
-{% load widget_tweaks %}
-{% render_field form.name class="form-input" %}
+{% load widget_tweaks %} {% render_field form.name class="form-input" %}
 ```
 
 ### Form Template Pattern
 
 ```html
 <!-- form/field.html -->
-{% load heroicons widget_tweaks %}
-
-{% partialdef input %}
-    {% partial label %}
-    {% render_field field class="form-input" %}
-{% endpartialdef %}
-
-{% partialdef label %}
-    <label for="{{ field.id_for_label }}">
-        {{ field.label }}
-        {% if not field.field.required %}(optional){% endif %}
-    </label>
+{% load heroicons widget_tweaks %} {% partialdef input %} {% partial label %} {%
+render_field field class="form-input" %} {% endpartialdef %} {% partialdef label
+%}
+<label for="{{ field.id_for_label }}">
+  {{ field.label }} {% if not field.field.required %}(optional){% endif %}
+</label>
 {% endpartialdef %}
 ```
 

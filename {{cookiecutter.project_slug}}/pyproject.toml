@@ -1,13 +1,4 @@
 [project]
-name = "{{cookiecutter.project_slug}}"
-version = "0.1.0"
-description = "{{cookiecutter.description}}"
-authors = [
-  { name = "{{cookiecutter.author}}", email = "{{cookiecutter.author_email}}" },
-]
-requires-python = "==3.14.*"
-readme = "README.md"
-license = { text = "MIT" }
 dependencies = [
   "django-allauth[socialaccount]>=64.2.0",
   "django-anymail>=11.1",
@@ -24,7 +15,6 @@ dependencies = [
   "environs[django]>=11.0.0",
   "gunicorn>=23.0.0",
   "heroicons[django]>=2.8.0",
-  "httpx>=0.27.2",
   {%- if cookiecutter.use_opentelemetry == 'y' %}
   "opentelemetry-api>=1.28.0",
   "opentelemetry-exporter-otlp-proto-http>=1.28.0",
@@ -46,7 +36,15 @@ dependencies = [
 {%- if cookiecutter.use_storage == 'y' %}
   "django-storages[s3]>=1.14.4",
 {%- endif %}
+]name = "{{cookiecutter.project_slug}}"
+version = "0.1.0"
+description = "{{cookiecutter.description}}"
+authors = [
+  { name = "{{cookiecutter.author}}", email = "{{cookiecutter.author_email}}" },
 ]
+requires-python = "==3.14.*"
+readme = "README.md"
+license = { text = "MIT" }
 
 [dependency-groups]
 dev = [

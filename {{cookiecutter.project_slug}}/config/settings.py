@@ -170,6 +170,9 @@ USE_HTTPS = env.bool("USE_HTTPS", default=True)
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
+# Store CSRF tokens in the session rather than a cookie. This closes the
+# subdomain cookie-injection attack vector, where a compromised subdomain
+# could overwrite the CSRF cookie for the parent domain.
 CSRF_USE_SESSIONS = True
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[]) or []

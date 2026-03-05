@@ -25,15 +25,15 @@ This project is best described as "pre-alpha". While based on working projects i
 ## Stack
 
 - Python 3.14, Django 6.0, PostgreSQL 18, Redis 8
-- HTMX + Alpine.js + Tailwind CSS (no JS build step)
-- `uv` for dependency management
-- `just` for task running
-- `django-tasks-db` for background tasks (not Celery)
-- `django-allauth` for authentication
-- `pre-commit` hooks for linting
-- Cloudflare for DNS, CDN, SSL, and DDoS protection
-- Hetzner Cloud for hosting (K3s)
-- Full test coverage (pytest + Playwright)
+- [HTMX](https://htmx.org) + [Alpine.js](https://alpinejs.dev) + [Tailwind CSS](https://tailwindcss.com) (no JS build step)
+- [uv](https://docs.astral.sh/uv/) for dependency management
+- [just](https://just.systems/man/en/) for task running
+- [Django tasks](https://docs.djangoproject.com/en/6.0/topics/tasks/) for background tasks (instead of Celery)
+- [django-allauth](https://docs.allauth.org/en/latest/) for authentication
+- [pre-commit](https://pre-commit.com) hooks for linting
+- [Cloudflare](https://cloudflare.com) for DNS, CDN, SSL, and DDoS protection
+- [Hetzner Cloud](https://hetzner.com) for hosting (K3s)
+- Full test coverage ([pytest](https://docs.pytest.org/en/stable/) + [Playwright](https://playwright.dev/python/))
 
 The focus of this project is a simple and robust foundation for both user and developer experience. Django is a tried and tested framework with a strong emphasis on convention and best practices, making it an ideal choice for the backend. For the frontend, HTMX and Alpine.js provide a powerful combination for building dynamic interfaces without the complexity of a full JavaScript framework, while Tailwind CSS offers a utility-first approach to styling that promotes consistency and rapid development.
 

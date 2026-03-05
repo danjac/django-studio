@@ -58,6 +58,8 @@ The focus of this project is a simple and robust foundation for both user and de
 - Responsive layouts
 - Dark/light modes
 
+The design system is intended to provide a production-ready foundation for your UI. You are free to customize and extend the design system as needed, but the provided components and patterns should cover most common use cases and help you get up and running quickly.
+
 ## Hosting
 
 [Hetzner Cloud](https://hetzner.com) is a very cost-effective, EU-based hosting provider. Cloudflare is currently the cheapest and most secure option for DNS, CDN, SSL, and DDoS protection. These solutions will be reviewed on a regular basis - if better options become available, they will be offered instead of or addition to these choices.

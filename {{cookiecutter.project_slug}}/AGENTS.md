@@ -14,21 +14,6 @@ This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for
 
 **NOTE**: Python 3.14 and Django 6.0 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
 
-## What the template already provides
-
-The following have been added already.
-
-| Feature | Where | NEVER do this |
-|---------|-------|---------------|
-| allauth installed & configured | `config/settings.py`, `config/urls.py` | Re-add to `INSTALLED_APPS` or modify base allauth settings |
-| Email verification (mandatory, by code) | `config/settings.py` | Add a separate email-verification flow |
-| All allauth templates | `templates/account/`, `templates/socialaccount/` | Re-create these from scratch |
-| GDPR cookie consent | `cookie_banner.html`, `accept_cookies` view | Add `gdpr_consent` / `gdpr_consent_date` model fields |
-| Custom `User` model | `{{cookiecutter.package_name}}/users/models.py` | Replace with `AbstractBaseUser` or a separate profile model |
-| Navbar with auth links | `templates/navbar.html` | Build a second navbar |
-| Cookie banner | `templates/cookie_banner.html`, `{% raw %}{% cookie_banner %}{% endraw %}` tag | Add a separate consent popup |
-
-Before writing any code related to users, authentication, or privacy: read `config/settings.py` lines 225–280 and `config/urls.py` to confirm what is already wired up.
 
 ## Project Layout
 

@@ -230,11 +230,11 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 
 Hierarchy — use the first that fits:
 
-1. `{{ form.title.as_field_group }}` — explicit field-by-field control over order
+{% raw %}1. `{{ form.title.as_field_group }}` — explicit field-by-field control over order
 2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order
 3. `{{ form }}` — renders all fields using the configured template renderer
 
-Never use `{{ form.as_div }}` — it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.
+Never use `{{ form.as_div }}` — it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.{% endraw %}
 
 See `design/forms.md` for full field template documentation.
 

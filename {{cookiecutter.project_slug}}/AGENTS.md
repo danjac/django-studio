@@ -2,10 +2,6 @@
 
 This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
 
-## Environment / Tech Stack
-
-Python 3.14 and Django 6.0 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
-
 ## Session Workflow
 
 ### Session Zero
@@ -69,6 +65,8 @@ For each milestone:
 - **Task runner**: `just` (see `justfile` for all commands)
 - **Background tasks**: Django Tasks (`django-tasks-db`), not Celery
 - **Feature flags**: `use_hx_boost`, `use_storage`, `use_pwa`, `use_opentelemetry`, `use_sentry`
+
+**NOTE**: Python 3.14 and Django 6.0 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
 
 ## Project Layout
 
@@ -230,9 +228,7 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 
 Hierarchy — use the first that fits:
 
-{% raw %}1. `{{ form.title.as_field_group }}` — explicit field-by-field control over order
-2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order
-3. `{{ form }}` — renders all fields using the configured template renderer
+{% raw %}1. `{{ form.title.as_field_group }}` — explicit field-by-field control over order 2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order 3. `{{ form }}` — renders all fields using the configured template renderer
 
 Never use `{{ form.as_div }}` — it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.{% endraw %}
 
@@ -249,17 +245,17 @@ See `design/forms.md` for full field template documentation.
 
 ### Required reading before implementation
 
-| What you are about to implement | Read first                                                  |
-| ------------------------------- | ----------------------------------------------------------- |
-| Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`             |
-| Background task                 | `docs/Django-Tasks.md`                                      |
-| HTMX interaction                | `docs/HTMX.md`                                              |
-| AlpineJS component              | `docs/Alpine.md`                                            |
-| Tailwind / CSS                  | `docs/Tailwind.md`                                          |
-| Authentication / allauth        | `docs/Authentication.md`                                    |
+| What you are about to implement | Read first                                                 |
+| ------------------------------- | ---------------------------------------------------------- |
+| Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`            |
+| Background task                 | `docs/Django-Tasks.md`                                     |
+| HTMX interaction                | `docs/HTMX.md`                                             |
+| AlpineJS component              | `docs/Alpine.md`                                           |
+| Tailwind / CSS                  | `docs/Tailwind.md`                                         |
+| Authentication / allauth        | `docs/Authentication.md`                                   |
 | Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/k3s-Hetzner-Cloudflare.md` |
-| Testing patterns                | `docs/Testing.md`                                           |
-| Any of the above                | `docs/Project-Structure.md` (once per session)              |
+| Testing patterns                | `docs/Testing.md`                                          |
+| Any of the above                | `docs/Project-Structure.md` (once per session)             |
 
 If a doc contradicts what you see in existing code, flag it — do not silently pick one.
 

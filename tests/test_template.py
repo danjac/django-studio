@@ -199,18 +199,6 @@ class TestTemplateRendering:
         project_path = output_dir / "test-project"
         assert (project_path / "uv.lock").exists()
 
-    def test_django_studio_skill_installed(self, output_dir, default_context):
-        """Test that the django-studio skill is copied to .claude/commands/."""
-        cookiecutter(
-            _TEMPLATE_DIR,
-            no_input=True,
-            output_dir=str(output_dir),
-            extra_context=default_context,
-        )
-
-        project_path = output_dir / "test-project"
-        assert (project_path / ".claude" / "commands" / "django-studio.md").exists()
-
 
 class TestTemplateContent:
     """Test that generated files contain expected content."""

@@ -122,11 +122,6 @@ precommitupdate:
 precommitall:
    @just precommit run --all-files
    
-# Sync skills from generated project template to global Claude commands
-[group('development')]
-sync-skills:
-    cp .claude/commands/django-studio.md ~/.claude/commands/django-studio.md
-
 # File a GitHub issue in the current project
 [group('development')]
 issue title body:

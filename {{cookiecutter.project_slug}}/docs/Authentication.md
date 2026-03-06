@@ -1,149 +1,65 @@
 # Authentication
 
-This project uses django-allauth for authentication.
+> **Already configured. Do not reinstall, re-add to INSTALLED_APPS, or modify the base allauth settings.**
+>
+> allauth is fully set up by the project template. The tasks below describe what is already working and how to extend it safely.
 
-## Installation
+## What is already in place
 
-```bash
-uv add django-allauth
-```
+- `allauth`, `allauth.account`, `allauth.socialaccount` in `INSTALLED_APPS` (`config/settings.py`)
+- `allauth.account.middleware.AccountMiddleware` in `MIDDLEWARE`
+- `path("account/", include("allauth.urls"))` in `config/urls.py`
+- `AUTH_USER_MODEL = "users.User"` — custom user model in `{{cookiecutter.package_name}}/users/`
+- Email/username login, mandatory email verification by code, password reset by code
+- All account templates already customised in `templates/account/` and `templates/socialaccount/`
+- GDPR cookie consent handled by the cookie banner in `base.html` — **do not add database fields for consent**
 
-Add to `INSTALLED_APPS`:
+## Adding a social provider
 
-```python
-INSTALLED_APPS = [
-    # ...
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-]
-```
+Social providers can be added at any time without touching the base allauth setup:
 
-Add middleware:
+1. Add the provider app to `INSTALLED_APPS` in `config/settings.py`:
+   ```python
+   "allauth.socialaccount.providers.google",
+   ```
+2. Configure credentials in `SOCIALACCOUNT_PROVIDERS` (already has a Google stub):
+   ```python
+   SOCIALACCOUNT_PROVIDERS = {
+       "google": {
+           "APP": {"client_id": "…", "secret": "…", "key": ""},
+       }
+   }
+   ```
+3. Run `just dj migrate` — the socialaccount tables are already present.
 
-```python
-MIDDLEWARE = [
-    # ...
-    "allauth.account.middleware.AccountMiddleware",
-]
-```
+## Customising the signup form
 
-## Configuration
-
-```python
-# settings.py
-
-# Signup fields
-ACCOUNT_SIGNUP_FIELDS = [
-    "email",
-    "username",
-]
-
-# Login methods (username or email)
-ACCOUNT_LOGIN_METHODS = {"username", "email"}
-
-# Email verification
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
-ACCOUNT_EMAIL_VERIFICATION_SUPPORTS_RESEND = True
-ACCOUNT_UNIQUE_EMAIL = True
-
-# Password reset
-ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
-ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
-
-# Security
-ACCOUNT_PREVENT_ENUMERATION = False
-```
-
-## URL Configuration
+To collect extra fields at signup, set `ACCOUNT_SIGNUP_FORM_CLASS` to a form that inherits from `forms.Form` and implements `signup(self, request, user)`:
 
 ```python
-# config/urls.py
-from django.urls import include, path
+# {{cookiecutter.package_name}}/users/forms.py
+from django import forms
 
-urlpatterns = [
-    # ...
-    path("accounts/", include("allauth.urls")),
-]
+class SignupForm(forms.Form):
+    first_name = forms.CharField(max_length=150)
+
+    def signup(self, request, user):
+        user.first_name = self.cleaned_data["first_name"]
+        user.save(update_fields=["first_name"])
 ```
-
-## Templates
-
-Customize allauth templates in `templates/account/` and `templates/socialaccount/`:
-
-```
-templates/
-├── account/
-│   ├── login.html
-│   ├── signup.html
-│   ├── password_reset.html
-│   ├── password_change.html
-│   ├── email.html
-│   └── ...
-└── socialaccount/
-    ├── login.html
-    ├── signup.html
-    ├── connections.html
-    └── ...
-```
-
-Override with custom templates as needed to match your site's design.
-
-## Social Login
-
-Enable social providers via `SOCIALACCOUNT_PROVIDERS`:
 
 ```python
-# settings.py
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "APP": {
-            "client_id": "your-client-id",
-            "secret": "your-secret",
-            "key": "",
-        }
-    },
-    # Add more providers as needed
-}
-```
-
-Add to installed apps:
-```python
-INSTALLED_APPS = [
-    # ...
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-    # ...
-]
-```
-
-## Custom User Model
-
-If using a custom user model:
-
-```python
-# settings.py
-AUTH_USER_MODEL = "users.User"
+# config/settings.py
+ACCOUNT_SIGNUP_FORM_CLASS = "{{cookiecutter.package_name}}.users.forms.SignupForm"
 ```
 
 ## Testing
 
-For tests, use Django's test client or pytest-django:
+Use `force_login` in unit tests. Do not POST through the allauth signup/login flow unless you are specifically testing the auth flow itself.
 
 ```python
-def test_login(client, user):
-    response = client.post(
-        "/accounts/login/",
-        {"login": user.email, "password": "testpass"},
-    )
-    assert response.status_code == 302
+def test_profile(client, user):
+    client.force_login(user)
+    response = client.get(reverse("users:profile"))
+    assert response.status_code == 200
 ```
-
-## Best Practices
-
-1. Use custom templates to match your site design
-2. Enable email verification for production
-3. Use ACCOUNT_EMAIL_VERIFICATION_BY_CODE for better UX
-4. Configure SOCIALACCOUNT_PROVIDERS for social login
-5. Use ACCOUNT_PREVENT_ENUMERATION to protect against email enumeration attacks

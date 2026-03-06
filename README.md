@@ -30,7 +30,7 @@ This project is best described as "pre-alpha". While based on working projects i
 - Grafana dashboards for monitoring
 - Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
 - Design system with reusable components
-- AI-assisted development with custom Skills
+- AI-assisted development with curated agent documentation and hooks
 
 ## Stack
 
@@ -75,7 +75,7 @@ Prices are subject to change, but the current hosting costs based on the default
 | [uv](https://docs.astral.sh/uv/)                        | Python package manager (runs `uvx cookiecutter`) | `curl -LsSf https://astral.sh/uv/install.sh \| sh`          |
 | [just](https://just.systems/)                           | Task runner                                      | `cargo install just` or via your OS package manager         |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit                       | See Docker docs                                             |
-| [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs, `/django-studio` skill) | See [install docs](https://github.com/cli/cli#installation) |
+| [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs)                         | See [install docs](https://github.com/cli/cli#installation) |
 
 Python 3.14 is managed automatically by `uv` - no separate install needed.
 
@@ -113,19 +113,3 @@ Then follow the prompts:
 | `use_sentry`        | `y` / `n`                | Sentry error tracking               |
 
 The generated `README.md` will include instructions to get started with development, testing, and deployment.
-
-## Skills
-
-Every generated project ships with the `/django-studio` skill at `.claude/commands/django-studio.md`.
-
-The skill source lives in `skills/django-studio.md` at the repo root. Run `just sync-skills` to install or update it in `~/.claude/commands/`.
-
-| Command                                        | Effect                                                                      |
-| ---------------------------------------------- | --------------------------------------------------------------------------- |
-| `/django-studio issue <feedback>`              | File an issue against the current project                                   |
-| `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                    |
-| `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and flags)    |
-| `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`          |
-| `/django-studio prelaunch`                     | Runs prelaunch checks before first deployment                               |
-
-Requires the `gh` CLI authenticated with GitHub access.

@@ -11,7 +11,7 @@
 | [uv](https://docs.astral.sh/uv/)                        | Python package manager                           | `curl -LsSf https://astral.sh/uv/install.sh \| sh`          |
 | [just](https://just.systems/)                           | Task runner                                      | `cargo install just` or via your OS package manager         |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit                       | See Docker docs                                             |
-| [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs, `/django-studio` skill) | See [install docs](https://github.com/cli/cli#installation) |
+| [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs)                         | See [install docs](https://github.com/cli/cli#installation) |
 
 Python 3.14 is managed automatically by `uv` - no separate install needed.
 
@@ -59,20 +59,6 @@ Run `just` with no arguments to list all available commands.
 - `django-allauth` for authentication
 
 See `docs/` for detailed documentation on each part of the stack.
-
-## Skills
-
-The `/django-studio` skill is available in `.claude/commands/` and works from any Claude Code session in this project.
-
-| Command                                        | Effect                                                                                           |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `/django-studio issue <feedback>`              | File an issue against this repo                                                                  |
-| `/django-studio issue cookiecutter <feedback>` | File an issue against the [django-studio](https://github.com/danjac/django-studio) template repo |
-| `/django-studio create`                        | Create a new Django project from the template                                                    |
-| `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`                               |
-| `/django-studio prelaunch`                     | Run pre-launch checks                                                                            |
-
-Requires the `gh` CLI authenticated with GitHub access.
 
 ---
 

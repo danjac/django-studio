@@ -4,29 +4,12 @@ This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for
 
 ## Session Workflow
 
-### Session Zero
-
-Before any development work on a new project, run Session Zero:
-
-1. Ask the user in a single message:
-   - What problem is this project solving?
-   - Who are the users and stakeholders?
-   - What are the key features and success criteria?
-   - What should the project **not** do (out of scope)?
-   - What similar projects exist for reference?
-   - What is the intended license? (MIT, BSD-3, GPL-3, AGPL-3, or proprietary)
-2. Update `README.md` with a project overview based on the answers.
-3. Create `ROADMAP.md` with milestones and checkbox tasks (`- [ ] Task`).
-4. Present the roadmap to the user and wait for explicit approval before starting any work.
-
 ### Process
 
 At the start of every session:
 
-1. **Fix bugs first.** Check GitHub issues for open bugs. Fix every one before doing any roadmap work. A stable codebase is the baseline.
+1. **Fix bugs first.** Check GitHub issues for open bugs. Fix every one before doing any other work. A stable codebase is the baseline.
 2. **Resume the roadmap.** Open `ROADMAP.md`, find the next unchecked task, and continue from there.
-
-If `ROADMAP.md` does not exist yet, run Session Zero first.
 
 ## Bug Workflow
 
@@ -67,6 +50,22 @@ For each milestone:
 - **Feature flags**: `use_hx_boost`, `use_storage`, `use_pwa`, `use_opentelemetry`, `use_sentry`
 
 **NOTE**: Python 3.14 and Django 6.0 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
+
+## What the template already provides
+
+The following have been added already.
+
+| Feature | Where | NEVER do this |
+|---------|-------|---------------|
+| allauth installed & configured | `config/settings.py`, `config/urls.py` | Re-add to `INSTALLED_APPS` or modify base allauth settings |
+| Email verification (mandatory, by code) | `config/settings.py` | Add a separate email-verification flow |
+| All allauth templates | `templates/account/`, `templates/socialaccount/` | Re-create these from scratch |
+| GDPR cookie consent | `cookie_banner.html`, `accept_cookies` view | Add `gdpr_consent` / `gdpr_consent_date` model fields |
+| Custom `User` model | `{{cookiecutter.package_name}}/users/models.py` | Replace with `AbstractBaseUser` or a separate profile model |
+| Navbar with auth links | `templates/navbar.html` | Build a second navbar |
+| Cookie banner | `templates/cookie_banner.html`, `{% raw %}{% cookie_banner %}{% endraw %}` tag | Add a separate consent popup |
+
+Before writing any code related to users, authentication, or privacy: read `config/settings.py` lines 225–280 and `config/urls.py` to confirm what is already wired up.
 
 ## Project Layout
 
@@ -267,16 +266,8 @@ If a doc contradicts what you see in existing code, flag it — do not silently 
 
 ## Template Feedback
 
-This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself — a broken default, a missing utility, an antipattern — log it immediately using the `/django-studio` command:
-
-```
-/django-studio issue cookiecutter <what to fix or improve and why>
-```
-
-The justfile also has equivalent targets for use outside an agent session:
+This project was generated from [django-studio](https://github.com/danjac/django-studio). To report a bug or improvement in the template, file an issue directly:
 
 ```bash
-just studio "Fix post_gen hook" "service-worker.js is not removed when use_pwa=n"
+gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
 ```
-
-Do not wait until the end of a session. Log it when you notice it.

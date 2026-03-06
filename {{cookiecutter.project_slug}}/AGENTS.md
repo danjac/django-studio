@@ -2,43 +2,6 @@
 
 This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
 
-## Session Workflow
-
-### Process
-
-At the start of every session:
-
-1. **Fix bugs first.** Check GitHub issues for open bugs. Fix every one before doing any other work. A stable codebase is the baseline.
-2. **Resume the roadmap.** Open `ROADMAP.md`, find the next unchecked task, and continue from there.
-
-## Bug Workflow
-
-Bugs are tracked as GitHub issues. For each bug:
-
-1. Create a branch: `git checkout -b fix/<short-description>`
-2. Diagnose — state root cause with `file:line` reference before touching code
-3. Fix and write a regression test
-4. Run `just lint && just typecheck && just test` — all must pass
-5. Merge into `main` with: `fix: <description>`
-6. Close the GitHub issue
-
-## Roadmap Workflow
-
-The roadmap lives in `ROADMAP.md`, broken into milestones. Each milestone has tasks with checkboxes.
-
-For each milestone:
-
-1. Create a branch: `git checkout -b milestone-<N>`
-2. Work through each task. When a task is done, mark it: `- [x] Task name`
-3. After each task, run `just lint && just typecheck && just test`
-4. When all tasks in the milestone are complete, **stop and report to the user** — do not merge or continue to the next milestone. Wait for explicit approval.
-5. After the user approves: tell the user to run `git rebase -i` themselves to squash the branch commits into logical units (this is interactive and cannot be done by the agent). Once they confirm it's done, run:
-
-   ```bash
-   git checkout main
-   git merge milestone-<N>
-   git branch -d milestone-<N>
-   ```
 
 ## Stack
 

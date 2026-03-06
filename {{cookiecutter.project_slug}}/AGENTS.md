@@ -119,6 +119,7 @@ just test-e2e-headed              # E2E tests with visible browser
 ### Django Management
 
 ```bash
+just dj help                   # Show list of available commands
 just dj <command>              # Run any manage.py command
 just dj migrate                # Run migrations
 just dj shell                  # Django shell

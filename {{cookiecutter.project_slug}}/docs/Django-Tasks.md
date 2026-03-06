@@ -9,11 +9,13 @@ uv add django-tasks-db
 ```
 
 Add to `INSTALLED_APPS`:
+
 ```python
 "django_tasks_db",
 ```
 
 Configure in settings:
+
 ```python
 TASKS = {
     "default": {
@@ -59,24 +61,19 @@ This runs the Django tasks database worker to process queued tasks.
 Tasks can be scheduled via cron (using management commands):
 
 ```python
-# myapp/management/commands/myapp.py
-from typing import Annotated
-import typer
-from django_typer.management import Typer
+# myapp/management/commands/process_items.py
+from django.core.management import BaseCommand
 from myapp import tasks
 
-app = Typer()
-
-@app.command()
-def process_items(
-    limit: Annotated[int, typer.Option("--limit", "-l")] = 100,
-) -> None:
+class Command(BaseCommand):
+  def handle(self, **options):
     """Process items."""
-    for item in Item.objects.all()[:limit]:
+    for item in Item.objects.all():
         tasks.process_item.enqueue(item_id=item.id)
 ```
 
 Run via cron:
+
 ```bash
 # /etc/cron.d/myapp
 */15 * * * * user /path/to/venv/bin/python manage.py myapp process-items --limit=100

@@ -9,8 +9,10 @@ This hook handles only what Jinja2 cannot:
 - File/directory creation and deletion
 - Justfile PROJECT_SLUG replacement (_copy_without_render)
 - Skill installation and uv lock
+- Claude Code settings.json with agentic hooks
 """
 
+import json
 import os
 import shutil
 import subprocess
@@ -142,6 +144,63 @@ def remove_pwa_static() -> None:
 # ── skills ───────────────────────────────────────────────────────────────────
 
 
+def install_claude_hooks() -> None:
+    """Write .claude/settings.json with agentic hooks for the generated project."""
+    settings = {
+        "hooks": {
+            "PreToolUse": [
+                {
+                    "matcher": "Bash",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": (
+                                "CMD=$(jq -r '.tool_input.command');"
+                                " if echo \"$CMD\" | grep -q -- '--no-verify';"
+                                " then echo 'BLOCKED: --no-verify is forbidden"
+                                " — fix the pre-commit issue instead.' >&2; exit 2; fi"
+                            ),
+                        }
+                    ],
+                }
+            ],
+            "PostToolUse": [
+                {
+                    "matcher": "Edit|Write",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": (
+                                "FILE=$(jq -r '.tool_input.file_path // empty');"
+                                " if [ -n \"$FILE\" ]"
+                                " && echo \"$FILE\" | grep -q '\\.py$'"
+                                " && ! echo \"$FILE\" | grep -q '/migrations/';"
+                                " then uv run ruff check --fix \"$FILE\""
+                                " && uv run ruff format \"$FILE\"; fi"
+                            ),
+                        },
+                        {
+                            "type": "command",
+                            "command": (
+                                "FILE=$(jq -r '.tool_input.file_path // empty');"
+                                " if echo \"$FILE\" | grep -qE '/models[^/]*\\.py$';"
+                                " then echo 'REMINDER: models file edited"
+                                " — run: just dj makemigrations'; fi"
+                            ),
+                        },
+                    ],
+                }
+            ],
+        }
+    }
+    claude_dir = BASE_DIR / ".claude"
+    claude_dir.mkdir(parents=True, exist_ok=True)
+    settings_file = claude_dir / "settings.json"
+    with settings_file.open("w") as f:
+        json.dump(settings, f, indent=2)
+        f.write("\n")
+
+
 def install_skills() -> None:
     """Copy skills from the template's skills/ directory to .claude/commands/."""
     skills_src = Path("{{cookiecutter._repo_dir}}") / "skills"
@@ -179,8 +238,9 @@ with JUSTFILE.open() as f:
 with JUSTFILE.open("w") as f:
     f.write(content.replace("PROJECT_SLUG", PROJECT_SLUG))
 
-# 4. Install skills and generate lock file
+# 4. Install skills, Claude hooks, and generate lock file
 install_skills()
+install_claude_hooks()
 
 # Generate uv.lock so CI's `uv sync --frozen` works without an extra manual step
 subprocess.run(["uv", "lock"], check=True)

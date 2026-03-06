@@ -33,6 +33,7 @@ cp .env.example .env        # configure environment variables
 git init                    # initialise Git repository
 just start                  # start Docker services (PostgreSQL, Redis, Mailpit)
 just install                # install Python deps + pre-commit hooks
+just dj makemigrations      # generate initial migrations (required on first run)
 just dj migrate             # run database migrations
 just serve                  # start dev server + Tailwind watcher
 ```
@@ -67,7 +68,7 @@ The `/django-studio` skill is available in `.claude/commands/` and works from an
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `/django-studio issue <feedback>`              | File an issue against this repo                                                                  |
 | `/django-studio issue cookiecutter <feedback>` | File an issue against the [django-studio](https://github.com/danjac/django-studio) template repo |
-| `/django-studio create <app-name>`             | Scaffold a new Django app (wires `INSTALLED_APPS`, `conftest.py`, `urls.py`)                     |
+| `/django-studio create`                        | Create a new Django project from the template                                                    |
 | `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`                               |
 | `/django-studio prelaunch`                     | Run pre-launch checks                                                                            |
 

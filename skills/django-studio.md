@@ -24,7 +24,7 @@ Walks through a pre-deployment checklist to ensure the project is ready for prod
 
 - All local requirements are installed: `hcloud`, `gh`, `terraform`, `helm`
 - Code has been committed to Github repo and is passing CI checks
-- Docker image has been built successfully on CI: `just gh build`
+- CI build workflow is passing on GitHub Actions
 - User has set `KUBECONFIG_BASE64` and `HELM_VALUES_SECRET` Github secrets
 - User has active Hetzner Cloud and Cloudflare accounts
 - User has registered a domain on Cloudflare (or if other DNS provider)
@@ -82,6 +82,8 @@ Run `git config user.name` and `git config user.email` to get author defaults, t
 7. Will this project use SPA-like navigation without full page reloads? _(enables HTMX Boost — default: yes)_
 8. Will this project need to store user-uploaded files or media in the cloud? _(enables S3/Hetzner object storage — default: yes)_
 9. Should this project work as a Progressive Web App (installable, offline-capable)? _(adds PWA manifest and service worker — default: no)_
+10. Will this project use OpenTelemetry for observability? _(adds OTEL integration and observability Helm chart — default: yes)_
+11. Will this project use Sentry for error tracking? _(adds Sentry SDK — default: yes)_
 
 Wait for the user to provide their answers, then confirm the choices and run:
 
@@ -96,8 +98,12 @@ uvx cookiecutter gh:danjac/django-studio \
   author_email="<author_email>" \
   use_hx_boost="<y_or_n>" \
   use_storage="<y_or_n>" \
-  use_pwa="<y_or_n>"
+  use_pwa="<y_or_n>" \
+  use_opentelemetry="<y_or_n>" \
+  use_sentry="<y_or_n>"
 ```
+
+> **Local development:** If you are working from a local clone of the django-studio repo, replace `gh:danjac/django-studio` with the path to the repo root (e.g. `uvx cookiecutter --no-input /path/to/django-studio ...`) to test local template changes.
 
 After the project is created, report the path to the new directory and remind the user to:
 

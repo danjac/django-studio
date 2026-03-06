@@ -2,47 +2,44 @@
 
 This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
 
+## Environment / Tech Stack
+
+Python 3.14 and Django 6.0 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
+
 ## Session Workflow
 
 ### Session Zero
 
-Before starting any work, have a "Session Zero" to set up the project structure and documentation.
+Before any development work on a new project, run Session Zero:
 
-1. Discuss and define the project goals, requirements, and constraints with the user. For example:
+1. Ask the user in a single message:
    - What problem is this project solving?
    - Who are the users and stakeholders?
    - What are the key features and success criteria?
-   - What are the key challenges the user anticipates?
    - What should the project **not** do (out of scope)?
-   - What similar projects exist that can be used for inspiration or reference?
-   - What is the intended license? (MIT, BSD-3, GPL-3, AGPL-3, or proprietary/closed source)
-1. If required, update the `README.md` with a project overview and setup instructions.
-1. Create `ROADMAP.md` with milestones and tasks based on the project goals.
-1. Discuss roadmap priorities and get user approval on the initial plan.
+   - What similar projects exist for reference?
+   - What is the intended license? (MIT, BSD-3, GPL-3, AGPL-3, or proprietary)
+2. Update `README.md` with a project overview based on the answers.
+3. Create `ROADMAP.md` with milestones and checkbox tasks (`- [ ] Task`).
+4. Present the roadmap to the user and wait for explicit approval before starting any work.
 
 ### Process
 
-At the start of every session, follow this order - do not skip ahead:
+At the start of every session:
 
 1. **Fix bugs first.** Check GitHub issues for open bugs. Fix every one before doing any roadmap work. A stable codebase is the baseline.
 2. **Resume the roadmap.** Open `ROADMAP.md`, find the next unchecked task, and continue from there.
 
-If `ROADMAP.md` does not exist yet, ask the user the following before creating it:
-
-- What problem is this project solving?
-- What are the requirements and constraints?
-- Who are the users and stakeholders?
-
-Once clarity is established, create `ROADMAP.md` with milestones and tasks. Each task gets a checkbox (`- [ ]`).
+If `ROADMAP.md` does not exist yet, run Session Zero first.
 
 ## Bug Workflow
 
 Bugs are tracked as GitHub issues. For each bug:
 
 1. Create a branch: `git checkout -b fix/<short-description>`
-2. Diagnose - state root cause with `file:line` reference before touching code
+2. Diagnose — state root cause with `file:line` reference before touching code
 3. Fix and write a regression test
-4. Run `just lint && just typecheck && just test` - all must pass
+4. Run `just lint && just typecheck && just test` — all must pass
 5. Merge into `main` with: `fix: <description>`
 6. Close the GitHub issue
 
@@ -55,7 +52,7 @@ For each milestone:
 1. Create a branch: `git checkout -b milestone-<N>`
 2. Work through each task. When a task is done, mark it: `- [x] Task name`
 3. After each task, run `just lint && just typecheck && just test`
-4. When all tasks in the milestone are complete, **stop and report to the user** - do not merge or continue to the next milestone. Wait for explicit approval.
+4. When all tasks in the milestone are complete, **stop and report to the user** — do not merge or continue to the next milestone. Wait for explicit approval.
 5. After the user approves: tell the user to run `git rebase -i` themselves to squash the branch commits into logical units (this is interactive and cannot be done by the agent). Once they confirm it's done, run:
 
    ```bash
@@ -71,6 +68,7 @@ For each milestone:
 - **Package manager**: `uv` (not pip/poetry)
 - **Task runner**: `just` (see `justfile` for all commands)
 - **Background tasks**: Django Tasks (`django-tasks-db`), not Celery
+- **Feature flags**: `use_hx_boost`, `use_storage`, `use_pwa`, `use_opentelemetry`, `use_sentry`
 
 ## Project Layout
 
@@ -150,18 +148,6 @@ just psql                      # Connect to PostgreSQL
 
 ## Git Workflow
 
-### Initial Setup
-
-`.claude/` is gitignored to keep session data and memory out of version control. The
-skill file at `.claude/commands/django-studio.md` is project configuration and should
-be tracked. Force-add it once after `git init`:
-
-```bash
-git add -f .claude/commands/django-studio.md
-```
-
-### Commit Messages
-
 Conventional commits enforced by commitlint. Format: `type: subject`
 
 Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
@@ -193,13 +179,13 @@ A component library lives in `design/`. It documents every ready-made UI compone
 | `design/typography.md` | `markdown.html`, prose, heading scale, link style   |
 | `design/layout.md`     | Base templates, two-column layout, HTMX indicator   |
 
-**Before writing new UI markup**, check `design/` first - the component you need likely already exists.
+**Before writing new UI markup**, check `design/` first — the component you need likely already exists.
 
 ### JSON Serialization and Validation
 
-Use **Pydantic** for JSON serialization and validation - both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
+Use **Pydantic** for JSON serialization and validation — both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
 
-When adding Pydantic (`uv add pydantic`), also add this to `pyproject.toml` to prevent ruff from moving Pydantic base class imports into `TYPE_CHECKING` blocks:
+When adding Pydantic (`uv add pydantic`), add this to `pyproject.toml` to prevent ruff from moving Pydantic base class imports into `TYPE_CHECKING` blocks:
 
 ```toml
 [tool.ruff.lint.flake8-type-checking]
@@ -208,30 +194,15 @@ runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 
 ### Image Processing and Thumbnails
 
-Use **sorl-thumbnail** for image processing and thumbnail generation. Reach for it whenever the project involves user-uploaded images, gallery views, or anywhere a resized/cropped version of an image is needed in a template.
-
-```bash
-uv add sorl-thumbnail
-```
-
-Add `"sorl.thumbnail"` to `INSTALLED_APPS` and use the `thumbnail` template tag:
-
-```html
-{% raw %}{% load thumbnail %}
-{% thumbnail obj.image "300x200" crop="center" as thumb %}
-  <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="">
-{% endthumbnail %}{% endraw %}
-```
-
-sorl-thumbnail requires a cache backend (Redis is already configured) and stores generated thumbnails via the storage backend.
+Use **sorl-thumbnail** for image thumbnails (`uv add sorl-thumbnail`). Add `"sorl.thumbnail"` to `INSTALLED_APPS`. Uses the Redis cache backend (already configured).
 
 ### Frontend Dependencies
 
 **Never use CDNs** for third-party frontend dependencies (JS, CSS, icons, fonts, etc.), and do not introduce `npm` or any Node-based build tooling unless the user explicitly requests it.
 
-Instead, always vendor the latest stable minified library file directly into the project:
+Always vendor the latest stable minified library file directly into the project:
 
-- Place vendored files under `static/vendor/` (e.g. `static/vendor/htmx.min.js`).
+- Place vendored files under `static/vendor/` with the version in the filename (e.g. `static/vendor/htmx.2.0.4.min.js`).
 - Reference them with Django's `static` template tag in templates.
 - See the existing HTMX and AlpineJS files in `static/vendor/` as examples.
 
@@ -257,19 +228,13 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 
 #### Form field rendering
 
-Use Django 5+'s `as_field_group` method when you need fine-grained control over which fields are rendered and in what order. Do **not** use the `include "form/field.html"` approach and do not rely on rendering the whole form object when field ordering matters.
+Hierarchy — use the first that fits:
 
-```html
-{% raw %}{# Preferred: explicit order via as_field_group #}
-{{ form.title.as_field_group }}
-{{ form.body.as_field_group }}
-{{ form.published.as_field_group }}
+1. `{{ form.title.as_field_group }}` — explicit field-by-field control over order
+2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order
+3. `{{ form }}` — renders all fields using the configured template renderer
 
-{# Acceptable when order does not matter and all fields should be shown #}
-{% for field in form %}
-  {{ field.as_field_group }}
-{% endfor %}{% endraw %}
-```
+Never use `{{ form.as_div }}` — it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.
 
 See `design/forms.md` for full field template documentation.
 
@@ -284,28 +249,28 @@ See `design/forms.md` for full field template documentation.
 
 ### Required reading before implementation
 
-| What you are about to implement | Read first |
-| ------------------------------- | ---------- |
-| Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/` |
-| Background task                 | `docs/Django-Tasks.md` |
-| HTMX interaction                | `docs/HTMX.md` |
-| AlpineJS component              | `docs/Alpine.md` |
-| Tailwind / CSS                  | `docs/Tailwind.md` |
-| Authentication / allauth        | `docs/Authentication.md` |
+| What you are about to implement | Read first                                                  |
+| ------------------------------- | ----------------------------------------------------------- |
+| Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`             |
+| Background task                 | `docs/Django-Tasks.md`                                      |
+| HTMX interaction                | `docs/HTMX.md`                                              |
+| AlpineJS component              | `docs/Alpine.md`                                            |
+| Tailwind / CSS                  | `docs/Tailwind.md`                                          |
+| Authentication / allauth        | `docs/Authentication.md`                                    |
 | Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/k3s-Hetzner-Cloudflare.md` |
-| Testing patterns                | `docs/Testing.md` |
-| Any of the above                | `docs/Project-Structure.md` (once per session) |
+| Testing patterns                | `docs/Testing.md`                                           |
+| Any of the above                | `docs/Project-Structure.md` (once per session)              |
 
 If a doc contradicts what you see in existing code, flag it — do not silently pick one.
 
-- **Search before implementing** - Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/admin.py` for admin mixins, `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities.
-- **Scope discipline** - Only change what was explicitly requested.
-- **Diagnose before changing** - Read the code and state your diagnosis with a file:line reference before editing.
-- **Verify runtime behaviour** - Passing tests is necessary but not sufficient.
+- **Search before implementing** — Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/admin.py` for admin mixins, `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities.
+- **Scope discipline** — Only change what was explicitly requested.
+- **Diagnose before changing** — Read the code and state your diagnosis with a file:line reference before editing.
+- **Verify runtime behaviour** — Passing tests is necessary but not sufficient.
 
 ## Template Feedback
 
-This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself - a broken default, a missing utility, an antipattern - log it immediately using the `/django-studio` command:
+This project was generated from [django-studio](https://github.com/danjac/django-studio). When you encounter something that should be fixed or improved in the template itself — a broken default, a missing utility, an antipattern — log it immediately using the `/django-studio` command:
 
 ```
 /django-studio issue cookiecutter <what to fix or improve and why>

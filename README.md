@@ -98,12 +98,19 @@ uvx cookiecutter gh:danjac/django-studio
 
 Then follow the prompts:
 
-- `project_name`: Human-readable project name (e.g. "My Project")
-- `project_slug`: Directory/repo name (e.g. "my-project")
-- `package_name`: Python package name (e.g. "myapp")
-- `description`: Short project description
-- `author`: Your name
-- `author_email`: Your email
+| Prompt              | Example                  | Notes                               |
+| ------------------- | ------------------------ | ----------------------------------- |
+| `project_name`      | `My Project`             | Human-readable name                 |
+| `project_slug`      | `my-project`             | Directory/repo name (kebab-case)    |
+| `package_name`      | `myapp`                  | Python package name (snake_case)    |
+| `description`       | `A project that does X`  | One-sentence description            |
+| `author`            | `Your Name`              |                                     |
+| `author_email`      | `you@example.com`        |                                     |
+| `use_hx_boost`      | `y` / `n`                | HTMX Boost (SPA-like navigation)    |
+| `use_storage`       | `y` / `n`                | S3/Hetzner object storage           |
+| `use_pwa`           | `y` / `n`                | PWA manifest + service worker       |
+| `use_opentelemetry` | `y` / `n`                | OpenTelemetry observability         |
+| `use_sentry`        | `y` / `n`                | Sentry error tracking               |
 
 The generated `README.md` will include instructions to get started with development, testing, and deployment.
 
@@ -111,20 +118,14 @@ The generated `README.md` will include instructions to get started with developm
 
 Every generated project ships with the `/django-studio` skill at `.claude/commands/django-studio.md`.
 
-The skill source lives in `skills/django-studio.md` at the repo root. Run `just sync-skills` to install or update it in `~/.claude/commands/`:
-
-```bash
-just sync-skills
-```
+The skill source lives in `skills/django-studio.md` at the repo root. Run `just sync-skills` to install or update it in `~/.claude/commands/`.
 
 | Command                                        | Effect                                                                      |
 | ---------------------------------------------- | --------------------------------------------------------------------------- |
 | `/django-studio issue <feedback>`              | File an issue against the current project                                   |
 | `/django-studio issue cookiecutter <feedback>` | File an issue against this template repo                                    |
-| `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and settings) |
+| `/django-studio create`                        | Create a new Django project (prompts for name, slug, package, and flags)    |
 | `/django-studio init`                          | Run Session Zero — define goals, write README, create `ROADMAP.md`          |
 | `/django-studio prelaunch`                     | Runs prelaunch checks before first deployment                               |
-
-Run `just sync-skills` after editing the skill to propagate changes to `~/.claude/commands/`.
 
 Requires the `gh` CLI authenticated with GitHub access.

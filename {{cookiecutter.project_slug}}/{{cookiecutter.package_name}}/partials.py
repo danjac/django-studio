@@ -12,7 +12,7 @@ def render_partial_response(
     context: dict | None = None,
     *,
     target: str,
-    partial: str,
+    partial: str | None,
     **response_kwargs,
 ) -> TemplateResponse:
     """Render a template, or a named partial if the HTMX target matches.

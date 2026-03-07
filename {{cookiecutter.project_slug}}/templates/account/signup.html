@@ -17,12 +17,10 @@
       {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
       {% endif %}
-      <div class="grid-cols-2 gap-3 space-y-3 sm:grid sm:space-y-0">
-          {{ form.username.as_field_group }}
-          {{ form.email.as_field_group }}
-          {{ form.password1.as_field_group }}
-          {{ form.password2.as_field_group }}
-      </div>
+      {{ form.username.as_field_group }}
+      {{ form.email.as_field_group }}
+      {{ form.password1.as_field_group }}
+      {{ form.password2.as_field_group }}
       <div>
         <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>
       </div>

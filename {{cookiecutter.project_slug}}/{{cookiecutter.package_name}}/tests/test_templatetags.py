@@ -1,5 +1,4 @@
 import pytest
-from django.contrib.sites.models import Site
 from django.template import TemplateSyntaxError
 
 from {{cookiecutter.package_name}}.http.request import RequestContext

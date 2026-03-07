@@ -145,8 +145,27 @@ def remove_pwa_static() -> None:
 
 
 def install_claude_hooks() -> None:
-    """Write .claude/settings.json with agentic hooks for the generated project."""
+    """Write .claude/settings.json with permissions and agentic hooks for the generated project."""
     settings = {
+        "permissions": {
+            "allow": [
+                "Bash(just lint:*)",
+                "Bash(just test:*)",
+                "Bash(just typecheck:*)",
+                "Bash(just dj:*)",
+                "Bash(just start:*)",
+                "Bash(just stop:*)",
+                "Bash(just serve:*)",
+                "Bash(just psql:*)",
+                "Bash(git status:*)",
+                "Bash(git log:*)",
+                "Bash(git diff:*)",
+                "Bash(git show:*)",
+                "Bash(rg:*)",
+                "Bash(fd:*)",
+                "Bash(ast-grep:*)",
+            ]
+        },
         "hooks": {
             "PreToolUse": [
                 {

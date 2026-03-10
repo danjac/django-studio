@@ -30,7 +30,7 @@ This project is best described as "pre-alpha". While based on working projects i
 - Grafana dashboards for monitoring
 - Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
 - Design system with reusable components
-- AI-assisted development with curated agent documentation and hooks
+- AI-assisted development with agent documentation, agentic hooks, and project Skills
 
 ## Stack
 
@@ -59,6 +59,18 @@ The focus of this project is a simple and robust foundation for both user and de
 - Dark/light modes
 
 The design system is intended to provide a production-ready foundation for your UI. You are free to customize and extend the design system as needed, but the provided components and patterns should cover most common use cases and help you get up and running quickly.
+
+## Skills
+
+Generated projects include a `/django-studio` Claude Code slash command with subcommands for common workflows:
+
+| Subcommand | Summary |
+| ----------------------------- | ----------------------------------------------- |
+| `new-app <name>` | Scaffold a complete Django app (models, views, urls, tests, fixtures, wiring) |
+| `new-view <app> <view>` | Add a view, template, and URL following HTMX and design system conventions |
+| `new-task <app> <task>` | Add a `django-tasks-db` background task with correct async patterns |
+| `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
+| `feedback <title>` | File an improvement suggestion against the django-studio template |
 
 ## Hosting
 

@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(just test:*)",
-      "Bash(uvx cookiecutter:*)",
-      "Read(/tmp/**)"
-    ]
-  }
-}

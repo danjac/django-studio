@@ -195,6 +195,7 @@ See `design/forms.md` for full field template documentation.
 | ------------------------------- | ---------------------------------------------------------- |
 | Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`            |
 | Background task                 | `docs/Django-Tasks.md`                                     |
+| Migrations / linear-migrations  | `docs/Django.md`                                           |
 | HTMX interaction                | `docs/HTMX.md`                                             |
 | AlpineJS component              | `docs/Alpine.md`                                           |
 | Tailwind / CSS                  | `docs/Tailwind.md`                                         |
@@ -210,10 +211,37 @@ If a doc contradicts what you see in existing code, flag it — do not silently 
 - **Diagnose before changing** — Read the code and state your diagnosis with a file:line reference before editing.
 - **Verify runtime behaviour** — Passing tests is necessary but not sufficient.
 
-## Template Feedback
+## Slash Commands
 
-This project was generated from [django-studio](https://github.com/danjac/django-studio). To report a bug or improvement in the template, file an issue directly:
+Project-level slash commands are available in `.claude/commands/`. Invoke them
+with `/django-studio <subcommand>` in Claude Code.
+
+`.claude/` is gitignored. Force-add the skill file once after `git init` so it
+is tracked in version control:
 
 ```bash
-gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
+git add -f .claude/commands/django-studio.md
 ```
+
+All project commands live under `/django-studio <subcommand>`:
+
+| Subcommand | Purpose |
+| ----------------------------- | ----------------------------------------------- |
+| `new-app <app_name>` | Scaffold a complete Django app (models, views, urls, tests, fixtures, INSTALLED_APPS wiring) |
+| `new-view <app_name> <view>` | Add a view + template + URL following HTMX and design system conventions |
+| `new-task <app_name> <task>` | Add a background task using `django-tasks-db` with correct async/keyword-only patterns |
+| `migrate` | Run the full migration workflow including `django-linear-migrations` validation and conflict resolution |
+| `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
+| `feedback <title>` | File an improvement against the django-studio template repo |
+
+## Template Feedback
+
+This project was generated from [django-studio](https://github.com/danjac/django-studio).
+To report a bug or improvement in the template, use the built-in slash command:
+
+```
+/django-studio feedback <title>
+```
+
+This files a GitHub issue directly against the template repo. Use it whenever you notice
+something worth fixing in the template itself rather than in this project.

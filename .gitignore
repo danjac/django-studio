@@ -14,6 +14,9 @@ build/
 memory/
 *.egg
 
+# Claude Code (personal settings — not for version control)
+/.claude/
+
 # Testing
 .pytest_cache/
 .coverage

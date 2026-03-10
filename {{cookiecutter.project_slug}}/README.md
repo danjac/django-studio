@@ -35,6 +35,7 @@ just start                  # start Docker services (PostgreSQL, Redis, Mailpit)
 just install                # install Python deps + pre-commit hooks
 just dj makemigrations      # generate initial migrations (required on first run)
 just dj migrate             # run database migrations
+git add -f .claude/commands/django-studio.md  # track the project skill
 just serve                  # start dev server + Tailwind watcher
 ```
 
@@ -49,6 +50,18 @@ just stop                   # stop Docker services
 ```
 
 Run `just` with no arguments to list all available commands.
+
+## Slash Commands
+
+Claude Code slash commands are available via `/django-studio <subcommand>`:
+
+| Subcommand | Purpose |
+| ----------------------------- | ----------------------------------------------- |
+| `new-app <name>` | Scaffold a complete Django app |
+| `new-view <app> <view>` | Add a view, template, and URL |
+| `new-task <app> <task>` | Add a background task |
+| `prelaunch` | Audit deployment config for missing or placeholder values before first deploy |
+| `feedback <title>` | File an improvement against the django-studio template |
 
 ## Stack
 

@@ -493,6 +493,56 @@ urlpatterns = [
 ]
 ```
 
+## Migrations
+
+This project uses `django-linear-migrations` to enforce a linear migration history.
+
+### Normal workflow
+
+Always give migrations a descriptive name:
+
+```bash
+just dj makemigrations <app_name> --name <description>
+just dj migrate
+just test
+```
+
+`makemigrations` automatically updates `max_migration.txt` in the affected app's
+migrations directory. Never edit `max_migration.txt` by hand.
+
+### Resolving max_migration.txt conflicts
+
+A git conflict in `max_migration.txt` means two branches each created a migration
+for the same app simultaneously. This is intentional — the conflict forces you to
+resolve the ordering explicitly rather than silently forking the history.
+
+Resolution steps:
+
+1. Keep both migration files. Update the second migration's `dependencies` to
+   point to the first.
+2. If Django reports two heads, create a merge migration:
+   ```bash
+   just dj makemigrations --merge --name merge_<branch_a>_<branch_b>
+   ```
+3. Regenerate `max_migration.txt` to point to the new tip:
+   ```bash
+   just dj create_max_migration
+   ```
+4. Validate the graph is linear:
+   ```bash
+   just dj validate_migration_graph
+   ```
+5. Apply and verify: `just dj migrate` then `just test`
+
+### Squashing
+
+```bash
+just dj squashmigrations <app_name> <from> <to>
+just dj create_max_migration
+just dj validate_migration_graph
+just test
+```
+
 ## Admin
 
 ```python

@@ -31,6 +31,7 @@
     "justfile",
     "design/**",
     "docs/**",
-    "helm/*/templates/**"
+    "helm/*/templates/**",
+    ".claude/**"
   ]
 }

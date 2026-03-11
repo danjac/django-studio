@@ -15,8 +15,6 @@ _TEMPLATE_DIR = str(Path(__file__).parent.parent.resolve())
 
 _DEFAULT_CONTEXT = {
     "project_name": "Test Project",
-    "project_slug": "test-project",
-    "package_name": "testapp",
     "description": "A test project",
     "author": "Test Author",
     "author_email": "test@example.com",
@@ -47,7 +45,7 @@ def project(tmp_path_factory):
         output_dir=str(output_dir),
         extra_context=_DEFAULT_CONTEXT,
     )
-    return output_dir / "test-project"
+    return output_dir / "test_project"
 
 
 def _render(output_dir: Path, extra_context: dict) -> Path:
@@ -75,7 +73,7 @@ class TestTemplateRendering:
         assert result is not None
         rendered_path = Path(result)
         assert rendered_path.exists()
-        assert rendered_path.name == "test-project"
+        assert rendered_path.name == "test_project"
 
     def test_manage_py_exists(self, output_dir, default_context):
         """Test that manage.py is generated."""
@@ -86,7 +84,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "manage.py").exists()
 
     def test_package_directory_created(self, output_dir, default_context):
@@ -98,8 +96,8 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
-        assert (project_path / "testapp").is_dir()
+        project_path = output_dir / "test_project"
+        assert (project_path / "test_project").is_dir()
 
     def test_pyproject_toml_created(self, output_dir, default_context):
         """Test that pyproject.toml is generated."""
@@ -110,7 +108,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "pyproject.toml").exists()
 
     def test_django_settings_created(self, output_dir, default_context):
@@ -122,7 +120,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "config").is_dir()
         assert (project_path / "config" / "settings.py").exists()
 
@@ -135,9 +133,9 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
-        assert (project_path / "testapp" / "users").is_dir()
-        assert (project_path / "testapp" / "users" / "apps.py").exists()
+        project_path = output_dir / "test_project"
+        assert (project_path / "test_project" / "users").is_dir()
+        assert (project_path / "test_project" / "users" / "apps.py").exists()
 
     def test_design_directory_created(self, output_dir, default_context):
         """Test that design directory is included in generated project."""
@@ -148,7 +146,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "design").is_dir()
 
     def test_tailwind_directory_created(self, output_dir, default_context):
@@ -160,7 +158,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "tailwind").is_dir()
 
     def test_justfile_created(self, output_dir, default_context):
@@ -172,7 +170,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "justfile").exists()
 
     def test_dockerfile_created(self, output_dir, default_context):
@@ -184,7 +182,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "Dockerfile").exists()
 
     def test_uv_lock_created(self, output_dir, default_context):
@@ -196,7 +194,7 @@ class TestTemplateRendering:
             extra_context=default_context,
         )
 
-        project_path = output_dir / "test-project"
+        project_path = output_dir / "test_project"
         assert (project_path / "uv.lock").exists()
 
 
@@ -212,10 +210,10 @@ class TestTemplateContent:
             extra_context=default_context,
         )
 
-        pyproject_path = output_dir / "test-project" / "pyproject.toml"
+        pyproject_path = output_dir / "test_project" / "pyproject.toml"
         content = pyproject_path.read_text()
-        assert "testapp" in content
-        assert "test-project" in content
+        assert "test_project" in content
+        assert "test_project" in content
 
     def test_env_example_has_project_slug(self, output_dir, default_context):
         """Test that .env.example has correct project slug."""
@@ -226,36 +224,57 @@ class TestTemplateContent:
             extra_context=default_context,
         )
 
-        env_path = output_dir / "test-project" / ".env.example"
+        env_path = output_dir / "test_project" / ".env.example"
         content = env_path.read_text()
         # project_slug appears in HETZNER_STORAGE_BUCKET and OPEN_TELEMETRY_SERVICE_NAME
-        assert "test-project" in content
+        assert "test_project" in content
 
 
-class TestCustomPackageName:
-    """Test that custom package names work correctly."""
+class TestProjectNameDerivation:
+    """Test that project_slug and package_name are derived from project_name."""
 
-    def test_custom_package_name(self, output_dir):
-        """Test that custom package name is used correctly."""
-        context = {
-            "project_name": "My App",
-            "project_slug": "my-app",
-            "package_name": "mypackage",
-            "description": "My description",
-            "author": "Author",
-            "author_email": "author@example.com",
-        }
-
-        cookiecutter(
-            _TEMPLATE_DIR,
-            no_input=True,
-            output_dir=str(output_dir),
-            extra_context=context,
+    def test_slug_and_package_derived_from_project_name(self, output_dir):
+        """Providing only project_name derives slug and package automatically."""
+        project = _render(
+            output_dir,
+            {
+                "project_name": "Photo Blog",
+                "description": "A photo blog",
+                "author": "Author",
+                "author_email": "author@example.com",
+            },
         )
+        assert project.name == "photo_blog"
+        assert (project / "photo_blog").is_dir()
 
-        project_path = output_dir / "my-app"
-        assert (project_path / "mypackage").is_dir()
-        assert not (project_path / "my-app").exists()
+    def test_slug_and_package_can_be_overridden(self, output_dir):
+        """Explicit project_slug and package_name override the derived values."""
+        project = _render(
+            output_dir,
+            {
+                "project_name": "My App",
+                "project_slug": "my_custom_slug",
+                "package_name": "my_custom_pkg",
+                "description": "My description",
+                "author": "Author",
+                "author_email": "author@example.com",
+            },
+        )
+        assert project.name == "my_custom_slug"
+        assert (project / "my_custom_pkg").is_dir()
+
+    def test_empty_project_name_fails(self, output_dir):
+        """Generation must fail fast when project_name is empty."""
+        with pytest.raises(Exception):
+            _render(
+                output_dir,
+                {
+                    "project_name": "",
+                    "description": "A test",
+                    "author": "Author",
+                    "author_email": "author@example.com",
+                },
+            )
 
 
 class TestTerraformRendering:
@@ -266,7 +285,7 @@ class TestTerraformRendering:
 
     def test_hetzner_variables_has_project_slug(self, project):
         content = (project / "terraform" / "hetzner" / "variables.tf").read_text()
-        assert '"test-project"' in content
+        assert '"test_project"' in content
 
     def test_hetzner_variables_cluster_name_no_duplicate(self, project):
         """The cluster_name variable must not have duplicate attribute declarations."""
@@ -287,7 +306,7 @@ class TestTerraformRendering:
 
     def test_storage_has_project_slug(self, project):
         content = (project / "terraform" / "storage" / "main.tf").read_text()
-        assert "test-project-media" in content
+        assert "test_project-media" in content
 
     def test_storage_no_cookiecutter_literals(self, project):
         content = (project / "terraform" / "storage" / "main.tf").read_text()
@@ -302,7 +321,7 @@ class TestTerraformRendering:
         content = (
             project / "terraform" / "hetzner" / "terraform.tfvars.example"
         ).read_text()
-        assert "test-project" in content
+        assert "test_project" in content
 
 
 class TestStorageFeatureFlag:

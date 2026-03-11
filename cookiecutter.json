@@ -1,7 +1,7 @@
 {
-  "project_name": "My Django Project",
-  "project_slug": "my-django-project",
-  "package_name": "myapp",
+  "project_name": "",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
+  "package_name": "{{ cookiecutter.project_slug }}",
   "description": "A Django project",
   "author": "Your Name",
   "author_email": "you@example.com",

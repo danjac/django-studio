@@ -5,22 +5,22 @@ This is a cookiecutter project to create a new Django project.
 Create a new project in `/tmp` using the cookiecutter template:
 
 ```bash
-uvx cookiecutter --no-input --output-dir /tmp ./
+uvx cookiecutter --no-input --output-dir /tmp ./ project_name="My App"
 ```
 
 If a project has already been created in `/tmp`, remove it first (stop services to avoid port conflicts):
 
 ```bash
-cd /tmp/my_django_project
+cd /tmp/my_app
 just stop
 cd ..
-trash my_django_project
+trash my_app
 ```
 
 Then navigate to the generated project and test it:
 
 ```bash
-cd /tmp/my_django_project
+cd /tmp/my_app
 cp .env.example .env
 just start                      # start Docker services
 just install                    # install Python deps + pre-commit hooks

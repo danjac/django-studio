@@ -80,3 +80,9 @@ variable "k3s_token" {
   type        = string
   sensitive   = true
 }
+
+variable "admin_ips" {
+  description = "IP ranges allowed to reach SSH (22) and the K3s API (6443). Restrict to your own IP or VPN exit IP for best security. Defaults to open — change before first apply."
+  type        = list(string)
+  default     = ["0.0.0.0/0", "::/0"]
+}

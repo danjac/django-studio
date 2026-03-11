@@ -93,7 +93,7 @@ app:
   metaAuthor: ""
   metaDescription: ""
   metaKeywords: ""
-  secureSslRedirect: false
+  secureSslRedirect: true
 
 # CronJob schedules — customise for your project
 cronjobs:
@@ -118,6 +118,7 @@ secrets:
   djangoSecretKey: ""
   djangoSecretKeyFallbacks: ""
   mailgunApiKey: ""
+  redisPassword: ""
   sentryUrl: ""
   openTelemetryUrl: ""
   pwaSha256Fingerprints: ""

@@ -17,6 +17,13 @@ spec:
       containers:
         - name: redis
           image: {{ .Values.redis.image }}
+          command: ["redis-server", "--requirepass", "$(REDIS_PASSWORD)"]
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: REDIS_PASSWORD
           resources:
             requests:
               memory: {{ .Values.resources.redis.requests.memory|quote }}

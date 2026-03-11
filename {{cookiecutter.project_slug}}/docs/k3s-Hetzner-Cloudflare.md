@@ -270,13 +270,35 @@ just rpsql
 - Firewall restricts access
 - Cloudflare proxies all traffic
 
+### Firewall and SSH access
+
+SSH (port 22) and the K3s API (port 6443) are controlled by the `admin_ips` variable in
+`terraform/hetzner/terraform.tfvars`. The default is open (`["0.0.0.0/0", "::/0"]`),
+which is fine — both ports are protected by strong credentials (SSH key, K3s token + TLS)
+so open ports are not a meaningful risk in practice.
+
+**Restricting `admin_ips` is optional.** If you do restrict it, note that the GitHub
+Actions deploy workflow needs to reach port 6443, and GitHub-hosted runner IPs are
+unpredictable — so you would also need a self-hosted runner or to leave 6443 open.
+
+If you want to restrict anyway (e.g. you have a static IP or VPN dedicated IP):
+
+```hcl
+# terraform/hetzner/terraform.tfvars
+admin_ips = ["203.0.113.42/32"]   # find your current IP with: curl -s ifconfig.me
+```
+
+**If you use a VPN with rotating exit IPs (e.g. Proton VPN):** a static `/32` entry will
+lock you out when you switch servers. Either use a dedicated IP add-on for a stable exit
+IP, or leave `admin_ips` at the default.
+
 ### Secrets
 - Environment variables stored in Kubernetes secrets via Helm
 - `values.secret.yaml` is gitignored — never commit it
 - Use GitHub Actions secrets for CI/CD (`KUBECONFIG_BASE64`, `HELM_VALUES_SECRET`)
 
 ### SSL/TLS
-- Cloudflare origin certificates
+- Cloudflare origin certificates with `full_strict` mode (validates origin cert chain)
 - Full TLS encryption end-to-end
 
 ## Monitoring and Observability

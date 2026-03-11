@@ -51,7 +51,7 @@ resource "hcloud_firewall" "server" {
     direction  = "in"
     protocol   = "tcp"
     port       = "22"
-    source_ips = ["0.0.0.0/0", "::/0"]
+    source_ips = var.admin_ips
   }
 
   rule {
@@ -73,7 +73,7 @@ resource "hcloud_firewall" "server" {
     direction  = "in"
     protocol   = "tcp"
     port       = "6443"
-    source_ips = ["0.0.0.0/0", "::/0"]
+    source_ips = var.admin_ips
   }
 
   rule {
@@ -106,7 +106,7 @@ resource "hcloud_firewall" "monitor" {
     direction  = "in"
     protocol   = "tcp"
     port       = "22"
-    source_ips = ["0.0.0.0/0", "::/0"]
+    source_ips = var.admin_ips
   }
 
   rule {
@@ -153,7 +153,7 @@ resource "hcloud_firewall" "agents" {
     direction  = "in"
     protocol   = "tcp"
     port       = "22"
-    source_ips = ["0.0.0.0/0", "::/0"]
+    source_ips = var.admin_ips
   }
 
   rule {

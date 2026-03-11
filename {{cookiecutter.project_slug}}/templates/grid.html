@@ -1,0 +1,15 @@
+<ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"{% if target %} id="{{ target }}"{% endif %}>
+  {{ content }}
+</ul>
+
+{% partialdef item %}
+<li>
+  {{ content }}
+</li>
+{% endpartialdef item %}
+
+{% partialdef empty %}
+<li class="col-span-full py-8 text-center text-(--color-text-muted)">
+  {{ content }}
+</li>
+{% endpartialdef empty %}

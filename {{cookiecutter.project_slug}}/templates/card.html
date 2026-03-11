@@ -1,37 +1,33 @@
 {#
-  Generic link card with optional thumbnail image, title, and subtitle.
+  Vertical card tile for grid layouts. Use inside grid.html#item.
 
   Context variables:
-    url         (str)  - the href for the card link (required)
-    title       (str)  - primary heading text (required)
-    subtitle    (str)  - secondary line below the title (optional)
-    image_url   (str)  - thumbnail image URL (optional)
+    url          (str)  - card link href (required)
+    title        (str)  - primary heading (required)
+    subtitle     (str)  - secondary line below title (optional)
+    image_url    (str)  - cover image URL, displayed 16:9 (optional)
     target_blank (bool) - open in new tab (optional, default false)
 #}
 <a
   href="{{ url }}"
   title="{{ title }}"
-  class="group flex items-center gap-4"
+  class="group flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) transition-shadow hover:shadow-md"
   {% if target_blank %}target="_blank" rel="noopener noreferrer"{% endif %}
 >
   {% if image_url %}
     <img
       src="{{ image_url }}"
       alt=""
-      width="64"
-      height="64"
-      class="size-16 shrink-0 rounded-xl object-cover"
+      class="aspect-video w-full object-cover"
       loading="lazy"
     >
   {% endif %}
-  <div class="min-w-0 flex-1">
+  <div class="flex flex-col gap-1 p-4">
     <h2 class="line-clamp-2 font-bold leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
       {{ title }}
     </h2>
     {% if subtitle %}
-      <p class="line-clamp-1 text-sm font-semibold text-zinc-500 group-hover:text-indigo-600 dark:text-zinc-400 dark:group-hover:text-indigo-400">
-        {{ subtitle }}
-      </p>
+      <p class="line-clamp-1 text-sm text-(--color-text-muted)">{{ subtitle }}</p>
     {% endif %}
   </div>
 </a>

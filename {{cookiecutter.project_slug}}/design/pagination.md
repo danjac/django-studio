@@ -4,68 +4,84 @@ Template: `templates/paginate.html`
 
 ## Overview
 
-`paginate.html` wraps a paginated list with Previous / Next links above and below the content. It uses the `fragment` tag to render inside a named container, and the links use HTMX to swap the container in-place.
+`paginate.html` wraps any list or grid with Previous / Next navigation. It creates a `<div id="{{ pagination_target }}">` as the HTMX swap target, so page changes replace only the list — not the surrounding page.
 
-## Context Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `page` | yes | Django `Page` object from `Paginator` |
-| `pagination_target` | yes | HTML `id` of the container element to swap |
-| `content` | yes | Rendered list content (passed via `{% fragment %}`) |
-
-## Usage
-
-```html
-{# In your list template: #}
-{% with pagination_target="results" %}
-  {% fragment "paginate.html" %}
-    {% for item in page.object_list %}
-      <li>{% include "card.html" with url=item.get_absolute_url title=item.name %}</li>
-    {% endfor %}
-  {% endfragment %}
-{% endwith %}
-```
-
-The `#results` element is created by the paginate template itself - you do not need a wrapping div.
+It is layout-agnostic: the inner content can be a `browse.html` list, a `grid.html` grid, or any other markup.
 
 ## View Setup
 
-```python
-from django.core.paginator import Paginator
-from django.template.response import TemplateResponse
+Use `render_paginated_response` — it handles pagination, sets `pagination_target` in context, and returns only the named partial on HTMX requests:
 
-def my_list_view(request):
-    qs = MyModel.objects.all()
-    paginator = Paginator(qs, per_page=20)
-    page = paginator.get_page(request.GET.get("page"))
-    return TemplateResponse(request, "my_list.html", {"page": page})
+```python
+from {{cookiecutter.package_name}}.paginator import render_paginated_response
+
+def photo_list(request):
+    return render_paginated_response(
+        request,
+        "photos/list.html",
+        Photo.objects.all(),
+        target="pagination",   # matches pagination_target in template
+        partial="pagination",  # matches {% partialdef pagination %} in template
+    )
+```
+
+## Template Structure
+
+Wrap the paginated content in a `{% partialdef pagination inline %}` block. On HTMX page requests, only this block is rendered and swapped in.
+
+### Grid layout (cards)
+
+```html
+{% partialdef pagination inline %}
+  {% fragment "paginate.html" %}
+    {% fragment "grid.html" %}
+      {% for photo in page %}
+        {% fragment "grid.html#item" %}
+          {% include "card.html" with url=photo.get_absolute_url title=photo.title image_url=photo.image_url %}
+        {% endfragment %}
+      {% empty %}
+        {% fragment "grid.html#empty" %}No photos yet.{% endfragment %}
+      {% endfor %}
+    {% endfragment %}
+  {% endfragment %}
+{% endpartialdef pagination %}
+```
+
+### List layout (browse)
+
+```html
+{% partialdef pagination inline %}
+  {% fragment "paginate.html" %}
+    {% fragment "browse.html" %}
+      {% for user in page %}
+        {% fragment "browse.html#item" %}
+          <div class="flex items-center justify-between">
+            <span class="font-medium">{{ user.get_full_name }}</span>
+            <a href="{{ user.get_absolute_url }}" class="btn btn-secondary">View</a>
+          </div>
+        {% endfragment %}
+      {% empty %}
+        {% fragment "browse.html#empty" %}No users yet.{% endfragment %}
+      {% endfor %}
+    {% endfragment %}
+  {% endfragment %}
+{% endpartialdef pagination %}
 ```
 
 ## HTMX Behaviour
 
-When a page link is clicked, HTMX swaps the entire `#results` container (including the pagination links) with the new page's content. The `show:window:top` modifier scrolls to the top of the page on swap.
-
-```html
-{# Inside paginate.html - set automatically #}
-<nav
-  hx-swap="outerHTML show:window:top"
-  hx-target="#{{ pagination_target }}"
->
-```
-
-The page URL includes `?page=N` via `{% querystring %}` (from `django-querystring-tag`), which preserves other query string parameters (search, filters, etc.).
-
-## Styling the Links
-
-Previous/Next links use the `link` utility class (defined in `tailwind/links.css`). Disabled states (first/last page) render as non-interactive `<span>` elements with muted styling.
+When a page link is clicked, HTMX swaps the `<div id="{{ pagination_target }}">` container (including nav links and list content) with the new page's response. `show:window:top` scrolls back to the top.
 
 ## Combining with Search / Filters
 
-Because `{% querystring page=N %}` merges into the existing query string, pagination works automatically with filter parameters:
+`{% querystring page=N %}` (from `django-querystring-tag`) merges into the existing query string, so pagination works automatically alongside filters:
 
 ```
-/items/?q=django&category=web&page=2
+/photos/?q=sunset&tag=nature&page=2
 ```
 
-No extra setup is needed - just ensure filters are submitted as `GET` parameters.
+No extra setup needed — just ensure filters are submitted as `GET` parameters.
+
+## Styling the Links
+
+Previous/Next links use the `link` utility class (`tailwind/links.css`). Disabled states (first/last page) render as non-interactive `<span>` elements with muted styling.

@@ -117,7 +117,8 @@ A component library lives in `design/`. It documents every ready-made UI compone
 | `design/forms.md`      | `form.html`, `form/field.html`, widget classes      |
 | `design/navigation.md` | `navbar.html`, `sidebar.html`, user dropdown        |
 | `design/headers.md`    | `header.html` - page title with optional subtitle   |
-| `design/cards.md`      | `card.html` - link card with optional image         |
+| `design/cards.md`      | `card.html` - vertical tile for grids               |
+| `design/lists.md`      | `browse.html` - divided list layout                 |
 | `design/badges.md`     | Status badges, count chips, category tags           |
 | `design/pagination.md` | `paginate.html` - Previous/Next with HTMX           |
 | `design/typography.md` | `markdown.html`, prose, heading scale, link style   |

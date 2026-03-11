@@ -226,13 +226,14 @@ git add -f .claude/commands/django-studio.md
 All project commands live under `/django-studio <subcommand>`:
 
 | Subcommand | Purpose |
-| ----------------------------- | ----------------------------------------------- |
-| `new-app <app_name>` | Scaffold a complete Django app (models, views, urls, tests, fixtures, INSTALLED_APPS wiring) |
-| `new-view <app_name> <view>` | Add a view + template + URL following HTMX and design system conventions |
-| `new-task <app_name> <task>` | Add a background task using `django-tasks-db` with correct async/keyword-only patterns |
+| ------------------------------------ | ----------------------------------------------- |
+| `create-app <app_name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
+| `create-view <app_name> <view>` | Add a view + template + URL following HTMX and design system conventions |
+| `create-task <app_name> <task>` | Add a background task using `django-tasks-db` with correct async/keyword-only patterns |
+| `scaffold <app_name> <model>` | Generate full CRUD views, templates, URLs, and tests for an existing model |
 | `migrate` | Run the full migration workflow including `django-linear-migrations` validation and conflict resolution |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
-| `feedback <title>` | File an improvement against the django-studio template repo |
+| `feedback` | Report a bug or improvement against the django-studio template repo |
 
 ## Template Feedback
 
@@ -240,7 +241,7 @@ This project was generated from [django-studio](https://github.com/danjac/django
 To report a bug or improvement in the template, use the built-in slash command:
 
 ```
-/django-studio feedback <title>
+/django-studio feedback
 ```
 
 This files a GitHub issue directly against the template repo. Use it whenever you notice

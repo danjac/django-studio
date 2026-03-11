@@ -65,12 +65,13 @@ The design system is intended to provide a production-ready foundation for your 
 Generated projects include a `/django-studio` Claude Code slash command with subcommands for common workflows:
 
 | Subcommand | Summary |
-| ----------------------------- | ----------------------------------------------- |
-| `new-app <name>` | Scaffold a complete Django app (models, views, urls, tests, fixtures, wiring) |
-| `new-view <app> <view>` | Add a view, template, and URL following HTMX and design system conventions |
-| `new-task <app> <task>` | Add a `django-tasks-db` background task with correct async patterns |
+| --------------------------------- | ----------------------------------------------- |
+| `create-app <name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
+| `create-view <app> <view>` | Add a view, template, and URL following HTMX and design system conventions |
+| `create-task <app> <task>` | Add a `django-tasks-db` background task with correct async patterns |
+| `scaffold <app> <model>` | Generate full CRUD views, templates, URLs, and tests for an existing model |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
-| `feedback <title>` | File an improvement suggestion against the django-studio template |
+| `feedback` | Report a bug or improvement against the django-studio template |
 
 ## Hosting
 

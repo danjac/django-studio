@@ -15,9 +15,9 @@ list of available subcommands and stop.
 
 ## Subcommands
 
-### `new-app <app_name>`
+### `create-app <app_name>`
 
-Scaffold a complete Django app following this project's conventions.
+Create a basic Django app with the standard file structure for this project.
 
 **Steps:**
 
@@ -100,7 +100,7 @@ Scaffold a complete Django app following this project's conventions.
 
 ---
 
-### `new-view <app_name> <view_name>`
+### `create-view <app_name> <view_name>`
 
 Add a view, template, and URL following HTMX and design system conventions.
 
@@ -161,7 +161,7 @@ component you need likely already exists.
 
 ---
 
-### `new-task <app_name> <task_name>`
+### `create-task <app_name> <task_name>`
 
 Add a background task using `django-tasks-db`. See `docs/Django-Tasks.md`.
 
@@ -197,6 +197,422 @@ Add a background task using `django-tasks-db`. See `docs/Django-Tasks.md`.
    `<package_name>/<app_name>/management/commands/<name>.py` and add a test.
 
 5. Verify: `just dj check` then `just test`
+
+---
+
+### `scaffold <app_name> <model_name>`
+
+Generate a complete set of CRUD views for an existing model.
+
+**Does NOT create the model.** Assumes `<model_name>` exists in
+`<package_name>/<app_name>/models.py`.
+
+Read `docs/HTMX.md` and `design/` before writing any template.
+
+**Definitions:**
+- `<model_lower>` = `<model_name>` lower-cased (e.g. `Photo` → `photo`)
+- `<model_plural>` = pluralised `<model_lower>` (e.g. `photos`) — adjust for
+  irregular plurals
+
+---
+
+#### 1. `forms.py`
+
+Create `<package_name>/<app_name>/forms.py`:
+
+```python
+from __future__ import annotations
+
+from django import forms
+
+from <package_name>.<app_name>.models import <model_name>
+
+
+class <model_name>Form(forms.ModelForm):
+    class Meta:
+        model = <model_name>
+        fields: list[str] = []  # fill in the fields
+```
+
+---
+
+#### 2. Views
+
+Add to `<package_name>/<app_name>/views.py`:
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
+from django.urls import reverse
+
+from <package_name>.http.decorators import login_required, require_form_methods
+from <package_name>.paginator import render_paginated_response
+from <package_name>.partials import render_partial_response
+from <package_name>.<app_name>.forms import <model_name>Form
+from <package_name>.<app_name>.models import <model_name>
+
+if TYPE_CHECKING:
+    from <package_name>.http.request import HttpRequest
+
+
+@login_required
+def <model_lower>_list(request: HttpRequest) -> TemplateResponse:
+    return render_paginated_response(
+        request,
+        "<app_name>/<model_lower>_list.html",
+        <model_name>.objects.all(),
+    )
+
+
+@login_required
+def <model_lower>_detail(request: HttpRequest, pk: int) -> TemplateResponse:
+    <model_lower> = get_object_or_404(<model_name>, pk=pk)
+    return TemplateResponse(
+        request,
+        "<app_name>/<model_lower>_detail.html",
+        {"<model_lower>": <model_lower>},
+    )
+
+
+@login_required
+@require_form_methods
+def <model_lower>_create(request: HttpRequest) -> TemplateResponse | HttpResponseRedirect:
+    form = <model_name>Form(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "<model_name> created.")
+        return redirect(reverse("<app_name>:<model_lower>_list"))
+    return render_partial_response(
+        request,
+        "<app_name>/<model_lower>_form.html",
+        {"form": form},
+        target="<model_lower>-form",
+        partial="<model_lower>-form",
+    )
+
+
+@login_required
+@require_form_methods
+def <model_lower>_edit(
+    request: HttpRequest, pk: int
+) -> TemplateResponse | HttpResponseRedirect:
+    <model_lower> = get_object_or_404(<model_name>, pk=pk)
+    form = <model_name>Form(request.POST or None, instance=<model_lower>)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "<model_name> updated.")
+        return redirect(reverse("<app_name>:<model_lower>_list"))
+    return render_partial_response(
+        request,
+        "<app_name>/<model_lower>_form.html",
+        {"form": form, "<model_lower>": <model_lower>},
+        target="<model_lower>-form",
+        partial="<model_lower>-form",
+    )
+
+
+@login_required
+def <model_lower>_delete(
+    request: HttpRequest, pk: int
+) -> TemplateResponse | HttpResponseRedirect:
+    <model_lower> = get_object_or_404(<model_name>, pk=pk)
+    if request.method == "DELETE":
+        <model_lower>.delete()
+        messages.success(request, "<model_name> deleted.")
+        return redirect(reverse("<app_name>:<model_lower>_list"))
+    return TemplateResponse(
+        request,
+        "<app_name>/<model_lower>_confirm_delete.html",
+        {"<model_lower>": <model_lower>},
+    )
+```
+
+---
+
+#### 3. Templates
+
+**`templates/<app_name>/<model_lower>_list.html`**
+
+```html
+{% extends "base.html" %}
+
+{% block content %}
+  {% include "header.html" with title="<model_name>s" %}
+  <div class="mt-4">
+    <a href="{% url '<app_name>:<model_lower>_create' %}" class="btn btn-primary">
+      Add <model_name>
+    </a>
+  </div>
+  {% with pagination_target="<model_lower>-list" %}
+    {% fragment "paginate.html" %}
+      {% for item in page.object_list %}
+        <div>{{ item }}</div>
+      {% empty %}
+        <p class="text-zinc-500">No items yet.</p>
+      {% endfor %}
+    {% endfragment %}
+  {% endwith %}
+{% endblock content %}
+```
+
+**`templates/<app_name>/<model_lower>_detail.html`**
+
+```html
+{% extends "base.html" %}
+
+{% block content %}
+  {% include "header.html" with title="<model_name>" %}
+  <div class="mt-4">
+    <p>{{ <model_lower> }}</p>
+    <div class="mt-6 flex gap-3">
+      <a href="{% url '<app_name>:<model_lower>_edit' <model_lower>.pk %}"
+         class="btn btn-secondary">Edit</a>
+      <a href="{% url '<app_name>:<model_lower>_delete' <model_lower>.pk %}"
+         class="btn btn-danger">Delete</a>
+    </div>
+  </div>
+{% endblock content %}
+```
+
+**`templates/<app_name>/<model_lower>_form.html`** — shared by create and edit
+
+```html
+{% extends "base.html" %}
+
+{% block content %}
+  {% include "header.html" with title="<model_name>" %}
+  {% partial "<model_lower>-form" %}
+    <div id="<model_lower>-form">
+      {% fragment "form.html" htmx=True hx_target="#<model_lower>-form" %}
+        {% for field in form %}
+          {{ field.as_field_group }}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" hx-disabled-elt="this">Save</button>
+        <a href="{% url '<app_name>:<model_lower>_list' %}" class="btn btn-secondary">
+          Cancel
+        </a>
+      {% endfragment %}
+    </div>
+  {% endpartial %}
+{% endblock content %}
+```
+
+**`templates/<app_name>/<model_lower>_confirm_delete.html`**
+
+```html
+{% extends "base.html" %}
+
+{% block content %}
+  {% include "header.html" with title="Delete <model_name>" %}
+  <div class="mt-4">
+    <p>Are you sure you want to delete <strong>{{ <model_lower> }}</strong>?</p>
+    <div class="mt-6 flex gap-3">
+      <button
+        class="btn btn-danger"
+        hx-delete="{% url '<app_name>:<model_lower>_delete' <model_lower>.pk %}"
+        hx-confirm="This cannot be undone."
+        hx-target="body"
+        hx-push-url="{% url '<app_name>:<model_lower>_list' %}"
+      >Delete</button>
+      <a href="{% url '<app_name>:<model_lower>_detail' <model_lower>.pk %}"
+         class="btn btn-secondary">Cancel</a>
+    </div>
+  </div>
+{% endblock content %}
+```
+
+---
+
+#### 4. URLs
+
+Add to `<package_name>/<app_name>/urls.py`:
+
+```python
+from <package_name>.<app_name> import views
+
+urlpatterns = [
+    path("<model_plural>/", views.<model_lower>_list, name="<model_lower>_list"),
+    path("<model_plural>/create/", views.<model_lower>_create, name="<model_lower>_create"),
+    path("<model_plural>/<int:pk>/", views.<model_lower>_detail, name="<model_lower>_detail"),
+    path("<model_plural>/<int:pk>/edit/", views.<model_lower>_edit, name="<model_lower>_edit"),
+    path(
+        "<model_plural>/<int:pk>/delete/",
+        views.<model_lower>_delete,
+        name="<model_lower>_delete",
+    ),
+]
+```
+
+---
+
+#### 5. Tests
+
+Add to `<package_name>/<app_name>/tests/test_views.py`:
+
+```python
+import pytest
+from django.urls import reverse
+
+from <package_name>.<app_name>.tests.factories import <model_name>Factory
+
+
+@pytest.mark.django_db
+class Test<model_name>List:
+    def test_get(self, client, auth_user):
+        <model_name>Factory.create_batch(3)
+        response = client.get(reverse("<app_name>:<model_lower>_list"))
+        assert response.status_code == 200
+
+    def test_htmx_partial(self, client, auth_user):
+        response = client.get(
+            reverse("<app_name>:<model_lower>_list"),
+            headers={"HX-Request": "true", "HX-Target": "<model_lower>-list"},
+        )
+        assert response.status_code == 200
+
+    def test_redirect_if_not_logged_in(self, client):
+        response = client.get(reverse("<app_name>:<model_lower>_list"))
+        assert response.status_code == 302
+
+
+@pytest.mark.django_db
+class Test<model_name>Detail:
+    def test_get(self, client, auth_user):
+        obj = <model_name>Factory()
+        response = client.get(reverse("<app_name>:<model_lower>_detail", args=[obj.pk]))
+        assert response.status_code == 200
+
+    def test_404(self, client, auth_user):
+        response = client.get(reverse("<app_name>:<model_lower>_detail", args=[0]))
+        assert response.status_code == 404
+
+    def test_redirect_if_not_logged_in(self, client):
+        obj = <model_name>Factory()
+        response = client.get(reverse("<app_name>:<model_lower>_detail", args=[obj.pk]))
+        assert response.status_code == 302
+
+
+@pytest.mark.django_db
+class Test<model_name>Create:
+    def test_get(self, client, auth_user):
+        response = client.get(reverse("<app_name>:<model_lower>_create"))
+        assert response.status_code == 200
+
+    def test_htmx_partial(self, client, auth_user):
+        response = client.get(
+            reverse("<app_name>:<model_lower>_create"),
+            headers={"HX-Request": "true", "HX-Target": "<model_lower>-form"},
+        )
+        assert response.status_code == 200
+
+    def test_post_valid(self, client, auth_user):
+        response = client.post(
+            reverse("<app_name>:<model_lower>_create"),
+            data={},  # fill in valid form data
+        )
+        assert response.status_code == 302
+
+    def test_post_invalid(self, client, auth_user):
+        response = client.post(reverse("<app_name>:<model_lower>_create"), data={})
+        assert response.status_code == 200
+
+    def test_redirect_if_not_logged_in(self, client):
+        response = client.get(reverse("<app_name>:<model_lower>_create"))
+        assert response.status_code == 302
+
+
+@pytest.mark.django_db
+class Test<model_name>Edit:
+    def test_get(self, client, auth_user):
+        obj = <model_name>Factory()
+        response = client.get(reverse("<app_name>:<model_lower>_edit", args=[obj.pk]))
+        assert response.status_code == 200
+
+    def test_htmx_partial(self, client, auth_user):
+        obj = <model_name>Factory()
+        response = client.get(
+            reverse("<app_name>:<model_lower>_edit", args=[obj.pk]),
+            headers={"HX-Request": "true", "HX-Target": "<model_lower>-form"},
+        )
+        assert response.status_code == 200
+
+    def test_post_valid(self, client, auth_user):
+        obj = <model_name>Factory()
+        response = client.post(
+            reverse("<app_name>:<model_lower>_edit", args=[obj.pk]),
+            data={},  # fill in valid form data
+        )
+        assert response.status_code == 302
+
+    def test_post_invalid(self, client, auth_user):
+        obj = <model_name>Factory()
+        response = client.post(
+            reverse("<app_name>:<model_lower>_edit", args=[obj.pk]),
+            data={},
+        )
+        assert response.status_code == 200
+
+    def test_404(self, client, auth_user):
+        response = client.get(reverse("<app_name>:<model_lower>_edit", args=[0]))
+        assert response.status_code == 404
+
+    def test_redirect_if_not_logged_in(self, client):
+        obj = <model_name>Factory()
+        response = client.get(reverse("<app_name>:<model_lower>_edit", args=[obj.pk]))
+        assert response.status_code == 302
+
+
+@pytest.mark.django_db
+class Test<model_name>Delete:
+    def test_get(self, client, auth_user):
+        obj = <model_name>Factory()
+        response = client.get(reverse("<app_name>:<model_lower>_delete", args=[obj.pk]))
+        assert response.status_code == 200
+
+    def test_delete(self, client, auth_user):
+        obj = <model_name>Factory()
+        response = client.delete(reverse("<app_name>:<model_lower>_delete", args=[obj.pk]))
+        assert response.status_code == 302
+        assert not <model_name>.objects.filter(pk=obj.pk).exists()
+
+    def test_404(self, client, auth_user):
+        response = client.delete(reverse("<app_name>:<model_lower>_delete", args=[0]))
+        assert response.status_code == 404
+
+    def test_redirect_if_not_logged_in(self, client):
+        obj = <model_name>Factory()
+        response = client.get(reverse("<app_name>:<model_lower>_delete", args=[obj.pk]))
+        assert response.status_code == 302
+```
+
+Add `<model_name>Factory` to `<package_name>/<app_name>/tests/factories.py`:
+
+```python
+import factory
+from factory.django import DjangoModelFactory
+
+from <package_name>.<app_name>.models import <model_name>
+
+
+class <model_name>Factory(DjangoModelFactory):
+    class Meta:
+        model = <model_name>
+```
+
+---
+
+#### 6. Verify
+
+```bash
+just dj check
+just test
+```
 
 ---
 
@@ -297,27 +713,40 @@ suggest running `just helm-install` to proceed.
 
 ---
 
-### `issue cookiecutter <title>`
+### `issue cookiecutter [description]`
 
-File a GitHub issue against the django-studio template repo:
+File a GitHub issue against the django-studio template repo. Use this when the
+bug or improvement belongs in the template, not this project.
 
-```bash
-gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
-```
+**Steps:**
 
-Use this when the bug or improvement belongs in the template, not this project.
+1. If a description was not provided inline, ask the user to describe the
+   problem or improvement in plain text and wait for their reply.
+
+2. From the description, draft a concise issue title (≤72 characters,
+   imperative mood, e.g. "Add X", "Fix Y when Z").
+
+3. Show the proposed title to the user:
+   ```
+   Proposed title: "<title>"
+   Post this issue to danjac/django-studio? [y/n]
+   ```
+   Wait for confirmation. If the user suggests a different title, use theirs.
+
+4. Once confirmed, file the issue:
+   ```bash
+   gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
+   ```
+
+5. Print the new issue URL.
 
 ---
 
-### `feedback <title>`
+### `feedback [description]`
 
-Alias for `issue cookiecutter`. Reports a bug or improvement suggestion against
-the [django-studio](https://github.com/danjac/django-studio) template that
-generated this project.
+Alias for `issue cookiecutter`. Reports a bug or improvement against the
+[django-studio](https://github.com/danjac/django-studio) template that
+generated this project. Follows the same steps as `issue cookiecutter`.
 
-```bash
-gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
-```
-
-Prompt for a description if not provided. Prefer `/django-studio feedback` over
-filing issues manually — it keeps the feedback loop with the template intact.
+Prefer `/django-studio feedback` over filing issues manually — it keeps the
+feedback loop with the template intact.

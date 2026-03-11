@@ -9,6 +9,7 @@
 .claude
 .claudeignore
 .mcp.json
+opencode.json
 .django_tailwind_cli
 .git
 .github

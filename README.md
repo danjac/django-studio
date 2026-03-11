@@ -27,7 +27,7 @@ This project is best described as "pre-alpha". While based on working projects i
 - Django 6 with a modern stack (HTMX, Alpine.js, Tailwind CSS)
 - Docker Compose setup for local development (PostgreSQL, Redis, Mailpit)
 - Kubernetes deployment with Helm Charts
-- Grafana dashboards for monitoring
+- Grafana dashboards for OpenTelemetry monitoring
 - Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
 - Design system with reusable components
 - AI-assisted development with agent documentation, agentic hooks, and project Skills
@@ -64,14 +64,14 @@ The design system is intended to provide a production-ready foundation for your 
 
 Generated projects include a `/django-studio` Claude Code slash command with subcommands for common workflows:
 
-| Subcommand | Summary |
-| --------------------------------- | ----------------------------------------------- |
-| `create-app <name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
-| `create-view <app> <view>` | Add a view, template, and URL following HTMX and design system conventions |
-| `create-task <app> <task>` | Add a `django-tasks-db` background task with correct async patterns |
-| `scaffold <app> <model>` | Generate full CRUD views, templates, URLs, and tests for an existing model |
-| `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
-| `feedback` | Report a bug or improvement against the django-studio template |
+| Subcommand                 | Summary                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| `create-app <name>`        | Create a basic Django app (apps.py, models, views, urls, admin, tests)            |
+| `create-view <app> <view>` | Add a view, template, and URL following HTMX and design system conventions        |
+| `create-task <app> <task>` | Add a `django-tasks-db` background task with correct async patterns               |
+| `scaffold <app> <model>`   | Generate full CRUD views, templates, URLs, and tests for an existing model        |
+| `prelaunch`                | Audit all deployment config for missing or placeholder values before first deploy |
+| `feedback`                 | Report a bug or improvement against the django-studio template                    |
 
 ## Hosting
 
@@ -111,18 +111,18 @@ uvx cookiecutter gh:danjac/django-studio
 
 Then follow the prompts:
 
-| Prompt              | Example                  | Notes                               |
-| ------------------- | ------------------------ | ----------------------------------- |
-| `project_name`      | `My Project`             | Human-readable name                 |
-| `project_slug`      | `my-project`             | Directory/repo name (kebab-case)    |
-| `package_name`      | `myapp`                  | Python package name (snake_case)    |
-| `description`       | `A project that does X`  | One-sentence description            |
-| `author`            | `Your Name`              |                                     |
-| `author_email`      | `you@example.com`        |                                     |
-| `use_hx_boost`      | `y` / `n`                | HTMX Boost (SPA-like navigation)    |
-| `use_storage`       | `y` / `n`                | S3/Hetzner object storage           |
-| `use_pwa`           | `y` / `n`                | PWA manifest + service worker       |
-| `use_opentelemetry` | `y` / `n`                | OpenTelemetry observability         |
-| `use_sentry`        | `y` / `n`                | Sentry error tracking               |
+| Prompt              | Example                 | Notes                            |
+| ------------------- | ----------------------- | -------------------------------- |
+| `project_name`      | `My Project`            | Human-readable name              |
+| `project_slug`      | `my-project`            | Directory/repo name (kebab-case) |
+| `package_name`      | `myapp`                 | Python package name (snake_case) |
+| `description`       | `A project that does X` | One-sentence description         |
+| `author`            | `Your Name`             |                                  |
+| `author_email`      | `you@example.com`       |                                  |
+| `use_hx_boost`      | `y` / `n`               | HTMX Boost (SPA-like navigation) |
+| `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
+| `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |
+| `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability      |
+| `use_sentry`        | `y` / `n`               | Sentry error tracking            |
 
 The generated `README.md` will include instructions to get started with development, testing, and deployment.

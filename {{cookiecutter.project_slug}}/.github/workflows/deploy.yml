@@ -1,5 +1,4 @@
-name: {{cookiecutter.project_slug}}:deploy
-{% raw -%}
+name: PROJECT_SLUG:deploy
 run-name: ${{ github.actor }} is deploying to production
 on:
   workflow_dispatch:
@@ -23,11 +22,9 @@ jobs:
     permissions:
       contents: read
     env:
-{%- endraw %}
       HELM_RELEASE: site
       HELM_CHART: helm/site
-      KUBECONFIG_FILE: {{cookiecutter.project_slug}}.yaml
-{% raw -%}
+      KUBECONFIG_FILE: PROJECT_SLUG.yaml
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -58,4 +55,3 @@ jobs:
             --set "image=$IMAGE" \
             -f "$HELM_CHART/values.yaml" \
             -f "$HELM_CHART/values.secret.yaml"
-{%- endraw %}

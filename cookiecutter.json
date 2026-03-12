@@ -29,6 +29,7 @@
     "templates/**",
     "static/**",
     "justfile",
+    ".github/workflows/deploy.yml",
     "design/**",
     "docs/**",
     "helm/*/templates/**",

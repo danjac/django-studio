@@ -33,6 +33,7 @@ DEFAULT_BASE_HTML = TEMPLATES_DIR / "default_base.html"
 HX_BASE_HTML = TEMPLATES_DIR / "hx_base.html"
 
 JUSTFILE = BASE_DIR / "justfile"
+DEPLOY_WORKFLOW = BASE_DIR / ".github" / "workflows" / "deploy.yml"
 TERRAFORM_STORAGE_DIR = BASE_DIR / "terraform" / "storage"
 OBSERVABILITY_HELM_DIR = BASE_DIR / "helm" / "observability"
 SERVICE_WORKER_JS = BASE_DIR / "static" / "service-worker.js"
@@ -251,11 +252,10 @@ if USE_OPENTELEMETRY != "y":
 if USE_PWA != "y":
     remove_pwa_static()
 
-# 3. Inject project slug into justfile (which is _copy_without_render)
-with JUSTFILE.open() as f:
-    content = f.read()
-with JUSTFILE.open("w") as f:
-    f.write(content.replace("PROJECT_SLUG", PROJECT_SLUG))
+# 3. Inject project slug into files that are _copy_without_render
+for path in (JUSTFILE, DEPLOY_WORKFLOW):
+    content = path.read_text()
+    path.write_text(content.replace("PROJECT_SLUG", PROJECT_SLUG))
 
 # 4. Install skills, Claude hooks, and generate lock file
 install_skills()

@@ -46,9 +46,9 @@ terraform apply
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `hcloud_token` | yes | — | Hetzner Cloud API token (Read & Write) |
-| `ssh_public_key` | yes | — | SSH public key for server access |
-| `k3s_token` | yes | — | Pre-shared token for K3s cluster (`openssl rand -hex 32`) |
+| `hcloud_token` | yes | - | Hetzner Cloud API token (Read & Write) |
+| `ssh_public_key` | yes | - | SSH public key for server access |
+| `k3s_token` | yes | - | Pre-shared token for K3s cluster (`openssl rand -hex 32`) |
 | `cluster_name` | no | `{{cookiecutter.project_slug}}` | Name prefix for all resources |
 | `location` | no | `nbg1` | Hetzner datacenter |
 | `network_zone` | no | `eu-central` | Must match `location` |
@@ -67,13 +67,13 @@ terraform output -raw postgres_volume_mount_path  # for helm values.secret.yaml
 
 ## Troubleshooting
 
-**K3s not ready after apply** — cloud-init runs asynchronously. Check progress:
+**K3s not ready after apply** - cloud-init runs asynchronously. Check progress:
 
 ```bash
 ssh ubuntu@$(terraform output -raw server_public_ip) 'tail -f /var/log/cloud-init-output.log'
 ```
 
-**Nodes not joining** — verify `k3s_token` is identical and hasn't changed since initial provision.
+**Nodes not joining** - verify `k3s_token` is identical and hasn't changed since initial provision.
 
-**Postgres volume permissions** — the background script logs to
+**Postgres volume permissions** - the background script logs to
 `/var/log/postgres-volume-perms.log` on the database node.

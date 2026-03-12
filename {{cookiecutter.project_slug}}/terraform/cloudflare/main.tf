@@ -40,7 +40,7 @@ resource "cloudflare_record" "server" {
 }
 
 {%- if cookiecutter.use_opentelemetry == 'y' %}
-# Grafana monitoring UI — proxied through Cloudflare so the Cloudflare origin cert is valid
+# Grafana monitoring UI - proxied through Cloudflare so the Cloudflare origin cert is valid
 resource "cloudflare_record" "grafana" {
   count           = var.grafana_subdomain != "" ? 1 : 0
   zone_id         = data.cloudflare_zone.domain.id

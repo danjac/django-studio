@@ -12,7 +12,7 @@ Sets up Cloudflare DNS, CDN caching, SSL/TLS, and security settings.
 
 ## Prerequisites
 
-1. **Cloudflare Account** — sign up at <https://www.cloudflare.com/>
+1. **Cloudflare Account** - sign up at <https://www.cloudflare.com/>
 2. **Domain added to Cloudflare** with nameservers updated
 3. **Cloudflare API Token** with these zone-level permissions:
    - Zone → Zone → Edit
@@ -43,11 +43,11 @@ After `terraform apply`, create origin certificates for HTTPS:
 
 ## Troubleshooting
 
-**Could not find zone** — verify domain is added to Cloudflare and `domain` in `terraform.tfvars` matches exactly.
+**Could not find zone** - verify domain is added to Cloudflare and `domain` in `terraform.tfvars` matches exactly.
 
-**Authentication error** — check API token has all required zone-level permissions.
+**Authentication error** - check API token has all required zone-level permissions.
 
-**ruleset already exists** — import existing rulesets into Terraform state:
+**ruleset already exists** - import existing rulesets into Terraform state:
 
 ```bash
 ZONE_ID=$(terraform show -json | jq -r \
@@ -62,4 +62,4 @@ terraform import cloudflare_ruleset.zone_level_firewall "zone/$ZONE_ID/<ID>"
 terraform import cloudflare_ruleset.transform_response_headers "zone/$ZONE_ID/<ID>"
 ```
 
-**DNS status shows "pending"** — nameservers haven't propagated yet (can take up to 48 hours).
+**DNS status shows "pending"** - nameservers haven't propagated yet (can take up to 48 hours).

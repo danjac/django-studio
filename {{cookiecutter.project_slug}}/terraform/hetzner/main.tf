@@ -14,7 +14,7 @@ provider "hcloud" {
 }
 
 locals {
-  # Fixed private IPs — deterministic, referenced in cloud-init templates
+  # Fixed private IPs - deterministic, referenced in cloud-init templates
   server_private_ip    = cidrhost(var.subnet_ip_range, 2) # 10.0.0.2
   database_private_ip  = cidrhost(var.subnet_ip_range, 3) # 10.0.0.3
   jobrunner_private_ip = cidrhost(var.subnet_ip_range, 4) # 10.0.0.4
@@ -68,7 +68,7 @@ resource "hcloud_firewall" "server" {
     source_ips = ["0.0.0.0/0", "::/0"]
   }
 
-  # K3s API server — required for kubectl and Helm
+  # K3s API server - required for kubectl and Helm
   rule {
     direction  = "in"
     protocol   = "tcp"

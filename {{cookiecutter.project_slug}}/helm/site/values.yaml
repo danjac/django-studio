@@ -1,14 +1,14 @@
-# Application image — override with the actual image in values.secret.yaml
+# Application image - override with the actual image in values.secret.yaml
 image: ghcr.io/CHANGE_ME/{{cookiecutter.project_slug}}:main
 
-# Number of webapp replicas — override in values.secret.yaml
+# Number of webapp replicas - override in values.secret.yaml
 replicas: 1
 
 # PostgreSQL configuration
 postgres:
   image: postgres:18.1-bookworm
   storage: 30Gi
-  # Volume mount path — set in values.secret.yaml from:
+  # Volume mount path - set in values.secret.yaml from:
   # terraform -chdir=terraform/hetzner output -raw postgres_volume_mount_path
   volumePath: ""
   args:
@@ -32,7 +32,7 @@ postgres:
 redis:
   image: redis:8.2.2-bookworm
 
-# Resource requests/limits — defaults tuned for cx23 (2 vCPU, 4 GB RAM).
+# Resource requests/limits - defaults tuned for cx23 (2 vCPU, 4 GB RAM).
 # Override per-workload in values.secret.yaml if using a different server type.
 resources:
   app:
@@ -71,7 +71,7 @@ resources:
       memory: 256Mi
       cpu: 200m
 
-# Application domain — set in values.secret.yaml
+# Application domain - set in values.secret.yaml
 domain: ""
 
 # Django application settings
@@ -95,7 +95,7 @@ app:
   metaKeywords: ""
   secureSslRedirect: true
 
-# CronJob schedules — customise for your project
+# CronJob schedules - customise for your project
 cronjobs:
   clear-sessions:
     schedule: "20 5 * * *"
@@ -111,7 +111,7 @@ pgUpgrade:
   newVolumePath: ""
   storage: 30Gi
 
-# Secrets — never commit values.secret.yaml
+# Secrets - never commit values.secret.yaml
 # Copy values.secret.yaml.example to values.secret.yaml and fill in values.
 secrets:
   postgresPassword: ""

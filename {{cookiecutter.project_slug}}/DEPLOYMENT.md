@@ -16,7 +16,7 @@ Fresh install of {{cookiecutter.project_name}} on a Hetzner Cloud K3s cluster wi
 - [Terraform](https://www.terraform.io/downloads) >= 1.0
 - [Helm](https://helm.sh/docs/intro/install/) >= 3.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
-- [hcloud CLI](https://github.com/hetznercloud/cli) — install then:
+- [hcloud CLI](https://github.com/hetznercloud/cli) - install then:
 
   ```bash
   hcloud context create {{cookiecutter.project_slug}}   # paste a Read & Write API token when prompted
@@ -29,7 +29,7 @@ Fresh install of {{cookiecutter.project_name}} on a Hetzner Cloud K3s cluster wi
 
 ---
 
-## Step 1 — Provision Hetzner infrastructure
+## Step 1 - Provision Hetzner infrastructure
 
 ```bash
 cd terraform/hetzner
@@ -43,7 +43,7 @@ Required values:
 | ---------------- | -------------------------------------------------------------------- |
 | `hcloud_token`   | Hetzner Cloud API token (Read & Write)                               |
 | `ssh_public_key` | Contents of `~/.ssh/id_ed25519.pub`                                  |
-| `k3s_token`      | Random string for K3s cluster auth — `openssl rand -hex 32`          |
+| `k3s_token`      | Random string for K3s cluster auth - `openssl rand -hex 32`          |
 | `cluster_name`   | Name prefix for all resources (e.g. `{{cookiecutter.project_slug}}`) |
 
 ```bash
@@ -60,7 +60,7 @@ terraform output server_public_ip
 
 ---
 
-## Step 2 — Configure Cloudflare
+## Step 2 - Configure Cloudflare
 
 ```bash
 cd ../cloudflare
@@ -78,11 +78,11 @@ terraform apply
 ### Create origin certificates
 
 1. Cloudflare Dashboard → SSL/TLS → Origin Server → Create Certificate (15-year validity)
-2. Keep the browser tab open — you'll paste these into `values.secret.yaml` in Step 4.
+2. Keep the browser tab open - you'll paste these into `values.secret.yaml` in Step 4.
 
 ---
 
-## Step 3 — Wait for K3s and fetch kubeconfig
+## Step 3 - Wait for K3s and fetch kubeconfig
 
 K3s finishes installing a few minutes after `terraform apply` completes. Check:
 
@@ -100,7 +100,7 @@ kubectl --kubeconfig ~/.kube/{{cookiecutter.project_slug}}.yaml get nodes  # san
 
 ---
 
-## Step 4 — Configure Helm values
+## Step 4 - Configure Helm values
 
 ### App chart
 
@@ -139,7 +139,7 @@ $EDITOR helm/observability/values.secret.yaml   # set Grafana admin password + h
 
 ---
 
-## Step 5 — Deploy
+## Step 5 - Deploy
 
 ```bash
 just helm site
@@ -153,7 +153,7 @@ just kube get pods -n default
 
 ---
 
-## Step 6 — Post-deployment
+## Step 6 - Post-deployment
 
 ```bash
 just rdj migrate           # run database migrations
@@ -164,7 +164,7 @@ Visit `https://your-domain/admin/` to verify. Update the Site domain in Django a
 
 ---
 
-## Step 7 — Deploy observability (optional)
+## Step 7 - Deploy observability (optional)
 
 ```bash
 just helm observability
@@ -209,7 +209,7 @@ Set these in GitHub → repository **Settings → Secrets and variables → Acti
 
 | Command                    | When to use                                                              |
 | -------------------------- | ------------------------------------------------------------------------ |
-| `just helm site`           | Install or upgrade the app — preserves the running image via `--reuse-values` |
+| `just helm site`           | Install or upgrade the app - preserves the running image via `--reuse-values` |
 | `just helm observability`  | Install or upgrade the observability stack                               |
 
 ### Run management commands

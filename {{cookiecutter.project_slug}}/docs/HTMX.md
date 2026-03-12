@@ -37,13 +37,13 @@ When using `hx-boost`, templates extend from the appropriate base depending on w
 {% extends request.htmx|yesno:"hx_base.html,default_base.html" %}
 ```
 
-`hx_base.html` is a minimal wrapper (title + content block, no chrome). Only use this pattern with `hx-boost` — for targeted partial updates, just return the partial directly from the view.
+`hx_base.html` is a minimal wrapper (title + content block, no chrome). Only use this pattern with `hx-boost` - for targeted partial updates, just return the partial directly from the view.
 
 ## View Utilities
 
 This project ships two utilities for the common HTMX view patterns. Prefer these over manual `if request.htmx` branching.
 
-### `render_partial_response` — partial swap on target match
+### `render_partial_response` - partial swap on target match
 
 `{{cookiecutter.package_name}}.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
 
@@ -67,7 +67,7 @@ def my_form_view(request):
 
 The template defines a `{% partialdef form %}` block that contains just the form markup. On a full-page load the entire template renders; on an HTMX form submit only the `form` partial is returned and swapped in.
 
-### `render_paginated_response` — paginated list with no COUNT query
+### `render_paginated_response` - paginated list with no COUNT query
 
 `{{cookiecutter.package_name}}.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `Paginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
 

@@ -4,7 +4,7 @@ Template: `templates/card.html`
 
 ## Overview
 
-`card.html` is a vertical tile for **grid layouts** — image on top (16:9), title and optional subtitle below, with a hover shadow. Use it inside `grid.html#item`.
+`card.html` is a vertical tile for **grid layouts** - image on top (16:9), title and optional subtitle below, with a hover shadow. Use it inside `grid.html#item`.
 
 ## Context Variables
 

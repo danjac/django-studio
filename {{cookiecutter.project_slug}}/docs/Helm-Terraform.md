@@ -52,7 +52,7 @@ Copy the example file and fill in required values:
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-Never commit `terraform.tfvars` — it's gitignored.
+Never commit `terraform.tfvars` - it's gitignored.
 
 ## Helm
 
@@ -102,7 +102,7 @@ Copy and fill in the secrets file:
 cp helm/site/values.secret.yaml.example helm/site/values.secret.yaml
 ```
 
-`values.secret.yaml` is gitignored — never commit it.
+`values.secret.yaml` is gitignored - never commit it.
 
 ## CI/CD Pipeline
 
@@ -113,8 +113,8 @@ The `deploy` GitHub Actions workflow:
 3. Runs `helm upgrade --rollback-on-failure` with the new image
 
 Required repository secrets:
-- `KUBECONFIG_BASE64` — base64-encoded kubeconfig
-- `HELM_VALUES_SECRET` — full contents of `values.secret.yaml`
+- `KUBECONFIG_BASE64` - base64-encoded kubeconfig
+- `HELM_VALUES_SECRET` - full contents of `values.secret.yaml`
 
 ## Production Commands
 

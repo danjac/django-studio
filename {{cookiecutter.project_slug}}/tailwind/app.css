@@ -5,7 +5,7 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 
-/* Brand color tokens — change these to rebrand the entire project */
+/* Brand color tokens - change these to rebrand the entire project */
 
 @theme {
   /* Primary brand color (default: indigo) */

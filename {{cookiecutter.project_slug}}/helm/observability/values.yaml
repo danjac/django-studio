@@ -54,7 +54,7 @@ kube-prometheus-stack:
         memory: 512Mi
         cpu: 200m
 
-    # Admin password — override in values.secret.yaml
+    # Admin password - override in values.secret.yaml
     adminPassword: ""
 
     persistence:
@@ -62,7 +62,7 @@ kube-prometheus-stack:
       storageClassName: local-path
       size: 2Gi
 
-    # SMTP for alert emails (optional — configure in values.secret.yaml)
+    # SMTP for alert emails (optional - configure in values.secret.yaml)
     smtp:
       enabled: false
 
@@ -92,7 +92,7 @@ kube-prometheus-stack:
     ingress:
       enabled: true
       ingressClassName: traefik
-      # Grafana subdomain — set in values.secret.yaml (e.g. grafana.example.com)
+      # Grafana subdomain - set in values.secret.yaml (e.g. grafana.example.com)
       hosts: []
 
   kube-state-metrics:
@@ -107,7 +107,7 @@ kube-prometheus-stack:
         cpu: 100m
 
   prometheus-node-exporter:
-    # DaemonSet — no nodeSelector needed
+    # DaemonSet - no nodeSelector needed
     resources:
       requests:
         memory: 32Mi
@@ -216,7 +216,7 @@ tempo:
     storageClassName: local-path
     size: 10Gi
 
-# ── OTel agent (DaemonSet — one per node) ────────────────────────────────────
+# ── OTel agent (DaemonSet - one per node) ────────────────────────────────────
 otel-agent:
   fullnameOverride: otel-agent
   mode: daemonset
@@ -383,7 +383,7 @@ otel-agent:
             - batch
           exporters: [otlphttp/gateway]
 
-# ── OTel gateway (Deployment — central fan-out) ───────────────────────────────
+# ── OTel gateway (Deployment - central fan-out) ───────────────────────────────
 otel-gateway:
   fullnameOverride: otel-gateway
   mode: deployment

@@ -419,7 +419,7 @@ class Item(models.Model):
 ### ForeignKey and ManyToMany Relationships
 
 Always define `related_name` explicitly on every `ForeignKey` and `ManyToManyField`.
-Django's default reverse accessor (`<model>_set`) is implicit and fragile — it breaks on
+Django's default reverse accessor (`<model>_set`) is implicit and fragile - it breaks on
 model renames and is unclear at the call site.
 
 ```python
@@ -551,7 +551,7 @@ migrations directory. Never edit `max_migration.txt` by hand.
 ### Resolving max_migration.txt conflicts
 
 A git conflict in `max_migration.txt` means two branches each created a migration
-for the same app simultaneously. This is intentional — the conflict forces you to
+for the same app simultaneously. This is intentional - the conflict forces you to
 resolve the ordering explicitly rather than silently forking the history.
 
 Resolution steps:

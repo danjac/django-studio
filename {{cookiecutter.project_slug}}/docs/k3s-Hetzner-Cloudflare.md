@@ -6,13 +6,13 @@ This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudfla
 
 ### Cost predictability
 
-PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but build on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills — this is a well-documented failure mode, not a theoretical one.
+PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but build on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills - this is a well-documented failure mode, not a theoretical one.
 
 Hetzner has fixed, published pricing. A 3-node k3s cluster costs roughly €20/month regardless of traffic. There are no egress surprise charges, no per-request fees, no auto-scaling that runs away. The cost is predictable and budgetable.
 
 ### Why not Docker + systemd
 
-The obvious simpler alternative — Docker Compose or plain containers managed by systemd — gets you most of the way there, but leaves you writing your own solutions for rolling deploys, health checks, service restarts, secret management, and scheduled jobs. After a few iterations you end up with an ad-hoc orchestration layer that has all the operational complexity of Kubernetes without any of its tooling. This is the "inner platform effect": you reinvent the scheduler badly.
+The obvious simpler alternative - Docker Compose or plain containers managed by systemd - gets you most of the way there, but leaves you writing your own solutions for rolling deploys, health checks, service restarts, secret management, and scheduled jobs. After a few iterations you end up with an ad-hoc orchestration layer that has all the operational complexity of Kubernetes without any of its tooling. This is the "inner platform effect": you reinvent the scheduler badly.
 
 k3s avoids this by providing a real scheduler, service discovery, rolling deploys, CronJobs, and Secrets management in a single ~70MB binary. The overhead over Docker Compose is low; the ceiling is much higher.
 
@@ -297,12 +297,12 @@ just rpsql
 
 SSH (port 22) and the K3s API (port 6443) are controlled by the `admin_ips` variable in
 `terraform/hetzner/terraform.tfvars`. The default is open (`["0.0.0.0/0", "::/0"]`),
-which is fine — both ports are protected by strong credentials (SSH key, K3s token + TLS)
+which is fine - both ports are protected by strong credentials (SSH key, K3s token + TLS)
 so open ports are not a meaningful risk in practice.
 
 **Restricting `admin_ips` is optional.** If you do restrict it, note that the GitHub
 Actions deploy workflow needs to reach port 6443, and GitHub-hosted runner IPs are
-unpredictable — so you would also need a self-hosted runner or to leave 6443 open.
+unpredictable - so you would also need a self-hosted runner or to leave 6443 open.
 
 If you want to restrict anyway (e.g. you have a static IP or VPN dedicated IP):
 
@@ -343,7 +343,7 @@ High-level steps to add Tailscale:
 
 ### Secrets
 - Environment variables stored in Kubernetes secrets via Helm
-- `values.secret.yaml` is gitignored — never commit it
+- `values.secret.yaml` is gitignored - never commit it
 - Use GitHub Actions secrets for CI/CD (`KUBECONFIG_BASE64`, `HELM_VALUES_SECRET`)
 
 ### SSL/TLS
@@ -389,7 +389,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ## Scaling
 
 1. Edit `terraform/hetzner/terraform.tfvars` (e.g. increase `webapp_count`)
-2. Run `terraform apply` — new nodes join the cluster automatically via cloud-init
+2. Run `terraform apply` - new nodes join the cluster automatically via cloud-init
 3. Run `just helm site` to apply the updated replica count
 
 ## Backup

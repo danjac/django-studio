@@ -4,13 +4,13 @@ Template: `templates/paginate.html`
 
 ## Overview
 
-`paginate.html` wraps any list or grid with Previous / Next navigation. It creates a `<div id="{{ pagination_target }}">` as the HTMX swap target, so page changes replace only the list — not the surrounding page.
+`paginate.html` wraps any list or grid with Previous / Next navigation. It creates a `<div id="{{ pagination_target }}">` as the HTMX swap target, so page changes replace only the list - not the surrounding page.
 
 It is layout-agnostic: the inner content can be a `browse.html` list, a `grid.html` grid, or any other markup.
 
 ## View Setup
 
-Use `render_paginated_response` — it handles pagination, sets `pagination_target` in context, and returns only the named partial on HTMX requests:
+Use `render_paginated_response` - it handles pagination, sets `pagination_target` in context, and returns only the named partial on HTMX requests:
 
 ```python
 from {{cookiecutter.package_name}}.paginator import render_paginated_response
@@ -80,7 +80,7 @@ When a page link is clicked, HTMX swaps the `<div id="{{ pagination_target }}">`
 /photos/?q=sunset&tag=nature&page=2
 ```
 
-No extra setup needed — just ensure filters are submitted as `GET` parameters.
+No extra setup needed - just ensure filters are submitted as `GET` parameters.
 
 ## Styling the Links
 

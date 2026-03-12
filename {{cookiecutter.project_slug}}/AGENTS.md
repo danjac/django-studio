@@ -23,7 +23,7 @@ config/             # Django settings, URLs, ASGI/WSGI
   users/            # User model, authentication
   db/               # Database utilities (search mixin)
   http/             # HTTP utilities (typed requests, responses, decorators)
-  partials.py       # render_partial_response() — HTMX partial swap helper
+  partials.py       # render_partial_response() - HTMX partial swap helper
   paginator.py      # render_paginated_response() + no-COUNT Paginator
   tests/            # Shared test fixtures
 templates/          # Django templates (HTMX partials + full pages)
@@ -62,7 +62,7 @@ just test-e2e-headed              # E2E tests with visible browser
 ```
 
 - Framework: `pytest` with `pytest-django`
-- Coverage: reported on every run (`--cov-report=term-missing`); the 100% gate is commented out in `pyproject.toml` — enable it when the project is mature
+- Coverage: reported on every run (`--cov-report=term-missing`); the 100% gate is commented out in `pyproject.toml` - enable it when the project is mature
 - Test location: colocated in `{{cookiecutter.package_name}}/**/tests/` directories
 
 ### Django Management
@@ -126,11 +126,11 @@ A component library lives in `design/`. It documents every ready-made UI compone
 | `design/typography.md` | `markdown.html`, prose, heading scale, link style   |
 | `design/layout.md`     | Base templates, two-column layout, HTMX indicator   |
 
-**Before writing new UI markup**, check `design/` first — the component you need likely already exists.
+**Before writing new UI markup**, check `design/` first - the component you need likely already exists.
 
 ### JSON Serialization and Validation
 
-Use **Pydantic** for JSON serialization and validation — both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
+Use **Pydantic** for JSON serialization and validation - both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
 
 When adding Pydantic (`uv add pydantic`), add this to `pyproject.toml` to prevent ruff from moving Pydantic base class imports into `TYPE_CHECKING` blocks:
 
@@ -175,11 +175,11 @@ See `docs/UI-Design-Patterns.md` for the full icon guide.
 
 #### Form field rendering
 
-Hierarchy — use the first that fits:
+Hierarchy - use the first that fits:
 
-{% raw %}1. `{{ form.title.as_field_group }}` — explicit field-by-field control over order 2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order 3. `{{ form }}` — renders all fields using the configured template renderer
+{% raw %}1. `{{ form.title.as_field_group }}` - explicit field-by-field control over order 2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` - all fields, default order 3. `{{ form }}` - renders all fields using the configured template renderer
 
-Never use `{{ form.as_div }}` — it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.{% endraw %}
+Never use `{{ form.as_div }}` - it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.{% endraw %}
 
 See `design/forms.md` for full field template documentation.
 
@@ -207,12 +207,12 @@ See `design/forms.md` for full field template documentation.
 | Testing patterns                | `docs/Testing.md`                                          |
 | Any of the above                | `docs/Project-Structure.md`                                |
 
-If a doc contradicts what you see in existing code, flag it — do not silently pick one.
+If a doc contradicts what you see in existing code, flag it - do not silently pick one.
 
-- **Search before implementing** — Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities, `{{cookiecutter.package_name}}/partials.py` for HTMX partial rendering, and `{{cookiecutter.package_name}}/paginator.py` for paginated views.
-- **Scope discipline** — Only change what was explicitly requested.
-- **Diagnose before changing** — Read the code and state your diagnosis with a file:line reference before editing.
-- **Verify runtime behaviour** — Passing tests is necessary but not sufficient.
+- **Search before implementing** - Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities, `{{cookiecutter.package_name}}/partials.py` for HTMX partial rendering, and `{{cookiecutter.package_name}}/paginator.py` for paginated views.
+- **Scope discipline** - Only change what was explicitly requested.
+- **Diagnose before changing** - Read the code and state your diagnosis with a file:line reference before editing.
+- **Verify runtime behaviour** - Passing tests is necessary but not sufficient.
 
 ## Slash Commands
 

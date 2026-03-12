@@ -61,7 +61,7 @@ output "postgres_volume_linux_device" {
 }
 
 output "postgres_volume_mount_path" {
-  description = "Automount path for PostgreSQL volume — use as postgres.volumePath in helm values"
+  description = "Automount path for PostgreSQL volume - use as postgres.volumePath in helm values"
   value       = "/mnt/HC_Volume_${hcloud_volume.postgres.id}"
 }
 

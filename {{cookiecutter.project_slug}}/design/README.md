@@ -47,12 +47,12 @@ Light and dark variants are set automatically via the `@variant dark` media quer
 ### Brand color tokens (`tailwind/app.css`)
 
 ```css
---color-primary-*   /* brand color, default: indigo — buttons, focus rings, links */
---color-secondary-* /* secondary color, default: violet — btn-secondary */
---color-danger-*    /* destructive color, default: rose — btn-danger, error states */
+--color-primary-*   /* brand color, default: indigo - buttons, focus rings, links */
+--color-secondary-* /* secondary color, default: violet - btn-secondary */
+--color-danger-*    /* destructive color, default: rose - btn-danger, error states */
 ```
 
-These are defined as `@theme` aliases in `tailwind/app.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** — use the semantic token names so rebranding stays in one place.
+These are defined as `@theme` aliases in `tailwind/app.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** - use the semantic token names so rebranding stays in one place.
 
 ### Rebranding
 

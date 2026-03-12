@@ -47,7 +47,7 @@ CSS source: `tailwind/forms.css`
 
 ### Usage
 
-Use Django's `as_field_group` method rather than including `form/field.html` directly. This is the preferred approach — `as_field_group` delegates to `form/field.html` internally, so all label, error, and help-text handling is identical.
+Use Django's `as_field_group` method rather than including `form/field.html` directly. This is the preferred approach - `as_field_group` delegates to `form/field.html` internally, so all label, error, and help-text handling is identical.
 
 ```html
 {# Render all fields in form order #}

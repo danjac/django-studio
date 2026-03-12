@@ -9,10 +9,10 @@
 - `allauth`, `allauth.account`, `allauth.socialaccount` in `INSTALLED_APPS` (`config/settings.py`)
 - `allauth.account.middleware.AccountMiddleware` in `MIDDLEWARE`
 - `path("account/", include("allauth.urls"))` in `config/urls.py`
-- `AUTH_USER_MODEL = "users.User"` — custom user model in `{{cookiecutter.package_name}}/users/`
+- `AUTH_USER_MODEL = "users.User"` - custom user model in `{{cookiecutter.package_name}}/users/`
 - Email/username login, mandatory email verification by code, password reset by code
 - All account templates already customised in `templates/account/` and `templates/socialaccount/`
-- GDPR cookie consent handled by the cookie banner in `base.html` — **do not add database fields for consent**
+- GDPR cookie consent handled by the cookie banner in `base.html` - **do not add database fields for consent**
 
 ## Adding a social provider
 
@@ -30,7 +30,7 @@ Social providers can be added at any time without touching the base allauth setu
        }
    }
    ```
-3. Run `just dj migrate` — the socialaccount tables are already present.
+3. Run `just dj migrate` - the socialaccount tables are already present.
 
 ## Customising the signup form
 

@@ -27,5 +27,5 @@ postgres_volume_size = 50
 # Restrict SSH (22) and K3s API (6443) access to specific IPs.
 # Set to your own IP or VPN exit IP, e.g. ["203.0.113.42/32"]
 # See docs/k3s-Hetzner-Cloudflare.md for VPN guidance.
-# Default is open (matches Hetzner's default) — restrict before first apply.
+# Default is open (matches Hetzner's default) - restrict before first apply.
 admin_ips = ["0.0.0.0/0", "::/0"]

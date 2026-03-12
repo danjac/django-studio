@@ -4,7 +4,7 @@ Template: `templates/browse.html`
 
 ## Overview
 
-`browse.html` is a divided list layout — items separated by horizontal rules. Use it for data-first content where items are read row by row (names, dates, statuses, actions).
+`browse.html` is a divided list layout - items separated by horizontal rules. Use it for data-first content where items are read row by row (names, dates, statuses, actions).
 
 The template defines three partials:
 
@@ -14,7 +14,7 @@ The template defines three partials:
 | `#item` | `<li class="py-3 first:pt-0 last:pb-0">` | One list item |
 | `#empty` | `<li class="text-center prose">` | Empty state |
 
-`grid.html` follows the same `#item` / `#empty` interface — swap one for the other to change the layout without touching item markup.
+`grid.html` follows the same `#item` / `#empty` interface - swap one for the other to change the layout without touching item markup.
 
 ## Usage
 

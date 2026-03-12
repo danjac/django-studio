@@ -200,7 +200,7 @@ def test_external_api(mocker):
 
 ## Coverage
 
-Coverage is reported on every test run (`--cov-report=term-missing`). The 100% gate is commented out in `pyproject.toml` by default — enable it when the project is mature:
+Coverage is reported on every test run (`--cov-report=term-missing`). The 100% gate is commented out in `pyproject.toml` by default - enable it when the project is mature:
 
 ```toml
 # pyproject.toml

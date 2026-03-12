@@ -177,7 +177,7 @@ def install_claude_hooks() -> None:
                                 "CMD=$(jq -r '.tool_input.command');"
                                 " if echo \"$CMD\" | grep -q -- '--no-verify';"
                                 " then echo 'BLOCKED: --no-verify is forbidden"
-                                " — fix the pre-commit issue instead.' >&2; exit 2; fi"
+                                " - fix the pre-commit issue instead.' >&2; exit 2; fi"
                             ),
                         }
                     ],
@@ -204,7 +204,7 @@ def install_claude_hooks() -> None:
                                 "FILE=$(jq -r '.tool_input.file_path // empty');"
                                 " if echo \"$FILE\" | grep -qE '/models[^/]*\\.py$';"
                                 " then echo 'REMINDER: models file edited"
-                                " — run: just dj makemigrations'; fi"
+                                " - run: just dj makemigrations'; fi"
                             ),
                         },
                     ],

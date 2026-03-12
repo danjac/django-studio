@@ -17,13 +17,13 @@ dependencies:
     version: "1.24.4"
     repository: "https://grafana.github.io/helm-charts"
 
-  # OTel agent — DaemonSet, collects from each node
+  # OTel agent - DaemonSet, collects from each node
   - name: opentelemetry-collector
     version: "0.146.0"
     repository: "https://open-telemetry.github.io/opentelemetry-helm-charts"
     alias: otel-agent
 
-  # OTel gateway — Deployment, receives from agents, fans out to backends
+  # OTel gateway - Deployment, receives from agents, fans out to backends
   - name: opentelemetry-collector
     version: "0.146.0"
     repository: "https://open-telemetry.github.io/opentelemetry-helm-charts"

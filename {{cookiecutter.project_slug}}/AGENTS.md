@@ -173,7 +173,7 @@ See `design/forms.md` for full field template documentation.
 All user-visible text **must** be wrapped in translation functions. Never
 hardcode plain strings in templates or Python code.
 
-**Templates** — use `{% translate %}` (Django 4.0+, not the legacy `{% trans %}`):
+{% raw %}**Templates** — use `{% translate %}` (Django 4.0+, not the legacy `{% trans %}`):
 
 ```html
 {% load i18n %}
@@ -189,6 +189,7 @@ than a separate `{% translate "x" as var %}` assignment:
 {% include "header.html" with title=_("Dashboard") subtitle=_("Manage your account") %}
 <title>{% block title %}{% translate "Home" %}{% endblock %}</title>
 ```
+{% endraw %}
 
 **Python** — use `gettext_lazy` for class-level declarations, `gettext` (aliased
 `_`) in function bodies, and `ngettext` for plurals:

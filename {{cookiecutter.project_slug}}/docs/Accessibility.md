@@ -132,9 +132,11 @@ replace them:
   text) or **3:1** for large text (18pt+ or 14pt bold).
 - Do not convey information by colour alone — pair colour with a text label,
   icon, or pattern.
-- Verify contrast using the Tailwind palette. The `zinc`, `rose`, and `primary`
-  tokens used in the design system have been chosen to meet AA at their
-  standard usages, but always verify when combining custom values.
+- Verify contrast using the Tailwind palette. The design system's semantic
+  tokens (`primary`, `danger`, `success`, `error`, `info`, `warning`) are
+  mapped to Tailwind shades chosen to meet AA at their standard usages, but
+  always verify when combining custom values or overriding tokens in
+  `tailwind/app.css`.
 
 ---
 

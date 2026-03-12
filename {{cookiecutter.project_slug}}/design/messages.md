@@ -17,13 +17,20 @@ The Django messages framework is rendered via `messages.html`, which is included
 
 The CSS class `message-{{ message.tags }}` is set automatically from the Django message level:
 
-| Django level | Tags string | CSS class | Color |
+| Django level | Tags string | CSS class | Token |
 |-------------|-------------|-----------|-------|
 | `messages.DEBUG` | `debug` | `message-debug` | _(unstyled)_ |
-| `messages.INFO` | `info` | `message-info` | Sky blue |
-| `messages.SUCCESS` | `success` | `message-success` | Emerald |
-| `messages.WARNING` | `warning` | `message-warning` | Amber |
-| `messages.ERROR` | `error` | `message-error` | Rose |
+| `messages.INFO` | `info` | `message-info` | `--color-info-*` (default: sky) |
+| `messages.SUCCESS` | `success` | `message-success` | `--color-success-*` (default: emerald) |
+| `messages.WARNING` | `warning` | `message-warning` | `--color-warning-*` (default: amber) |
+| `messages.ERROR` | `error` | `message-error` | `--color-error-*` (default: rose) |
+
+To restyle all message toasts at once, override the semantic tokens in `tailwind/app.css`:
+
+```css
+--color-success-400: var(--color-teal-400);
+--color-success-600: var(--color-teal-600);
+```
 
 ## Usage in Views
 

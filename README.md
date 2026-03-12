@@ -18,9 +18,17 @@ This project is best described as "pre-alpha". While based on working projects i
 
 ## Audience
 
-This template is built for **solo developers** building side projects and small SaaS
-applications. It encodes one person's proven defaults (stack choices, hosting provider,
-deployment topology) rather than aiming to be a general-purpose starter kit.
+This template is built for **solo developers based in the EU** building side projects
+and small SaaS applications. It encodes one person's proven defaults (stack choices,
+hosting provider, deployment topology) rather than aiming to be a general-purpose
+starter kit.
+
+The EU focus is deliberate: hosting is on [Hetzner Cloud](https://hetzner.com)
+(Germany-based, GDPR-compliant), DNS/CDN via [Cloudflare](https://cloudflare.com),
+GDPR compliance guidance is built into the docs, and i18n/l10n patterns assume a
+European-first audience. If you are based outside the EU, the template will still
+work but the hosting defaults and compliance tooling are optimised for EU data
+residency requirements.
 
 ## Philosophy
 

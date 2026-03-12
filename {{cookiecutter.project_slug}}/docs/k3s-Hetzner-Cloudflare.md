@@ -223,7 +223,7 @@ kubectl delete jobs $(kubectl get jobs -o jsonpath='{.items[?(@.status.failed>0)
 
 ### Defining CronJobs
 
-Add entries to the `cronjobs` section in `helm/{{cookiecutter.project_slug}}/values.yaml`:
+Add entries to the `cronjobs` section in `helm/site/values.yaml`:
 
 ```yaml
 cronjobs:

@@ -38,7 +38,7 @@ terraform apply
 After `terraform apply`, create origin certificates for HTTPS:
 
 1. Cloudflare Dashboard → SSL/TLS → Origin Server → Create Certificate (15-year validity)
-2. Paste the certificate and key into `helm/{{cookiecutter.project_slug}}/values.secret.yaml` under
+2. Paste the certificate and key into `helm/site/values.secret.yaml` under
    `secrets.cloudflare.cert` and `secrets.cloudflare.key`
 
 ## Troubleshooting

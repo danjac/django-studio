@@ -143,26 +143,14 @@ gh workflow *args:
 get-kubeconfig:
     {{ script_dir }}/get-kubeconfig.sh
 
-# Install or upgrade a Helm chart. Use 'site' for the main app, e.g. 'just helm observability'.
+# Install or upgrade a Helm chart, e.g. 'just helm site' or 'just helm observability'
 [group('deployment')]
-helm chart:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if [ "{{ chart }}" = "site" ]; then
-        helm upgrade --install {{ project_slug }} helm/{{ project_slug }}/ \
-            --kubeconfig {{ kubeconfig }} \
-            --reuse-values \
-            -f helm/{{ project_slug }}/values.yaml \
-            -f helm/{{ project_slug }}/values.secret.yaml
-    else
-        helm dependency update helm/{{ chart }}/
-        helm upgrade --install {{ chart }} helm/{{ chart }}/ \
-            --kubeconfig {{ kubeconfig }} \
-            --namespace monitoring \
-            --create-namespace \
-            -f helm/{{ chart }}/values.yaml \
-            -f helm/{{ chart }}/values.secret.yaml
-    fi
+helm chart="site":
+    helm upgrade --install {{ chart }} helm/{{ chart }}/ \
+        --kubeconfig {{ kubeconfig }} \
+        --reuse-values \
+        -f helm/{{ chart }}/values.yaml \
+        -f helm/{{ chart }}/values.secret.yaml
 
 # Run Terraform commands in a subdirectory, e.g. 'just terraform hetzner plan'
 [group('deployment')]

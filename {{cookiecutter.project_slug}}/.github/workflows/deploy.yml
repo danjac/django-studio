@@ -24,8 +24,8 @@ jobs:
       contents: read
     env:
 {%- endraw %}
-      HELM_RELEASE: {{cookiecutter.project_slug}}
-      HELM_CHART: helm/{{cookiecutter.project_slug}}
+      HELM_RELEASE: site
+      HELM_CHART: helm/site
       KUBECONFIG_FILE: {{cookiecutter.project_slug}}.yaml
 {% raw -%}
     steps:

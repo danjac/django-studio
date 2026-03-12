@@ -8,7 +8,7 @@ Fresh install of {{cookiecutter.project_name}} on a Hetzner Cloud K3s cluster wi
 | ------------------ | -------------------------------------------- | ------------------------------------------------------------------------- |
 | Infrastructure     | Terraform (hetzner)                          | Servers, network, firewall, Postgres volume; K3s installed via cloud-init |
 | DNS / CDN / SSL    | Terraform (cloudflare)                       | DNS A record, CDN caching, TLS settings                                   |
-| Kubernetes objects | Helm (`helm/{{cookiecutter.project_slug}}/`) | Postgres, Redis, Django app, workers, cron jobs, ingress                  |
+| Kubernetes objects | Helm (`helm/site/`) | Postgres, Redis, Django app, workers, cron jobs, ingress                  |
 | Observability      | Helm (`helm/observability/`)                 | Prometheus, Grafana, Loki, Tempo, OTel                                    |
 
 ## Prerequisites
@@ -105,8 +105,8 @@ kubectl --kubeconfig ~/.kube/{{cookiecutter.project_slug}}.yaml get nodes  # san
 ### App chart
 
 ```bash
-cp helm/{{cookiecutter.project_slug}}/values.secret.yaml.example helm/{{cookiecutter.project_slug}}/values.secret.yaml
-$EDITOR helm/{{cookiecutter.project_slug}}/values.secret.yaml
+cp helm/site/values.secret.yaml.example helm/site/values.secret.yaml
+$EDITOR helm/site/values.secret.yaml
 ```
 
 Fill in all secrets, including `postgres.volumePath`:
@@ -117,7 +117,7 @@ terraform -chdir=terraform/hetzner output -raw postgres_volume_mount_path
 ```
 
 ```yaml
-# helm/{{cookiecutter.project_slug}}/values.secret.yaml
+# helm/site/values.secret.yaml
 postgres:
   volumePath: "/mnt/HC_Volume_12345678"
 ```
@@ -194,7 +194,7 @@ directly on the GitHub Actions runner. Two repository secrets are required:
 | Secret               | Description                                                              |
 | -------------------- | ------------------------------------------------------------------------ |
 | `KUBECONFIG_BASE64`  | Base64-encoded kubeconfig (see below)                                    |
-| `HELM_VALUES_SECRET` | Full contents of `helm/{{cookiecutter.project_slug}}/values.secret.yaml` |
+| `HELM_VALUES_SECRET` | Full contents of `helm/site/values.secret.yaml` |
 
 Generate `KUBECONFIG_BASE64`:
 
@@ -246,4 +246,4 @@ Then `just terraform hetzner apply` and `just helm site`.
 ### Upgrade PostgreSQL major version
 
 Set `pgUpgrade.enabled: true` and `pgUpgrade.newImage` / `pgUpgrade.newVolumePath` in
-`helm/{{cookiecutter.project_slug}}/values.secret.yaml` before running `just helm site`.
+`helm/site/values.secret.yaml` before running `just helm site`.

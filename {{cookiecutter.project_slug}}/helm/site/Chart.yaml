@@ -1,5 +1,5 @@
 apiVersion: v2
-name: {{cookiecutter.project_slug}}
+name: site
 description: {{cookiecutter.description}}
 type: application
 version: 0.1.0

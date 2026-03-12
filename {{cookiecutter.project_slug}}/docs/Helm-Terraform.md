@@ -8,7 +8,7 @@ This project uses Terraform for infrastructure provisioning and Helm for Kuberne
 |-------|------|--------------|
 | Infrastructure | Terraform (hetzner) | Servers, network, firewall, Postgres volume; K3s via cloud-init |
 | DNS / CDN / SSL | Terraform (cloudflare) | DNS A record, CDN caching, TLS settings |
-| Kubernetes objects | Helm (`helm/{{cookiecutter.project_slug}}/`) | App, workers, cron jobs, Postgres, Redis, ingress |
+| Kubernetes objects | Helm (`helm/site/`) | App, workers, cron jobs, Postgres, Redis, ingress |
 | Observability | Helm (`helm/observability/`) | Prometheus, Grafana, Loki, Tempo, OTel |
 
 ## Terraform
@@ -99,7 +99,7 @@ just helm observability
 Copy and fill in the secrets file:
 
 ```bash
-cp helm/{{cookiecutter.project_slug}}/values.secret.yaml.example helm/{{cookiecutter.project_slug}}/values.secret.yaml
+cp helm/site/values.secret.yaml.example helm/site/values.secret.yaml
 ```
 
 `values.secret.yaml` is gitignored — never commit it.

@@ -17,11 +17,11 @@ repos:
   - repo: local
     hooks:
       - id: helm-lint
-        name: Helm lint {{cookiecutter.project_slug}} chart
+        name: Helm lint site chart
         language: system
         entry: helm lint
-        args: [helm/{{cookiecutter.project_slug}}/]
-        files: ^helm/{{cookiecutter.project_slug}}/
+        args: [helm/site/]
+        files: ^helm/site/
         pass_filenames: false
       - id: rustywind
         name: rustywind Tailwind CSS class linter

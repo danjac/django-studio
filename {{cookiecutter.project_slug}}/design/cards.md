@@ -1,24 +1,68 @@
 # Cards
 
-Template: `templates/card.html`
+Cards are a **pattern**, not a shipped template. Build them inline for your specific
+data shape — image dimensions, aspect ratios, and thumbnail handling vary too much per
+project to abstract usefully.
 
-## Overview
+## Structure
 
-`card.html` is a vertical tile for **grid layouts** - image on top (16:9), title and optional subtitle below, with a hover shadow. Use it inside `grid.html#item`.
+A card is a linked tile inside `grid.html`. At minimum:
 
-## Context Variables
+```html
+{% fragment "grid.html#item" %}
+  <a
+    href="{{ item.get_absolute_url }}"
+    class="group flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) transition-shadow hover:shadow-md"
+  >
+    <div class="flex flex-col gap-1 p-4">
+      <h2 class="line-clamp-2 font-bold leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400">
+        {{ item.title }}
+      </h2>
+    </div>
+  </a>
+{% endfragment %}
+```
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `url` | yes | Card link href |
-| `title` | yes | Primary heading (bold, 2-line clamp) |
-| `subtitle` | no | Secondary line below title (1-line clamp) |
-| `image_url` | no | Cover image URL, displayed at 16:9 aspect ratio |
-| `target_blank` | no | If truthy, opens in a new tab |
+## With sorl-thumbnail
 
-## Usage
+Install `sorl-thumbnail` first (`uv add sorl-thumbnail`), then add `"sorl.thumbnail"` to
+`INSTALLED_APPS`.
 
-### Paginated grid
+```html
+{% load thumbnail %}
+
+{% fragment "grid.html#item" %}
+  <a
+    href="{{ photo.get_absolute_url }}"
+    class="group flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) transition-shadow hover:shadow-md"
+  >
+    {% thumbnail photo.image "640x360" crop="center" as thumb %}
+      <img
+        src="{{ thumb.url }}"
+        alt=""
+        width="{{ thumb.width }}"
+        height="{{ thumb.height }}"
+        class="w-full object-cover"
+        loading="lazy"
+      >
+    {% empty %}
+      <div class="aspect-video w-full bg-(--color-border)"></div>
+    {% endthumbnail %}
+    <div class="flex flex-col gap-1 p-4">
+      <h2 class="line-clamp-2 font-bold leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400">
+        {{ photo.title }}
+      </h2>
+    </div>
+  </a>
+{% endfragment %}
+```
+
+Using `sorl-thumbnail`:
+- Always provide explicit `width` and `height` attributes from the thumbnail object (satisfies accessibility linting).
+- Use `{% empty %}` to render a placeholder when no image is set.
+- Choose a fixed geometry string (`"640x360"`) matching your grid column width at ~2x for HiDPI.
+
+## Paginated grid example
 
 ```python
 # views.py
@@ -28,37 +72,33 @@ def photo_list(request):
 
 ```html
 {# photos/list.html #}
+{% load thumbnail %}
+
 {% partialdef pagination inline %}
   {% fragment "paginate.html" %}
     {% fragment "grid.html" %}
       {% for photo in page %}
         {% fragment "grid.html#item" %}
-          {% include "card.html" with url=photo.get_absolute_url title=photo.title image_url=photo.image_url %}
+          <a href="{{ photo.get_absolute_url }}" class="group flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) transition-shadow hover:shadow-md">
+            {% thumbnail photo.image "640x360" crop="center" as thumb %}
+              <img src="{{ thumb.url }}" alt="" width="{{ thumb.width }}" height="{{ thumb.height }}" class="w-full object-cover" loading="lazy">
+            {% empty %}
+              <div class="aspect-video w-full bg-(--color-border)"></div>
+            {% endthumbnail %}
+            <div class="flex flex-col gap-1 p-4">
+              <h2 class="line-clamp-2 font-bold leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400">{{ photo.title }}</h2>
+            </div>
+          </a>
         {% endfragment %}
       {% empty %}
-        {% fragment "grid.html#empty" %}No photos yet.{% endfragment %}
+        {% fragment "grid.html#empty" %}{% translate "No photos yet." %}{% endfragment %}
       {% endfor %}
     {% endfragment %}
   {% endfragment %}
 {% endpartialdef pagination %}
 ```
 
-### Unpaginated grid
+## Design tokens
 
-```html
-{% fragment "grid.html" %}
-  {% for item in object_list %}
-    {% fragment "grid.html#item" %}
-      {% include "card.html" with url=item.get_absolute_url title=item.name image_url=item.cover_url %}
-    {% endfragment %}
-  {% empty %}
-    {% fragment "grid.html#empty" %}Nothing here yet.{% endfragment %}
-  {% endfor %}
-{% endfragment %}
-```
-
-## Styling
-
-Cards use design tokens: `--color-surface` for the background, `--color-border` for the border outline. Hover adds a drop shadow and shifts title text to indigo.
-
-For different card shapes (square crop, no image, extra metadata lines), build a custom include rather than modifying this template. Keep one layout per template file.
+Cards use `--color-surface` for the background and `--color-border` for the outline.
+Hover adds a drop shadow and shifts title text to the primary brand color.

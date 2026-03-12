@@ -124,7 +124,7 @@ resource "cloudflare_zone_settings_override" "domain_settings" {
 
   settings {
     # SSL/TLS
-    ssl                      = "full_strict"
+    ssl                      = "strict"
     always_use_https         = "on"
     automatic_https_rewrites = "on"
     min_tls_version          = "1.2"

@@ -106,7 +106,6 @@ templates/
 ├── base.html              # Main base template
 ├── hx_base.html          # HTMX base (minimal)
 ├── partials/             # Reusable partials
-│   ├── card.html
 │   └── ...
 └── package_name/              # App-specific templates
     ├── list.html

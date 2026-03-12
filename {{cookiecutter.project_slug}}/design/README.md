@@ -15,7 +15,7 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 | Sidebar           | `templates/sidebar.html`                           | -                       | [navigation.md](navigation.md) |
 | User Dropdown     | _(inside navbar.html)_                             | -                       | [navigation.md](navigation.md) |
 | Page Header       | `templates/header.html`                            | -                       | [headers.md](headers.md)       |
-| Cards (grid tile) | `templates/card.html`                              | -                       | [cards.md](cards.md)           |
+| Cards (pattern)   | _(inline markup — see doc)_                        | -                       | [cards.md](cards.md)           |
 | Grid layout       | `templates/grid.html`                              | -                       | [cards.md](cards.md)           |
 | List layout       | `templates/browse.html`                            | -                       | [lists.md](lists.md)           |
 | Badges / Tags     | _(inline classes)_                                 | -                       | [badges.md](badges.md)         |

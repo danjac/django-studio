@@ -216,17 +216,35 @@ Design and write a Django model with factory, fixture, and model tests.
 
 #### Step 1 — Gather requirements
 
-If the user has not described the model inline, ask:
+**STOP. Do not write any code yet.**
+
+Unless the user has explicitly listed every field and relationship inline with
+the command, ask now and wait for their reply before doing anything else:
 
 > Describe `<model_name>`. For each field give: name, type, and options (e.g.
 > `null`, `blank`, `choices`, `max_length`, `default`). For relationships
 > (ForeignKey, ManyToMany, OneToOneField) also give: target model/app,
 > `on_delete`, and `related_name`.
 
-Wait for the response. For any ambiguous relationship, ask before proceeding:
+Also ask:
+
+> Should `<model_name>` have timestamps? (created / updated)
+
+If yes, add these fields automatically — do not ask the user to specify them:
+
+```python
+created = models.DateTimeField(auto_now_add=True)
+updated = models.DateTimeField(auto_now=True)
+```
+
+Do not invent fields. Do not make assumptions about what the model "probably"
+needs based on the app name or project context. Wait.
+
+For any ambiguous relationship in the user's response, ask a follow-up before
+proceeding:
 - Which app and model is the target?
 - `on_delete`: default to `CASCADE`; use `SET_NULL` if the field is nullable.
-- `related_name`: suggest `<model_lower>_set` if omitted; confirm with the user.
+- `related_name`: suggest `<model_lower>s` if omitted; confirm with the user.
 
 State every assumption explicitly.
 
@@ -443,9 +461,12 @@ Read `docs/Views.md`, `docs/HTMX.md`, and `design/` before writing any template.
 
 2. Read `<package_name>/<app_name>/models.py`. If `<model_name>` is not defined
    there, tell the user:
-   > `<model_name>` does not exist yet. Running `create-model` first.
-   Then execute the `create-model` subcommand for `<app_name>` `<model_name>`
-   before continuing.
+   > `<model_name>` does not exist yet. Starting `create-model` now.
+   Then begin the `create-model` flow for `<app_name>` `<model_name>`.
+   **`create-model` is interactive — it will ask the user for field definitions
+   and wait for their response. Do not skip Step 1 of `create-model`. Do not
+   invent fields.** Only resume CRUD generation after `create-model` has fully
+   completed (model written, migration run, tests passing).
 
 Do not proceed to the CRUD steps until both are in place.
 

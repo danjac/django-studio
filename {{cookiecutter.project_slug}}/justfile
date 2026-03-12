@@ -158,6 +158,13 @@ get-kubeconfig:
 # Install or upgrade a Helm chart, e.g. 'just helm site' or 'just helm observability'
 [group('deployment')]
 helm chart="site":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ ! -f "{{ kubeconfig }}" ]]; then
+        echo "Error: kubeconfig not found at {{ kubeconfig }}"
+        echo "Provision the cluster first, then run: just get-kubeconfig"
+        exit 1
+    fi
     helm upgrade --install {{ chart }} helm/{{ chart }}/ \
         --kubeconfig {{ kubeconfig }} \
         --reuse-values \

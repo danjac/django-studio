@@ -1,6 +1,16 @@
 # Django
 
-This document covers Django patterns used in this project based on actual code.
+**Read this document before starting any implementation work.** It documents
+how the project is configured and the conventions that apply everywhere. For
+implementation patterns, see the focused docs:
+
+| Topic | Doc |
+|---|---|
+| Views, decorators, response classes, async, URL config | `docs/Views.md` |
+| Models, querysets, full-text search, choices, relationships | `docs/Models.md` |
+| Forms and field rendering | `docs/Models.md` + `design/forms.md` |
+| Adding a new package | `docs/Packages.md` |
+| Migrations and linear-migrations | this doc (see below) |
 
 ## Django Version
 
@@ -63,7 +73,6 @@ CACHES = {
 Django 6 includes CSP (Content Security Policy) support built-in:
 
 ```python
-# Content-Security-Policy (Django 6+)
 from django.utils.csp import CSP
 
 CSP_SCRIPT_WHITELIST = env.list("CSP_SCRIPT_WHITELIST", default=[])
@@ -86,29 +95,17 @@ SECURE_CSP = {
     "media-src": ["*"],
 }
 
-# HTTPS settings
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=USE_HTTPS)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("SECURE_HSTS_INCLUDE_SUBDOMAINS", default=False)
 SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=False)
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=0)
-
-# XSS and content type
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
 SESSION_COOKIE_SECURE = USE_HTTPS
 ```
 
-Add CSP middleware:
-
-```python
-MIDDLEWARE = [
-    # ...
-    "django.middleware.csp.ContentSecurityPolicyMiddleware",
-    # ...
-]
-```
+Add CSP middleware (see Middleware Order below).
 
 ## Installed Apps
 
@@ -163,330 +160,6 @@ MIDDLEWARE = [
 ]
 ```
 
-## Function-Based Views
-
-This project uses **function-based views only**, not class-based views.
-
-### View Decorators
-
-```python
-# myapp/http/decorators.py
-from django.views.decorators.http import require_http_methods
-
-require_form_methods = require_http_methods(["GET", "HEAD", "POST"])
-require_DELETE = require_http_methods(["DELETE"])
-```
-
-Usage:
-
-```python
-from django.views.decorators.http import require_POST, require_safe
-
-@require_safe
-def index(request):
-    return TemplateResponse(request, "index.html")
-
-@require_POST
-def create_item(request):
-    return HttpResponseRedirect(reverse("items:list"))
-```
-
-### Custom Response Classes
-
-```python
-# myapp/http/response.py
-import http
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template.response import TemplateResponse
-
-RenderOrRedirectResponse = TemplateResponse | HttpResponseRedirect
-
-class TextResponse(HttpResponse):
-    def __init__(self, *args, **kwargs) -> None:
-        kwargs.setdefault("content_type", "text/plain")
-        super().__init__(*args, **kwargs)
-
-class HttpResponseNoContent(HttpResponse):
-    status_code = http.HTTPStatus.NO_CONTENT
-
-class HttpResponseConflict(HttpResponse):
-    status_code = http.HTTPStatus.CONFLICT
-```
-
-### Extended HttpRequest
-
-```python
-# myapp/http/request.py
-from django.http import HttpRequest as DjangoHttpRequest
-from django_htmx.middleware import HtmxDetails
-
-class HttpRequest(DjangoHttpRequest):
-    if TYPE_CHECKING:
-        htmx: HtmxDetails
-
-class AuthenticatedHttpRequest(HttpRequest):
-    if TYPE_CHECKING:
-        user: User
-```
-
-### HTMX View Pattern
-
-```python
-def item_list(request):
-    context = {"items": Item.objects.all()}
-
-    if request.htmx:
-        return TemplateResponse(request, "partials/items.html", context)
-
-    return TemplateResponse(request, "full_page.html", context)
-```
-
-### Async Views
-
-```python
-from django.views.decorators.http import require_safe
-
-@require_safe
-async def search_items(request):
-    client = get_client()
-    results = await client.search(request.search.value)
-    return TemplateResponse(request, "search_results.html", {"results": results})
-```
-
-## Async Patterns
-
-**Prefer synchronous code unless async is specifically required.**
-
-Use async when:
-
-- Making API calls to third-party services
-- Using Django Channels/WebSockets
-- I/O-bound operations that benefit from concurrency
-
-### HTTP Client
-
-Always use [aiohttp](https://pypi.org/project/aiohttp/) for HTTP requests - never `requests`:
-
-```python
-import aiohttp
-
-async with aiohttp.ClientSession() as session:
-    async with session.get('http://python.org') as response:
-```
-
-### Running Async Code
-
-Django runs in ASGI mode for async support:
-
-```python
-# config/asgi.py
-import os
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
-application = get_asgi_application()
-```
-
-Gunicorn with Uvicorn worker:
-
-```bash
-gunicorn --worker-class uvicorn.workers.UvicornWorker config.asgi:application
-```
-
-### When NOT to Use Async
-
-- Simple CRUD views
-- Database operations (use Django's sync ORM)
-- Template rendering
-- Most typical Django views
-
-## Models
-
-### Custom QuerySet with Searchable Mixin
-
-```python
-# myapp/db/search.py
-class Searchable(Base):
-    default_search_fields: tuple[str, ...] = ()
-
-    def search(self, value: str, *search_fields: str, annotation: str = "rank") -> QuerySet:
-        if not value:
-            return self.none()
-        ...
-```
-
-```python
-# myapp/models.py
-from myapp.db.search import Searchable
-
-class PodcastQuerySet(Searchable, models.QuerySet):
-    default_search_fields = ("search_vector",)
-
-    def published(self):
-        return self.filter(pub_date__isnull=False)
-
-    def subscribed(self, user):
-        return self.filter(pk__in=user.subscriptions.values("podcast"))
-```
-
-### PostgreSQL Full-text Search
-
-Use PostgreSQL full-text search. This project uses a `Searchable` mixin pattern:
-
-```python
-# myapp/db/search.py
-from django.contrib.postgres.search import SearchQuery, SearchRank
-from django.db.models import F, Q, QuerySet
-import functools
-import operator
-
-class Searchable:
-    default_search_fields: tuple[str, ...] = ()
-
-    def search(self, value: str, *search_fields: str, annotation: str = "rank") -> QuerySet:
-        if not value:
-            return self.none()
-
-        search_fields = search_fields if search_fields else self.default_search_fields
-        query = SearchQuery(value, search_type="websearch", config="simple")
-
-        rank = functools.reduce(
-            operator.add,
-            (SearchRank(F(field), query=query) for field in search_fields),
-        )
-
-        q = functools.reduce(
-            operator.or_,
-            (Q(**{field: query}) for field in search_fields),
-        )
-
-        return self.annotate(**{annotation: rank}).filter(q)
-```
-
-Use in models:
-
-```python
-# myapp/models.py
-from myapp.db.search import Searchable
-
-class ItemQuerySet(Searchable, models.QuerySet):
-    default_search_fields = ("search_vector",)
-
-class Item(models.Model):
-    objects = ItemQuerySet()
-    search_vector = SearchVectorField(null=True)
-```
-
-### Search Vector Updates via Triggers
-
-Use database triggers to auto-update search vectors:
-
-```python
-# myapp/migrations/0002_add_search_trigger.py
-from django.db import migrations
-
-class Migration(migrations.Migration):
-    dependencies = [("myapp", "0001_initial")]
-
-    operations = [
-        migrations.RunSQL(
-            sql="""
-CREATE TRIGGER myapp_update_search_trigger
-BEFORE INSERT OR UPDATE OF title, description ON myapp_item
-FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(
-    search_vector, 'pg_catalog.english', title, description);
-UPDATE myapp_item SET search_vector = NULL;""",
-            reverse_sql="DROP TRIGGER IF EXISTS myapp_update_search_trigger ON myapp_item;",
-        ),
-    ]
-```
-
-### Model with Choices
-
-```python
-class Item(models.Model):
-    class Status(models.TextChoices):
-        ACTIVE = "active", "Active"
-        ARCHIVED = "archived", "Archived"
-
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIVE,
-    )
-```
-
-### ForeignKey and ManyToMany Relationships
-
-Always define `related_name` explicitly on every `ForeignKey` and `ManyToManyField`.
-Django's default reverse accessor (`<model>_set`) is implicit and fragile - it breaks on
-model renames and is unclear at the call site.
-
-```python
-class Subscription(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="subscriptions",
-    )
-    podcast = models.ForeignKey(
-        "podcasts.Podcast",
-        on_delete=models.CASCADE,
-        related_name="subscriptions",
-    )
-
-class Post(models.Model):
-    tags = models.ManyToManyField(
-        "Tag",
-        related_name="posts",
-        blank=True,
-    )
-```
-
-Use `related_name="+"` only when the reverse relation is genuinely never needed:
-
-```python
-created_by = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
-    on_delete=models.SET_NULL,
-    null=True,
-    related_name="+",  # reverse not needed
-)
-```
-
-## Forms
-
-Forms define only fields, labels, and error messages - **no CSS classes**:
-
-```python
-# myapp/forms.py
-class ItemForm(forms.ModelForm):
-    class Meta:
-        model = Item
-        fields = ["name"]
-        labels = {"name": "Name"}
-        error_messages = {"name": {"unique": "This name is already taken"}}
-```
-
-Classes added in templates using `widget_tweaks`:
-
-```html
-{% load widget_tweaks %} {% render_field form.name class="form-input" %}
-```
-
-### Form Template Pattern
-
-```html
-<!-- form/field.html -->
-{% load heroicons widget_tweaks %} {% partialdef input %} {% partial label %} {%
-render_field field class="form-input" %} {% endpartialdef %} {% partialdef label
-%}
-<label for="{{ field.id_for_label }}">
-  {{ field.label }} {% if not field.field.required %}(optional){% endif %}
-</label>
-{% endpartialdef %}
-```
-
 ## Context Processors
 
 ```python
@@ -518,22 +191,24 @@ def fragment(context, content: str, template_name: str, *, only: bool = False, *
     ...
 ```
 
-## URL Configuration
+## Admin
 
 ```python
-# config/urls.py
-from django.urls import include, path
+# myapp/<app_name>/admin.py
+from django.contrib import admin
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("accounts/", include("allauth.urls")),
-    path("", include("myapp.users.urls")),
-]
+@admin.register(MyModel)
+class MyModelAdmin(admin.ModelAdmin):
+    list_display = ["name", "created_at"]
+    list_filter = ["created_at"]
+    search_fields = ["name"]
+    date_hierarchy = "created_at"
 ```
 
 ## Migrations
 
-This project uses `django-linear-migrations` to enforce a linear migration history.
+This project uses `django-linear-migrations` to enforce a linear migration
+history.
 
 ### Normal workflow
 
@@ -545,14 +220,14 @@ just dj migrate
 just test
 ```
 
-`makemigrations` automatically updates `max_migration.txt` in the affected app's
-migrations directory. Never edit `max_migration.txt` by hand.
+`makemigrations` automatically updates `max_migration.txt` in the affected
+app's migrations directory. Never edit `max_migration.txt` by hand.
 
 ### Resolving max_migration.txt conflicts
 
-A git conflict in `max_migration.txt` means two branches each created a migration
-for the same app simultaneously. This is intentional - the conflict forces you to
-resolve the ordering explicitly rather than silently forking the history.
+A git conflict in `max_migration.txt` means two branches each created a
+migration for the same app simultaneously. This is intentional — the conflict
+forces you to resolve the ordering explicitly.
 
 Resolution steps:
 
@@ -580,59 +255,3 @@ just dj create_max_migration
 just dj validate_migration_graph
 just test
 ```
-
-## Admin
-
-```python
-# myapp/admin.py
-from django.contrib import admin
-
-@admin.register(MyModel)
-class MyModelAdmin(admin.ModelAdmin):
-    list_display = ["name", "created_at"]
-    list_filter = ["created_at"]
-    search_fields = ["name"]
-    date_hierarchy = "created_at"
-```
-
-## Additional Dependencies
-
-These packages are not in the default stack but are the preferred choices when the
-need arises. Only add them when actually needed — do not install speculatively.
-
-| Need | Package(s) | Install |
-| ----------------------------------------- | --------------------------------- | --------------------------------------- |
-| Image thumbnails | `sorl-thumbnail` | `uv add sorl-thumbnail` |
-| Multi-tenancy | `django-tenants` | `uv add django-tenants` |
-| HTTP API client | `aiohttp` | `uv add aiohttp` |
-| WebSockets / real-time | `channels` + `daphne` | `uv add channels daphne` |
-| Querystring filtering | `django-filter` | `uv add django-filter` |
-| Audit logging | `django-auditlog` | `uv add django-auditlog` |
-| Payments | `stripe` | `uv add stripe` |
-| Excel export | `openpyxl` | `uv add openpyxl` |
-| Money / currency | `django-money` | `uv add django-money` |
-| Data validation / serialization | `pydantic` | `uv add pydantic` |
-| Data analysis / dataframes | `polars` | `uv add polars` |
-| Natural language processing | `nltk` | `uv add nltk` |
-| Markdown parsing / rendering | `markdown-it-py` | `uv add markdown-it-py` |
-| Country names & codes | `pycountry` | `uv add pycountry` |
-| XML / HTML parsing | `lxml` | `uv add lxml` |
-| Date parsing & relative deltas | `python-dateutil` | `uv add python-dateutil` |
-| Scientific computing | `scipy` + `numpy` | `uv add scipy numpy` |
-| Machine learning | `scikit-learn` | `uv add scikit-learn` |
-| HTML sanitization | `nh3` | `uv add nh3` |
-
-### Notes
-
-- **sorl-thumbnail**: add `"sorl.thumbnail"` to `INSTALLED_APPS`. Uses the Redis cache backend (already configured).
-- **aiohttp**: use for async HTTP calls to third-party APIs. Already documented under [Async Patterns](#async-patterns) above.
-- **channels + daphne**: replace the Uvicorn ASGI server with Daphne (`daphne config.asgi:application`). Add `"channels"` to `INSTALLED_APPS` and configure `ASGI_APPLICATION`.
-- **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models; arithmetic respects currency.
-- **pydantic**: use for parsing and validating external API responses, complex form payloads, and structured config. Add to `pyproject.toml` to prevent ruff from moving base class imports into `TYPE_CHECKING` blocks:
-  ```toml
-  [tool.ruff.lint.flake8-type-checking]
-  runtime-evaluated-base-classes = ["pydantic.BaseModel"]
-  ```
-- **markdown-it-py**: preferred Markdown renderer. Use the `mdit-py-plugins` extras for footnotes, tasklists, etc. Pair with `nh3` to sanitize the rendered HTML before serving.
-- **nh3**: Rust-backed HTML sanitizer (successor to `bleach`). Use to strip unsafe tags/attributes from user-supplied or rendered Markdown content before inserting into templates.
-- **nltk**: download corpora at startup or in a management command; do not download inside request handlers.

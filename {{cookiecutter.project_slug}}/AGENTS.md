@@ -179,8 +179,18 @@ See `design/forms.md` for full field template documentation.
 
 ### Required reading before implementation
 
+**Read `docs/Django.md` before starting any implementation.** It documents
+installed apps, middleware order, settings conventions, admin patterns, and
+migrations. It also indexes the focused docs below.
+
 | What you are about to implement | Read first                                                 |
 | ------------------------------- | ---------------------------------------------------------- |
+| Any view (new or modified)      | `docs/Views.md`                                            |
+| Any model or queryset           | `docs/Models.md`                                           |
+| Any form                        | `docs/Models.md` + `design/forms.md`                       |
+| Admin registration              | `docs/Django.md`                                           |
+| Adding a dependency             | `docs/Packages.md`                                         |
+| Async view or HTTP client call  | `docs/Views.md`                                            |
 | Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`            |
 | Background task                 | `docs/Django-Tasks.md`                                     |
 | Migrations / linear-migrations  | `docs/Django.md`                                           |

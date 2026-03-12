@@ -104,8 +104,8 @@ Create a basic Django app with the standard file structure for this project.
 
 Add a view, template, and URL following HTMX and design system conventions.
 
-Read `docs/HTMX.md`. Check `design/` before writing any template markup — the
-component you need likely already exists.
+Read `docs/Views.md` and `docs/HTMX.md`. Check `design/` before writing any
+template markup — the component you need likely already exists.
 
 **Steps:**
 
@@ -400,7 +400,7 @@ Generate a complete set of CRUD views for an existing model.
 yet exist. Assumes `<model_name>` exists in
 `<package_name>/<app_name>/models.py`.
 
-Read `docs/HTMX.md` and `design/` before writing any template.
+Read `docs/Views.md`, `docs/HTMX.md`, and `design/` before writing any template.
 
 **Definitions:**
 - `<model_lower>` = `<model_name>` lower-cased (e.g. `Photo` → `photo`)

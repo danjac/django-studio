@@ -143,33 +143,31 @@ gh workflow *args:
 get-kubeconfig:
     {{ script_dir }}/get-kubeconfig.sh
 
-# Fresh install of the Helm chart (first-time setup only)
+# Install or upgrade a Helm chart. Use 'site' for the main app, e.g. 'just helm observability'.
 [group('deployment')]
-helm-install:
-    helm install {{ project_slug }} helm/{{ project_slug }}/ \
-        --kubeconfig {{ kubeconfig }} \
-        -f helm/{{ project_slug }}/values.yaml \
-        -f helm/{{ project_slug }}/values.secret.yaml
+helm chart:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "{{ chart }}" = "site" ]; then
+        helm upgrade --install {{ project_slug }} helm/{{ project_slug }}/ \
+            --kubeconfig {{ kubeconfig }} \
+            --reuse-values \
+            -f helm/{{ project_slug }}/values.yaml \
+            -f helm/{{ project_slug }}/values.secret.yaml
+    else
+        helm dependency update helm/{{ chart }}/
+        helm upgrade --install {{ chart }} helm/{{ chart }}/ \
+            --kubeconfig {{ kubeconfig }} \
+            --namespace monitoring \
+            --create-namespace \
+            -f helm/{{ chart }}/values.yaml \
+            -f helm/{{ chart }}/values.secret.yaml
+    fi
 
-# Upgrade the Helm chart config (preserves last deployed image)
+# Run Terraform commands in a subdirectory, e.g. 'just terraform hetzner plan'
 [group('deployment')]
-helm-upgrade:
-    helm upgrade {{ project_slug }} helm/{{ project_slug }}/ \
-        --kubeconfig {{ kubeconfig }} \
-        --reuse-values \
-        -f helm/{{ project_slug }}/values.yaml \
-        -f helm/{{ project_slug }}/values.secret.yaml
-
-# Install or upgrade the observability Helm chart
-[group('deployment')]
-helm-upgrade-observability:
-    helm dependency update helm/observability/
-    helm upgrade --install observability helm/observability/ \
-        --kubeconfig {{ kubeconfig }} \
-        --namespace monitoring \
-        --create-namespace \
-        -f helm/observability/values.yaml \
-        -f helm/observability/values.secret.yaml
+terraform dir *args:
+    terraform -chdir=terraform/{{ dir }} {{ args }}
 
 # Run Django manage.py commands on production server
 [group('production')]

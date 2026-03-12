@@ -35,15 +35,13 @@ terraform/
 ### Commands
 
 ```bash
-cd terraform/hetzner
-cp terraform.tfvars.example terraform.tfvars
-terraform init
-terraform plan
-terraform apply
+cd terraform/hetzner && cp terraform.tfvars.example terraform.tfvars
+just terraform hetzner init
+just terraform hetzner plan
+just terraform hetzner apply
 
-cd ../cloudflare
-cp terraform.tfvars.example terraform.tfvars
-terraform apply
+cd terraform/cloudflare && cp terraform.tfvars.example terraform.tfvars
+just terraform cloudflare apply
 ```
 
 ### Variables
@@ -89,14 +87,11 @@ helm/
 ### Commands
 
 ```bash
-# First-time install
-just helm-install
+# Deploy or update the application (preserves running image via --reuse-values)
+just helm site
 
-# Update config (preserves running image)
-just helm-upgrade
-
-# Deploy observability stack
-just helm-upgrade-observability
+# Deploy or update the observability stack
+just helm observability
 ```
 
 ### Secrets

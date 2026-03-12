@@ -76,8 +76,7 @@ terraform apply
 ### Application (Helm)
 
 ```bash
-just helm-install    # first-time
-just helm-upgrade    # config changes
+just helm site
 ```
 
 ## Services
@@ -233,7 +232,7 @@ cronjobs:
     command: "./manage.sh my_command --arg value"
 ```
 
-Then run `just helm-upgrade` to apply.
+Then run `just helm site` to apply.
 
 ### Alternatives
 
@@ -316,7 +315,7 @@ Optional observability stack via OpenTelemetry, Prometheus, Grafana, Loki, and T
 ### Deployment
 
 ```bash
-just helm-upgrade-observability
+just helm observability
 ```
 
 ### Access
@@ -341,7 +340,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 
 1. Edit `terraform/hetzner/terraform.tfvars` (e.g. increase `webapp_count`)
 2. Run `terraform apply` — new nodes join the cluster automatically via cloud-init
-3. Run `just helm-upgrade` to apply the updated replica count
+3. Run `just helm site` to apply the updated replica count
 
 ## Backup
 

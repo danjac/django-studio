@@ -142,7 +142,7 @@ $EDITOR helm/observability/values.secret.yaml   # set Grafana admin password + h
 ## Step 5 — Deploy
 
 ```bash
-just helm-install
+just helm site
 ```
 
 Wait for all pods to come up:
@@ -167,7 +167,7 @@ Visit `https://your-domain/admin/` to verify. Update the Site domain in Django a
 ## Step 7 — Deploy observability (optional)
 
 ```bash
-just helm-upgrade-observability
+just helm observability
 just kube get pods -n monitoring
 ```
 
@@ -207,10 +207,10 @@ Set these in GitHub → repository **Settings → Secrets and variables → Acti
 
 ### Helm command reference
 
-| Command             | When to use                                                                   |
-| ------------------- | ----------------------------------------------------------------------------- |
-| `just helm-install` | First-time install on a fresh cluster                                         |
-| `just helm-upgrade` | Config or resource changes — preserves the running image via `--reuse-values` |
+| Command                    | When to use                                                              |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `just helm site`           | Install or upgrade the app — preserves the running image via `--reuse-values` |
+| `just helm observability`  | Install or upgrade the observability stack                               |
 
 ### Run management commands
 
@@ -241,9 +241,9 @@ Edit `terraform/hetzner/terraform.tfvars`:
 webapp_count = 3
 ```
 
-Then `terraform apply` and `just helm-upgrade`.
+Then `just terraform hetzner apply` and `just helm site`.
 
 ### Upgrade PostgreSQL major version
 
 Set `pgUpgrade.enabled: true` and `pgUpgrade.newImage` / `pgUpgrade.newVolumePath` in
-`helm/{{cookiecutter.project_slug}}/values.secret.yaml` before running `just helm-upgrade`.
+`helm/{{cookiecutter.project_slug}}/values.secret.yaml` before running `just helm site`.

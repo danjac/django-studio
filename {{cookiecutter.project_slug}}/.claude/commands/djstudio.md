@@ -279,7 +279,34 @@ class <model_name>(models.Model):
 
 ---
 
-#### Step 4 — Update the factory
+#### Step 4 — Register with admin (optional)
+
+Ask the user:
+
+> Register `<model_name>` in the Django admin? [y/n]
+
+If yes, open `<package_name>/<app_name>/admin.py` and add:
+
+```python
+from django.contrib import admin
+
+from <package_name>.<app_name>.models import <model_name>
+
+
+@admin.register(<model_name>)
+class <model_name>Admin(admin.ModelAdmin):
+    list_display = [...]   # infer from model fields: prefer name/title, status, dates
+    search_fields = [...]  # CharField and TextField fields
+    list_filter = [...]    # choice fields, BooleanFields, date fields
+```
+
+Infer sensible defaults from the model fields defined in Step 3. If the model
+has no obvious candidates for `search_fields` or `list_filter`, leave them as
+empty lists rather than guessing.
+
+---
+
+#### Step 5 — Update the factory
 
 Edit `<package_name>/<app_name>/tests/factories.py`. Use `factory.Faker` matched
 to the field type:
@@ -332,7 +359,7 @@ class <model_name>Factory(DjangoModelFactory):
 
 ---
 
-#### Step 5 — Update fixtures
+#### Step 6 — Update fixtures
 
 Add to `<package_name>/<app_name>/tests/fixtures.py`:
 
@@ -346,7 +373,7 @@ Add the import for `<model_name>Factory` at the top if not already present.
 
 ---
 
-#### Step 6 — Write model tests
+#### Step 7 — Write model tests
 
 Add to `<package_name>/<app_name>/tests/test_models.py`:
 
@@ -375,7 +402,7 @@ Add extra methods for:
 
 ---
 
-#### Step 7 — Verify
+#### Step 8 — Verify
 
 ```bash
 just dj makemigrations <app_name>
@@ -385,7 +412,7 @@ just test
 
 ---
 
-#### Step 8 — Offer to create CRUD views
+#### Step 9 — Offer to create CRUD views
 
 Once tests pass, ask:
 

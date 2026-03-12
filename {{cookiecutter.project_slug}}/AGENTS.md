@@ -187,13 +187,13 @@ migrations. It also indexes the focused docs below.
 | ------------------------------- | ---------------------------------------------------------- |
 | Any view (new or modified)      | `docs/Views.md`                                            |
 | Any model or queryset           | `docs/Models.md`                                           |
-| Any form                        | `docs/Models.md` + `design/forms.md`                       |
+| Any form                        | `design/forms.md`                                          |
 | Admin registration              | `docs/Django.md`                                           |
 | Adding a dependency             | `docs/Packages.md`                                         |
-| Async view or HTTP client call  | `docs/Views.md`                                            |
+| Async view                      | `docs/Views.md`                                            |
 | Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`            |
 | Background task                 | `docs/Django-Tasks.md`                                     |
-| Migrations / linear-migrations  | `docs/Django.md`                                           |
+| Migrations / linear-migrations  | `docs/Models.md`                                           |
 | HTMX interaction                | `docs/HTMX.md`                                             |
 | AlpineJS component              | `docs/Alpine.md`                                           |
 | Tailwind / CSS                  | `docs/Tailwind.md`                                         |

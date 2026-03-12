@@ -97,7 +97,8 @@ def item_list(request: HttpRequest) -> TemplateResponse:
     )
 ```
 
-See `docs/HTMX.md` for full HTMX conventions.
+See `docs/HTMX.md` for full HTMX conventions and `docs/Templates.md` for
+template authoring conventions.
 
 ## Paginated Views
 
@@ -135,19 +136,7 @@ async def search_items(request: HttpRequest) -> TemplateResponse:
 - Template rendering
 - Most typical Django views
 
-## HTTP Client
-
-Always use `aiohttp` for outbound HTTP — never the `requests` library:
-
-```python
-import aiohttp
-
-async with aiohttp.ClientSession() as session:
-    async with session.get("https://api.example.com/data") as response:
-        data = await response.json()
-```
-
-`aiohttp` is not in the default stack. Add it when needed: `uv add aiohttp`.
+For the preferred HTTP client library, see `docs/Packages.md`.
 
 ## URL Configuration
 

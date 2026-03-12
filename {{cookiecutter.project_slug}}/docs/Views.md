@@ -5,7 +5,8 @@ This project uses **function-based views only** — no class-based views.
 ## View Decorators
 
 ```python
-from myapp.http.decorators import login_required, require_form_methods
+from django.contrib.auth.decorators import login_required
+from myapp.http.decorators import require_form_methods
 from django.views.decorators.http import require_safe, require_POST
 ```
 
@@ -18,9 +19,6 @@ from django.views.decorators.http import require_http_methods
 require_form_methods = require_http_methods(["GET", "HEAD", "POST"])
 require_DELETE = require_http_methods(["DELETE"])
 ```
-
-Always use `myapp.http.decorators.login_required`, not
-`django.contrib.auth.decorators.login_required`.
 
 ## Custom Response Classes
 
@@ -61,7 +59,8 @@ class AuthenticatedHttpRequest(HttpRequest):
 ```
 
 Always type-annotate request parameters with `myapp.http.request.HttpRequest`.
-Use `AuthenticatedHttpRequest` in views protected by `@login_required`.
+Use `AuthenticatedHttpRequest` in views protected by
+`@login_required` (from `django.contrib.auth.decorators`).
 
 ## Basic View Pattern
 

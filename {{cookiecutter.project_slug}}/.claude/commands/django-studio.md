@@ -139,8 +139,7 @@ template markup — the component you need likely already exists.
    `render_partial_response` renders the full template on first load and
    switches to the named partial block when `HX-Target` matches `target`.
 
-   Use `<package_name>.http.decorators.login_required`, not
-   `django.contrib.auth.decorators.login_required`.
+   Use `django.contrib.auth.decorators.login_required`.
 
 2. **Create the template** at `templates/<app_name>/<view_name>.html`.
    Start from a base template (see `design/layout.md`). For HTMX partials,
@@ -444,7 +443,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from <package_name>.http.decorators import login_required, require_form_methods
+from django.contrib.auth.decorators import login_required
+from <package_name>.http.decorators import require_form_methods
 from <package_name>.paginator import render_paginated_response
 from <package_name>.partials import render_partial_response
 from <package_name>.<app_name>.forms import <model_name>Form

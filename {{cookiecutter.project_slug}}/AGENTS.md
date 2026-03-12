@@ -219,6 +219,7 @@ All project commands live under `/django-studio <subcommand>`:
 | `create-app <app_name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
 | `create-view <app_name> <view>` | Add a view + template + URL following HTMX and design system conventions |
 | `create-task <app_name> <task>` | Add a background task using `django-tasks-db` with correct async/keyword-only patterns |
+| `create-model <app_name> <model>` | Design and write a Django model with factory, fixture, and model tests |
 | `scaffold <app_name> <model>` | Generate full CRUD views, templates, URLs, and tests for an existing model |
 | `migrate` | Run the full migration workflow including `django-linear-migrations` validation and conflict resolution |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |

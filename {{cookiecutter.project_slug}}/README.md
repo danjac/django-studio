@@ -60,6 +60,7 @@ Claude Code slash commands are available via `/django-studio <subcommand>`:
 | `create-app <name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
 | `create-view <app> <view>` | Add a view, template, and URL |
 | `create-task <app> <task>` | Add a background task |
+| `create-model <app> <model>` | Design and write a Django model with factory, fixture, and model tests |
 | `scaffold <app> <model>` | Generate full CRUD views, templates, URLs, and tests for an existing model |
 | `prelaunch` | Audit deployment config for missing or placeholder values before first deploy |
 | `feedback` | Report a bug or improvement against the django-studio template |

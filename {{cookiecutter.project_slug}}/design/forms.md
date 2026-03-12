@@ -86,13 +86,60 @@ Each field outputs a `<fieldset>` with the `form-control` class:
 
 ### Widget Types and Their Partials
 
-| Widget | Partial | Notes |
-|--------|---------|-------|
-| `TextInput` | `textinput` | Standard text field |
-| `URLInput` | `urlinput` | Same as textinput |
-| `FileInput` | `fileinput` | Same as textinput |
-| `CheckboxInput` | `checkboxinput` | Label to the right of the checkbox |
-| `PasswordInput` | `passwordinput` | Show/hide toggle via AlpineJS |
+`form/field.html` dispatches to a `{% partialdef %}` block by lowercasing the
+widget's class name:
+
+```html
+{% with widget_type=field|widget_type %}
+  {% include "form/field.html#"|add:widget_type %}
+{% endwith %}
+```
+
+Built-in widgets and their partials:
+
+| Widget | Partial name |
+|--------|-------------|
+| `TextInput` | `textinput` |
+| `EmailInput` | `emailinput` |
+| `URLInput` | `urlinput` |
+| `FileInput` | `fileinput` |
+| `DateInput` | `dateinput` |
+| `Textarea` | `textarea` |
+| `CheckboxInput` | `checkboxinput` |
+| `CheckboxSelectMultiple` | `checkboxselectmultiple` |
+| `PasswordInput` | `passwordinput` |
+| `Select` | `select` |
+| `SelectMultiple` | `selectmultiple` |
+
+### Custom Widget Partials
+
+If you add a custom widget — from a third-party package (e.g. `django-money`,
+`django-phonenumber-field`) or from within this project — **you must add a
+matching `{% partialdef %}` block to `templates/form/field.html`**. Without it
+the field renders nothing, with no error.
+
+The partial name is the widget's class name, lowercased. For example, if
+`django-money` uses a widget class named `MoneyWidget`, the partial name is
+`moneywidget`:
+
+```html
+{# django-money MoneyWidget #}
+{% partialdef moneywidget %}
+  {% partial label %}
+  {% render_field field class="form-input" %}  {# adjust markup to suit the widget #}
+{% endpartialdef %}
+```
+
+Steps for any custom widget:
+
+1. Find the widget class name: check the field's `widget` attribute or the
+   package source (`field.field.widget.__class__.__name__`).
+2. Add `{% partialdef <classname_lowercased> %}...{% endpartialdef %}` to
+   `templates/form/field.html`.
+3. Use `{% partial label %}`, `{% partial errors %}`, and `{% partial help_text %}`
+   to keep label/error/help-text rendering consistent with built-in widgets.
+4. Test by rendering the field with `{{ field.as_field_group }}` and verifying
+   the output is not empty.
 
 ## CSS Classes
 

@@ -39,20 +39,59 @@ When using `hx-boost`, templates extend from the appropriate base depending on w
 
 `hx_base.html` is a minimal wrapper (title + content block, no chrome). Only use this pattern with `hx-boost` — for targeted partial updates, just return the partial directly from the view.
 
-## View Detection
+## View Utilities
+
+This project ships two utilities for the common HTMX view patterns. Prefer these over manual `if request.htmx` branching.
+
+### `render_partial_response` — partial swap on target match
+
+`{{cookiecutter.package_name}}.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
 
 ```python
-def my_view(request):
-    if request.htmx:
-        return TemplateResponse(request, "partials/items.html", {"items": items})
-    return TemplateResponse(request, "full_page.html", {"items": items})
+from {{cookiecutter.package_name}}.partials import render_partial_response
+
+def my_form_view(request):
+    form = MyForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Saved.")
+        return redirect("index")
+    return render_partial_response(
+        request,
+        "myapp/my_form.html",
+        {"form": form},
+        target="my-form",   # matches hx-target="#my-form" in the template
+        partial="form",     # renders "myapp/my_form.html#form" on HTMX requests
+    )
 ```
 
-`request.htmx` is provided by `django-htmx` middleware. Useful attributes:
-- `request.htmx.boosted` — True if triggered by `hx-boost` navigation
-- `request.htmx.target` — ID of the target element
-- `request.htmx.trigger` — ID of the triggering element
-- `request.htmx.trigger_name` — name of the triggering element
+The template defines a `{% partialdef form %}` block that contains just the form markup. On a full-page load the entire template renders; on an HTMX form submit only the `form` partial is returned and swapped in.
+
+### `render_paginated_response` — paginated list with no COUNT query
+
+`{{cookiecutter.package_name}}.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `Paginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
+
+```python
+from {{cookiecutter.package_name}}.paginator import render_paginated_response
+
+def items_list(request):
+    return render_paginated_response(
+        request,
+        "myapp/items_list.html",
+        Item.objects.all(),
+    )
+```
+
+The view always renders `myapp/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `page_size`, and `pagination_target`.
+
+Default keyword arguments (override as needed):
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `param` | `"page"` | Query-string key for the page number |
+| `target` | `"pagination"` | Expected `HX-Target` value |
+| `partial` | `"pagination"` | Named partial to render on HTMX requests |
+| `per_page` | `settings.DEFAULT_PAGE_SIZE` | Items per page |
 
 ## Common Patterns
 
@@ -68,19 +107,6 @@ def my_view(request):
 
 <div id="results"></div>
 <span class="htmx-indicator searching">Searching...</span>
-```
-
-### Pagination
-
-```python
-def items_list(request):
-    items = Item.objects.all()
-    paginator = Paginator(items, 20)
-    page = paginator.get_page(request.GET.get("page", 1))
-
-    if request.htmx:
-        return TemplateResponse(request, "partials/items_table.html", {"page": page})
-    return TemplateResponse(request, "items_list.html", {"page": page})
 ```
 
 ### Infinite Scroll

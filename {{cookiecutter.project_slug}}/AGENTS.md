@@ -23,6 +23,8 @@ config/             # Django settings, URLs, ASGI/WSGI
   users/            # User model, authentication
   db/               # Database utilities (search mixin)
   http/             # HTTP utilities (typed requests, responses, decorators)
+  partials.py       # render_partial_response() — HTMX partial swap helper
+  paginator.py      # render_paginated_response() + no-COUNT Paginator
   tests/            # Shared test fixtures
 templates/          # Django templates (HTMX partials + full pages)
 static/             # Static assets
@@ -207,7 +209,7 @@ See `design/forms.md` for full field template documentation.
 
 If a doc contradicts what you see in existing code, flag it — do not silently pick one.
 
-- **Search before implementing** — Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities.
+- **Search before implementing** — Before writing new code, search the codebase with `rg` or `ast-grep` for existing utilities, mixins, and patterns. Check `{{cookiecutter.package_name}}/db/search.py` for full-text search, `{{cookiecutter.package_name}}/http/` for request/response utilities, `{{cookiecutter.package_name}}/partials.py` for HTMX partial rendering, and `{{cookiecutter.package_name}}/paginator.py` for paginated views.
 - **Scope discipline** — Only change what was explicitly requested.
 - **Diagnose before changing** — Read the code and state your diagnosis with a file:line reference before editing.
 - **Verify runtime behaviour** — Passing tests is necessary but not sufficient.

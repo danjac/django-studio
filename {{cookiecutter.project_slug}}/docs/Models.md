@@ -22,6 +22,8 @@ class Item(models.Model):
     pub_date = models.DateTimeField(null=True)
 ```
 
+**NOTE** do not add default ordering to the model's `Meta` class. Instead, define an explicit `order_by()` where the model queryset is used. Default ordering can cause unexpected performance issues and is not always desired.
+
 ## Full-Text Search
 
 Use the `Searchable` mixin from `myapp/db/search.py` for PostgreSQL full-text
@@ -158,17 +160,23 @@ Resolution steps:
 1. Keep both migration files. Update the second migration's `dependencies` to
    point to the first.
 2. If Django reports two heads, create a merge migration:
+
    ```bash
    just dj makemigrations --merge --name merge_<branch_a>_<branch_b>
    ```
+
 3. Regenerate `max_migration.txt` to point to the new tip:
+
    ```bash
    just dj create_max_migration
    ```
+
 4. Validate the graph is linear:
+
    ```bash
    just dj validate_migration_graph
    ```
+
 5. Apply and verify: `just dj migrate` then `just test`
 
 ### Squashing

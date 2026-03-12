@@ -4,11 +4,21 @@ This project uses **function-based views only** — no class-based views.
 
 ## View Decorators
 
+**Always restrict HTTP methods explicitly** — every view must be decorated with
+an appropriate method guard. Never leave a view accepting any method by default.
+
 ```python
 from django.contrib.auth.decorators import login_required
-from myapp.http.decorators import require_form_methods
+from myapp.http.decorators import require_form_methods, require_DELETE
 from django.views.decorators.http import require_safe, require_POST
 ```
+
+| Decorator | Allowed methods | Use for |
+|---|---|---|
+| `@require_safe` | GET, HEAD | Read-only views |
+| `@require_POST` | POST | Single-action POST endpoints |
+| `@require_form_methods` | GET, HEAD, POST | Views that render and handle a form |
+| `@require_DELETE` | DELETE | HTMX delete actions |
 
 The project provides two custom decorators:
 

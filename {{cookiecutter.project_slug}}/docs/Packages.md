@@ -7,6 +7,25 @@ speculatively.**
 Check this list before reaching for an unfamiliar package; the preferred choice
 per use-case is already decided.
 
+## Choosing a package not on this list
+
+If your need isn't covered above, research before recommending. Check in order:
+
+1. **[djangopackages.org](https://djangopackages.org)** — compare alternatives
+   side-by-side for Django-specific packages.
+2. **PyPI** — check release recency and download trends.
+3. **The project repo (GitHub/GitLab)** — look for: open issues going
+   unanswered, last commit date, whether the maintainer responds to PRs,
+   CI passing on current Python/Django versions.
+
+Recommend a package only if it passes all of:
+- Active maintenance: meaningful commits within the last 12 months
+- Compatible with Python 3.14 and Django 6.0
+- Open issues are acknowledged, not silently accumulating
+- Licence is compatible (MIT, BSD, Apache 2.0)
+
+State your findings explicitly when suggesting a package — don't just name it.
+
 | Need | Package(s) | Install |
 | ----------------------------------------- | --------------------------------- | --------------------------------------- |
 | Image thumbnails | `sorl-thumbnail` | `uv add sorl-thumbnail` |

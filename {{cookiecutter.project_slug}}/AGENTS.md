@@ -128,21 +128,6 @@ A component library lives in `design/`. It documents every ready-made UI compone
 
 **Before writing new UI markup**, check `design/` first - the component you need likely already exists.
 
-### JSON Serialization and Validation
-
-Use **Pydantic** for JSON serialization and validation - both for parsing third-party/external API responses and for internal API payloads. Do not use Django REST Framework serializers.
-
-When adding Pydantic (`uv add pydantic`), add this to `pyproject.toml` to prevent ruff from moving Pydantic base class imports into `TYPE_CHECKING` blocks:
-
-```toml
-[tool.ruff.lint.flake8-type-checking]
-runtime-evaluated-base-classes = ["pydantic.BaseModel"]
-```
-
-### Image Processing and Thumbnails
-
-Use **sorl-thumbnail** for image thumbnails (`uv add sorl-thumbnail`). Add `"sorl.thumbnail"` to `INSTALLED_APPS`. Uses the Redis cache backend (already configured).
-
 ### Frontend Dependencies
 
 **Never use CDNs** for third-party frontend dependencies (JS, CSS, icons, fonts, etc.), and do not introduce `npm` or any Node-based build tooling unless the user explicitly requests it.

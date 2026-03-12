@@ -200,10 +200,14 @@ def test_external_api(mocker):
 
 ## Coverage
 
-100% coverage required:
+Coverage is reported on every test run (`--cov-report=term-missing`). The 100% gate is commented out in `pyproject.toml` by default — enable it when the project is mature:
 
-```bash
-just test --cov-fail-under=100
+```toml
+# pyproject.toml
+addopts = [
+    ...
+    "--cov-fail-under=100",  # uncomment to enforce
+]
 ```
 
 ## When to Use E2E vs Unit Tests

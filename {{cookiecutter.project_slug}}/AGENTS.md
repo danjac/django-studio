@@ -60,7 +60,7 @@ just test-e2e-headed              # E2E tests with visible browser
 ```
 
 - Framework: `pytest` with `pytest-django`
-- Coverage: **100% required** (`--cov-fail-under=100`)
+- Coverage: reported on every run (`--cov-report=term-missing`); the 100% gate is commented out in `pyproject.toml` — enable it when the project is mature
 - Test location: colocated in `{{cookiecutter.package_name}}/**/tests/` directories
 
 ### Django Management

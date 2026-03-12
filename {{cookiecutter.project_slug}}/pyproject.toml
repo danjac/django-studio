@@ -84,7 +84,8 @@ addopts = [
   "--cov",
   "--reuse-db",
   "--no-cov-on-fail",
-  "--cov-fail-under=100",
+  # Uncomment when the project is mature and you want to enforce full coverage:
+  # "--cov-fail-under=100",
   "--cov-report=term-missing",
   "--tb=short",
   "-m",

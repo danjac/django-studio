@@ -2,6 +2,30 @@
 
 This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudflare for DNS and CDN.
 
+## Why This Stack
+
+### Cost predictability
+
+PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but build on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills — this is a well-documented failure mode, not a theoretical one.
+
+Hetzner has fixed, published pricing. A 3-node k3s cluster costs roughly €20/month regardless of traffic. There are no egress surprise charges, no per-request fees, no auto-scaling that runs away. The cost is predictable and budgetable.
+
+### Why not Docker + systemd
+
+The obvious simpler alternative — Docker Compose or plain containers managed by systemd — gets you most of the way there, but leaves you writing your own solutions for rolling deploys, health checks, service restarts, secret management, and scheduled jobs. After a few iterations you end up with an ad-hoc orchestration layer that has all the operational complexity of Kubernetes without any of its tooling. This is the "inner platform effect": you reinvent the scheduler badly.
+
+k3s avoids this by providing a real scheduler, service discovery, rolling deploys, CronJobs, and Secrets management in a single ~70MB binary. The overhead over Docker Compose is low; the ceiling is much higher.
+
+### Why k3s specifically
+
+Full Kubernetes (kubeadm, EKS, GKE) is operationally heavy for a single developer. k3s is a CNCF-certified Kubernetes distribution that:
+- Installs via a single shell command (bootstrapped from Terraform cloud-init)
+- Uses SQLite instead of etcd for the control plane (no HA etcd cluster to manage)
+- Ships with Traefik as the ingress controller
+- Is binary-compatible with standard Kubernetes tooling (`kubectl`, Helm)
+
+The result is a setup that behaves like production Kubernetes but fits on a €5/month VPS.
+
 ## Architecture
 
 ```

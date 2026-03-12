@@ -21,9 +21,8 @@ Then navigate to the generated project and test it:
 
 ```bash
 cd /tmp/my_app
-cp .env.example .env
 just start                      # start Docker services
-just install                    # install Python deps + pre-commit hooks
+just install                    # copies .env.example→.env, git init, Python deps, pre-commit hooks
 just precommit run --all-files  # run all pre-commit hooks
 just lint                       # run linters
 just typecheck                  # run type checks

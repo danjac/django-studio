@@ -44,7 +44,7 @@
         top: 0;
         left: 0;
         height: 3px;
-        background: var(--color-indigo-500);
+        background: var(--color-primary-500);
         z-index: 9999;
         transition:
         width 300ms ease-out,
@@ -52,7 +52,7 @@
         transform: translate3d(0, 0, 0);
 
         @variant dark {
-            background: var(--color-indigo-400);
+            background: var(--color-primary-400);
         }
     }
 

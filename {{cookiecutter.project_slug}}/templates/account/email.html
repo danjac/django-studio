@@ -24,7 +24,7 @@
                   value="{{ emailaddress.email }}"
                   id="{{ radio.id }}"
                   {% if radio.checked %}checked{% endif %}
-                  class="h-4 w-4 accent-indigo-600"
+                  class="h-4 w-4 accent-primary-600"
                 />
                 <label for="{{ radio.id }}" class="text-sm text-zinc-700 dark:text-zinc-300">
                   {{ emailaddress.email }}
@@ -38,7 +38,7 @@
                     </span>
                   {% endif %}
                   {% if emailaddress.primary %}
-                    <span class="ml-2 text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                    <span class="ml-2 text-xs font-medium text-primary-600 dark:text-primary-400">
                       {% translate "Primary" %}
                     </span>
                   {% endif %}

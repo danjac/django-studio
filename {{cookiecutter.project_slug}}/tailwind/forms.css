@@ -11,17 +11,17 @@
         transition: border-color 200ms ease, box-shadow 200ms ease;
 
         @variant focus {
-            border-color: var(--color-indigo-500);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            border-color: var(--color-primary-500);
+            box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary-500) 10%, transparent);
             outline: none;
         }
 
         .has-errors & {
-            border-color: var(--color-rose-500);
-            --tw-ring-color: var(--color-rose-500);
+            border-color: var(--color-danger-500);
+            --tw-ring-color: var(--color-danger-500);
             @variant dark {
-                border-color: var(--color-rose-400);
-                --tw-ring-color: var(--color-rose-400);
+                border-color: var(--color-danger-400);
+                --tw-ring-color: var(--color-danger-400);
             }
         }
 
@@ -31,8 +31,8 @@
             color: var(--color-zinc-200);
 
             @variant focus {
-                border-color: var(--color-indigo-400);
-                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+                border-color: var(--color-primary-400);
+                box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary-500) 20%, transparent);
             }
         }
     }

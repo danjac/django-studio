@@ -8,22 +8,22 @@
         transition: color 200ms ease;
 
         &.active {
-            color: var(--color-indigo-600);
+            color: var(--color-primary-600);
         }
 
         @variant hover {
-            color: var(--color-indigo-600);
+            color: var(--color-primary-600);
         }
 
         @variant dark {
             color: var(--color-text);
 
             &.active {
-                color: var(--color-indigo-400);
+                color: var(--color-primary-400);
             }
 
             @variant hover {
-                color: var(--color-indigo-400);
+                color: var(--color-primary-400);
             }
         }
     }

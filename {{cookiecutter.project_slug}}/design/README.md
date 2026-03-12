@@ -32,7 +32,7 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 
 ## Design Tokens
 
-CSS custom properties defined in `tailwind/base.css`:
+### Layout tokens (`tailwind/base.css`)
 
 ```css
 --color-bg          /* page background */
@@ -44,10 +44,36 @@ CSS custom properties defined in `tailwind/base.css`:
 
 Light and dark variants are set automatically via the `@variant dark` media query.
 
+### Brand color tokens (`tailwind/app.css`)
+
+```css
+--color-primary-*   /* brand color, default: indigo — buttons, focus rings, links */
+--color-secondary-* /* secondary color, default: violet — btn-secondary */
+--color-danger-*    /* destructive color, default: rose — btn-danger, error states */
+```
+
+These are defined as `@theme` aliases in `tailwind/app.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** — use the semantic token names so rebranding stays in one place.
+
+### Rebranding
+
+To change the primary brand color from indigo to (e.g.) teal, update the `--color-primary-*` block in `tailwind/app.css`:
+
+```css
+@theme {
+  --color-primary-50:  var(--color-teal-50);
+  --color-primary-100: var(--color-teal-100);
+  /* ... through 950 */
+}
+```
+
+All buttons, focus rings, active states, and error colors update automatically.
+
 ## Global Rules
 
 - Use `heroicons` for all icons - see [Icons](../docs/UI-Design-Patterns.md#icons)
 - Use `btn`, `btn-primary`, `btn-secondary`, `btn-danger` for all buttons
 - Use `form-input`, `form-select`, `form-textarea` for all inputs
+- Use `text-primary-*` / `bg-primary-*` for brand color; never hardcode `indigo-*`
+- Use `text-danger-*` / `bg-danger-*` for error/destructive states; never hardcode `rose-*`
 - Prefer `{% include %}` with context variables over copy-pasting markup
 - All interactive elements must have visible focus rings (see accessibility section in each doc)

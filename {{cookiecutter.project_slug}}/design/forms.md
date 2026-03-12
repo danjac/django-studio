@@ -104,7 +104,7 @@ Each field outputs a `<fieldset>` with the `form-control` class:
 | `form-multiselect` | `<select multiple>` |
 | `form-checkbox` | `<input type="checkbox">` |
 
-All form inputs share: rounded corners, surface background, indigo focus ring, rose error state.
+All form inputs share: rounded corners, surface background, `primary` focus ring, `danger` error state.
 
 ## Adding Widget Attributes
 

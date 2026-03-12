@@ -28,6 +28,8 @@ per use-case is already decided.
 | Scientific computing | `scipy` + `numpy` | `uv add scipy numpy` |
 | Machine learning | `scikit-learn` | `uv add scikit-learn` |
 | HTML sanitization | `nh3` | `uv add nh3` |
+| Complex authorization (code-defined rules) | `django-rules` | `uv add django-rules` |
+| Complex authorization (runtime per-object DB permissions) | `django-guardian` | `uv add django-guardian` |
 
 ## Notes
 
@@ -56,3 +58,13 @@ per use-case is already decided.
   inserting into templates.
 - **nltk**: download corpora at startup or in a management command; do not
   download inside request handlers.
+- **django-rules**: predicate-based authorization. Define composable rule
+  functions (`is_owner`, `is_member`, etc.) combined with `&`, `|`, `~`.
+  Integrates with Django's standard `has_perm`/`has_object_perm` via a custom
+  backend. No DB overhead. Best fit when authorization logic is expressed in
+  code (ownership checks, role membership, state-based rules).
+- **django-guardian**: per-object permissions stored in the database. Best fit
+  when permissions must be assigned at runtime by users or admins (e.g. "grant
+  user A edit access to document B"). Has admin integration and queryset
+  helpers, but every `has_perm` check hits the DB unless permissions are
+  prefetched.

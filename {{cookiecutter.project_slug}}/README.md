@@ -62,6 +62,7 @@ Claude Code slash commands are available via `/djstudio <subcommand>`:
 | `create-task <app> <task>` | Add a background task |
 | `create-model <app> <model>` | Design and write a Django model with factory, fixture, and model tests |
 | `create-crud <app> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
+| `gdpr` | Audit the project for GDPR compliance issues |
 | `prelaunch` | Audit deployment config for missing or placeholder values before first deploy |
 | `feedback` | Report a bug or improvement against the django-studio template |
 

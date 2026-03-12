@@ -203,6 +203,7 @@ See `design/forms.md` for full field template documentation.
 | AlpineJS component              | `docs/Alpine.md`                                           |
 | Tailwind / CSS                  | `docs/Tailwind.md`                                         |
 | Authentication / allauth        | `docs/Authentication.md`                                   |
+| File uploads / media storage    | `docs/File-Storage.md`                                     |
 | Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/k3s-Hetzner-Cloudflare.md` |
 | Testing patterns                | `docs/Testing.md`                                          |
 | Any of the above                | `docs/Project-Structure.md`                                |

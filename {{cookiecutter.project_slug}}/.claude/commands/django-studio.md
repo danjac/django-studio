@@ -669,6 +669,21 @@ If the file does not exist: BLOCKING — copy from `.example` and fill in values
 | `app.metaAuthor` | ADVISORY | `"CHANGE_ME"` |
 | `app.metaDescription` | ADVISORY | `"CHANGE_ME"` |
 
+If `terraform/storage/main.tf` exists (i.e. the project was generated with `use_storage=y`),
+also check:
+
+| Key | Severity | Condition |
+| --- | --- | --- |
+| `secrets.useS3Storage` | ADVISORY | still `"false"` — storage provisioned but not enabled |
+| `secrets.hetznerStorageAccessKey` | BLOCKING | empty and `useS3Storage` is `"true"` |
+| `secrets.hetznerStorageSecretKey` | BLOCKING | empty and `useS3Storage` is `"true"` |
+| `secrets.hetznerStorageBucket` | BLOCKING | empty and `useS3Storage` is `"true"` |
+| `secrets.hetznerStorageEndpoint` | BLOCKING | empty and `useS3Storage` is `"true"` |
+
+If `useS3Storage` is `"false"`, remind the user to provision the bucket via
+`terraform/storage/` and then set `useS3Storage: "true"` plus the credentials
+in `values.secret.yaml`. See `docs/File-Storage.md`.
+
 #### 4. `helm/observability/values.secret.yaml` (if it exists)
 
 | Key | Severity | Condition |

@@ -122,6 +122,13 @@ secrets:
   sentryUrl: ""
   openTelemetryUrl: ""
   pwaSha256Fingerprints: ""
+  # Object Storage (use_storage=y) - set in values.secret.yaml to enable
+  useS3Storage: "false"
+  hetznerStorageAccessKey: ""
+  hetznerStorageSecretKey: ""
+  hetznerStorageBucket: ""
+  hetznerStorageEndpoint: ""
+  hetznerStorageRegion: "fsn1"
   cloudflare:
     cert: ""
     key: ""

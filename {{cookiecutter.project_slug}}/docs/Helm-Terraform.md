@@ -26,11 +26,16 @@ terraform/
 │       ├── cloud_init_server.tftpl
 │       ├── cloud_init_database.tftpl
 │       └── cloud_init_agent.tftpl
-└── cloudflare/     # Cloudflare DNS/CDN
-    ├── main.tf
-    ├── variables.tf
-    └── terraform.tfvars.example
+├── cloudflare/     # Cloudflare DNS/CDN
+│   ├── main.tf
+│   ├── variables.tf
+│   └── terraform.tfvars.example
+└── storage/        # Hetzner Object Storage bucket (use_storage=y only)
+    └── main.tf
 ```
+
+The `storage/` module is independent of the other two — it can be applied at any time after
+the bucket credentials are created. See `docs/File-Storage.md` for the full workflow.
 
 ### Commands
 

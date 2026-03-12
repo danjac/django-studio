@@ -35,7 +35,7 @@ just start                  # start Docker services (PostgreSQL, Redis, Mailpit)
 just install                # install Python deps + pre-commit hooks
 just dj makemigrations      # generate initial migrations (required on first run)
 just dj migrate             # run database migrations
-git add -f .claude/commands/django-studio.md  # track the project skill
+git add -f .claude/commands/djstudio.md  # track the project skill
 just serve                  # start dev server + Tailwind watcher
 ```
 
@@ -53,7 +53,7 @@ Run `just` with no arguments to list all available commands.
 
 ## Slash Commands
 
-Claude Code slash commands are available via `/django-studio <subcommand>`:
+Claude Code slash commands are available via `/djstudio <subcommand>`:
 
 | Subcommand | Purpose |
 | --------------------------------- | ----------------------------------------------- |

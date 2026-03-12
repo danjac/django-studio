@@ -110,7 +110,7 @@ Then redeploy:
 just helm site
 ```
 
-The `prelaunch` command (`/django-studio prelaunch`) checks that these values are
+The `prelaunch` command (`/djstudio prelaunch`) checks that these values are
 set before the first deploy and will flag them as ADVISORY (not yet enabled) or
 BLOCKING (enabled but credentials missing).
 

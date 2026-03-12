@@ -68,7 +68,7 @@ The design system is intended to provide a production-ready foundation for your 
 
 ## Skills
 
-Generated projects include a `/django-studio` Claude Code slash command with subcommands for common workflows:
+Generated projects include a `/djstudio` Claude Code slash command with subcommands for common workflows:
 
 | Subcommand                 | Summary                                                                           |
 | -------------------------- | --------------------------------------------------------------------------------- |

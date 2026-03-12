@@ -213,16 +213,16 @@ If a doc contradicts what you see in existing code, flag it - do not silently pi
 ## Slash Commands
 
 Project-level slash commands are available in `.claude/commands/`. Invoke them
-with `/django-studio <subcommand>` in Claude Code.
+with `/djstudio <subcommand>` in Claude Code.
 
 `.claude/` is gitignored. Force-add the skill file once after `git init` so it
 is tracked in version control:
 
 ```bash
-git add -f .claude/commands/django-studio.md
+git add -f .claude/commands/djstudio.md
 ```
 
-All project commands live under `/django-studio <subcommand>`:
+All project commands live under `/djstudio <subcommand>`:
 
 | Subcommand | Purpose |
 | ------------------------------------ | ----------------------------------------------- |
@@ -236,11 +236,11 @@ All project commands live under `/django-studio <subcommand>`:
 
 ## Template Feedback
 
-This project was generated from [django-studio](https://github.com/danjac/django-studio).
+This project was generated from [django-studio](https://github.com/danjac/djstudio).
 To report a bug or improvement in the template, use the built-in slash command:
 
 ```
-/django-studio feedback
+/djstudio feedback
 ```
 
 This files a GitHub issue directly against the template repo. Use it whenever you notice

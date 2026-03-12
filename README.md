@@ -16,6 +16,12 @@ This project is designed to be a starting point for building modern Django appli
 
 This project is best described as "pre-alpha". While based on working projects in production, this is a new repo and the cookiecutter template has not yet been tested by external users. Expect many breaking changes and rough edges.
 
+## Audience
+
+This template is built for **solo developers** building side projects and small SaaS
+applications. It encodes one person's proven defaults (stack choices, hosting provider,
+deployment topology) rather than aiming to be a general-purpose starter kit.
+
 ## Philosophy
 
 - **Low friction**: Minimal setup steps; generate a project with a single command.

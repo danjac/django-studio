@@ -315,6 +315,32 @@ admin_ips = ["203.0.113.42/32"]   # find your current IP with: curl -s ifconfig.
 lock you out when you switch servers. Either use a dedicated IP add-on for a stable exit
 IP, or leave `admin_ips` at the default.
 
+For a solo developer, SSH key authentication with open firewall rules is a reasonable
+and pragmatic default. The attack surface is small and well-understood.
+
+### Tailscale (recommended for stricter access control or team use)
+
+If you need tighter network-level security, or you are collaborating with others,
+[Tailscale](https://tailscale.com) is the cleanest upgrade path. It creates a private
+WireGuard mesh between your machines, so you can lock `admin_ips` to Tailscale's CGNAT
+range (`100.64.0.0/10`) and remove the server from the public internet entirely for
+administrative access.
+
+High-level steps to add Tailscale:
+
+1. **Install Tailscale on the K3s node** via cloud-init in `terraform/hetzner/main.tf`,
+   alongside the K3s install script.
+2. **Authenticate the node** with a reusable auth key from the Tailscale admin console
+   (store it in `terraform.tfvars` as a secret, never commit it).
+3. **Lock down `admin_ips`** in `terraform.tfvars` to `["100.64.0.0/10"]` once the node
+   is visible on your Tailnet.
+4. **CI access**: use the official
+   [tailscale/github-action](https://github.com/tailscale/github-action) in your deploy
+   workflow to connect the GitHub Actions runner to your Tailnet before running `helm
+   upgrade`. Store the OAuth client credentials as repository secrets.
+5. **Team access**: add team members to your Tailnet and use ACLs to restrict who can
+   reach which ports (e.g. engineers get 6443, ops gets 22).
+
 ### Secrets
 - Environment variables stored in Kubernetes secrets via Helm
 - `values.secret.yaml` is gitignored — never commit it

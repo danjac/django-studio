@@ -190,6 +190,8 @@ migrations. It also indexes the focused docs below.
 | Any form                        | `design/forms.md`                                          |
 | Admin registration              | `docs/Django.md`                                           |
 | Adding a dependency             | `docs/Packages.md`                                         |
+| Any feature handling user data, accounts, or PII | `docs/GDPR.md`                        |
+| Any template or UI component    | also `docs/Accessibility.md`                               |
 | Async view                      | `docs/Views.md`                                            |
 | Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`            |
 | Background task                 | `docs/Django-Tasks.md`                                     |
@@ -231,6 +233,7 @@ All project commands live under `/djstudio <subcommand>`:
 | `create-task <app_name> <task>` | Add a background task using `django-tasks-db` with correct async/keyword-only patterns |
 | `create-model <app_name> <model>` | Design and write a Django model with factory, fixture, and model tests |
 | `create-crud <app_name> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
+| `gdpr` | Audit the project for GDPR compliance issues |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
 | `feedback` | Report a bug or improvement against the django-studio template repo |
 

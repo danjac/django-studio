@@ -111,11 +111,18 @@ template markup — the component you need likely already exists.
 
 1. **Choose the response pattern:**
 
-   Full page (no HTMX partial):
+   Always add an explicit HTTP method decorator (see `docs/Views.md`).
+
+   Full page (read-only):
    ```python
+   from django.contrib.auth.decorators import login_required
    from django.template.response import TemplateResponse
+   from django.views.decorators.http import require_safe
+
    from <package_name>.http.request import HttpRequest
 
+   @require_safe
+   @login_required
    def <view_name>(request: HttpRequest) -> TemplateResponse:
        return TemplateResponse(request, "<app_name>/<view_name>.html", {})
    ```
@@ -138,8 +145,6 @@ template markup — the component you need likely already exists.
 
    `render_partial_response` renders the full template on first load and
    switches to the named partial block when `HX-Target` matches `target`.
-
-   Use `django.contrib.auth.decorators.login_required`.
 
 2. **Create the template** at `templates/<app_name>/<view_name>.html`.
    Start from a base template (see `design/layout.md`). For HTMX partials,
@@ -417,6 +422,8 @@ Read `docs/Views.md`, `docs/HTMX.md`, and `design/` before writing any template.
 
 Do not proceed to the CRUD steps until both are in place.
 
+---
+
 #### 1. `forms.py`
 
 Create `<package_name>/<app_name>/forms.py`:
@@ -453,6 +460,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_safe
 from <package_name>.http.decorators import require_form_methods
 from <package_name>.paginator import render_paginated_response
 from <package_name>.partials import render_partial_response
@@ -463,6 +471,7 @@ if TYPE_CHECKING:
     from <package_name>.http.request import HttpRequest
 
 
+@require_safe
 @login_required
 def <model_lower>_list(request: HttpRequest) -> TemplateResponse:
     return render_paginated_response(
@@ -472,6 +481,7 @@ def <model_lower>_list(request: HttpRequest) -> TemplateResponse:
     )
 
 
+@require_safe
 @login_required
 def <model_lower>_detail(request: HttpRequest, pk: int) -> TemplateResponse:
     <model_lower> = get_object_or_404(<model_name>, pk=pk)
@@ -519,6 +529,7 @@ def <model_lower>_edit(
     )
 
 
+@require_http_methods(["GET", "HEAD", "DELETE"])
 @login_required
 def <model_lower>_delete(
     request: HttpRequest, pk: int
@@ -793,7 +804,9 @@ class Test<model_name>Delete:
         assert response.status_code == 302
 ```
 
-Add `<model_name>Factory` to `<package_name>/<app_name>/tests/factories.py`:
+If `<model_name>Factory` does not already exist in
+`<package_name>/<app_name>/tests/factories.py` (e.g. because `create-model`
+was not run), add a minimal one now:
 
 ```python
 import factory
@@ -806,6 +819,9 @@ class <model_name>Factory(DjangoModelFactory):
     class Meta:
         model = <model_name>
 ```
+
+If `create-model` already created a factory with field declarations, use that
+— do not replace it with this stub.
 
 ---
 

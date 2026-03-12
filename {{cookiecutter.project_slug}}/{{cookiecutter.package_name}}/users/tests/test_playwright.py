@@ -39,4 +39,4 @@ def test_unauthenticated_redirect_to_login(page: Page, live_server):
 def test_logout(auth_page: Page, e2e_user, live_server):
     auth_page.get_by_role("button", name=e2e_user.username).click()
     auth_page.get_by_role("button", name="Sign out").click()
-    expect(auth_page.get_by_role("link", name="Sign in")).to_be_visible()
+    expect(auth_page.get_by_role("link", name="Sign in").first).to_be_visible()

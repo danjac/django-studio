@@ -23,11 +23,11 @@ Then navigate to the generated project and test it:
 cd /tmp/my_app
 just start                      # start Docker services
 just install                    # copies .env.example→.env, git init, Python deps, pre-commit hooks
-just precommit run --all-files  # run all pre-commit hooks
 just lint                       # run linters
 just typecheck                  # run type checks
 just dj makemigrations          # generate initial users migration (expected on first run)
 just test                       # run tests
+just test-e2e                   # run Playwright E2E tests
 just stop                       # stop Docker services
 ```
 

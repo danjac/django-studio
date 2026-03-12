@@ -416,6 +416,44 @@ class Item(models.Model):
     )
 ```
 
+### ForeignKey and ManyToMany Relationships
+
+Always define `related_name` explicitly on every `ForeignKey` and `ManyToManyField`.
+Django's default reverse accessor (`<model>_set`) is implicit and fragile — it breaks on
+model renames and is unclear at the call site.
+
+```python
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+    )
+    podcast = models.ForeignKey(
+        "podcasts.Podcast",
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+    )
+
+class Post(models.Model):
+    tags = models.ManyToManyField(
+        "Tag",
+        related_name="posts",
+        blank=True,
+    )
+```
+
+Use `related_name="+"` only when the reverse relation is genuinely never needed:
+
+```python
+created_by = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    related_name="+",  # reverse not needed
+)
+```
+
 ## Forms
 
 Forms define only fields, labels, and error messages - **no CSS classes**:

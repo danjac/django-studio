@@ -13,12 +13,12 @@ from myapp.http.decorators import require_form_methods, require_DELETE
 from django.views.decorators.http import require_safe, require_POST
 ```
 
-| Decorator | Allowed methods | Use for |
-|---|---|---|
-| `@require_safe` | GET, HEAD | Read-only views |
-| `@require_POST` | POST | Single-action POST endpoints |
+| Decorator               | Allowed methods | Use for                             |
+| ----------------------- | --------------- | ----------------------------------- |
+| `@require_safe`         | GET, HEAD       | Read-only views                     |
+| `@require_POST`         | POST            | Single-action POST endpoints        |
 | `@require_form_methods` | GET, HEAD, POST | Views that render and handle a form |
-| `@require_DELETE` | DELETE | HTMX delete actions |
+| `@require_DELETE`       | DELETE          | HTMX delete actions                 |
 
 The project provides two custom decorators:
 
@@ -72,6 +72,9 @@ Always type-annotate request parameters with `myapp.http.request.HttpRequest`.
 Use `AuthenticatedHttpRequest` in views protected by
 `@login_required` (from `django.contrib.auth.decorators`).
 
+````python
+from django.shortcuts import
+
 ## Basic View Pattern
 
 ```python
@@ -84,6 +87,32 @@ from myapp.http.request import HttpRequest
 @require_safe
 def index(request: HttpRequest) -> TemplateResponse:
     return TemplateResponse(request, "index.html", {})
+````
+
+## Redirects
+
+Use the `redirect` shortcut for redirects:
+
+```python
+from django.shortcuts import redirect
+
+def my_view(request: HttpRequest) -> HttpResponseRedirect:
+    # ... some logic ...
+    return redirect("some_view_name")
+
+```
+
+Note that you don't need to use `reverse` when using `redirect` with a view name — it handles that for you. If redirecting to a model instance, ensure the model has a `get_absolute_url` method defined so that `redirect` can resolve the URL correctly to the detail view:
+
+```python
+
+from django.shortcuts import redirect, get_object_or_404
+from mysite.app.models import Item
+
+def redirect_to_item(request: HttpRequest, item_id: int) -> HttpResponseRedirect:
+    item = get_object_or_404(Item, pk=item_id)
+    return redirect(item)  # Assumes Item has get_absolute_url defined
+
 ```
 
 ## HTMX View Pattern
@@ -140,6 +169,7 @@ async def search_items(request: HttpRequest) -> TemplateResponse:
 ```
 
 **Do not use async for:**
+
 - Simple CRUD views
 - Database queries (use the sync ORM)
 - Template rendering

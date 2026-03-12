@@ -5,7 +5,7 @@ Determine the main package name from the "Project Layout" section of `AGENTS.md`
 ## Usage
 
 ```
-/django-studio <subcommand> [args]
+/djstudio <subcommand> [args]
 ```
 
 Dispatch on the first word of $ARGUMENTS. If no subcommand is given, print the

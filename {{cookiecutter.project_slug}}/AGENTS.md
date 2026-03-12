@@ -168,6 +168,47 @@ Never use `{{ form.as_div }}` - it bypasses the configured renderer. Never use `
 
 See `design/forms.md` for full field template documentation.
 
+### Internationalisation
+
+All user-visible text **must** be wrapped in translation functions. Never
+hardcode plain strings in templates or Python code.
+
+**Templates** — use `{% translate %}` (Django 4.0+, not the legacy `{% trans %}`):
+
+```html
+{% load i18n %}
+<h1>{% translate "Welcome" %}</h1>
+<p>{% blocktranslate with name=user.name %}Hello, {{ name }}.{% endblocktranslate %}</p>
+```
+
+You can also use `_("string")` directly in tag arguments — this is often cleaner
+than a separate `{% translate "x" as var %}` assignment:
+
+```html
+{% include "header.html" with title=_("Dashboard") %}
+{% include "header.html" with title=_("Dashboard") subtitle=_("Manage your account") %}
+<title>{% block title %}{% translate "Home" %}{% endblock %}</title>
+```
+
+**Python** — use `gettext_lazy` for class-level declarations, `gettext` (aliased
+`_`) in function bodies, and `ngettext` for plurals:
+
+```python
+from django.utils.translation import gettext as _, gettext_lazy as _l, ngettext
+
+# model field verbose_name, form labels, etc.
+title = models.CharField(_l("title"), max_length=200)
+
+# function body
+messages.success(request, _("Profile saved."))
+
+# plurals
+msg = ngettext("%(count)s item", "%(count)s items", count) % {"count": count}
+```
+
+Use `/djstudio translate <locale>` to extract, translate, and compile message
+catalogues.
+
 ## Testing Conventions
 
 - Tests use `factory-boy` and `faker` for test data
@@ -234,6 +275,7 @@ All project commands live under `/djstudio <subcommand>`:
 | `create-model <app_name> <model>` | Design and write a Django model with factory, fixture, and model tests |
 | `create-crud <app_name> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
 | `gdpr` | Audit the project for GDPR compliance issues |
+| `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
 | `feedback` | Report a bug or improvement against the django-studio template repo |
 

@@ -86,6 +86,7 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | `create-model <app> <model>` | Design and write a Django model with factory, fixture, and model tests          |
 | `create-crud <app> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
 | `gdpr`                     | Audit the project for GDPR compliance issues                                      |
+| `translate <locale>`       | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`) |
 | `prelaunch`                | Audit all deployment config for missing or placeholder values before first deploy |
 | `feedback`                 | Report a bug or improvement against the django-studio template                    |
 

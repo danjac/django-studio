@@ -6,7 +6,7 @@ This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudfla
 
 ### Cost predictability
 
-PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but build on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills - this is a well-documented failure mode, not a theoretical one.
+PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but build on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills.
 
 Hetzner has fixed, published pricing. A 3-node k3s cluster costs roughly €20/month regardless of traffic. There are no egress surprise charges, no per-request fees, no auto-scaling that runs away. The cost is predictable and budgetable.
 
@@ -14,17 +14,16 @@ Hetzner has fixed, published pricing. A 3-node k3s cluster costs roughly €20/m
 
 The obvious simpler alternative - Docker Compose or plain containers managed by systemd - gets you most of the way there, but leaves you writing your own solutions for rolling deploys, health checks, service restarts, secret management, and scheduled jobs. After a few iterations you end up with an ad-hoc orchestration layer that has all the operational complexity of Kubernetes without any of its tooling. This is the "inner platform effect": you reinvent the scheduler badly.
 
-k3s avoids this by providing a real scheduler, service discovery, rolling deploys, CronJobs, and Secrets management in a single ~70MB binary. The overhead over Docker Compose is low; the ceiling is much higher.
+k3s avoids this by providing a real scheduler, service discovery, rolling deploys, CronJobs, and Secrets management in a single ~70MB binary.
 
 ### Why k3s specifically
 
 Full Kubernetes (kubeadm, EKS, GKE) is operationally heavy for a single developer. k3s is a CNCF-certified Kubernetes distribution that:
+
 - Installs via a single shell command (bootstrapped from Terraform cloud-init)
 - Uses SQLite instead of etcd for the control plane (no HA etcd cluster to manage)
 - Ships with Traefik as the ingress controller
 - Is binary-compatible with standard Kubernetes tooling (`kubectl`, Helm)
-
-The result is a setup that behaves like production Kubernetes but fits on a €5/month VPS.
 
 ## Architecture
 
@@ -108,6 +107,7 @@ just helm site
 ### Traefik Ingress
 
 Traefik handles routing:
+
 - HTTP/HTTPS termination
 - Path-based routing
 - Let's Encrypt certificates
@@ -115,12 +115,14 @@ Traefik handles routing:
 ### PostgreSQL
 
 Managed via K3s with:
+
 - Persistent volume
 - Automated backups (optional)
 
 ### Redis
 
 Used for:
+
 - Cache
 - Session storage
 - Django cache backend
@@ -138,7 +140,7 @@ metadata:
   name: my-django-command
   namespace: default
 spec:
-  schedule: "0 2 * * *"  # Daily at 2 AM
+  schedule: "0 2 * * *" # Daily at 2 AM
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
@@ -164,13 +166,13 @@ spec:
 
 ### Common Schedule Patterns
 
-| Schedule | Description |
-|----------|-------------|
-| `0 2 * * *` | Daily at 2 AM |
-| `0 3 * * 0` | Weekly on Sunday at 3 AM |
-| `0 0 1 * *` | Monthly on 1st at midnight |
-| `*/15 * * * *` | Every 15 minutes |
-| `0 4 * * *` | Daily at 4 AM |
+| Schedule       | Description                |
+| -------------- | -------------------------- |
+| `0 2 * * *`    | Daily at 2 AM              |
+| `0 3 * * 0`    | Weekly on Sunday at 3 AM   |
+| `0 0 1 * *`    | Monthly on 1st at midnight |
+| `*/15 * * * *` | Every 15 minutes           |
+| `0 4 * * *`    | Daily at 4 AM              |
 
 ### Django Management Command Examples
 
@@ -289,6 +291,7 @@ just rpsql
 ## Security
 
 ### Network
+
 - Private network between servers
 - Firewall restricts access
 - Cloudflare proxies all traffic
@@ -337,16 +340,18 @@ High-level steps to add Tailscale:
 4. **CI access**: use the official
    [tailscale/github-action](https://github.com/tailscale/github-action) in your deploy
    workflow to connect the GitHub Actions runner to your Tailnet before running `helm
-   upgrade`. Store the OAuth client credentials as repository secrets.
+upgrade`. Store the OAuth client credentials as repository secrets.
 5. **Team access**: add team members to your Tailnet and use ACLs to restrict who can
    reach which ports (e.g. engineers get 6443, ops gets 22).
 
 ### Secrets
+
 - Environment variables stored in Kubernetes secrets via Helm
 - `values.secret.yaml` is gitignored - never commit it
 - Use GitHub Actions secrets for CI/CD (`KUBECONFIG_BASE64`, `HELM_VALUES_SECRET`)
 
 ### SSL/TLS
+
 - Cloudflare origin certificates with `full_strict` mode (validates origin cert chain)
 - Full TLS encryption end-to-end
 
@@ -395,6 +400,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ## Backup
 
 PostgreSQL backups via:
+
 - K3s volume snapshots
 - Cron job with pg_dump
 

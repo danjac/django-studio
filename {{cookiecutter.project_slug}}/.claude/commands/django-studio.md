@@ -728,7 +728,7 @@ suggest running `just helm-install` to proceed.
 
 ---
 
-### `issue cookiecutter [description]`
+### `feedback [description]`
 
 File a GitHub issue against the django-studio template repo. Use this when the
 bug or improvement belongs in the template, not this project.
@@ -754,14 +754,3 @@ bug or improvement belongs in the template, not this project.
    ```
 
 5. Print the new issue URL.
-
----
-
-### `feedback [description]`
-
-Alias for `issue cookiecutter`. Reports a bug or improvement against the
-[django-studio](https://github.com/danjac/django-studio) template that
-generated this project. Follows the same steps as `issue cookiecutter`.
-
-Prefer `/django-studio feedback` over filing issues manually — it keeps the
-feedback loop with the template intact.

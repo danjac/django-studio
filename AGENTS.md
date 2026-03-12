@@ -97,6 +97,6 @@ When adding a component to the template, add a corresponding doc to `design/`.
 
 ## Bugs and Improvements
 
-Use the `/django-studio issue cookiecutter` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
+Use the `/django-studio feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
 
 After editing `{{cookiecutter.project_slug}}/.claude/commands/django-studio.md`, copy it manually to `~/.claude/commands/` if you want the change reflected in the global commands.

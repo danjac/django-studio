@@ -380,24 +380,20 @@ just test
 
 ---
 
-#### Step 8 — Offer to scaffold
+#### Step 8 — Offer to create CRUD views
 
 Once tests pass, ask:
 
-> `<model_name>` is ready. Would you like to scaffold CRUD views for it?
-> (`/django-studio scaffold <app_name> <model_name>`)
+> `<model_name>` is ready. Would you like to generate CRUD views for it?
+> (`/django-studio create-crud <app_name> <model_name>`)
 
-Wait for the user's answer. Do not run `scaffold` automatically.
+Wait for the user's answer. Do not run `create-crud` automatically.
 
 ---
 
-### `scaffold <app_name> <model_name>`
+### `create-crud <app_name> <model_name>`
 
-Generate a complete set of CRUD views for an existing model.
-
-**Does NOT create the model.** Run `create-model` first if the model does not
-yet exist. Assumes `<model_name>` exists in
-`<package_name>/<app_name>/models.py`.
+Generate a complete set of CRUD views for a model.
 
 Read `docs/Views.md`, `docs/HTMX.md`, and `design/` before writing any template.
 
@@ -406,7 +402,16 @@ Read `docs/Views.md`, `docs/HTMX.md`, and `design/` before writing any template.
 - `<model_plural>` = pluralised `<model_lower>` (e.g. `photos`) — adjust for
   irregular plurals
 
----
+**Step 0 — Check the model exists**
+
+Read `<package_name>/<app_name>/models.py`. If `<model_name>` is not defined
+there, tell the user:
+
+> `<model_name>` does not exist yet. Running `create-model` first.
+
+Then execute the `create-model` subcommand for `<app_name>` `<model_name>`
+before continuing. Do not proceed to the CRUD steps until the model, factory,
+fixture, and tests are in place.
 
 #### 1. `forms.py`
 

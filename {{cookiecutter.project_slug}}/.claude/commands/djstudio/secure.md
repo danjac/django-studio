@@ -13,26 +13,40 @@ sections because they seem unlikely to have issues.
 
 Read `config/settings.py` (and any environment-specific overrides).
 
-| Check | Severity | Condition |
-|---|---|---|
-| `DEBUG` | CRITICAL | hardcoded `True` (not read from env) |
-| `SECRET_KEY` | CRITICAL | hardcoded string literal (not read from env) |
-| `ALLOWED_HOSTS` | CRITICAL | contains `"*"` as a hardcoded value |
-| `SESSION_COOKIE_SECURE` | WARNING | missing or `False` |
-| `CSRF_COOKIE_SECURE` | WARNING | missing or `False` |
-| `SECURE_SSL_REDIRECT` | WARNING | missing or `False` |
-| `SECURE_HSTS_SECONDS` | WARNING | missing or `0` |
-| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | ADVISORY | missing or `False` |
-| `SECURE_CONTENT_TYPE_NOSNIFF` | WARNING | missing or `False` |
-| `X_FRAME_OPTIONS` | WARNING | missing (should be `"DENY"` or `"SAMEORIGIN"`) |
-| CSP headers | WARNING | no Content-Security-Policy middleware or header configured |
-| Django admin URL | ADVISORY | `path("admin/", ...)` — default path is a well-known target |
-| `DEBUG_TOOLBAR` in `INSTALLED_APPS` | WARNING | present with no guard against production use |
-| Database credentials | CRITICAL | `PASSWORD` hardcoded as a string literal (not from env) |
+Local development intentionally uses insecure values (e.g. `DEBUG=True`,
+`SESSION_COOKIE_SECURE=False`). That is expected and fine — the audit is not
+checking the current runtime value but whether an insecure value can reach
+production.
 
-For any setting that should come from the environment, verify it uses
-`env(...)`, `os.environ.get(...)`, or equivalent — not a hardcoded literal
-that would be used in production.
+For each setting, apply this decision tree:
+
+1. **Hardcoded to an insecure value** → flag at the severity below; it will
+   be insecure in every environment including production.
+2. **Read from env with an insecure default** (e.g. `env("DEBUG", default=True)`)
+   → flag at the severity below; production will be insecure if the env var
+   is not explicitly set.
+3. **Read from env with a secure default** (e.g. `env("DEBUG", default=False)`)
+   → OK; local dev can override via `.env`, production is safe if the var is
+   unset.
+4. **Derived from another env-driven setting** (e.g. `SESSION_COOKIE_SECURE = not DEBUG`
+   where `DEBUG` is env-driven with `default=False`) → OK.
+
+| Setting | Secure value | Severity if hardcoded insecure or unsafe default |
+|---|---|---|
+| `DEBUG` | `False` | CRITICAL |
+| `SECRET_KEY` | any value from env | CRITICAL |
+| `ALLOWED_HOSTS` | explicit list from env | CRITICAL |
+| `DATABASE PASSWORD` | from env | CRITICAL |
+| `SESSION_COOKIE_SECURE` | `True` | WARNING |
+| `CSRF_COOKIE_SECURE` | `True` | WARNING |
+| `SECURE_SSL_REDIRECT` | `True` | WARNING |
+| `SECURE_HSTS_SECONDS` | `> 0` | WARNING |
+| `SECURE_CONTENT_TYPE_NOSNIFF` | `True` | WARNING |
+| `X_FRAME_OPTIONS` | `"DENY"` or `"SAMEORIGIN"` | WARNING |
+| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | `True` | ADVISORY |
+| CSP headers | middleware or header present | WARNING |
+| Django admin URL | not `"admin/"` | ADVISORY |
+| `DEBUG_TOOLBAR` in `INSTALLED_APPS` | guarded by `DEBUG` check | WARNING |
 
 ---
 

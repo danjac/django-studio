@@ -94,8 +94,39 @@ The template includes a component library in `{{cookiecutter.project_slug}}/desi
 
 When adding a component to the template, add a corresponding doc to `design/`.
 
+## djstudio Commands
+
+The `/djstudio` skill uses a thin dispatcher (`{{cookiecutter.project_slug}}/.claude/commands/djstudio.md`) that routes each subcommand to its own instructions file under `{{cookiecutter.project_slug}}/.claude/commands/djstudio/`.
+
+**Adding or changing a subcommand:**
+
+1. Create or edit the file at `.claude/commands/djstudio/<subcommand>.md`.
+2. Add or update the row in the dispatcher table in `.claude/commands/djstudio.md`.
+3. Update the subcommand table in `{{cookiecutter.project_slug}}/AGENTS.md`.
+4. Always update relevant docs when adding, removing, or changing a command — at minimum:
+   - `{{cookiecutter.project_slug}}/AGENTS.md` — subcommand table
+   - `README.md` (if the command affects onboarding or workflow)
+   - Any `docs/` page the subcommand references or produces output for
+
+**Tracking in version control:**
+
+`.claude/` is gitignored in generated projects. Force-add all command files after `git init`:
+
+```bash
+git add -f .claude/commands/djstudio.md
+git add -f .claude/commands/djstudio/
+```
+
+**Copying to global commands:**
+
+After editing any djstudio command file, copy it to `~/.claude/commands/` if you want the change reflected in the global command registry:
+
+```bash
+cp {{cookiecutter.project_slug}}/.claude/commands/djstudio.md ~/.claude/commands/djstudio.md
+```
+
+**`_copy_without_render`:** `.claude/**` is already listed in `cookiecutter.json`, so all files under `.claude/commands/djstudio/` are copied verbatim without Jinja2 processing. No `cookiecutter.json` change is needed when adding new subcommand files.
+
 ## Bugs and Improvements
 
 Use the `/djstudio feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
-
-After editing `{{cookiecutter.project_slug}}/.claude/commands/djstudio.md`, copy it manually to `~/.claude/commands/` if you want the change reflected in the global commands.

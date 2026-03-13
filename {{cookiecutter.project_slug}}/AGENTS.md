@@ -272,10 +272,11 @@ All project commands live under `/djstudio <subcommand>`:
 | Subcommand | Purpose |
 | ------------------------------------ | ----------------------------------------------- |
 | `create-app <app_name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
-| `create-view <app_name> <view>` | Add a view + template + URL following HTMX and design system conventions |
+| `create-view [<app_name>] <view>` | Add a view + template + URL; omit app for top-level views wired into `config/urls.py` |
 | `create-task <app_name> <task>` | Add a background task using `django-tasks-db` with correct async/keyword-only patterns |
 | `create-model <app_name> <model>` | Design and write a Django model with factory, fixture, and model tests |
 | `create-crud <app_name> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
+| `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction; app inferred or asked if unclear |
 | `gdpr` | Audit the project for GDPR compliance issues |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |

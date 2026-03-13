@@ -121,6 +121,33 @@ Required repository secrets:
 - `KUBECONFIG_BASE64` - base64-encoded kubeconfig
 - `HELM_VALUES_SECRET` - full contents of `values.secret.yaml`
 
+### Build workflows
+
+Two workflows build the Docker image:
+
+| Workflow | Trigger | Does |
+|----------|---------|------|
+| `build.yml` | Manual (`just gh workflow build`) | Checks + build only, no deploy |
+| `deploy.yml` | Manual (`just gh workflow deploy`) | Checks + build + deploy |
+
+Use `just gh workflow build` to pre-build the image before the first deploy, or
+go straight to `just gh workflow deploy` which builds and deploys in one run.
+`just helm` does **not** build — only use it when an image already exists in the registry.
+
+### Build attestation and private repositories
+
+The `docker.yml` workflow includes `actions/attest-build-provenance` to sign the
+image with a build provenance attestation. **This step fails for private repositories**
+with the error:
+
+```
+Failed to persist attestation: Feature not available for user-owned private repositories.
+```
+
+This is a GitHub limitation — attestations require a public repository or GitHub Enterprise.
+The step is configured with `continue-on-error: true` so the build succeeds regardless.
+Attestation will work automatically if the repository is ever made public.
+
 ## Production Commands
 
 ```bash

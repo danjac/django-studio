@@ -983,6 +983,36 @@ BLOCKING if it is absent from `gh secret list` output.
 Check whether `~/.kube/<project-slug>.yaml` exists. If not: ADVISORY —
 run `just get-kubeconfig` after Hetzner provisioning.
 
+#### 7. Docker image
+
+The Docker image is stored in GitHub Container Registry (ghcr.io) and is built
+by GitHub Actions — it is never built locally.
+
+Check whether a Docker image has ever been built by running:
+
+```bash
+gh run list --workflow=build.yml --limit=5
+gh run list --workflow=deploy.yml --limit=5
+```
+
+| Condition | Severity |
+| --- | --- |
+| No successful `build.yml` or `deploy.yml` run found | BLOCKING — no image exists in the registry yet |
+
+If BLOCKING: instruct the user to build the image first:
+
+```bash
+just gh workflow build
+```
+
+This triggers the `build.yml` workflow (runs checks + builds and pushes the
+image to ghcr.io). Monitor progress with `gh run watch`.
+
+**Note:** `just gh workflow deploy` also builds the image as part of the same
+run, so it is safe to go straight to deploy if all other BLOCKING items are
+resolved. `just helm` (direct Helm upgrade) does **not** build — only use it
+when an image already exists in the registry.
+
 ---
 
 #### Report format
@@ -1005,7 +1035,8 @@ OK:
 ```
 
 If there are no BLOCKING items, confirm the project looks ready to deploy and
-suggest running `just helm-install` to proceed.
+suggest running `just gh workflow deploy` to proceed (this builds the image and
+deploys in a single workflow run).
 
 ---
 

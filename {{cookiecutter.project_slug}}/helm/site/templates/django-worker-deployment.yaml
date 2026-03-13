@@ -16,12 +16,16 @@ spec:
     metadata:
       labels:
         app: django-worker
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       nodeSelector:
         role: jobrunner
       containers:
         - name: django
           image: {{ .Values.image }}
+          imagePullPolicy: Always
           resources:
             requests:
               memory: {{ .Values.resources.worker.requests.memory|quote }}

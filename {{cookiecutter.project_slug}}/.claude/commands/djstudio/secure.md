@@ -68,10 +68,21 @@ Flag as **WARNING** any view that:
 
 #### 2b. Authentication
 
-Flag as **CRITICAL** any view that:
-- Reads from or writes to the database without `@login_required`,
-  `@permission_required`, or an equivalent guard
-- Returns user-specific data without checking `request.user`
+**First, check the middleware.** Read `MIDDLEWARE` in `config/settings.py`.
+
+- If `django.contrib.auth.middleware.LoginRequiredMiddleware` is present, the
+  project is **secure by default**: every view requires authentication unless
+  it explicitly opts out with `@login_not_required`. In this case, do not flag
+  missing `@login_required` decorators — the middleware covers them. Instead,
+  audit `@login_not_required` views: verify each one is genuinely intended to
+  be public (login page, signup, public landing pages, etc.).
+
+- If `LoginRequiredMiddleware` is **not** present, audit each view individually.
+  Do not flag a missing `@login_required` as a problem on its own — many views
+  are intentionally public (homepage, about page, public listings). Only flag
+  as **CRITICAL** when a view without an auth guard:
+  - Returns data that is private or scoped to the current user, or
+  - Writes to the database on behalf of a user (create, update, delete)
 
 Flag as **WARNING** any view with incorrect decorator ordering. The method
 decorator must be outermost, auth decorator next — wrong order means auth

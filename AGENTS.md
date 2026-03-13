@@ -105,7 +105,8 @@ The `/djstudio` skill uses a thin dispatcher (`{{cookiecutter.project_slug}}/.cl
 3. Update the subcommand table in `{{cookiecutter.project_slug}}/AGENTS.md`.
 4. Always update relevant docs when adding, removing, or changing a command — at minimum:
    - `{{cookiecutter.project_slug}}/AGENTS.md` — subcommand table
-   - `README.md` (if the command affects onboarding or workflow)
+   - `{{cookiecutter.project_slug}}/README.md` — slash command table in the generated project
+   - `README.md` — slash command table in the cookiecutter repo root
    - Any `docs/` page the subcommand references or produces output for
 
 **Tracking in version control:**

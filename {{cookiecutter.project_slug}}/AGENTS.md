@@ -280,6 +280,7 @@ All project commands live under `/djstudio <subcommand>`:
 | `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection, open redirects |
 | `gdpr` | Audit the project for GDPR compliance issues |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
+| `launch` | Interactive first-deploy wizard: provisions infra, generates secrets, configures Helm, deploys |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
 | `feedback` | Report a bug or improvement against the django-studio template repo |
 

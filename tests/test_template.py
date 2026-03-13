@@ -383,6 +383,72 @@ class TestTerraformRendering:
         assert "test_project" in content
 
 
+class TestDomainPrefill:
+    """Test that the domain cookiecutter variable is substituted into config files."""
+
+    def test_cloudflare_tfvars_has_domain(self, output_dir):
+        project = _render(
+            output_dir, {**_DEFAULT_CONTEXT, "domain": "myapp.example.org"}
+        )
+        content = (
+            project / "terraform" / "cloudflare" / "terraform.tfvars.example"
+        ).read_text()
+        assert 'domain = "myapp.example.org"' in content
+
+    def test_cloudflare_tfvars_default_domain(self, output_dir):
+        project = _render(output_dir, _DEFAULT_CONTEXT)
+        content = (
+            project / "terraform" / "cloudflare" / "terraform.tfvars.example"
+        ).read_text()
+        assert 'domain = "example.com"' in content
+
+    def test_helm_site_values_has_domain(self, output_dir):
+        project = _render(
+            output_dir, {**_DEFAULT_CONTEXT, "domain": "myapp.example.org"}
+        )
+        content = (project / "helm" / "site" / "values.secret.yaml.example").read_text()
+        assert 'domain: "myapp.example.org"' in content
+        assert 'allowedHosts: ".myapp.example.org"' in content
+
+    def test_helm_site_values_no_change_me_for_domain(self, output_dir):
+        """domain and allowedHosts must not contain CHANGE_ME after rendering."""
+        project = _render(
+            output_dir, {**_DEFAULT_CONTEXT, "domain": "myapp.example.org"}
+        )
+        content = (project / "helm" / "site" / "values.secret.yaml.example").read_text()
+        lines = {line.strip() for line in content.splitlines()}
+        assert not any(
+            "CHANGE_ME" in line
+            for line in lines
+            if "domain" in line or "allowedHosts" in line
+        )
+
+    def test_helm_observability_grafana_host_has_domain(self, output_dir):
+        project = _render(
+            output_dir,
+            {
+                **_DEFAULT_CONTEXT,
+                "domain": "myapp.example.org",
+                "use_opentelemetry": "y",
+            },
+        )
+        content = (
+            project / "helm" / "observability" / "values.secret.yaml.example"
+        ).read_text()
+        assert "grafana.myapp.example.org" in content
+
+    def test_no_cookiecutter_literals_in_domain_fields(self, output_dir):
+        project = _render(
+            output_dir, {**_DEFAULT_CONTEXT, "domain": "myapp.example.org"}
+        )
+        content = (project / "helm" / "site" / "values.secret.yaml.example").read_text()
+        assert "cookiecutter" not in content
+        content = (
+            project / "terraform" / "cloudflare" / "terraform.tfvars.example"
+        ).read_text()
+        assert "cookiecutter" not in content
+
+
 class TestStorageFeatureFlag:
     """Test use_storage flag behaviour."""
 
@@ -559,6 +625,24 @@ class TestOpenTelemetryFeatureFlag:
         ).read_text()
         assert '"monitor_ip"' in vars_content
         assert '"grafana_subdomain"' in vars_content
+
+    def test_cloudflare_origin_cert_resources_present(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
+        assert 'resource "tls_private_key" "origin"' in content
+        assert 'resource "tls_cert_request" "origin"' in content
+        assert 'resource "cloudflare_origin_ca_certificate" "origin"' in content
+
+    def test_cloudflare_origin_cert_outputs_present(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / "terraform" / "cloudflare" / "outputs.tf").read_text()
+        assert '"origin_cert_pem"' in content
+        assert '"origin_key_pem"' in content
+
+    def test_cloudflare_tls_provider_declared(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})
+        content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
+        assert '"hashicorp/tls"' in content
 
     def test_cloudflare_grafana_absent_when_disabled(self, output_dir):
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": "n"})

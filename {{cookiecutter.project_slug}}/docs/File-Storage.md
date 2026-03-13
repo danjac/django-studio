@@ -45,11 +45,8 @@ Create S3 credentials in the Hetzner console before running Terraform:
 
 ```bash
 cd terraform/storage
-
-# Export credentials as Terraform variables
-export TF_VAR_access_key=<your-access-key>
-export TF_VAR_secret_key=<your-secret-key>
-
+cp terraform.tfvars.example terraform.tfvars
+$EDITOR terraform.tfvars  # set access_key, secret_key, and location
 terraform init
 terraform plan
 terraform apply
@@ -61,6 +58,9 @@ Terraform outputs the bucket name and endpoint URL after apply:
 bucket_name = "{{cookiecutter.project_slug}}-media"
 endpoint_url = "https://fsn1.your-objectstorage.com"
 ```
+
+The endpoint URL is always `https://<location>.your-objectstorage.com` — this is
+a real Hetzner domain, not a placeholder.
 
 ### Variables
 

@@ -5,6 +5,7 @@
   "description": "A Django project",
   "author": "Your Name",
   "author_email": "you@example.com",
+  "domain": "example.com",
   "use_hx_boost": [
     "y",
     "n"

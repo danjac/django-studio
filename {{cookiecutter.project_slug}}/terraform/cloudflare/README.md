@@ -21,6 +21,7 @@ Sets up Cloudflare DNS, CDN caching, SSL/TLS, and security settings.
    - Zone → Page Rules → Edit
    - Zone → Zone WAF → Edit
    - Zone → Transform Rules → Edit
+   - Zone → SSL and Certificates → Edit (required for origin certificate provisioning)
 
 ## Setup
 
@@ -35,11 +36,20 @@ terraform apply
 
 ## Origin Certificates
 
-After `terraform apply`, create origin certificates for HTTPS:
+Origin certificates (for TLS between Cloudflare and your server) are provisioned
+automatically by `terraform apply`. After apply, copy the outputs into
+`helm/site/values.secret.yaml`:
 
-1. Cloudflare Dashboard → SSL/TLS → Origin Server → Create Certificate (15-year validity)
-2. Paste the certificate and key into `helm/site/values.secret.yaml` under
-   `secrets.cloudflare.cert` and `secrets.cloudflare.key`
+```bash
+# Certificate PEM → secrets.cloudflare.cert
+terraform output -raw origin_cert_pem
+
+# Private key PEM → secrets.cloudflare.key  (sensitive - treat like a password)
+terraform output -raw origin_key_pem
+```
+
+The certificate covers `*.yourdomain.com` and `yourdomain.com` with 15-year validity.
+The private key is stored in Terraform state — keep your state backend secure.
 
 ## Troubleshooting
 

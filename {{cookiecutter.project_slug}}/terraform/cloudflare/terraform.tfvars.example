@@ -4,7 +4,7 @@
 cloudflare_api_token = ""
 
 # Your domain name
-domain = "example.com"
+domain = "{{cookiecutter.domain}}"
 
 # Subdomain for the app (empty for root domain)
 subdomain = ""

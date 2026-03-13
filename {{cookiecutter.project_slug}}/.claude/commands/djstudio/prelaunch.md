@@ -43,8 +43,8 @@ If the file does not exist: BLOCKING — copy from `.example` and fill in values
 | `app.mailgunSenderDomain` | BLOCKING | `"CHANGE_ME"` |
 | `secrets.postgresPassword` | BLOCKING | `"CHANGE_ME"` |
 | `secrets.djangoSecretKey` | BLOCKING | `"CHANGE_ME"` |
-| `secrets.cloudflare.cert` | BLOCKING | contains `CHANGE_ME` |
-| `secrets.cloudflare.key` | BLOCKING | contains `CHANGE_ME` |
+| `secrets.cloudflare.cert` | BLOCKING | contains `CHANGE_ME` — run `terraform -chdir=terraform/cloudflare output -raw origin_cert_pem` |
+| `secrets.cloudflare.key` | BLOCKING | contains `CHANGE_ME` — run `terraform -chdir=terraform/cloudflare output -raw origin_key_pem` |
 | `app.adminUrl` | ADVISORY | still `"admin/"` — change for security |
 | `app.metaAuthor` | ADVISORY | `"CHANGE_ME"` |
 | `app.metaDescription` | ADVISORY | `"CHANGE_ME"` |

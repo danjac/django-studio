@@ -49,7 +49,7 @@ jobs:
         env:
           IMAGE: ${{ needs.build.outputs.image }}
         run: |
-          helm upgrade "$HELM_RELEASE" "$HELM_CHART"/ \
+          helm upgrade --install "$HELM_RELEASE" "$HELM_CHART"/ \
             --kubeconfig "$HOME/.kube/$KUBECONFIG_FILE" \
             --rollback-on-failure \
             --set "image=$IMAGE" \

@@ -9,4 +9,8 @@ bucket_name = "{{cookiecutter.project_slug}}-media"
 
 # Hetzner datacenter location - must match where your cluster is deployed
 # Options: fsn1 (Falkenstein), nbg1 (Nuremberg), hel1 (Helsinki), ash (Ashburn), hil (Hillsboro)
+# After apply, your endpoint_url output will be: https://<location>.your-objectstorage.com
+# e.g. with fsn1 → https://fsn1.your-objectstorage.com
+#      with hel1 → https://hel1.your-objectstorage.com
+# Set this as HETZNER_STORAGE_ENDPOINT in your production environment / helm values.
 location = "fsn1"

@@ -22,14 +22,19 @@ COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-group dev --no-install-project
 
-# Build static assets
-FROM python-base AS staticfiles
+# Compile message catalogues
+FROM python-base AS messages
 COPY . .
 RUN apt-get update && apt-get install -y --no-install-recommends gettext && rm -rf /var/lib/apt/lists/*
 RUN --mount=type=cache,target=/root/.cache/uv \
+    uv run python manage.py compilemessages
+
+# Build static assets
+FROM python-base AS staticfiles
+COPY . .
+RUN --mount=type=cache,target=/root/.cache/uv \
     uv run python manage.py tailwind build && \
     uv run python manage.py tailwind remove_cli && \
-    uv run python manage.py compilemessages && \
     uv run python manage.py collectstatic --no-input
 
 # Final production image
@@ -48,6 +53,7 @@ WORKDIR /app
 # Copy files with correct ownership from the start using --chown
 COPY --from=python-base --chown=django:django /app/.venv /app/.venv
 COPY --from=staticfiles --chown=django:django /app/staticfiles /app/staticfiles
+COPY --from=messages --chown=django:django /app/locale /app/locale
 
 # Copy application code with correct ownership
 COPY --chown=django:django . .

@@ -277,6 +277,7 @@ All project commands live under `/djstudio <subcommand>`:
 | `create-model <app_name> <model>` | Design and write a Django model with factory, fixture, and model tests |
 | `create-crud <app_name> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
 | `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction; app inferred or asked if unclear |
+| `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection, open redirects |
 | `gdpr` | Audit the project for GDPR compliance issues |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |

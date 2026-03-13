@@ -19,6 +19,7 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 | `create-model <app_name> <model>`   | `.claude/commands/djstudio/create-model.md`   | Design a model with factory, fixture, and tests      |
 | `create-crud <app_name> <model>`    | `.claude/commands/djstudio/create-crud.md`    | Full CRUD views, templates, URLs, and tests          |
 | `create-e2e [<app_name>] <description>` | `.claude/commands/djstudio/create-e2e.md` | Write Playwright E2E test(s) for a described interaction |
+| `secure`                            | `.claude/commands/djstudio/secure.md`         | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
 | `prelaunch`                         | `.claude/commands/djstudio/prelaunch.md`      | Audit deployment config before first deploy          |
 | `gdpr`                              | `.claude/commands/djstudio/gdpr.md`           | Audit the project for GDPR compliance issues         |
 | `translate <locale>`                | `.claude/commands/djstudio/translate.md`      | Extract, translate, and compile message catalogue    |

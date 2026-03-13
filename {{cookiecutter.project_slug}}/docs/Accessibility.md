@@ -150,10 +150,46 @@ Tailwind's `focus-visible:ring` utilities — do not override these with
 
 ## Images
 
-Every `<img>` must have an `alt` attribute:
-- Meaningful images: describe the content concisely
-- Decorative images: `alt=""` (empty, not absent)
-- Never use the filename or "image of" as alt text
+Every `<img>` must have an `alt` attribute, explicit `width`, and explicit
+`height`. Missing dimensions cause layout shift (CLS); missing alt text fails
+WCAG 1.1.1.
+
+### alt text
+
+- **Content images** (convey information): describe the content concisely.
+  Never use the filename, "image of", or an empty string.
+- **Decorative images** (purely visual, no informational value): `alt=""`
+  (empty string — not absent). Only use `alt=""` when the image adds nothing
+  for screen reader users.
+
+### width and height
+
+Always emit explicit `width` and `height` so the browser can reserve space
+before the image loads:
+
+```html
+<!-- BAD: no dimensions, causes layout shift -->
+<img src="{{ item.photo.url }}" alt="{{ item.title }}">
+
+<!-- GOOD: explicit dimensions -->
+<img src="{{ item.photo.url }}" alt="{{ item.title }}" width="400" height="300">
+```
+
+When using `sorl-thumbnail`, derive dimensions from the thumbnail object rather
+than hard-coding:
+
+```html
+{% thumbnail item.photo "400x300" crop="center" as thumb %}
+  <img src="{{ thumb.url }}"
+       alt="{{ item.title }}"
+       width="{{ thumb.width }}"
+       height="{{ thumb.height }}">
+{% endthumbnail %}
+```
+
+Hard-coded dimensions are acceptable when the image size is fixed by design (e.g.
+an avatar always displayed at 48×48). Use the actual rendered size, not the
+source file size.
 
 ---
 

@@ -148,6 +148,105 @@ Or with $watch:
 </div>
 ```
 
+## Icon-Only Buttons
+
+Every button that contains only an SVG icon (no visible text) **must** have an
+`aria-label`. Without it the button has no accessible name, which fails WCAG 2.1
+SC 4.1.2 and makes Playwright selectors unreliable.
+
+```html
+<!-- BAD: no accessible name -->
+<button @click="removeFile(file)" type="button">
+  {% heroicon_mini "x-mark" class="size-4" aria_hidden="true" %}
+</button>
+
+<!-- GOOD: labelled and translatable -->
+<button @click="removeFile(file)"
+        type="button"
+        aria-label="{% translate 'Remove file' %}">
+  {% heroicon_mini "x-mark" class="size-4" aria_hidden="true" %}
+</button>
+```
+
+This applies to all close, remove, toggle, and expand buttons generated inside
+Alpine components. Always wrap the label text in `{% translate %}`.
+
+## Component Root Identification
+
+The `[x-data]` CSS selector matches the **first** Alpine component in DOM order,
+which is usually the page-level layout wrapper — not the specific component you
+intend. Give every interactive Alpine component a stable `id` or `data-component`
+attribute so selectors and E2E tests can target it unambiguously:
+
+```html
+<!-- BAD: [x-data] matches the outermost Alpine component on the page -->
+<div x-data="{ open: false }">
+  <button @click="open = !open">Toggle</button>
+  <div x-show="open">...</div>
+</div>
+
+<!-- GOOD: stable root for scoped targeting -->
+<div id="file-upload" x-data="{ open: false }">
+  <button @click="open = !open">Toggle</button>
+  <div x-show="open">...</div>
+</div>
+
+<!-- GOOD: data-component as an alternative -->
+<div data-component="file-upload" x-data="{ open: false }">
+  ...
+</div>
+```
+
+Use `id` when the component appears exactly once on a page. Use `data-component`
+for components that can appear multiple times (prefer scoping via the nearest
+ancestor with a unique `id` in that case).
+
+E2E selectors should always be scoped to this root:
+
+```python
+upload = page.locator("#file-upload")  # or [data-component="file-upload"]
+upload.get_by_role("button", name="Add file").click()
+```
+
+## Array and Counter Mutations
+
+Alpine's reactivity relies on assignment. In-place mutations (`splice`, `push`,
+`++`, `--`) do not always trigger reactive updates and make logic harder to
+follow. Always produce new values instead:
+
+```html
+<!-- BAD: in-place mutation -->
+<div x-data="{ items: [], count: 0 }">
+  <button @click="items.push(newItem)">Add</button>
+  <button @click="items.splice(index, 1)">Remove</button>
+  <button @click="count++">Up</button>
+  <button @click="count--">Down</button>
+</div>
+
+<!-- GOOD: assignment -->
+<div x-data="{ items: [], count: 0 }">
+  <button @click="items = [...items, newItem]">Add</button>
+  <button @click="items = items.filter(i => i !== item)">Remove</button>
+  <button @click="count += 1">Up</button>
+  <button @click="count -= 1">Down</button>
+</div>
+```
+
+Inside `x-for`, pass the **item value** (not the loop index) to handlers so
+removal works correctly after the list is reordered:
+
+```html
+<!-- BAD: index-based removal breaks after reorder -->
+<template x-for="(item, index) in items" :key="item.id">
+  <button @click="items.splice(index, 1)">Remove</button>
+</template>
+
+<!-- GOOD: value-based removal -->
+<template x-for="item in items" :key="item.id">
+  <button @click="items = items.filter(i => i !== item)">Remove</button>
+</template>
+```
+
 ## Best Practices
 
 1. **Use `x-cloak`** to prevent flash of unstyled content:

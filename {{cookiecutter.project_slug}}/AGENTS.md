@@ -125,6 +125,7 @@ A component library lives in `design/`. It documents every ready-made UI compone
 | `design/pagination.md` | `paginate.html` - Previous/Next with HTMX           |
 | `design/typography.md` | `markdown.html`, prose, heading scale, link style   |
 | `design/layout.md`     | Base templates, two-column layout, HTMX indicator   |
+| `design/upload.md`     | Multi-file upload widget (Alpine + drag-and-drop)   |
 
 **Before writing new UI markup**, check `design/` first - the component you need likely already exists.
 
@@ -242,7 +243,7 @@ migrations. It also indexes the focused docs below.
 | AlpineJS component              | `docs/Alpine.md`                                           |
 | Tailwind / CSS                  | `docs/Tailwind.md`                                         |
 | Authentication / allauth        | `docs/Authentication.md`                                   |
-| File uploads / media storage    | `docs/File-Storage.md`                                     |
+| File uploads / media storage    | `docs/File-Storage.md`, `design/upload.md`                 |
 | Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/k3s-Hetzner-Cloudflare.md` |
 | Testing patterns                | `docs/Testing.md`                                          |
 | Any of the above                | `docs/Project-Structure.md`                                |

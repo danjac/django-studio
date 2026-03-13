@@ -177,6 +177,34 @@ async def search_items(request: HttpRequest) -> TemplateResponse:
 
 For the preferred HTTP client library, see `docs/Packages.md`.
 
+## Internationalisation in Views
+
+Import only what you use. The choice between `gettext` and `gettext_lazy` depends
+on *where* the string is evaluated:
+
+- **Function bodies** — use `gettext` (aliased `_`). The string is translated at
+  call time when the request language is active.
+- **Module-level constants** — use `gettext_lazy` (aliased `_l`). The string is
+  translated lazily on first access, which is required outside the request cycle.
+
+```python
+# Only import what you need in each file
+from django.utils.translation import gettext as _          # for function bodies
+from django.utils.translation import gettext_lazy as _l    # for module-level strings
+
+# Module-level — must use _l
+PAGE_TITLE = _l("Dashboard")
+
+# Function body — use _
+def my_view(request: HttpRequest) -> TemplateResponse:
+    messages.success(request, _("Changes saved."))
+    ...
+```
+
+Never import both when you only need one — that triggers an unused-import linter
+error. Add `gettext_lazy as _l` to your imports only when you have a module-level
+string that needs it.
+
 ## URL Configuration
 
 ```python

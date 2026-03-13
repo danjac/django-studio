@@ -210,6 +210,39 @@ addopts = [
 ]
 ```
 
+## E2E Selector Rules
+
+Page-wide positional selectors (`[x-data] button`, `.relative button`) match the
+first element in DOM order, which is usually a navbar or layout component rather
+than the one you intend. This makes tests fragile and hard to debug.
+
+**Rules:**
+
+1. **Scope to the component root.** Always start the locator chain from the
+   component's stable `id` or `data-component` attribute (see `docs/Alpine.md`).
+
+2. **Prefer semantic selectors.** Use `get_by_role` with a `name`, `get_by_label`,
+   or `get_by_text` rather than CSS class paths.
+
+3. **Avoid `.first()` and `.nth()` unless the element is genuinely a sequence.**
+   If you reach for `.first()` to disambiguate, it means your selector is too broad
+   — add a scope ancestor instead. When `.first()` is genuinely appropriate (e.g.
+   the first item in a list), add a comment explaining why.
+
+```python
+# BAD: matches the first button on the entire page
+page.locator("[x-data] .relative button").first.click()
+
+# GOOD: scoped to the specific component
+upload = page.locator("#file-upload")
+upload.get_by_role("button", name="Remove file").click()
+
+# GOOD: when targeting a list item, scope to the list then the item
+file_list = page.locator("#file-upload [data-file-list]")
+file_list.get_by_role("button", name="Remove file").first.click()
+# .first() here is intentional — removing the first file from the list
+```
+
 ## When to Use E2E vs Unit Tests
 
 **Use E2E (Playwright) for:**

@@ -22,6 +22,7 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 | Pagination        | `templates/paginate.html`                          | -                       | [pagination.md](pagination.md) |
 | Markdown / Prose  | `templates/markdown.html`                          | -                       | [typography.md](typography.md) |
 | Layout patterns   | _(in base templates)_                              | -                       | [layout.md](layout.md)         |
+| File upload       | _(inline markup — see doc)_                        | -                       | [upload.md](upload.md)         |
 
 ## Stack
 

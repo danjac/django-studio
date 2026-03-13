@@ -305,11 +305,70 @@ class TestTerraformRendering:
         assert (project / "terraform" / "storage" / "main.tf").exists()
 
     def test_storage_has_project_slug(self, project):
-        content = (project / "terraform" / "storage" / "main.tf").read_text()
+        # bucket_name default lives in variables.tf, not main.tf
+        content = (project / "terraform" / "storage" / "variables.tf").read_text()
         assert "test_project-media" in content
 
     def test_storage_no_cookiecutter_literals(self, project):
+        for tf_file in (project / "terraform" / "storage").glob("*.tf"):
+            content = tf_file.read_text()
+            assert "cookiecutter" not in content, (
+                f"{tf_file} contains cookiecutter literal"
+            )
+
+    def test_storage_variables_tf_exists(self, project):
+        assert (project / "terraform" / "storage" / "variables.tf").exists()
+
+    def test_storage_outputs_tf_exists(self, project):
+        assert (project / "terraform" / "storage" / "outputs.tf").exists()
+
+    def test_storage_tfvars_example_exists(self, project):
+        assert (project / "terraform" / "storage" / "terraform.tfvars.example").exists()
+
+    def test_storage_readme_exists(self, project):
+        assert (project / "terraform" / "storage" / "README.md").exists()
+
+    def test_storage_gitignore_exists(self, project):
+        assert (project / "terraform" / "storage" / ".gitignore").exists()
+
+    def test_storage_main_has_required_version(self, project):
         content = (project / "terraform" / "storage" / "main.tf").read_text()
+        assert 'required_version = ">= 1.0"' in content
+
+    def test_storage_main_has_no_inlined_variables(self, project):
+        content = (project / "terraform" / "storage" / "main.tf").read_text()
+        assert 'variable "access_key"' not in content
+        assert 'variable "secret_key"' not in content
+        assert 'variable "bucket_name"' not in content
+        assert 'variable "location"' not in content
+
+    def test_storage_main_has_no_inlined_outputs(self, project):
+        content = (project / "terraform" / "storage" / "main.tf").read_text()
+        assert 'output "bucket_name"' not in content
+        assert 'output "endpoint_url"' not in content
+
+    def test_storage_variables_has_all_variables(self, project):
+        content = (project / "terraform" / "storage" / "variables.tf").read_text()
+        assert 'variable "access_key"' in content
+        assert 'variable "secret_key"' in content
+        assert 'variable "bucket_name"' in content
+        assert 'variable "location"' in content
+
+    def test_storage_outputs_has_both_outputs(self, project):
+        content = (project / "terraform" / "storage" / "outputs.tf").read_text()
+        assert 'output "bucket_name"' in content
+        assert 'output "endpoint_url"' in content
+
+    def test_storage_tfvars_example_has_project_slug(self, project):
+        content = (
+            project / "terraform" / "storage" / "terraform.tfvars.example"
+        ).read_text()
+        assert "test_project-media" in content
+
+    def test_storage_tfvars_example_no_cookiecutter_literals(self, project):
+        content = (
+            project / "terraform" / "storage" / "terraform.tfvars.example"
+        ).read_text()
         assert "cookiecutter" not in content
 
     def test_storage_not_in_hetzner_module(self, project):
@@ -329,7 +388,13 @@ class TestStorageFeatureFlag:
 
     def test_storage_dir_present_when_enabled(self, output_dir):
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "y"})
-        assert (project / "terraform" / "storage" / "main.tf").exists()
+        storage = project / "terraform" / "storage"
+        assert (storage / "main.tf").exists()
+        assert (storage / "variables.tf").exists()
+        assert (storage / "outputs.tf").exists()
+        assert (storage / "terraform.tfvars.example").exists()
+        assert (storage / "README.md").exists()
+        assert (storage / ".gitignore").exists()
 
     def test_storage_dir_absent_when_disabled(self, output_dir):
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": "n"})

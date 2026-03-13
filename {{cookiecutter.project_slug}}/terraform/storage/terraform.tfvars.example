@@ -1,0 +1,12 @@
+# Hetzner Object Storage S3 credentials
+# Create these in the Hetzner Cloud Console:
+#   Cloud Console → <project> → Security → S3 credentials → Generate credentials
+access_key = ""
+secret_key = ""
+
+# Object storage bucket name (must be globally unique within the region)
+bucket_name = "{{cookiecutter.project_slug}}-media"
+
+# Hetzner datacenter location - must match where your cluster is deployed
+# Options: fsn1 (Falkenstein), nbg1 (Nuremberg), hel1 (Helsinki), ash (Ashburn), hil (Hillsboro)
+location = "fsn1"

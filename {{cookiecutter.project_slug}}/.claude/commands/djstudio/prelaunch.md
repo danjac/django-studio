@@ -50,7 +50,20 @@ If the file does not exist: BLOCKING — copy from `.example` and fill in values
 | `app.metaDescription` | ADVISORY | `"CHANGE_ME"` |
 
 If `terraform/storage/main.tf` exists (i.e. the project was generated with `use_storage=y`),
-also check — regardless of the current value of `useS3Storage`:
+also check:
+
+**`terraform/storage/terraform.tfvars`**
+
+If the file does not exist: BLOCKING — storage has not been provisioned yet.
+
+If it exists, check:
+
+| Key | BLOCKING if |
+| --- | --- |
+| `access_key` | empty string |
+| `secret_key` | empty string |
+
+Then check the Helm values — regardless of the current value of `useS3Storage`:
 
 | Key | Severity | Condition |
 | --- | --- | --- |
@@ -63,21 +76,26 @@ also check — regardless of the current value of `useS3Storage`:
 If any storage credential is missing or `useS3Storage` is still `"false"`, give
 the user the following provisioning steps:
 
-1. Create S3 credentials in the Hetzner console: Cloud → Security → S3 credentials
-2. Run:
+1. Create S3 credentials in the Hetzner console:
+   Cloud Console → `<your project>` → Security → S3 credentials → Generate credentials
+   (the secret key is only shown once — save it immediately)
+2. Fill in the Terraform variables:
    ```
-   export TF_VAR_access_key=<access-key>
-   export TF_VAR_secret_key=<secret-key>
+   cp terraform/storage/terraform.tfvars.example terraform/storage/terraform.tfvars
+   $EDITOR terraform/storage/terraform.tfvars  # set access_key and secret_key
+   ```
+3. Provision the bucket:
+   ```
    terraform -chdir=terraform/storage init
    terraform -chdir=terraform/storage apply
    ```
-3. Copy the terraform outputs into `helm/site/values.secret.yaml`:
-   - `secrets.hetznerStorageAccessKey` ← the access key used above
-   - `secrets.hetznerStorageSecretKey` ← the secret key used above
+4. Copy the terraform outputs into `helm/site/values.secret.yaml`:
+   - `secrets.hetznerStorageAccessKey` ← `access_key` from `terraform.tfvars`
+   - `secrets.hetznerStorageSecretKey` ← `secret_key` from `terraform.tfvars`
    - `secrets.hetznerStorageBucket` ← `terraform -chdir=terraform/storage output -raw bucket_name`
    - `secrets.hetznerStorageEndpoint` ← `terraform -chdir=terraform/storage output -raw endpoint_url`
    - `secrets.useS3Storage` ← set to `"true"`
-4. See `docs/File-Storage.md` for the full provisioning guide.
+5. See `docs/File-Storage.md` for the full provisioning guide.
 
 ### 4. `helm/observability/values.secret.yaml` (if it exists)
 

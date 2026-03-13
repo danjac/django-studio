@@ -45,6 +45,7 @@ media
 node_modules
 npm-debug.log
 screenshots
+locale/**/*.mo
 static/app.css
 staticfiles
 terraform

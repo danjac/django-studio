@@ -1129,18 +1129,33 @@ If `gettext` is not available, stop and tell the user to install it first.
 
 **Steps:**
 
+#### 0 — Detect existing locale
+
+Check whether `locale/<locale>/LC_MESSAGES/django.po` already exists.
+
+- **New locale** — the file does not exist. Run all steps below (1 through 5).
+- **Existing locale** — the file already exists. This is a re-run to pick up
+  new or changed strings. Skip step 2 (LANGUAGES is already set). In step 3,
+  only translate entries where `msgstr` is still empty **or** the entry is
+  marked `#, fuzzy` — do not re-translate entries that already have a
+  translation.
+
+---
+
 #### 1 — Run `makemessages`
 
 ```bash
 just dj makemessages -l <locale> --no-wrap
 ```
 
-This creates or updates `locale/<locale>/LC_MESSAGES/django.po`. If the
-directory does not exist, Django creates it automatically.
+This creates or updates `locale/<locale>/LC_MESSAGES/django.po`. Django marks
+strings that were previously translated but whose source has since changed as
+`#, fuzzy`; brand-new strings get an empty `msgstr`. If the directory does not
+exist, Django creates it automatically.
 
 ---
 
-#### 2 — Add locale to LANGUAGES
+#### 2 — Add locale to LANGUAGES *(new locale only — skip if re-running)*
 
 Open `config/settings.py` and find the `LANGUAGES` list. If `<locale>` is not
 already present, add it using the **native name** of the language:
@@ -1218,6 +1233,12 @@ Print a summary:
 Translated: <N> strings  (X new, Y fuzzy updated, Z already had translations)
 Locale:     <locale>
 Catalogue:  locale/<locale>/LC_MESSAGES/django.mo
+```
+
+For a re-run, if N is 0 (no new or fuzzy strings were found), say:
+
+```
+No new or changed strings found for <locale>. Catalogue is up to date.
 ```
 
 If any `msgid` contained Python format specifiers (`%(var)s`, `{var}`), remind

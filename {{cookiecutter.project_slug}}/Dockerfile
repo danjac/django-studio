@@ -25,9 +25,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Build static assets
 FROM python-base AS staticfiles
 COPY . .
+RUN apt-get update && apt-get install -y --no-install-recommends gettext && rm -rf /var/lib/apt/lists/*
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv run python manage.py tailwind build && \
     uv run python manage.py tailwind remove_cli && \
+    uv run python manage.py compilemessages && \
     uv run python manage.py collectstatic --no-input
 
 # Final production image

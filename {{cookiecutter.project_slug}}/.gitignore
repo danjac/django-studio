@@ -24,6 +24,9 @@ media/
 static/app.css
 .django_tailwind_cli/
 
+# i18n
+locale/**/*.mo
+
 # Environment
 .env
 .env.local

@@ -78,17 +78,19 @@ The design system is intended to provide a production-ready foundation for your 
 
 Generated projects include a `/djstudio` Claude Code slash command with subcommands for common workflows:
 
-| Subcommand                 | Summary                                                                           |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| `create-app <name>`        | Create a basic Django app (apps.py, models, views, urls, admin, tests)            |
-| `create-view <app> <view>` | Add a view, template, and URL following HTMX and design system conventions        |
-| `create-task <app> <task>` | Add a `django-tasks-db` background task with correct async patterns               |
-| `create-model <app> <model>` | Design and write a Django model with factory, fixture, and model tests          |
-| `create-crud <app> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
-| `gdpr`                     | Audit the project for GDPR compliance issues                                      |
-| `translate <locale>`       | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`) |
-| `prelaunch`                | Audit all deployment config for missing or placeholder values before first deploy |
-| `feedback`                 | Report a bug or improvement against the django-studio template                    |
+| Subcommand                          | Summary                                                                           |
+| ----------------------------------- | --------------------------------------------------------------------------------- |
+| `create-app <name>`                 | Create a Django app (apps.py, models, views, urls, admin, tests)                 |
+| `create-view [<app>] <view>`        | Add a view, template, and URL; omit app for top-level views                      |
+| `create-task <app> <task>`          | Add a `django-tasks-db` background task with correct async patterns               |
+| `create-model <app> <model>`        | Design and write a Django model with factory, fixture, and model tests            |
+| `create-crud <app> <model>`         | Generate full CRUD views, templates, URLs, and tests                              |
+| `create-e2e [<app>] <description>`  | Write Playwright E2E test(s) for a described user interaction                     |
+| `secure`                            | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection                  |
+| `gdpr`                              | Audit the project for GDPR compliance issues                                      |
+| `translate <locale>`                | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`) |
+| `prelaunch`                         | Audit all deployment config for missing or placeholder values before first deploy |
+| `feedback`                          | Report a bug or improvement against the django-studio template                    |
 
 ## Hosting
 

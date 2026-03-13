@@ -35,7 +35,7 @@ just start                  # start Docker services (PostgreSQL, Redis, Mailpit)
 just install                # install Python deps + pre-commit hooks
 just dj makemigrations      # generate initial migrations (required on first run)
 just dj migrate             # run database migrations
-git add -f .claude/commands/djstudio.md  # track the project skill
+git add -f .claude/commands/djstudio.md .claude/commands/djstudio/  # track the project skill
 just serve                  # start dev server + Tailwind watcher
 ```
 
@@ -56,15 +56,17 @@ Run `just` with no arguments to list all available commands.
 Claude Code slash commands are available via `/djstudio <subcommand>`:
 
 | Subcommand | Purpose |
-| --------------------------------- | ----------------------------------------------- |
-| `create-app <name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
-| `create-view <app> <view>` | Add a view, template, and URL |
+| ----------------------------------------- | ----------------------------------------------- |
+| `create-app <name>` | Create a Django app (apps.py, models, views, urls, admin, tests) |
+| `create-view [<app>] <view>` | Add a view, template, and URL; omit app for top-level views |
 | `create-task <app> <task>` | Add a background task |
 | `create-model <app> <model>` | Design and write a Django model with factory, fixture, and model tests |
-| `create-crud <app> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
+| `create-crud <app> <model>` | Generate full CRUD views, templates, URLs, and tests |
+| `create-e2e [<app>] <description>` | Write Playwright E2E test(s) for a described interaction |
+| `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection |
 | `gdpr` | Audit the project for GDPR compliance issues |
-| `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
-| `prelaunch` | Audit deployment config for missing or placeholder values before first deploy |
+| `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue |
+| `prelaunch` | Audit deployment config for missing or placeholder values |
 | `feedback` | Report a bug or improvement against the django-studio template |
 
 ## Stack

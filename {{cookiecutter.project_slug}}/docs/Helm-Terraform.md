@@ -95,10 +95,12 @@ helm/
 ### Commands
 
 ```bash
-# Deploy or update the application (preserves running image via --reuse-values)
+# Deploy or update the application
+# Runs helm dependency build automatically, then helm upgrade --install
 just helm site
 
 # Deploy or update the observability stack
+# Also runs helm dependency build — required on first install (fetches kube-prometheus-stack, loki, etc.)
 just helm observability
 ```
 

@@ -173,6 +173,7 @@ helm chart="site":
         echo "Provision the cluster first, then run: just get-kubeconfig"
         exit 1
     fi
+    helm dependency build helm/{{ chart }}/
     helm upgrade --install {{ chart }} helm/{{ chart }}/ \
         --kubeconfig {{ kubeconfig }} \
         --reuse-values \

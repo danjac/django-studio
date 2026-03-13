@@ -6,6 +6,10 @@ import psutil
 
 wsgi_app = "config.asgi:application"
 
+# ---- BINDING ----
+
+bind = "0.0.0.0:8000"
+
 # ---- LOGGING ----
 
 loglevel = "info"

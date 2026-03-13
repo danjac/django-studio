@@ -281,7 +281,6 @@ All project commands live under `/djstudio <subcommand>`:
 | `gdpr` | Audit the project for GDPR compliance issues |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
 | `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
-| `sync` | Pull latest djstudio command files from the django-studio template repo |
 | `feedback` | Report a bug or improvement against the django-studio template repo |
 
 ## Template Feedback

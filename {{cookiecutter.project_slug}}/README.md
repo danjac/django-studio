@@ -67,7 +67,6 @@ Claude Code slash commands are available via `/djstudio <subcommand>`:
 | `gdpr` | Audit the project for GDPR compliance issues |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue |
 | `prelaunch` | Audit deployment config for missing or placeholder values |
-| `sync` | Pull latest command files from the django-studio template repo |
 | `feedback` | Report a bug or improvement against the django-studio template |
 
 ## Stack

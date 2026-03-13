@@ -23,4 +23,5 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 | `prelaunch`                         | `.claude/commands/djstudio/prelaunch.md`      | Audit deployment config before first deploy          |
 | `gdpr`                              | `.claude/commands/djstudio/gdpr.md`           | Audit the project for GDPR compliance issues         |
 | `translate <locale>`                | `.claude/commands/djstudio/translate.md`      | Extract, translate, and compile message catalogue    |
+| `sync`                              | `.claude/commands/djstudio/sync.md`           | Pull latest command files from the django-studio repo |
 | `feedback [description]`            | `.claude/commands/djstudio/feedback.md`       | File a GitHub issue against the django-studio repo   |

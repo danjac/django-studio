@@ -1002,13 +1002,13 @@ gh run list --workflow=deploy.yml --limit=5
 If BLOCKING: instruct the user to build the image first:
 
 ```bash
-just gh workflow build
+just gh build
 ```
 
 This triggers the `build.yml` workflow (runs checks + builds and pushes the
 image to ghcr.io). Monitor progress with `gh run watch`.
 
-**Note:** `just gh workflow deploy` also builds the image as part of the same
+**Note:** `just gh deploy` also builds the image as part of the same
 run, so it is safe to go straight to deploy if all other BLOCKING items are
 resolved. `just helm` (direct Helm upgrade) does **not** build — only use it
 when an image already exists in the registry.
@@ -1035,7 +1035,7 @@ OK:
 ```
 
 If there are no BLOCKING items, confirm the project looks ready to deploy and
-suggest running `just gh workflow deploy` to proceed (this builds the image and
+suggest running `just gh deploy` to proceed (this builds the image and
 deploys in a single workflow run).
 
 ---

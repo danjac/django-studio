@@ -127,11 +127,11 @@ Two workflows build the Docker image:
 
 | Workflow | Trigger | Does |
 |----------|---------|------|
-| `build.yml` | Manual (`just gh workflow build`) | Checks + build only, no deploy |
-| `deploy.yml` | Manual (`just gh workflow deploy`) | Checks + build + deploy |
+| `build.yml` | Manual (`just gh build`) | Checks + build only, no deploy |
+| `deploy.yml` | Manual (`just gh deploy`) | Checks + build + deploy |
 
-Use `just gh workflow build` to pre-build the image before the first deploy, or
-go straight to `just gh workflow deploy` which builds and deploys in one run.
+Use `just gh build` to pre-build the image before the first deploy, or
+go straight to `just gh deploy` which builds and deploys in one run.
 `just helm` does **not** build — only use it when an image already exists in the registry.
 
 ### Build attestation and private repositories

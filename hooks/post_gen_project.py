@@ -228,8 +228,7 @@ def install_skills() -> None:
         return
     commands_dst = BASE_DIR / ".claude" / "commands"
     commands_dst.mkdir(parents=True, exist_ok=True)
-    for skill_file in skills_src.glob("*.md"):
-        shutil.copy(skill_file, commands_dst / skill_file.name)
+    shutil.copytree(skills_src, commands_dst, dirs_exist_ok=True)
 
 
 # ── main ─────────────────────────────────────────────────────────────────────

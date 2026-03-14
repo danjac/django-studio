@@ -33,7 +33,6 @@
     ".github/workflows/deploy.yml",
     "design/**",
     "docs/**",
-    "helm/*/templates/**",
-    ".claude/**"
+    "helm/*/templates/**"
   ]
 }

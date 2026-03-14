@@ -807,6 +807,45 @@ class TestFeatureFlagCombinations:
         assert "sentry-sdk" not in pyproject_content
 
 
+class TestClaudeSkillsInstallation:
+    """Verify that skills/ are copied to .claude/commands/ by the post-gen hook."""
+
+    def test_dispatcher_installed(self, project):
+        """djstudio.md dispatcher must be present in .claude/commands/."""
+        assert (project / ".claude" / "commands" / "djstudio.md").exists()
+
+    def test_subcommands_dir_installed(self, project):
+        """djstudio/ subcommands directory must be present in .claude/commands/."""
+        assert (project / ".claude" / "commands" / "djstudio").is_dir()
+
+    def test_subcommand_files_installed(self, project):
+        """All subcommand files must be copied from skills/djstudio/."""
+        subcommands_dir = project / ".claude" / "commands" / "djstudio"
+        installed = {f.name for f in subcommands_dir.iterdir() if f.suffix == ".md"}
+        expected = {
+            "create-app.md",
+            "create-view.md",
+            "create-task.md",
+            "create-model.md",
+            "create-crud.md",
+            "create-e2e.md",
+            "secure.md",
+            "gdpr.md",
+            "translate.md",
+            "launch.md",
+            "feedback.md",
+        }
+        assert expected == installed
+
+    def test_settings_json_installed(self, project):
+        """.claude/settings.json must be written by install_claude_hooks()."""
+        assert (project / ".claude" / "settings.json").exists()
+
+    def test_skills_dir_not_in_project_root(self, project):
+        """The source skills/ directory must not be copied to the project root."""
+        assert not (project / "skills").exists()
+
+
 class TestRenderedPythonLinting:
     """Verify rendered Python files are syntactically valid and pass linting."""
 

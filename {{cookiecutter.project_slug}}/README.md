@@ -35,7 +35,6 @@ just start                  # start Docker services (PostgreSQL, Redis, Mailpit)
 just install                # install Python deps + pre-commit hooks
 just dj makemigrations      # generate initial migrations (required on first run)
 just dj migrate             # run database migrations
-git add -f .claude/commands/djstudio.md .claude/commands/djstudio/  # track the project skill
 just serve                  # start dev server + Tailwind watcher
 ```
 
@@ -66,7 +65,6 @@ Claude Code slash commands are available via `/djstudio <subcommand>`:
 | `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection |
 | `gdpr` | Audit the project for GDPR compliance issues |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue |
-| `prelaunch` | Audit deployment config for missing or placeholder values |
 | `feedback` | Report a bug or improvement against the django-studio template |
 
 ## Stack

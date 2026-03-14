@@ -260,13 +260,6 @@ If a doc contradicts what you see in existing code, flag it - do not silently pi
 Project-level slash commands are available in `.claude/commands/`. Invoke them
 with `/djstudio <subcommand>` in Claude Code.
 
-`.claude/` is gitignored. Force-add the skill file once after `git init` so it
-is tracked in version control:
-
-```bash
-git add -f .claude/commands/djstudio.md
-```
-
 All project commands live under `/djstudio <subcommand>`:
 
 | Subcommand | Purpose |
@@ -281,7 +274,6 @@ All project commands live under `/djstudio <subcommand>`:
 | `gdpr` | Audit the project for GDPR compliance issues |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
 | `launch` | Interactive first-deploy wizard: provisions infra, generates secrets, configures Helm, deploys |
-| `prelaunch` | Audit all deployment config for missing or placeholder values before first deploy |
 | `feedback` | Report a bug or improvement against the django-studio template repo |
 
 ## Template Feedback

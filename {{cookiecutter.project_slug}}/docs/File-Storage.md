@@ -110,10 +110,6 @@ Then redeploy:
 just helm site
 ```
 
-The `prelaunch` command (`/djstudio prelaunch`) checks that these values are
-set before the first deploy and will flag them as ADVISORY (not yet enabled) or
-BLOCKING (enabled but credentials missing).
-
 ## Settings Reference
 
 Relevant block in `config/settings.py` (only present when `use_storage=y`):

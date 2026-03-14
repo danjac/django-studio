@@ -96,12 +96,12 @@ When adding a component to the template, add a corresponding doc to `design/`.
 
 ## djstudio Commands
 
-The `/djstudio` skill uses a thin dispatcher (`{{cookiecutter.project_slug}}/.claude/commands/djstudio.md`) that routes each subcommand to its own instructions file under `{{cookiecutter.project_slug}}/.claude/commands/djstudio/`.
+The `/djstudio` skill uses a thin dispatcher (`skills/djstudio.md`) that routes each subcommand to its own instructions file under `skills/djstudio/`. The post-gen hook copies the entire `skills/` tree to `.claude/commands/` in the generated project.
 
 **Adding or changing a subcommand:**
 
-1. Create or edit the file at `.claude/commands/djstudio/<subcommand>.md`.
-2. Add or update the row in the dispatcher table in `.claude/commands/djstudio.md`.
+1. Create or edit the file at `skills/djstudio/<subcommand>.md`.
+2. Add or update the row in the dispatcher table in `skills/djstudio.md`.
 3. Update the subcommand table in `{{cookiecutter.project_slug}}/AGENTS.md`.
 4. Always update relevant docs when adding, removing, or changing a command — at minimum:
    - `{{cookiecutter.project_slug}}/AGENTS.md` — subcommand table
@@ -111,22 +111,19 @@ The `/djstudio` skill uses a thin dispatcher (`{{cookiecutter.project_slug}}/.cl
 
 **Tracking in version control:**
 
-`.claude/` is gitignored in generated projects. Force-add all command files after `git init`:
-
-```bash
-git add -f .claude/commands/djstudio.md
-git add -f .claude/commands/djstudio/
-```
+Command files live in `skills/` at the repo root and are copied to `.claude/commands/` in the generated project by the post-gen hook (`install_skills()`). They are always tracked in git — no `git add -f` needed.
 
 **Copying to global commands:**
 
 After editing any djstudio command file, copy it to `~/.claude/commands/` if you want the change reflected in the global command registry:
 
 ```bash
-cp {{cookiecutter.project_slug}}/.claude/commands/djstudio.md ~/.claude/commands/djstudio.md
+cp skills/djstudio.md ~/.claude/commands/djstudio.md
 ```
 
-**`_copy_without_render`:** `.claude/**` is already listed in `cookiecutter.json`, so all files under `.claude/commands/djstudio/` are copied verbatim without Jinja2 processing. No `cookiecutter.json` change is needed when adding new subcommand files.
+**Adding new subcommand files:**
+
+Create the file under `skills/djstudio/<subcommand>.md`. No `cookiecutter.json` change is needed — the post-gen hook copies the entire `skills/` tree verbatim.
 
 ## Bugs and Improvements
 

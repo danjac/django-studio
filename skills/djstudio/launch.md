@@ -248,9 +248,29 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 **Mailgun sender domain** (the `mg.yourdomain.com` subdomain for outbound email):
 > Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or press Enter to skip:
 
-**Admin URL** (default `admin/` — change for security):
-> Enter a custom Django admin URL path (default: `admin/`):
-> Tip: use something non-obvious like `secret-admin-42/` to reduce attack surface.
+**Admin URL** — generate a random human-readable slug if the user skips:
+
+Before prompting, generate a random default from a small built-in word list:
+```python
+import random
+adjectives = ["amber","azure","brave","calm","cold","dark","deep","fast",
+              "gold","iron","jade","keen","lime","mist","navy","oak","pale",
+              "pine","sage","salt","sand","silk","snow","soft","teal","warm"]
+nouns = ["arch","bay","cliff","cove","creek","dale","dell","dune","fall",
+         "fen","ford","glen","hill","isle","lake","mead","moor","peak",
+         "pool","rill","rock","shore","vale","weald","well","wood"]
+slug = f"{random.choice(adjectives)}-{random.choice(nouns)}"
+default_admin_url = f"{slug}/"
+```
+
+Then prompt:
+> Enter a custom Django admin URL path (press Enter for `<generated-slug>/`):
+
+- If the user presses Enter (empty input), use the generated slug (e.g. `calm-peak/`).
+- If the user types a value, use that value.
+- Only fall back to `admin/` if the user explicitly types `admin/`.
+
+Tell the user which URL was chosen.
 
 **Meta author, description, keywords** — prompt for each, allow empty to skip.
 

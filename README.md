@@ -86,6 +86,7 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | `create-model <app> <model>`        | Design and write a Django model with factory, fixture, and model tests            |
 | `create-crud <app> <model>`         | Generate full CRUD views, templates, URLs, and tests                              |
 | `create-e2e [<app>] <description>`  | Write Playwright E2E test(s) for a described user interaction                     |
+| `perf`                              | Performance audit: N+1 queries, missing indexes, caching, async blocking          |
 | `secure`                            | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection                  |
 | `gdpr`                              | Audit the project for GDPR compliance issues                                      |
 | `translate <locale>`                | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`) |

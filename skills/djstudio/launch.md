@@ -397,16 +397,51 @@ Tell the user what was pushed and confirm with `gh secret list`.
 
 ## Step 6 — First deploy
 
+The first deploy requires three steps in sequence. `just gh deploy` alone only updates
+app/worker containers — it does not deploy Postgres, Redis, Secrets, or other resources
+for the first time. Follow the full sequence below.
+
+### 6a. Build and push the Docker image
+
 Tell the user:
-> **Triggering first deploy via GitHub Actions...**
-> This will build the Docker image, push it to ghcr.io, and deploy to the cluster.
-> This typically takes 5–10 minutes.
+> **Step 1/3 — Building Docker image via GitHub Actions...**
+> This pushes the image to ghcr.io so Helm can pull it.
+
+```bash
+just gh build
+```
+
+Watch the build:
+```bash
+gh run watch
+```
+
+Wait for the build workflow to complete successfully before continuing.
+
+### 6b. Deploy all infrastructure via Helm
+
+Tell the user:
+> **Step 2/3 — Deploying infrastructure via Helm...**
+> This installs Postgres, Redis, Secrets, Ingress, and all other resources for the first time.
+> This runs locally using your kubeconfig.
+
+```bash
+just helm site
+```
+
+Wait for the command to complete. If it fails, show the error and help the user diagnose it.
+
+### 6c. Trigger app deploy via GitHub Actions
+
+Tell the user:
+> **Step 3/3 — Triggering app deploy via GitHub Actions...**
+> This deploys the app and worker containers using the image built in step 1.
 
 ```bash
 just gh deploy
 ```
 
-Then watch the run:
+Watch the run:
 ```bash
 gh run watch
 ```

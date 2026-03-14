@@ -1,0 +1,208 @@
+# Justfile for Django project
+
+# Project-specific deployment configuration (set by cookiecutter)
+project_slug := "PROJECT_SLUG"
+script_dir := justfile_directory() / "scripts"
+kubeconfig := env("KUBECONFIG", env("HOME") + "/.kube/" + project_slug + ".yaml")
+
+@_default:
+    just --list
+
+# Install all dependencies
+[group('development')]
+install:
+   #!/usr/bin/env bash
+   set -euo pipefail
+   if [ ! -f .env ]; then
+       cp .env.example .env
+       echo "Created .env from .env.example"
+   fi
+   if [ ! -d .git ]; then
+       git init
+       echo "Initialized git repository"
+   fi
+   just pyinstall
+   just precommitinstall
+
+# Update all dependencies
+[group('development')]
+update: pyupdate pyinstall precommitupdate
+
+# Install all Python dependencies
+[group('development')]
+pyinstall:
+   #!/usr/bin/env bash
+   if [ -f uv.lock ]; then
+       uv sync --frozen --all-extras --no-install-project
+   else
+       uv sync --all-extras --no-install-project
+   fi
+
+# Update all Python dependencies
+[group('development')]
+pyupdate:
+   uv lock --upgrade
+
+# Run Django management command
+[group('development')]
+dj *args:
+   uv run python ./manage.py {{ args }}
+
+# Run Django development server + Tailwind
+[group('development')]
+serve:
+   @just dj tailwind runserver
+
+# Run all tests
+[group('development')]
+test-all: test test-e2e
+
+# Run unit tests
+[group('development')]
+test *args:
+   uv run pytest {{ args }}
+
+# Run e2e tests with Playwright (headless)
+[group('development')]
+test-e2e *args:
+   uv run pytest -c playwright.ini {{ args }}
+
+# Run e2e tests with a visible browser window
+[group('development')]
+test-e2e-headed *args:
+   uv run pytest -c playwright.ini --headed {{ args }}
+
+# Install Playwright browsers (run once after uv sync)
+[group('development')]
+playwright-install:
+   uv run playwright install chromium
+
+# Run pytest-watcher
+[group('development')]
+tw:
+   uv run ptw .
+
+# Run type checks
+[group('development')]
+typecheck *args:
+   uv run basedpyright {{ args }}
+
+# Run linting
+[group('development')]
+lint:
+   uv run ruff check --fix
+   uv run djlint --lint templates/
+
+# Run docker compose
+[group('development')]
+dc *args:
+   docker compose {{ args }}
+
+# Start all Docker services
+[group('development')]
+start *args:
+   @just dc up -d --remove-orphans {{ args }}
+
+# Stop all Docker services
+[group('development')]
+stop *args:
+   @just dc down {{ args }}
+
+# Run Psql
+[group('development')]
+psql *args:
+   @just dc exec postgres psql -U postgres {{ args }}
+
+# Run pre-commit manually
+[group('development')]
+precommit *args:
+   uv run --with pre-commit-uv pre-commit {{ args }}
+
+# Install pre-commit hooks
+[group('development')]
+precommitinstall:
+   @just precommit install
+   @just precommit install --hook-type commit-msg
+
+# Update pre-commit hooks
+[group('development')]
+precommitupdate:
+   @just precommit autoupdate
+
+# Re-run pre-commit on all files
+[group('development')]
+precommitall:
+   @just precommit run --all-files
+
+# File a GitHub issue in the current project
+[group('development')]
+issue title body:
+   gh issue create --title "{{ title }}" --body "{{ body }}"
+
+# File a GitHub issue in the django-studio template repo
+[group('development')]
+studio title body:
+   gh issue create --repo danjac/django-studio --title "{{ title }}" --body "{{ body }}"
+
+# Run Github workflow
+[group('deployment')]
+gh workflow *args:
+    gh workflow run {{ workflow }}.yml {{ args }}
+
+
+# Fetch kubeconfig from the production server
+[group('deployment')]
+get-kubeconfig:
+    {{ script_dir }}/get-kubeconfig.sh
+
+# Push KUBECONFIG_BASE64 and HELM_VALUES_SECRET to GitHub Actions secrets.
+# Multi-line values must be piped via stdin - 'gh secret set' cannot accept them interactively.
+[group('deployment')]
+gh-set-secrets:
+    base64 -w 0 {{ kubeconfig }} | gh secret set KUBECONFIG_BASE64
+    gh secret set HELM_VALUES_SECRET < helm/site/values.secret.yaml
+    gh secret list
+
+# Install or upgrade a Helm chart, e.g. 'just helm site' or 'just helm observability'
+[group('deployment')]
+helm chart="site":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ ! -f "{{ kubeconfig }}" ]]; then
+        echo "Error: kubeconfig not found at {{ kubeconfig }}"
+        echo "Provision the cluster first, then run: just get-kubeconfig"
+        exit 1
+    fi
+    helm dependency build helm/{{ chart }}/
+    helm upgrade --install {{ chart }} helm/{{ chart }}/ \
+        --kubeconfig {{ kubeconfig }} \
+        --reuse-values \
+        -f helm/{{ chart }}/values.yaml \
+        -f helm/{{ chart }}/values.secret.yaml
+
+# Run Terraform commands in a subdirectory, e.g. 'just terraform hetzner plan'
+[group('deployment')]
+terraform dir *args:
+    terraform -chdir=terraform/{{ dir }} {{ args }}
+
+# Print a raw Terraform output value, e.g. 'just terraform-value cloudflare origin_key_pem'
+[group('deployment')]
+terraform-value dir name:
+    terraform -chdir=terraform/{{ dir }} output -raw {{ name }}
+
+# Run Django manage.py commands on production server
+[group('production')]
+[confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
+rdj *args:
+    {{ script_dir }}/manage.sh {{ args }}
+
+# Run Psql commands remotely on production database
+[group('production')]
+[confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
+rpsql *args:
+    {{ script_dir }}/psql.sh {{ args }}
+
+# Run kubectl commands on the production cluster
+[group('production')]
+kube *args:
+    kubectl --kubeconfig {{ kubeconfig }} {{ args }}

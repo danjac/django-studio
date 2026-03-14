@@ -1,11 +1,11 @@
-This is a cookiecutter project to create a new Django project.
+This is a Copier template to create a new Django project.
 
 ## Testing
 
-Create a new project in `/tmp` using the cookiecutter template:
+Create a new project in `/tmp` using the Copier template:
 
 ```bash
-uvx cookiecutter --no-input --output-dir /tmp ./ project_name="My App"
+uvx copier copy --trust --defaults --data project_name="My App" . /tmp/my_app
 ```
 
 If a project has already been created in `/tmp`, remove it first (stop services to avoid port conflicts):
@@ -41,11 +41,11 @@ just stop                       # stop Docker services
   without an initial migration. Developers are expected to customise the `User` model
   fields before generating migrations.
 
-**Note:** Run `uv sync` from the cookiecutter repo root first if working from a fresh clone and the virtual environment doesn't exist yet. This installs the cookiecutter tooling itself; it is separate from the generated project's dependencies.
+**Note:** Run `uv sync` from the repo root first if working from a fresh clone and the virtual environment doesn't exist yet. This installs the Copier tooling itself; it is separate from the generated project's dependencies.
 
-## Cookiecutter Project Testing
+## Template Project Testing
 
-The cookiecutter project itself has its own tests and pre-commit config. Run these from the root directory:
+The template project itself has its own tests and pre-commit config. Run these from the root directory:
 
 ```bash
 just check      # Run lint, format, and tests
@@ -68,19 +68,23 @@ git init && git commit -A && pre-commit run --all-files
 
 ## Feature Flags
 
-`cookiecutter.json` exposes four boolean feature flags. The post-generation hook (`hooks/post_gen_project.py`) removes unused files based on these selections:
+`copier.yml` exposes five boolean feature flags. The post-generation hook (`hooks/post_gen_project.py`) removes unused files based on these selections:
 
-| Flag           | Default | Effect when disabled                    |
-| -------------- | ------- | --------------------------------------- |
-| `use_hx_boost` | `"y"`   | Removes HTMX boost config               |
-| `use_storage`  | `"y"`   | Removes `terraform/storage/`            |
-| `use_pwa`      | `"n"`   | Removes PWA manifest and service worker |
+| Flag               | Default | Effect when disabled                          |
+| ------------------ | ------- | --------------------------------------------- |
+| `use_hx_boost`     | `true`  | Removes HTMX boost config                     |
+| `use_storage`      | `true`  | Removes `terraform/storage/`                  |
+| `use_pwa`          | `true`  | Removes PWA manifest and service worker        |
+| `use_opentelemetry`| `true`  | Removes observability Helm chart               |
+| `use_sentry`       | `true`  | Removes Sentry SDK from settings and pyproject |
 
-When adding template files that are conditional on a flag, update `hooks/post_gen_project.py` - do not hard-delete files from the template directory itself. When adding files that contain Django or Tailwind `{{ }}` syntax, add their paths to `_copy_without_render` in `cookiecutter.json` so cookiecutter copies them verbatim instead of treating them as Jinja2 templates.
+When adding template files that are conditional on a flag, update `hooks/post_gen_project.py` — do not hard-delete files from the template directory itself.
+
+**Jinja2 processing:** Only files with a `.jinja` suffix are processed by Copier's Jinja2 engine; all other files are copied verbatim. Files that contain conflicting `{{ }}` syntax (e.g. `justfile` uses `{{ args }}`, GitHub Actions workflows use `${{ }}`) must remain plain files and use `PROJECT_SLUG` as a plain-text placeholder, substituted by the hook.
 
 ## Design System
 
-The template includes a component library in `{{cookiecutter.project_slug}}/design/`. When modifying or adding UI components in the generated project, check the design system first:
+The template includes a component library in `template/design/`. When modifying or adding UI components in the generated project, check the design system first:
 
 - `design/README.md` - component index and design tokens
 - `design/navigation.md` - navbar, sidebar, user dropdown
@@ -102,11 +106,11 @@ The `/djstudio` skill uses a thin dispatcher (`skills/djstudio.md`) that routes 
 
 1. Create or edit the file at `skills/djstudio/<subcommand>.md`.
 2. Add or update the row in the dispatcher table in `skills/djstudio.md`.
-3. Update the subcommand table in `{{cookiecutter.project_slug}}/AGENTS.md`.
+3. Update the subcommand table in `template/AGENTS.md.jinja`.
 4. Always update relevant docs when adding, removing, or changing a command — at minimum:
-   - `{{cookiecutter.project_slug}}/AGENTS.md` — subcommand table
-   - `{{cookiecutter.project_slug}}/README.md` — slash command table in the generated project
-   - `README.md` — slash command table in the cookiecutter repo root
+   - `template/AGENTS.md.jinja` — subcommand table
+   - `template/README.md.jinja` — slash command table in the generated project
+   - `README.md` — slash command table in this repo root
    - Any `docs/` page the subcommand references or produces output for
 
 **Tracking in version control:**

@@ -1,0 +1,28 @@
+# Cloudflare API token (create in Dashboard → Profile → API Tokens)
+# Required permissions: Zone (Edit), Zone Settings (Edit), DNS (Edit),
+# Page Rules (Edit), Zone WAF (Edit), Transform Rules (Edit)
+cloudflare_api_token = ""
+
+# Your domain name
+domain = "{{ domain }}"
+
+# Subdomain for the app (empty for root domain)
+subdomain = ""
+
+# Server IP from Hetzner Terraform output
+server_ip = ""
+
+# Redirect www to main domain
+enable_www_redirect = true
+
+{%- if use_opentelemetry %}
+# Monitor IP from Hetzner Terraform output
+monitor_ip = ""
+
+# Grafana subdomain (set to "" to skip)
+# grafana_subdomain = "grafana"
+{%- endif %}
+
+# Mailgun configuration (optional)
+# mailgun_dkim_value = "k=rsa; p=..."
+# mailgun_mx_servers = ["mxa.eu.mailgun.org", "mxb.eu.mailgun.org"]

@@ -1,11 +1,11 @@
 [project]
 name = "django-studio"
 version = "0.1.0"
-description = "Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS"
+description = "Copier template for Django projects with HTMX, Alpine.js, and Tailwind CSS"
 readme = "README.md"
 requires-python = "==3.14.*"
 dependencies = [
-    "cookiecutter>=2.6.0",
+    "copier>=9.13.0",
 ]
 
 [dependency-groups]

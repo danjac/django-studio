@@ -1,0 +1,241 @@
+# Terraform configuration for Cloudflare CDN and SSL.
+#
+# Sets up DNS, CDN caching, SSL/TLS, and security settings.
+#
+# Usage:
+#   terraform init
+#   terraform plan
+#   terraform apply
+#
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.49"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
+
+# Get the zone (domain must already exist in Cloudflare)
+data "cloudflare_zone" "domain" {
+  name = var.domain
+}
+
+# A record pointing to the server node
+resource "cloudflare_record" "server" {
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = var.subdomain != "" ? var.subdomain : "@"
+  content         = var.server_ip
+  type            = "A"
+  proxied         = true # Enable Cloudflare proxy (CDN + SSL)
+  ttl             = 1    # Automatic TTL when proxied
+  allow_overwrite = true
+  comment         = "Server node - managed by Terraform"
+}
+
+{%- if use_opentelemetry %}
+# Grafana monitoring UI - proxied through Cloudflare so the Cloudflare origin cert is valid
+resource "cloudflare_record" "grafana" {
+  count           = var.grafana_subdomain != "" ? 1 : 0
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = var.grafana_subdomain
+  content         = var.monitor_ip
+  type            = "A"
+  proxied         = true
+  ttl             = 1
+  allow_overwrite = true
+  comment         = "Grafana observability UI - managed by Terraform"
+}
+{%- endif %}
+
+# Optional: WWW redirect
+resource "cloudflare_record" "www" {
+  count           = var.enable_www_redirect ? 1 : 0
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = "www"
+  content         = var.subdomain != "" ? "${var.subdomain}.${var.domain}" : var.domain
+  type            = "CNAME"
+  proxied         = true
+  ttl             = 1
+  allow_overwrite = true
+  comment         = "WWW redirect - managed by Terraform"
+}
+
+locals {
+  mailgun_dkim_value = trimspace(var.mailgun_dkim_value)
+}
+
+# Mailgun DNS records (optional)
+resource "cloudflare_record" "mailgun_mx" {
+  count           = local.mailgun_dkim_value != "" ? length(var.mailgun_mx_servers) : 0
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = "mg"
+  content         = var.mailgun_mx_servers[count.index]
+  type            = "MX"
+  priority        = 10
+  ttl             = 1
+  allow_overwrite = true
+  comment         = "Mailgun MX - managed by Terraform"
+}
+
+resource "cloudflare_record" "mailgun_spf" {
+  count           = local.mailgun_dkim_value != "" ? 1 : 0
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = "mg"
+  content         = "\"${var.mailgun_spf_value}\""
+  type            = "TXT"
+  ttl             = 1
+  allow_overwrite = true
+  comment         = "Mailgun SPF - managed by Terraform"
+}
+
+resource "cloudflare_record" "mailgun_dkim" {
+  count           = local.mailgun_dkim_value != "" ? 1 : 0
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = "mta._domainkey.mg"
+  content         = "\"${local.mailgun_dkim_value}\""
+  type            = "TXT"
+  ttl             = 1
+  allow_overwrite = true
+  comment         = "Mailgun DKIM - managed by Terraform"
+}
+
+resource "cloudflare_record" "mailgun_tracking" {
+  count           = local.mailgun_dkim_value != "" ? 1 : 0
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = "email.mg"
+  content         = "eu.mailgun.org"
+  type            = "CNAME"
+  proxied         = false
+  ttl             = 1
+  allow_overwrite = true
+  comment         = "Mailgun tracking - managed by Terraform"
+}
+
+# SSL/TLS settings
+resource "cloudflare_zone_settings_override" "domain_settings" {
+  zone_id = data.cloudflare_zone.domain.id
+
+  settings {
+    # SSL/TLS
+    ssl                      = "strict"
+    always_use_https         = "on"
+    automatic_https_rewrites = "on"
+    min_tls_version          = "1.2"
+    tls_1_3                  = "on"
+
+    # Security
+    security_level = "medium"
+    challenge_ttl  = 1800
+    browser_check  = "on"
+
+    # Performance
+    brotli                   = "on"
+    early_hints              = "on"
+    http3                    = "on"
+    opportunistic_encryption = "on"
+    rocket_loader            = "off"
+
+    # Caching
+    browser_cache_ttl = 14400
+    cache_level       = "aggressive"
+
+    # Other
+    ipv6       = "on"
+    websockets = "on"
+  }
+}
+
+# Cache static assets
+resource "cloudflare_page_rule" "cache_static_assets" {
+  zone_id  = data.cloudflare_zone.domain.id
+  target   = "${var.subdomain != "" ? "${var.subdomain}.${var.domain}" : var.domain}/*.{css,js,png,jpg,jpeg,webp,gif,svg,ico,woff,woff2}"
+  priority = 1
+
+  actions {
+    cache_level       = "cache_everything"
+    edge_cache_ttl    = 2592000
+    browser_cache_ttl = 1800
+  }
+}
+
+# Firewall rules
+resource "cloudflare_ruleset" "zone_level_firewall" {
+  zone_id = data.cloudflare_zone.domain.id
+  name    = "Zone-level firewall"
+  kind    = "zone"
+  phase   = "http_request_firewall_custom"
+
+  rules {
+    action      = "block"
+    expression  = "(http.request.uri.path contains \".env\") or (http.request.uri.path contains \".git\") or (http.request.uri.path contains \"wp-admin\")"
+    description = "Block common exploit paths"
+    enabled     = true
+  }
+}
+
+# Origin certificate - TLS between Cloudflare and the Hetzner server
+# Covers the root domain and all subdomains via wildcard (15-year validity).
+# The private key is stored in Terraform state - keep state secure.
+resource "tls_private_key" "origin" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
+resource "tls_cert_request" "origin" {
+  private_key_pem = tls_private_key.origin.private_key_pem
+
+  subject {
+    common_name = var.domain
+  }
+}
+
+resource "cloudflare_origin_ca_certificate" "origin" {
+  csr                = tls_cert_request.origin.cert_request_pem
+  hostnames          = ["*.${var.domain}", var.domain]
+  request_type       = "origin-rsa"
+  requested_validity = 5475 # 15 years (Cloudflare maximum)
+}
+
+# Security headers
+resource "cloudflare_ruleset" "transform_response_headers" {
+  zone_id = data.cloudflare_zone.domain.id
+  name    = "Transform Rules - Response Headers"
+  kind    = "zone"
+  phase   = "http_response_headers_transform"
+
+  rules {
+    action      = "rewrite"
+    description = "Add security headers"
+    enabled     = true
+    expression  = "true"
+
+    action_parameters {
+      headers {
+        name      = "Referrer-Policy"
+        operation = "set"
+        value     = "strict-origin-when-cross-origin"
+      }
+      headers {
+        name      = "X-Content-Type-Options"
+        operation = "set"
+        value     = "nosniff"
+      }
+      headers {
+        name      = "X-Frame-Options"
+        operation = "set"
+        value     = "SAMEORIGIN"
+      }
+    }
+  }
+}

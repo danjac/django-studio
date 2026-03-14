@@ -1,0 +1,40 @@
+from typing import TYPE_CHECKING
+
+from django.template.response import TemplateResponse
+
+if TYPE_CHECKING:
+    from {{ package_name }}.http.request import HttpRequest
+
+
+def render_partial_response(
+    request: "HttpRequest",
+    template_name: str,
+    context: dict | None = None,
+    *,
+    target: str,
+    partial: str | None,
+    **response_kwargs,
+) -> TemplateResponse:
+    """Render a template, or a named partial if the HTMX target matches.
+
+    When the HX-Target header matches `target`, appends `#partial` to the
+    template name so Django 6's built-in partial rendering kicks in.
+    Otherwise renders the full template.
+
+    Args:
+        request: The current HTTP request.
+        template_name: Base template path (e.g. ``"myapp/list.html"``).
+        context: Template context dict.
+        target: Expected value of the ``HX-Target`` header.
+        partial: Named partial within the template (e.g. ``"pagination"``).
+        **response_kwargs: Passed through to ``TemplateResponse``.
+    """
+    if target and request.htmx.target == target:
+        template_name += f"#{partial}"
+
+    return TemplateResponse(
+        request,
+        template_name,
+        context or {},
+        **response_kwargs,
+    )

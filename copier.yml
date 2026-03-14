@@ -1,0 +1,73 @@
+project_name:
+    type: str
+    help: Human-readable project name (e.g. "Photo Blog")
+    validator: "{% if not project_name.strip() %}project_name cannot be empty{% endif %}"
+
+project_slug:
+    type: str
+    help: Python identifier used as the project directory and module name
+    default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
+    validator: "{% if not project_slug.strip() %}project_slug cannot be empty{% endif %}"
+
+package_name:
+    type: str
+    help: Python package name (usually identical to project_slug)
+    default: "{{ project_slug }}"
+
+description:
+    type: str
+    help: Short project description
+    default: "A Django project"
+
+author:
+    type: str
+    help: Author full name
+    default: "Your Name"
+
+author_email:
+    type: str
+    help: Author email address
+    default: "you@example.com"
+
+domain:
+    type: str
+    help: Production domain (e.g. example.com)
+    default: "example.com"
+
+use_hx_boost:
+    type: bool
+    help: Enable HTMX hx-boost for full-page navigation?
+    default: true
+
+use_storage:
+    type: bool
+    help: Include Hetzner object storage (Terraform + S3 settings)?
+    default: true
+
+use_pwa:
+    type: bool
+    help: Include PWA support (manifest + service worker)?
+    default: true
+
+use_opentelemetry:
+    type: bool
+    help: Include OpenTelemetry tracing?
+    default: true
+
+use_sentry:
+    type: bool
+    help: Include Sentry error tracking?
+    default: true
+
+_subdirectory: template
+_templates_suffix: .jinja
+
+_tasks:
+    - >-
+        python "{{ _copier_conf.src_path }}/hooks/post_gen_project.py"
+        "{{ project_slug }}"
+        "{{ use_hx_boost }}"
+        "{{ use_storage }}"
+        "{{ use_pwa }}"
+        "{{ use_opentelemetry }}"
+        "{{ use_sentry }}"

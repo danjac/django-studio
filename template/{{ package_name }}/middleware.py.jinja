@@ -1,0 +1,135 @@
+import dataclasses
+from typing import TYPE_CHECKING, Final
+
+from django.contrib.messages import get_messages
+from django.http import HttpResponse, QueryDict
+from django.template.loader import render_to_string
+from django.utils.cache import patch_vary_headers
+from django.utils.encoding import force_str
+from django.utils.functional import cached_property
+from django_htmx.http import HttpResponseLocation
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from {{ package_name }}.http.request import HttpRequest
+
+
+@dataclasses.dataclass(frozen=True, kw_only=False)
+class BaseMiddleware:
+    """Base middleware class."""
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+
+
+class HtmxCacheMiddleware(BaseMiddleware):
+    """Sets the Vary header to include HX-Request for HTMX requests.
+
+    See https://htmx.org/docs/#caching. Place after HtmxMiddleware.
+    """
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        """Middleware implementation."""
+        response = self.get_response(request)
+        if request.htmx:
+            patch_vary_headers(response, ("HX-Request",))
+        return response
+
+
+class HtmxMessagesMiddleware(BaseMiddleware):
+    """Appends Django messages to HTMX HTML responses as OOB swaps."""
+
+    _hx_redirect_headers: Final = frozenset(
+        {
+            "HX-Location",
+            "HX-Redirect",
+            "HX-Refresh",
+        }
+    )
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        """Middleware implementation."""
+        response = self.get_response(request)
+
+        if (
+            response.streaming
+            or not request.htmx
+            or not self._is_html_response(response)
+            or self._is_htmx_redirect(response)
+        ):
+            return response
+
+        if messages := get_messages(request):
+            response.write(
+                render_to_string(
+                    "messages.html",
+                    {
+                        "messages": messages,
+                        "hx_oob": True,
+                    },
+                    request=request,
+                )
+            )
+
+        return response
+
+    def _is_html_response(self, response: HttpResponse) -> bool:
+        """Returns True if response has HTML content type."""
+        return "text/html" in response.get("Content-Type", "")
+
+    def _is_htmx_redirect(self, response: HttpResponse) -> bool:
+        """Returns True if response has HTMX redirect headers."""
+        return bool(set(response.headers) & self._hx_redirect_headers)
+
+
+class HtmxRedirectMiddleware(BaseMiddleware):
+    """Converts HTTP redirects to HX-Location responses for HTMX requests."""
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        """Middleware implementation."""
+        response = self.get_response(request)
+        if request.htmx and "Location" in response and response.status_code in range(300, 400):
+            return HttpResponseLocation(response["Location"])
+        return response
+
+
+class SearchMiddleware(BaseMiddleware):
+    """Adds a SearchDetails instance as request.search."""
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        """Middleware implementation."""
+        request.search = SearchDetails(request=request)
+        return self.get_response(request)
+
+
+@dataclasses.dataclass(frozen=True, kw_only=True)
+class SearchDetails:
+    """Handles search parameters in a request."""
+
+    request: HttpRequest
+    param: str = "search"
+    max_length: int = 200
+
+    def __str__(self) -> str:
+        """Returns search query value."""
+        return self.value
+
+    def __bool__(self) -> bool:
+        """Returns True if search param is present and non-empty."""
+        return bool(self.value)
+
+    @cached_property
+    def value(self) -> str:
+        """Returns the search query value, if any."""
+        return force_str(self.request.GET.get(self.param, "")).strip()[
+            : self.max_length
+        ]
+
+    @cached_property
+    def qs(self) -> str:
+        """Returns querystring with search param."""
+        return (
+            "?" + QueryDict.fromkeys([self.param], value=self.value).urlencode()
+            if self
+            else ""
+        )

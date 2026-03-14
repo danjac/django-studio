@@ -8,13 +8,13 @@ _Photo by James Kovin on [Unsplash](https://unsplash.com/photos/black-and-green-
 
 ## Overview
 
-Cookiecutter template for Django projects with HTMX, Alpine.js, and Tailwind CSS.
+Copier template for Django projects with HTMX, Alpine.js, and Tailwind CSS.
 
 This project is designed to be a starting point for building modern Django applications with a focus on simplicity, performance, and developer experience. It includes an opinionated and carefully curated stack of tools and libraries to help you get up and running quickly while following best practices, a design pattern library with tried-and-tested components and agentic Markdown documentation and custom Skills for AI-assisted development.
 
 ## Status
 
-This project is best described as "pre-alpha". While based on working projects in production, this is a new repo and the cookiecutter template has not yet been tested by external users. Expect many breaking changes and rough edges.
+This project is best described as "pre-alpha". While based on working projects in production, this is a new repo and the template has not yet been tested by external users. Expect many breaking changes and rough edges.
 
 ## Audience
 
@@ -104,7 +104,7 @@ Prices are subject to change, but the current hosting costs based on the default
 
 | Tool                                                    | Purpose                                          | Install                                                     |
 | ------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------- |
-| [uv](https://docs.astral.sh/uv/)                        | Python package manager (runs `uvx cookiecutter`) | `curl -LsSf https://astral.sh/uv/install.sh \| sh`          |
+| [uv](https://docs.astral.sh/uv/)                        | Python package manager (runs `uvx copier`)       | `curl -LsSf https://astral.sh/uv/install.sh \| sh`          |
 | [just](https://just.systems/)                           | Task runner                                      | `cargo install just` or via your OS package manager         |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | PostgreSQL, Redis, Mailpit                       | See Docker docs                                             |
 | [gh](https://cli.github.com/)                           | GitHub CLI (issues, PRs)                         | See [install docs](https://github.com/cli/cli#installation) |
@@ -125,7 +125,7 @@ See `DEPLOYMENT.md` in the generated project for full deployment instructions.
 ## Usage
 
 ```bash
-uvx cookiecutter gh:danjac/django-studio
+uvx copier copy --trust gh:danjac/django-studio my-project
 ```
 
 Then follow the prompts:
@@ -133,15 +133,27 @@ Then follow the prompts:
 | Prompt              | Example                 | Notes                            |
 | ------------------- | ----------------------- | -------------------------------- |
 | `project_name`      | `My Project`            | Human-readable name              |
-| `project_slug`      | `my-project`            | Directory/repo name (kebab-case) |
-| `package_name`      | `myapp`                 | Python package name (snake_case) |
+| `project_slug`      | `my_project`            | Python package directory name    |
+| `package_name`      | `my_project`            | Python package name (snake_case) |
 | `description`       | `A project that does X` | One-sentence description         |
 | `author`            | `Your Name`             |                                  |
 | `author_email`      | `you@example.com`       |                                  |
+| `domain`            | `example.com`           | Production domain                |
 | `use_hx_boost`      | `y` / `n`               | HTMX Boost (SPA-like navigation) |
 | `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
 | `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |
 | `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability      |
 | `use_sentry`        | `y` / `n`               | Sentry error tracking            |
+
+### Updating a generated project
+
+Once a project has been generated and committed, you can pull in template updates:
+
+```bash
+cd my-project
+uvx copier update --trust
+```
+
+Copier performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
 
 The generated `README.md` will include instructions to get started with development, testing, and deployment.

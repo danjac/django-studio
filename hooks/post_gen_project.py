@@ -1,29 +1,35 @@
 #!/usr/bin/env python
-"""Post-generation hook: adjusts files based on cookiecutter choices.
+"""Post-generation hook: adjusts files based on copier choices.
 
 Most feature-flag logic is handled by Jinja2 conditionals in the template
 files themselves (settings.py, urls.py, views.py, pyproject.toml, .env.example).
 
 This hook handles only what Jinja2 cannot:
-- HTML template manipulation (files in _copy_without_render)
-- File/directory creation and deletion
-- Justfile PROJECT_SLUG replacement (_copy_without_render)
-- Skill installation and uv lock
-- Claude Code settings.json with agentic hooks
+- HTML template manipulation (default_base.html uses marker comments)
+- File/directory creation and deletion based on feature flags
+- GitHub Actions workflow name substitution (files contain ${{ }} GHA syntax
+  which conflicts with Jinja2, so PROJECT_SLUG is used as a plain placeholder)
+- Skill installation and Claude Code settings.json generation
+- uv lock file generation
+
+Invoked by copier as:
+    python hooks/post_gen_project.py <project_slug> <use_hx_boost> <use_storage>
+                                     <use_pwa> <use_opentelemetry> <use_sentry>
 """
 
 import json
-import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
-PROJECT_SLUG = "{{cookiecutter.project_slug}}"
-USE_HX_BOOST = "{{cookiecutter.use_hx_boost}}"
-USE_STORAGE = "{{cookiecutter.use_storage}}"
-USE_PWA = "{{cookiecutter.use_pwa}}"
-USE_OPENTELEMETRY = "{{cookiecutter.use_opentelemetry}}"
-USE_SENTRY = "{{cookiecutter.use_sentry}}"
+_, PROJECT_SLUG, *_flags = sys.argv
+USE_HX_BOOST, USE_STORAGE, USE_PWA, USE_OPENTELEMETRY, USE_SENTRY = (
+    f == "True" for f in _flags
+)
+
+# Template source root: hooks/post_gen_project.py → hooks/ → template root
+_TEMPLATE_ROOT = Path(sys.argv[0]).resolve().parent.parent
 
 BASE_DIR = Path()
 
@@ -32,14 +38,22 @@ BASE_HTML = TEMPLATES_DIR / "base.html"
 DEFAULT_BASE_HTML = TEMPLATES_DIR / "default_base.html"
 HX_BASE_HTML = TEMPLATES_DIR / "hx_base.html"
 
-JUSTFILE = BASE_DIR / "justfile"
 DEPLOY_WORKFLOW = BASE_DIR / ".github" / "workflows" / "deploy.yml"
+# Files containing PROJECT_SLUG as a plain-text placeholder. These cannot be
+# .jinja templates because they use ${{ }}, {{ args }}, or other syntax that
+# conflicts with Jinja2.
+PLAIN_SLUG_FILES = [
+    BASE_DIR / "justfile",
+    *[
+        BASE_DIR / ".github" / "workflows" / name
+        for name in ("build.yml", "checks.yml", "default.yml", "docker.yml", "deploy.yml")
+    ],
+]
 TERRAFORM_STORAGE_DIR = BASE_DIR / "terraform" / "storage"
 OBSERVABILITY_HELM_DIR = BASE_DIR / "helm" / "observability"
 SERVICE_WORKER_JS = BASE_DIR / "static" / "service-worker.js"
 
-# Markers in default_base.html (which is _copy_without_render).
-# These use [[ ]] syntax so Jinja2 ignores them during hook rendering.
+# Markers in default_base.html (plain text, not Jinja2, so no conflict).
 _MARKER_BODY_OPEN = "  [[ HOOK:body-open ]]"
 _MARKER_PWA_MANIFEST = "    [[ HOOK:pwa-manifest ]]"
 _MARKER_PWA_SW = "    [[ HOOK:pwa-sw ]]"
@@ -47,9 +61,6 @@ _MARKER_PWA_SW = "    [[ HOOK:pwa-sw ]]"
 _BODY_PLAIN = "  <body>"
 _BODY_HX_BOOST = '  <body\n    hx-boost="true">'
 
-# Django template syntax must be wrapped in a raw block so Jinja2 does not
-# process it when rendering this hook file.
-{% raw %}
 _PWA_MANIFEST_LINK = '    <link rel="manifest" href="{% url \'manifest\' %}">'
 
 _PWA_SW_SCRIPT = """\
@@ -58,35 +69,27 @@ _PWA_SW_SCRIPT = """\
         navigator.serviceWorker.register('{% static "service-worker.js" %}')
       }
     </script>"""
-{% endraw %}
 
 
 def _replace_marker(content: str, marker: str, replacement: str) -> str:
     """Replace a marker line with replacement content, removing the line if empty."""
     if replacement:
         return content.replace(marker, replacement)
-    # Remove the entire line (including newline) when replacement is empty
     return content.replace(marker + "\n", "")
 
 
 def resolve_markers() -> None:
-    """Replace all marker comments in default_base.html with actual content.
-
-    This runs BEFORE any file renames so default_base.html always exists.
-    """
+    """Replace all marker comments in default_base.html with actual content."""
     with DEFAULT_BASE_HTML.open() as f:
         content = f.read()
 
-    # Body tag: add hx-boost attribute when enabled
-    body_replacement = _BODY_HX_BOOST if USE_HX_BOOST == "y" else _BODY_PLAIN
+    body_replacement = _BODY_HX_BOOST if USE_HX_BOOST else _BODY_PLAIN
     content = _replace_marker(content, _MARKER_BODY_OPEN, body_replacement)
 
-    # PWA manifest link: insert before CSS link when enabled
-    pwa_manifest = _PWA_MANIFEST_LINK if USE_PWA == "y" else ""
+    pwa_manifest = _PWA_MANIFEST_LINK if USE_PWA else ""
     content = _replace_marker(content, _MARKER_PWA_MANIFEST, pwa_manifest)
 
-    # PWA service worker script: insert before </body> when enabled
-    pwa_sw = _PWA_SW_SCRIPT if USE_PWA == "y" else ""
+    pwa_sw = _PWA_SW_SCRIPT if USE_PWA else ""
     content = _replace_marker(content, _MARKER_PWA_SW, pwa_sw)
 
     with DEFAULT_BASE_HTML.open("w") as f:
@@ -105,11 +108,7 @@ def enable_hx_boost() -> None:
 
 
 def remove_hx_base() -> None:
-    """Collapse default_base.html into base.html when hx-boost is not used.
-
-    Without hx-boost there is no need for dynamic extends; base.html becomes
-    the full layout and the default_base.html / hx_base.html stubs are removed.
-    """
+    """Collapse default_base.html into base.html when hx-boost is not used."""
     if HX_BASE_HTML.exists():
         HX_BASE_HTML.unlink()
     DEFAULT_BASE_HTML.replace(BASE_HTML)
@@ -138,15 +137,15 @@ def remove_observability_helm() -> None:
 
 def remove_pwa_static() -> None:
     """Remove the service worker when PWA is not used."""
-    if os.path.exists(SERVICE_WORKER_JS):
-        os.remove(SERVICE_WORKER_JS)
+    if SERVICE_WORKER_JS.exists():
+        SERVICE_WORKER_JS.unlink()
 
 
 # ── skills ───────────────────────────────────────────────────────────────────
 
 
 def install_claude_hooks() -> None:
-    """Write .claude/settings.json with permissions and agentic hooks for the generated project."""
+    """Write .claude/settings.json with permissions and agentic hooks."""
     settings = {
         "permissions": {
             "allow": [
@@ -211,19 +210,18 @@ def install_claude_hooks() -> None:
                     ],
                 }
             ],
-        }
+        },
     }
     claude_dir = BASE_DIR / ".claude"
     claude_dir.mkdir(parents=True, exist_ok=True)
-    settings_file = claude_dir / "settings.json"
-    with settings_file.open("w") as f:
+    with (claude_dir / "settings.json").open("w") as f:
         json.dump(settings, f, indent=2)
         f.write("\n")
 
 
 def install_skills() -> None:
     """Copy skills from the template's skills/ directory to .claude/commands/."""
-    skills_src = Path("{{cookiecutter._repo_dir}}") / "skills"
+    skills_src = _TEMPLATE_ROOT / "skills"
     if not skills_src.is_dir():
         return
     commands_dst = BASE_DIR / ".claude" / "commands"
@@ -233,32 +231,33 @@ def install_skills() -> None:
 
 # ── main ─────────────────────────────────────────────────────────────────────
 
-# 1. Resolve all HTML marker comments (must happen before file renames)
+# 1. Resolve HTML marker comments (must happen before file renames)
 resolve_markers()
 
 # 2. Feature-flag file operations
-if USE_HX_BOOST == "y":
+if USE_HX_BOOST:
     enable_hx_boost()
 else:
     remove_hx_base()
 
-if USE_STORAGE != "y":
+if not USE_STORAGE:
     remove_storage_terraform()
 
-if USE_OPENTELEMETRY != "y":
+if not USE_OPENTELEMETRY:
     remove_observability_helm()
 
-if USE_PWA != "y":
+if not USE_PWA:
     remove_pwa_static()
 
-# 3. Inject project slug into files that are _copy_without_render
-for path in (JUSTFILE, DEPLOY_WORKFLOW):
-    content = path.read_text()
-    path.write_text(content.replace("PROJECT_SLUG", PROJECT_SLUG))
+# 3. Substitute PROJECT_SLUG in files that cannot be .jinja templates because
+#    they use ${{ }}, {{ args }}, or other syntax that conflicts with Jinja2.
+for path in PLAIN_SLUG_FILES:
+    if path.exists():
+        path.write_text(path.read_text().replace("PROJECT_SLUG", PROJECT_SLUG))
 
 # 4. Install skills, Claude hooks, and generate lock file
 install_skills()
 install_claude_hooks()
 
-# Generate uv.lock so CI's `uv sync --frozen` works without an extra manual step
+# Generate uv.lock so CI's `uv sync --frozen` works without a manual step
 subprocess.run(["uv", "lock"], check=True)

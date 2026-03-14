@@ -3,11 +3,10 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^\{\{cookiecutter\.project_slug\}}/
       - id: end-of-file-fixer
-        exclude: ^\{\{cookiecutter\.project_slug\}}/
       - id: check-yaml
-        exclude: (^|/)\{\{cookiecutter\.project_slug\}}/
+        # Helm chart templates use Go template syntax ({{ }}) which is not valid YAML
+        exclude: ^template/helm/.*/templates/
       - id: check-added-large-files
 
   - repo: https://github.com/astral-sh/ruff-pre-commit

@@ -149,7 +149,23 @@ just get-kubeconfig
 
 **Check:** Read `terraform/cloudflare/terraform.tfvars` if it exists.
 
-### 2a. Cloudflare API token
+### 2a. Confirm domain is Active in Cloudflare
+
+Before proceeding, tell the user:
+
+> **Before continuing:** Make sure your domain has been added to your Cloudflare account
+> and its nameservers are pointing to Cloudflare (status: **Active**).
+>
+> Is `<domain>` showing as Active in your Cloudflare dashboard? (y/n)
+
+If the user answers **n**, stop and tell them to:
+1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → Add a Site → enter the domain
+2. Update the domain's nameservers at their registrar to point to Cloudflare
+3. Wait for the domain to show as **Active**, then re-run `/djstudio launch`
+
+Only continue when the user confirms the domain is Active.
+
+### 2b. Cloudflare API token
 
 If `cloudflare_api_token` is missing or empty, pause and tell the user:
 
@@ -173,12 +189,12 @@ If `cloudflare_api_token` is missing or empty, pause and tell the user:
 
 Read the user's input. Set `cloudflare_api_token`.
 
-### 2b. Domain
+### 2c. Domain
 
 If `domain` is missing, empty, or `example.com`, ask the user to confirm or enter their domain.
 Otherwise use the existing value.
 
-### 2c. Server IP
+### 2d. Server IP
 
 Get automatically from Hetzner terraform output (already applied in Step 1):
 ```bash
@@ -186,7 +202,7 @@ just terraform-value hetzner server_public_ip
 ```
 Set `server_ip`.
 
-### 2d. Mailgun DNS records
+### 2e. Mailgun DNS records
 
 If the user wants to configure outbound email (Mailgun), collect the DNS values needed
 so they can be added to Cloudflare DNS via Terraform.
@@ -218,10 +234,10 @@ If **no**, skip this subsection. Tell the user:
 > Mailgun DNS records will not be added automatically. Add them manually in Cloudflare DNS
 > after deploy if you want outbound email to work.
 
-### 2e. Write terraform.tfvars and apply
+### 2f. Write terraform.tfvars and apply
 
 Write `terraform/cloudflare/terraform.tfvars` with all collected values, including
-`mailgun_dkim_value` and `mailgun_mx_servers` if collected in 2d.
+`mailgun_dkim_value` and `mailgun_mx_servers` if collected in 2e.
 
 Then:
 ```bash

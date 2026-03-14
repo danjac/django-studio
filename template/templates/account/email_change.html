@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% title_tag _("Change Email") %}{% endblock title %}
+
+{% block content %}
+  <div class="mx-auto max-w-md py-12">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      {% translate "Change Email" %}
+    </h1>
+    {% if current_emailaddress %}
+      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+        {% blocktranslate with email=current_emailaddress.email %}
+          Your current email address is <strong>{{ email }}</strong>.
+        {% endblocktranslate %}
+      </p>
+    {% endif %}
+    {% if new_emailaddress %}
+      <div class="mb-6 rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+        <p class="mb-2">
+          {% blocktranslate with email=new_emailaddress.email %}
+            A verification email has been sent to <strong>{{ email }}</strong>. Check your inbox and
+            click the link to confirm the change.
+          {% endblocktranslate %}
+        </p>
+        <form method="post" action="{% url 'account_email' %}" class="flex gap-2">
+          {% csrf_token %}
+          <input type="hidden" name="email" value="{{ new_emailaddress.email }}" />
+          <button type="submit" name="action_send" class="btn btn-secondary">
+            {% translate "Re-send Verification" %}
+          </button>
+          {% if current_emailaddress %}
+            <button type="submit" name="action_remove" class="btn btn-danger">
+              {% translate "Cancel Change" %}
+            </button>
+          {% endif %}
+        </form>
+      </div>
+    {% endif %}
+    <form method="post" action="{% url 'account_email' %}" class="space-y-4">
+      {% csrf_token %}
+      {{ form }}
+      <div>
+        <button type="submit" name="action_add" class="btn btn-primary">
+          {% translate "Change Email" %}
+        </button>
+      </div>
+    </form>
+  </div>
+{% endblock content %}

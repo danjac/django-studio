@@ -158,9 +158,6 @@ value and HTML-escapes it into a `<script type="application/json">` element:
 {{ data | json_script:"element-id" }}
 ```
 
-Flag as **WARNING** any `data-*` attribute that passes structured data
-(objects, arrays, HTML fragments) — these should use `json_script` instead.
-
 #### 3c. AlpineJS `x-html`
 
 `x-html` sets `innerHTML` and is an XSS sink. Flag as **CRITICAL** any
@@ -178,12 +175,7 @@ the view name and ask the user to confirm it is intentional and why CSRF
 protection is not needed (e.g. a token-authenticated API endpoint with no
 cookie-based session).
 
-#### 4b. Forms without `{% csrf_token %}`
-
-Scan all templates for `<form` tags with `method="post"` (case-insensitive).
-Flag as **CRITICAL** any that do not contain `{% csrf_token %}`.
-
-#### 4c. HTMX mutations and CSRF
+#### 4b. HTMX mutations and CSRF
 
 HTMX requests that use `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` must
 include the CSRF token. Check that one of the following is present:

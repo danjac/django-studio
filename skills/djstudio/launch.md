@@ -96,6 +96,13 @@ just terraform hetzner apply -auto-approve
 
 Wait for apply to complete. If it fails, show the error and stop.
 
+Then add the new server to SSH known hosts (required to avoid host key verification
+failures when fetching the kubeconfig):
+```bash
+server_ip=$(just terraform-value hetzner server_public_ip)
+ssh-keyscan -H "$server_ip" >> ~/.ssh/known_hosts
+```
+
 Then fetch the kubeconfig:
 ```bash
 just get-kubeconfig

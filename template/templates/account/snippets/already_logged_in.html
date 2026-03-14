@@ -1,0 +1,7 @@
+{% load i18n %}
+{% load account %}
+{% user_display user as user_display %}
+<div class="mb-4 rounded border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-200">
+  <strong>{% translate "Note" %}:</strong>
+  {% blocktranslate %}You are already logged in as {{ user_display }}.{% endblocktranslate %}
+</div>

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% title_tag _("Phone Verification") %}{% endblock title %}
+
+{% block content %}
+  <div class="mx-auto max-w-md py-12">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      {% translate "Enter Phone Verification Code" %}
+    </h1>
+    {% if phone %}
+      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+        {% blocktranslate %}We sent a verification code to <strong>{{ phone }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
+      </p>
+    {% endif %}
+    <form method="post" action="{% url 'account_verify_phone' %}" class="space-y-4">
+      {% csrf_token %}
+      {{ verify_form }}
+      {{ redirect_field }}
+      <div class="flex flex-wrap gap-3">
+        <button type="submit" class="btn btn-primary">{% translate "Verify" %}</button>
+        {% if can_resend %}
+          <button type="submit" form="resend-form" class="btn btn-secondary">
+            {% translate "Request new code" %}
+          </button>
+        {% endif %}
+      </div>
+    </form>
+    {% if can_resend %}
+      <form id="resend-form" method="post" action="{% url 'account_verify_phone' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="resend" />
+        {{ redirect_field }}
+      </form>
+    {% endif %}
+    {% if change_form %}
+      <div class="mt-8">
+        <h2 class="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          {% translate "Use a different phone number" %}
+        </h2>
+        <form method="post" action="{% url 'account_verify_phone' %}" class="space-y-4">
+          {% csrf_token %}
+          {{ change_form }}
+          {{ redirect_field }}
+          <div>
+            <button type="submit" name="action" value="change" class="btn btn-secondary">
+              {% translate "Change" %}
+            </button>
+          </div>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}

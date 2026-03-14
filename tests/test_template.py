@@ -677,6 +677,7 @@ class TestClaudeSkillsInstallation:
             "create-model.md",
             "create-crud.md",
             "create-e2e.md",
+            "perf.md",
             "secure.md",
             "gdpr.md",
             "translate.md",

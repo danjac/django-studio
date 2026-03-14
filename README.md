@@ -30,6 +30,42 @@ European-first audience. If you are based outside the EU, the template will stil
 work but the hosting defaults and compliance tooling are optimised for EU data
 residency requirements.
 
+## Getting Started
+
+```bash
+uvx copier copy --trust gh:danjac/django-studio my-project
+```
+
+Then follow the prompts:
+
+| Prompt              | Example                 | Notes                            |
+| ------------------- | ----------------------- | -------------------------------- |
+| `project_name`      | `My Project`            | Human-readable name              |
+| `project_slug`      | `my_project`            | Python package directory name    |
+| `package_name`      | `my_project`            | Python package name (snake_case) |
+| `description`       | `A project that does X` | One-sentence description         |
+| `author`            | `Your Name`             |                                  |
+| `author_email`      | `you@example.com`       |                                  |
+| `domain`            | `example.com`           | Production domain                |
+| `use_hx_boost`      | `y` / `n`               | HTMX Boost (SPA-like navigation) |
+| `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
+| `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |
+| `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability      |
+| `use_sentry`        | `y` / `n`               | Sentry error tracking            |
+
+### Updating a generated project
+
+Once a project has been generated and committed, you can pull in template updates:
+
+```bash
+cd my-project
+uvx copier update --trust
+```
+
+Copier performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
+
+The generated `README.md` will include instructions to get started with development, testing, and deployment.
+
 ## Philosophy
 
 - **Low friction**: Minimal setup steps; generate a project with a single command.
@@ -78,20 +114,42 @@ The design system is intended to provide a production-ready foundation for your 
 
 Generated projects include a `/djstudio` Claude Code slash command with subcommands for common workflows:
 
-| Subcommand                          | Summary                                                                           |
-| ----------------------------------- | --------------------------------------------------------------------------------- |
-| `create-app <name>`                 | Create a Django app (apps.py, models, views, urls, admin, tests)                 |
-| `create-view [<app>] <view>`        | Add a view, template, and URL; omit app for top-level views                      |
-| `create-task <app> <task>`          | Add a `django-tasks-db` background task with correct async patterns               |
-| `create-model <app> <model>`        | Design and write a Django model with factory, fixture, and model tests            |
-| `create-crud <app> <model>`         | Generate full CRUD views, templates, URLs, and tests                              |
-| `create-e2e [<app>] <description>`  | Write Playwright E2E test(s) for a described user interaction                     |
-| `perf`                              | Performance audit: N+1 queries, missing indexes, caching, async blocking          |
-| `secure`                            | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection                  |
-| `gdpr`                              | Audit the project for GDPR compliance issues                                      |
-| `translate <locale>`                | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`) |
-| `launch`                            | Interactive first-deploy wizard: provisions infra, generates secrets, configures Helm, deploys |
-| `feedback`                          | Report a bug or improvement against the django-studio template                    |
+**Generators**
+
+| Subcommand                          | Summary                                                                |
+| ----------------------------------- | ---------------------------------------------------------------------- |
+| `create-app <name>`                 | Create a Django app (apps.py, models, views, urls, admin, tests)      |
+| `create-view [<app>] <view>`        | Add a view, template, and URL; omit app for top-level views            |
+| `create-task <app> <task>`          | Add a `django-tasks-db` background task with correct async patterns    |
+| `create-model <app> <model>`        | Design and write a Django model with factory, fixture, and model tests |
+| `create-crud <app> <model>`         | Generate full CRUD views, templates, URLs, and tests                   |
+| `create-e2e [<app>] <description>`  | Write Playwright E2E test(s) for a described user interaction          |
+
+**Localisation**
+
+| Subcommand            | Summary                                                                  |
+| --------------------- | ------------------------------------------------------------------------ |
+| `translate <locale>`  | Extract strings, translate via Claude, compile `.mo` catalogue           |
+
+**Audits**
+
+| Subcommand | Summary                                                              |
+| ---------- | -------------------------------------------------------------------- |
+| `perf`     | Performance audit: N+1 queries, missing indexes, caching, async      |
+| `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection      |
+| `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging      |
+
+**Deployment**
+
+| Subcommand | Summary                                                                          |
+| ---------- | -------------------------------------------------------------------------------- |
+| `launch`   | Interactive first-deploy wizard: provisions infra, configures secrets, deploys   |
+
+**Feedback**
+
+| Subcommand  | Summary                                                      |
+| ----------- | ------------------------------------------------------------ |
+| `feedback`  | Report a bug or improvement against the django-studio template |
 
 ## Hosting
 
@@ -122,39 +180,3 @@ Python 3.14 is managed automatically by `uv` - no separate install needed.
 | [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                   | See install docs |
 
 See `DEPLOYMENT.md` in the generated project for full deployment instructions.
-
-## Usage
-
-```bash
-uvx copier copy --trust gh:danjac/django-studio my-project
-```
-
-Then follow the prompts:
-
-| Prompt              | Example                 | Notes                            |
-| ------------------- | ----------------------- | -------------------------------- |
-| `project_name`      | `My Project`            | Human-readable name              |
-| `project_slug`      | `my_project`            | Python package directory name    |
-| `package_name`      | `my_project`            | Python package name (snake_case) |
-| `description`       | `A project that does X` | One-sentence description         |
-| `author`            | `Your Name`             |                                  |
-| `author_email`      | `you@example.com`       |                                  |
-| `domain`            | `example.com`           | Production domain                |
-| `use_hx_boost`      | `y` / `n`               | HTMX Boost (SPA-like navigation) |
-| `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
-| `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |
-| `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability      |
-| `use_sentry`        | `y` / `n`               | Sentry error tracking            |
-
-### Updating a generated project
-
-Once a project has been generated and committed, you can pull in template updates:
-
-```bash
-cd my-project
-uvx copier update --trust
-```
-
-Copier performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
-
-The generated `README.md` will include instructions to get started with development, testing, and deployment.

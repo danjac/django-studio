@@ -262,20 +262,42 @@ with `/djstudio <subcommand>` in Claude Code.
 
 All project commands live under `/djstudio <subcommand>`:
 
+**Generators**
+
 | Subcommand | Purpose |
-| ------------------------------------ | ----------------------------------------------- |
-| `create-app <app_name>` | Create a basic Django app (apps.py, models, views, urls, admin, tests) |
-| `create-view [<app_name>] <view>` | Add a view + template + URL; omit app for top-level views wired into `config/urls.py` |
-| `create-task <app_name> <task>` | Add a background task using `django-tasks-db` with correct async/keyword-only patterns |
-| `create-model <app_name> <model>` | Design and write a Django model with factory, fixture, and model tests |
-| `create-crud <app_name> <model>` | Generate full CRUD views, templates, URLs, and tests; runs `create-model` first if the model does not exist |
-| `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction; app inferred or asked if unclear |
-| `perf` | Performance audit: N+1 queries, missing indexes, caching, async blocking, settings |
-| `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection, open redirects |
-| `gdpr` | Audit the project for GDPR compliance issues |
-| `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`, `es`) |
-| `launch` | Interactive first-deploy wizard: provisions infra, generates secrets, configures Helm, deploys |
-| `feedback` | Report a bug or improvement against the django-studio template repo |
+| ----------------------------------------- | ------------------------------------------------------- |
+| `create-app <app_name>` | Scaffold a complete Django app |
+| `create-view [<app_name>] <view>` | Add a view + template + URL; omit app for top-level views |
+| `create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
+| `create-model <app_name> <model>` | Design a model with factory, fixture, and tests |
+| `create-crud <app_name> <model>` | Full CRUD views, templates, URLs, and tests |
+| `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
+
+**Localisation**
+
+| Subcommand | Purpose |
+| ------------------- | ---------------------------------------------- |
+| `translate <locale>` | Extract, translate, and compile message catalogue |
+
+**Audits**
+
+| Subcommand | Purpose |
+| ---------- | ------------------------------------------------------- |
+| `perf` | Performance audit: N+1 queries, indexes, caching, async |
+| `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
+| `gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
+
+**Deployment**
+
+| Subcommand | Purpose |
+| -------- | -------------------------------------------------------- |
+| `launch` | Interactive first-deploy wizard (infra → secrets → deploy) |
+
+**Feedback**
+
+| Subcommand | Purpose |
+| ---------- | ---------------------------------------------------- |
+| `feedback` | File a GitHub issue against the django-studio repo |
 
 ## Template Feedback
 

@@ -78,20 +78,42 @@ The design system is intended to provide a production-ready foundation for your 
 
 Generated projects include a `/djstudio` Claude Code slash command with subcommands for common workflows:
 
-| Subcommand                          | Summary                                                                           |
-| ----------------------------------- | --------------------------------------------------------------------------------- |
-| `create-app <name>`                 | Create a Django app (apps.py, models, views, urls, admin, tests)                 |
-| `create-view [<app>] <view>`        | Add a view, template, and URL; omit app for top-level views                      |
-| `create-task <app> <task>`          | Add a `django-tasks-db` background task with correct async patterns               |
-| `create-model <app> <model>`        | Design and write a Django model with factory, fixture, and model tests            |
-| `create-crud <app> <model>`         | Generate full CRUD views, templates, URLs, and tests                              |
-| `create-e2e [<app>] <description>`  | Write Playwright E2E test(s) for a described user interaction                     |
-| `perf`                              | Performance audit: N+1 queries, missing indexes, caching, async blocking          |
-| `secure`                            | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection                  |
-| `gdpr`                              | Audit the project for GDPR compliance issues                                      |
-| `translate <locale>`                | Extract strings, translate via Claude, compile `.mo` catalogue (e.g. `fr`, `de`) |
-| `launch`                            | Interactive first-deploy wizard: provisions infra, generates secrets, configures Helm, deploys |
-| `feedback`                          | Report a bug or improvement against the django-studio template                    |
+**Generators**
+
+| Subcommand                          | Summary                                                                |
+| ----------------------------------- | ---------------------------------------------------------------------- |
+| `create-app <name>`                 | Create a Django app (apps.py, models, views, urls, admin, tests)      |
+| `create-view [<app>] <view>`        | Add a view, template, and URL; omit app for top-level views            |
+| `create-task <app> <task>`          | Add a `django-tasks-db` background task with correct async patterns    |
+| `create-model <app> <model>`        | Design and write a Django model with factory, fixture, and model tests |
+| `create-crud <app> <model>`         | Generate full CRUD views, templates, URLs, and tests                   |
+| `create-e2e [<app>] <description>`  | Write Playwright E2E test(s) for a described user interaction          |
+
+**Localisation**
+
+| Subcommand            | Summary                                                                  |
+| --------------------- | ------------------------------------------------------------------------ |
+| `translate <locale>`  | Extract strings, translate via Claude, compile `.mo` catalogue           |
+
+**Audits**
+
+| Subcommand | Summary                                                              |
+| ---------- | -------------------------------------------------------------------- |
+| `perf`     | Performance audit: N+1 queries, missing indexes, caching, async      |
+| `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection      |
+| `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging      |
+
+**Deployment**
+
+| Subcommand | Summary                                                                          |
+| ---------- | -------------------------------------------------------------------------------- |
+| `launch`   | Interactive first-deploy wizard: provisions infra, configures secrets, deploys   |
+
+**Feedback**
+
+| Subcommand  | Summary                                                      |
+| ----------- | ------------------------------------------------------------ |
+| `feedback`  | Report a bug or improvement against the django-studio template |
 
 ## Hosting
 

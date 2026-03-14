@@ -144,9 +144,42 @@ just terraform-value hetzner server_public_ip
 ```
 Set `server_ip`.
 
-### 2d. Write terraform.tfvars and apply
+### 2d. Mailgun DNS records
 
-Write `terraform/cloudflare/terraform.tfvars` with all collected values.
+If the user wants to configure outbound email (Mailgun), collect the DNS values needed
+so they can be added to Cloudflare DNS via Terraform.
+
+Ask:
+
+> Do you want to configure Mailgun DNS records in Cloudflare? (y/n)
+> (Required for outbound email to work. You can skip and add records manually later.)
+
+If **yes**, ask:
+
+> Enter your Mailgun sender domain (e.g. `mg.example.com`):
+
+Then:
+
+> Paste your Mailgun DKIM TXT record value (from Mailgun → Sending → Domains → DNS Records,
+> the value for the `mailo._domainkey.<sender-domain>` TXT record):
+
+> Are you using EU Mailgun servers? (y/n) [default: n]
+>
+> (EU: `mxa.eu.mailgun.org`, `mxb.eu.mailgun.org`; US: `mxa.mailgun.org`, `mxb.mailgun.org`)
+
+Set:
+- `mailgun_dkim_value` = the DKIM value entered
+- `mailgun_mx_servers` = `["mxa.eu.mailgun.org", "mxb.eu.mailgun.org"]` (EU) or
+  `["mxa.mailgun.org", "mxb.mailgun.org"]` (US)
+
+If **no**, skip this subsection. Tell the user:
+> Mailgun DNS records will not be added automatically. Add them manually in Cloudflare DNS
+> after deploy if you want outbound email to work.
+
+### 2e. Write terraform.tfvars and apply
+
+Write `terraform/cloudflare/terraform.tfvars` with all collected values, including
+`mailgun_dkim_value` and `mailgun_mx_servers` if collected in 2d.
 
 Then:
 ```bash

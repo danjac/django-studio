@@ -30,6 +30,42 @@ European-first audience. If you are based outside the EU, the template will stil
 work but the hosting defaults and compliance tooling are optimised for EU data
 residency requirements.
 
+## Getting Started
+
+```bash
+uvx copier copy --trust gh:danjac/django-studio my-project
+```
+
+Then follow the prompts:
+
+| Prompt              | Example                 | Notes                            |
+| ------------------- | ----------------------- | -------------------------------- |
+| `project_name`      | `My Project`            | Human-readable name              |
+| `project_slug`      | `my_project`            | Python package directory name    |
+| `package_name`      | `my_project`            | Python package name (snake_case) |
+| `description`       | `A project that does X` | One-sentence description         |
+| `author`            | `Your Name`             |                                  |
+| `author_email`      | `you@example.com`       |                                  |
+| `domain`            | `example.com`           | Production domain                |
+| `use_hx_boost`      | `y` / `n`               | HTMX Boost (SPA-like navigation) |
+| `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
+| `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |
+| `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability      |
+| `use_sentry`        | `y` / `n`               | Sentry error tracking            |
+
+### Updating a generated project
+
+Once a project has been generated and committed, you can pull in template updates:
+
+```bash
+cd my-project
+uvx copier update --trust
+```
+
+Copier performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
+
+The generated `README.md` will include instructions to get started with development, testing, and deployment.
+
 ## Philosophy
 
 - **Low friction**: Minimal setup steps; generate a project with a single command.
@@ -144,39 +180,3 @@ Python 3.14 is managed automatically by `uv` - no separate install needed.
 | [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                   | See install docs |
 
 See `DEPLOYMENT.md` in the generated project for full deployment instructions.
-
-## Usage
-
-```bash
-uvx copier copy --trust gh:danjac/django-studio my-project
-```
-
-Then follow the prompts:
-
-| Prompt              | Example                 | Notes                            |
-| ------------------- | ----------------------- | -------------------------------- |
-| `project_name`      | `My Project`            | Human-readable name              |
-| `project_slug`      | `my_project`            | Python package directory name    |
-| `package_name`      | `my_project`            | Python package name (snake_case) |
-| `description`       | `A project that does X` | One-sentence description         |
-| `author`            | `Your Name`             |                                  |
-| `author_email`      | `you@example.com`       |                                  |
-| `domain`            | `example.com`           | Production domain                |
-| `use_hx_boost`      | `y` / `n`               | HTMX Boost (SPA-like navigation) |
-| `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
-| `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |
-| `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability      |
-| `use_sentry`        | `y` / `n`               | Sentry error tracking            |
-
-### Updating a generated project
-
-Once a project has been generated and committed, you can pull in template updates:
-
-```bash
-cd my-project
-uvx copier update --trust
-```
-
-Copier performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
-
-The generated `README.md` will include instructions to get started with development, testing, and deployment.

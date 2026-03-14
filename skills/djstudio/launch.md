@@ -187,7 +187,35 @@ just terraform cloudflare init    # skip if terraform/cloudflare/.terraform/ alr
 just terraform cloudflare apply -auto-approve
 ```
 
-Wait for apply to complete. If it fails, show the error and stop.
+If `terraform apply` fails with a message like "A similar configuration with rules already
+exists and overwriting will have unintended consequences", existing Cloudflare rulesets must
+be imported before applying. Run:
+
+```bash
+# Get zone ID from Cloudflare (read cloudflare_api_token from terraform.tfvars)
+zone_id=$(cd terraform/cloudflare && terraform output -raw zone_id 2>/dev/null || \
+  curl -s "https://api.cloudflare.com/client/v4/zones?name=<domain>" \
+    -H "Authorization: Bearer <cloudflare_api_token>" | jq -r '.result[0].id')
+
+# List existing rulesets
+curl -s "https://api.cloudflare.com/client/v4/zones/$zone_id/rulesets" \
+  -H "Authorization: Bearer <cloudflare_api_token>" | jq '.result[] | {id, phase}'
+```
+
+Match rulesets by phase and import using format `zone/<zone_id>/<ruleset_id>`:
+
+```bash
+cd terraform/cloudflare
+# http_request_firewall_custom → cloudflare_ruleset.zone_level_firewall
+terraform import cloudflare_ruleset.zone_level_firewall zone/<zone_id>/<ruleset_id>
+
+# http_response_headers_transform → cloudflare_ruleset.transform_response_headers
+terraform import cloudflare_ruleset.transform_response_headers zone/<zone_id>/<ruleset_id>
+```
+
+Then re-run `just terraform cloudflare apply`.
+
+Wait for apply to complete. If it fails for a different reason, show the error and stop.
 
 ---
 

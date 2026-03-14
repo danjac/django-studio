@@ -7,6 +7,41 @@ where it left off.
 
 ---
 
+## Required accounts checklist
+
+Before starting, tell the user:
+
+> **Before we begin, make sure you have accounts and credentials ready for these services.
+> The wizard will ask for them during setup — having them ready will save you from
+> stopping mid-flow.**
+>
+> **1. Hetzner Cloud** ([console.hetzner.cloud](https://console.hetzner.cloud))
+> - A project created (or select an existing one)
+> - API token with **Read & Write** permissions
+>   (Security → API Tokens → Generate API Token)
+> - *(If using object storage)* S3 credentials
+>   (Security → S3 credentials → Generate credentials)
+>
+> **2. Cloudflare** ([dash.cloudflare.com](https://dash.cloudflare.com))
+> - Your domain added to Cloudflare and showing as **Active**
+>   (nameservers must be pointing to Cloudflare at your registrar)
+> - API token with Zone permissions:
+>   Zone (Edit), Zone Settings (Edit), DNS (Edit), Page Rules (Edit),
+>   Zone WAF (Edit), Transform Rules (Edit), SSL and Certificates (Edit)
+>
+> **3. Mailgun** ([mailgun.com](https://www.mailgun.com)) — *optional, required for email*
+> - A sending domain configured (e.g. `mg.yourdomain.com`)
+> - Sending API key
+> - DKIM TXT record value
+>   (Sending → Domains → your domain → DNS Records)
+>
+> Do you have all of the above ready? (y/n)
+
+If the user answers **n**, tell them to prepare the accounts above and re-run
+`/djstudio launch` when ready. Stop.
+
+---
+
 ## Pre-flight checks
 
 Run all of the following before proceeding. If any fail, tell the user what to install

@@ -91,7 +91,7 @@ existing values that were already set.
 Then:
 ```bash
 just terraform hetzner init    # skip if terraform/hetzner/.terraform/ already exists
-just terraform hetzner apply
+just terraform hetzner apply -auto-approve
 ```
 
 Wait for apply to complete. If it fails, show the error and stop.
@@ -151,7 +151,7 @@ Write `terraform/cloudflare/terraform.tfvars` with all collected values.
 Then:
 ```bash
 just terraform cloudflare init    # skip if terraform/cloudflare/.terraform/ already exists
-just terraform cloudflare apply
+just terraform cloudflare apply -auto-approve
 ```
 
 Wait for apply to complete. If it fails, show the error and stop.
@@ -185,7 +185,7 @@ Write `terraform/storage/terraform.tfvars` with collected values.
 
 ```bash
 just terraform storage init    # skip if terraform/storage/.terraform/ already exists
-just terraform storage apply
+just terraform storage apply -auto-approve
 ```
 
 ---

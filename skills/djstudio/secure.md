@@ -40,13 +40,27 @@ For each setting, apply this decision tree:
 | `SESSION_COOKIE_SECURE` | `True` | WARNING |
 | `CSRF_COOKIE_SECURE` | `True` | WARNING |
 | `SECURE_SSL_REDIRECT` | `True` | WARNING |
-| `SECURE_HSTS_SECONDS` | `> 0` | WARNING |
+| `SECURE_HSTS_SECONDS` | `> 0` (see note below) | WARNING |
 | `SECURE_CONTENT_TYPE_NOSNIFF` | `True` | WARNING |
 | `X_FRAME_OPTIONS` | `"DENY"` or `"SAMEORIGIN"` | WARNING |
 | `SECURE_HSTS_INCLUDE_SUBDOMAINS` | `True` | ADVISORY |
 | CSP headers | middleware or header present | WARNING |
 | Django admin URL | not `"admin/"` | ADVISORY |
 | `DEBUG_TOOLBAR` in `INSTALLED_APPS` | guarded by `DEBUG` check | WARNING |
+
+**Note on `SECURE_HSTS_SECONDS`:** Check for the presence of `terraform/cloudflare/` in the
+project. If it exists, the project is deployed behind Cloudflare, which handles HSTS at the
+edge (SSL/TLS → Edge Certificates → HSTS settings). In this case, `security.W004`
+(`SECURE_HSTS_SECONDS` not set) is a **false positive** — do not flag it as a WARNING.
+Setting `SECURE_HSTS_SECONDS` in Django would be redundant and could cause issues if
+Cloudflare is ever removed. Report it as:
+
+```
+ADVISORY: [settings] SECURE_HSTS_SECONDS not set — not applicable, HSTS is handled by
+  Cloudflare at the edge (terraform/cloudflare/ present)
+```
+
+If `terraform/cloudflare/` does not exist, apply the standard WARNING check.
 
 ---
 

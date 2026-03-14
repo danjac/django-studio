@@ -151,12 +151,10 @@ inline `<script>` tag or evaluates it as JS:
 <script>var x = "{{ user_input }}";</script>
 ```
 
-The correct pattern is Django's `json_script` tag, which JSON-encodes the
-value and HTML-escapes it into a `<script type="application/json">` element:
-
-```html
-{{ data | json_script:"element-id" }}
-```
+Safe alternatives include `json_script`, `data-*` attributes (read via
+`dataset` in JS), AlpineJS `x-data`/`x-init`, or the `escapejs` filter for
+string values embedded in JS expressions — all are acceptable as long as
+Django's auto-escaping is active (i.e. `| safe` is not used).
 
 #### 3c. AlpineJS `x-html`
 

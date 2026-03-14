@@ -148,6 +148,29 @@ Or with $watch:
 </div>
 ```
 
+## Passing Server Data to Alpine
+
+For simple scalar values, embed them directly in `x-data` or `x-init` using
+`escapejs` for strings:
+
+```html
+<div x-data="{ username: '{{ request.user.username|escapejs }}' }">
+```
+
+For structured data (objects, arrays), use Django's `json_script` filter to
+render a safe `<script type="application/json">` element and read it in
+`x-init`:
+
+```html
+{{ object_list|json_script:"object-list-data" }}
+
+<div x-data="{ items: [] }"
+     x-init="items = JSON.parse(document.getElementById('object-list-data').textContent)">
+```
+
+Never interpolate raw template variables into JS expressions without escaping —
+always use `escapejs` for strings or `json_script` for structured data.
+
 ## Icon-Only Buttons
 
 Every button that contains only an SVG icon (no visible text) **must** have an

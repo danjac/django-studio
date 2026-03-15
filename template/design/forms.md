@@ -103,7 +103,9 @@ Built-in widgets and their partials:
 | `EmailInput` | `emailinput` |
 | `URLInput` | `urlinput` |
 | `FileInput` | `fileinput` |
+| `ClearableFileInput` | `clearablefileinput` |
 | `DateInput` | `dateinput` |
+| `DateTimeInput` | `datetimeinput` |
 | `Textarea` | `textarea` |
 | `CheckboxInput` | `checkboxinput` |
 | `CheckboxSelectMultiple` | `checkboxselectmultiple` |

@@ -55,12 +55,19 @@
 {% partialdef textinput %}{% partial input %}{% endpartialdef %}
 {% partialdef emailinput %}{% partial input %}{% endpartialdef %}
 {% partialdef fileinput %}{% partial input %}{% endpartialdef %}
+{% partialdef clearablefileinput %}{% partial input %}{% endpartialdef %}
 {% partialdef urlinput %}{% partial input %}{% endpartialdef %}
 
 {# Date #}
 {% partialdef dateinput %}
   {% partial label %}
   {% render_field field class="form-input" type="date" %}
+{% endpartialdef %}
+
+{# Date + time #}
+{% partialdef datetimeinput %}
+  {% partial label %}
+  {% render_field field class="form-input" type="datetime-local" %}
 {% endpartialdef %}
 
 {# Textarea #}

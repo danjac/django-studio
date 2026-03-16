@@ -30,7 +30,7 @@ European-first audience. If you are based outside the EU, the template will stil
 work but the hosting defaults and compliance tooling are optimised for EU data
 residency requirements.
 
-This project is intended for experienced developers who are comfortable with the command line, Git, and general web development concepts. It is not a tutorial or learning resource for beginners, but rather a practical tool to jumpstart new projects with a solid foundation.
+This project is intended for experienced developers who are comfortable with the stack choices and general web development concepts. It is not a tutorial or learning resource for beginners, but rather a practical tool to jumpstart new projects with a solid foundation.
 
 ## Getting Started
 
@@ -144,10 +144,10 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **Deployment**
 
-| Subcommand        | Summary                                                                        |
-| ----------------- | ------------------------------------------------------------------------------ |
-| `launch`          | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
-| `rotate-secrets`  | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| Subcommand       | Summary                                                                        |
+| ---------------- | ------------------------------------------------------------------------------ |
+| `launch`         | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy                |
 
 **Maintenance**
 

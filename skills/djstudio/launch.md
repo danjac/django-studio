@@ -393,6 +393,27 @@ Tell the user which URL was chosen.
 
 **Meta author, description, keywords** — prompt for each, allow empty to skip.
 
+### Observability credentials (conditional)
+
+Check `pyproject.toml` for the presence of `sentry-sdk` and `opentelemetry-sdk` to detect
+which observability features are enabled in this project.
+
+**If `sentry-sdk` is present** and `secrets.sentryUrl` is empty:
+> Sentry is enabled in this project. Paste your Sentry DSN URL
+> (Sentry project → Settings → Client Keys → DSN):
+>
+> Press Enter to skip and configure later.
+
+Set `secrets.sentryUrl` if provided.
+
+**If `opentelemetry-sdk` is present** and `secrets.openTelemetryUrl` is empty:
+> OpenTelemetry is enabled in this project. Paste your OTLP collector endpoint URL
+> (e.g. `https://otel.yourdomain.com`):
+>
+> Press Enter to skip and configure later.
+
+Set `secrets.openTelemetryUrl` if provided.
+
 ### Write the file
 
 Write all values to `helm/site/values.secret.yaml`, preserving any values that were
@@ -489,3 +510,34 @@ just kube describe pod <failing-pod>
 just kube logs <failing-pod>
 ```
 Diagnose and help the user fix the issue before declaring success.
+
+---
+
+## Step 7 — Observability node (conditional)
+
+Only proceed with this step if `opentelemetry-sdk` is present in `pyproject.toml`.
+
+Once all site pods are Running, ask:
+
+> OpenTelemetry is enabled in this project. Do you want to deploy the observability
+> node now (Grafana + Prometheus + Loki)? (y/n)
+>
+> (This is optional — you can deploy it later with `just helm observability`.)
+
+If **no**, tell the user:
+> You can deploy the observability stack at any time by running `just helm observability`.
+
+If **yes**, first check `helm/observability/values.secret.yaml`:
+- If it does not exist, copy from example:
+  ```bash
+  cp helm/observability/values.secret.yaml.example helm/observability/values.secret.yaml
+  ```
+- Read the file and prompt for any values still set to `CHANGE_ME`.
+
+Then deploy:
+```bash
+just helm observability
+```
+
+Wait for completion. Show pod status and confirm the Grafana ingress is accessible at
+`https://grafana.<domain>` once DNS propagates.

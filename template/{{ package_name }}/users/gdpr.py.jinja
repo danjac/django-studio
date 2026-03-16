@@ -10,6 +10,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount
 from django.db import transaction
 
 if TYPE_CHECKING:
@@ -25,9 +27,6 @@ def anonymise_user(user: User) -> None:
 
     Add project-specific PII cleanup below the allauth block.
     """
-    from allauth.account.models import EmailAddress
-    from allauth.socialaccount.models import SocialAccount
-
     anon_id = f"deleted-{user.pk}"
 
     user.username = anon_id
@@ -49,12 +48,3 @@ def anonymise_user(user: User) -> None:
 
     EmailAddress.objects.filter(user=user).delete()
     SocialAccount.objects.filter(user=user).delete()
-
-    # If django-auditlog is installed, clear PII from audit history:
-    #
-    # from auditlog.models import LogEntry
-    # from django.contrib.contenttypes.models import ContentType
-    #
-    # user_ct = ContentType.objects.get_for_model(User)
-    # LogEntry.objects.filter(content_type=user_ct, object_pk=str(user.pk)).delete()
-    # LogEntry.objects.filter(actor=user).update(actor_email="")

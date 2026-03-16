@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 @require_http_methods(["GET", "HEAD", "DELETE"])
 @login_required
 def delete_account(request: HttpRequest) -> TemplateResponse | HttpResponseRedirect:
+    """Show delete-account confirmation page; handle DELETE to anonymise and log out."""
     if request.method == "DELETE":
         anonymise_user(request.user)
         logout(request)

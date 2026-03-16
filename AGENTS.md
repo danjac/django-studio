@@ -31,6 +31,14 @@ just test-e2e                   # run Playwright E2E tests
 just stop                       # stop Docker services
 ```
 
+**Pre-commit must report no lint errors** on the generated project. Auto-formatters
+(ruff-format, DjHTML, DjCSS, Djade) modifying files is expected and fine. Actual
+lint errors (`ruff check`, `djlint --lint`) must be zero. Run after install:
+
+```bash
+cd /tmp/my_app && uv run pre-commit run --all-files
+```
+
 **Expected on first run:**
 
 - `just test` will report coverage below 100%. This is normal - the template ships utility

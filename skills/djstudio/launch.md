@@ -462,20 +462,6 @@ Watch the run:
 gh run watch
 ```
 
-When the workflow completes successfully, read the actual deployed image tag from the
-cluster and update `values.secret.yaml` so that `just helm site` works correctly for
-future manual deploys:
-
-```bash
-just kube get deployment django-app -o jsonpath='{.spec.template.spec.containers[0].image}'
-```
-
-Update `image` in `values.secret.yaml` with this value, then re-push the secret:
-
-```bash
-just gh-set-secrets
-```
-
 Then show pod status:
 ```bash
 just kube get pods

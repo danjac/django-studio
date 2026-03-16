@@ -19,6 +19,7 @@ If your need isn't covered above, research before recommending. Check in order:
    CI passing on current Python/Django versions.
 
 Recommend a package only if it passes all of:
+
 - Active maintenance: meaningful commits within the last 12 months
 - Compatible with Python 3.14 and Django 6.0
 - Open issues are acknowledged, not silently accumulating
@@ -26,29 +27,29 @@ Recommend a package only if it passes all of:
 
 State your findings explicitly when suggesting a package — don't just name it.
 
-| Need | Package(s) | Install |
-| ----------------------------------------- | --------------------------------- | --------------------------------------- |
-| Image thumbnails | `sorl-thumbnail` | `uv add sorl-thumbnail` |
-| Multi-tenancy | `django-tenants` | `uv add django-tenants` |
-| HTTP API client | `aiohttp` | `uv add aiohttp` |
-| WebSockets / real-time | `channels` + `daphne` | `uv add channels daphne` |
-| Querystring filtering | `django-filter` | `uv add django-filter` |
-| Audit logging | `django-auditlog` | `uv add django-auditlog` |
-| Payments | `stripe` | `uv add stripe` |
-| Excel export | `openpyxl` | `uv add openpyxl` |
-| Money / currency | `django-money` | `uv add django-money` |
-| Data validation / serialization | `pydantic` | `uv add pydantic` |
-| Data analysis / dataframes | `polars` | `uv add polars` |
-| Natural language processing | `nltk` | `uv add nltk` |
-| Markdown parsing / rendering | `markdown-it-py` | `uv add markdown-it-py` |
-| Country names & codes | `pycountry` | `uv add pycountry` |
-| XML / HTML parsing | `lxml` | `uv add lxml` |
-| Date parsing & relative deltas | `python-dateutil` | `uv add python-dateutil` |
-| Scientific computing | `scipy` + `numpy` | `uv add scipy numpy` |
-| Machine learning | `scikit-learn` | `uv add scikit-learn` |
-| HTML sanitization | `nh3` | `uv add nh3` |
-| Complex authorization (code-defined rules) | `django-rules` | `uv add django-rules` |
-| Complex authorization (runtime per-object DB permissions) | `django-guardian` | `uv add django-guardian` |
+| Need                                                      | Package(s)            | Install                   |
+| --------------------------------------------------------- | --------------------- | ------------------------- |
+| Image thumbnails                                          | `sorl-thumbnail`      | `uv add sorl-thumbnail`   |
+| Multi-tenancy                                             | `django-tenants`      | `uv add django-tenants`   |
+| HTTP API client                                           | `aiohttp`             | `uv add aiohttp`          |
+| WebSockets / real-time                                    | `channels` + `daphne` | `uv add channels daphne`  |
+| Querystring filtering                                     | `django-filter`       | `uv add django-filter`    |
+| Audit logging                                             | `django-auditlog`     | `uv add django-auditlog`  |
+| Payments                                                  | `stripe`              | `uv add stripe`           |
+| Excel export                                              | `openpyxl`            | `uv add openpyxl`         |
+| Money / currency                                          | `django-money`        | `uv add django-money`     |
+| Data validation / serialization                           | `pydantic`            | `uv add pydantic`         |
+| Data analysis / dataframes                                | `polars`              | `uv add polars`           |
+| Natural language processing                               | `nltk`                | `uv add nltk`             |
+| Markdown parsing / rendering                              | `markdown-it-py`      | `uv add markdown-it-py`   |
+| Country names & codes                                     | `django-countries`    | `uv add django-countries` |
+| XML / HTML parsing                                        | `lxml`                | `uv add lxml`             |
+| Date parsing & relative deltas                            | `python-dateutil`     | `uv add python-dateutil`  |
+| Scientific computing                                      | `scipy` + `numpy`     | `uv add scipy numpy`      |
+| Machine learning                                          | `scikit-learn`        | `uv add scikit-learn`     |
+| HTML sanitization                                         | `nh3`                 | `uv add nh3`              |
+| Complex authorization (code-defined rules)                | `django-rules`        | `uv add django-rules`     |
+| Complex authorization (runtime per-object DB permissions) | `django-guardian`     | `uv add django-guardian`  |
 
 ## Notes
 
@@ -65,10 +66,12 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **pydantic**: use for parsing and validating external API responses, complex
   form payloads, and structured config. Add to `pyproject.toml` to prevent
   ruff from moving base class imports into `TYPE_CHECKING` blocks:
+
   ```toml
   [tool.ruff.lint.flake8-type-checking]
   runtime-evaluated-base-classes = ["pydantic.BaseModel"]
   ```
+
 - **markdown-it-py**: preferred Markdown renderer. Use the `mdit-py-plugins`
   extras for footnotes, tasklists, etc. Pair with `nh3` to sanitize the
   rendered HTML before serving.

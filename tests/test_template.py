@@ -682,6 +682,7 @@ class TestClaudeSkillsInstallation:
             "gdpr.md",
             "translate.md",
             "launch.md",
+            "sync.md",
             "feedback.md",
         }
         assert expected == installed

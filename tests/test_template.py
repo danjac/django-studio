@@ -683,6 +683,7 @@ class TestClaudeSkillsInstallation:
             "deadcode.md",
             "translate.md",
             "launch.md",
+            "rotate-secrets.md",
             "sync.md",
             "feedback.md",
         }

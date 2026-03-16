@@ -144,9 +144,10 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **Deployment**
 
-| Subcommand | Summary                                                                        |
-| ---------- | ------------------------------------------------------------------------------ |
-| `launch`   | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| Subcommand        | Summary                                                                        |
+| ----------------- | ------------------------------------------------------------------------------ |
+| `launch`          | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `rotate-secrets`  | Rotate auto-generated and third-party Helm secrets and redeploy                |
 
 **Maintenance**
 

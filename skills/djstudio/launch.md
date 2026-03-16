@@ -326,6 +326,22 @@ Generate each with `openssl rand -hex 32` if not already set:
 - `secrets.djangoSecretKey`
 - `secrets.redisPassword`
 
+Write each value with an individual comment immediately above it:
+
+```yaml
+app:
+  # auto-generated — rotate with: /djstudio rotate-secrets
+  adminUrl: "<generated-slug>/"
+
+secrets:
+  # auto-generated — rotate with: /djstudio rotate-secrets
+  postgresPassword: "<generated>"
+  # auto-generated — rotate with: /djstudio rotate-secrets
+  djangoSecretKey: "<generated>"
+  # auto-generated — rotate with: /djstudio rotate-secrets
+  redisPassword: "<generated>"
+```
+
 Tell the user these have been generated automatically.
 
 ### Values from Terraform outputs

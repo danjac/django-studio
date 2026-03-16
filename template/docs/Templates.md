@@ -9,7 +9,7 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 ### Base Templates
 
 ```html
-<!-- default_base.html - full page with all elements -->
+<!-- base.html - full page with all elements -->
 {% partialdef head inline %}
     <head>...</head>
 {% endpartialdef %}
@@ -26,7 +26,7 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 ### Using Partials
 
 ```html
-{% extends "default_base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
     {% partial sidebar %}

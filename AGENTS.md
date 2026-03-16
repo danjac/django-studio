@@ -72,7 +72,6 @@ git init && git commit -A && pre-commit run --all-files
 
 | Flag               | Default | Effect when disabled                          |
 | ------------------ | ------- | --------------------------------------------- |
-| `use_hx_boost`     | `true`  | Removes HTMX boost config                     |
 | `use_storage`      | `true`  | Removes `terraform/storage/`                  |
 | `use_pwa`          | `true`  | Removes PWA manifest and service worker        |
 | `use_opentelemetry`| `true`  | Removes observability Helm chart               |

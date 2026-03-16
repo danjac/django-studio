@@ -11,7 +11,6 @@ HTMX is configured via `HTMX_CONFIG` in settings, rendered as a `<meta>` tag by 
 HTMX_CONFIG = {
     "globalViewTransitions": False,
     "scrollBehavior": "instant",
-    "scrollIntoViewOnBoost": False,
     "useTemplateFragments": True,
 }
 ```
@@ -29,15 +28,54 @@ All HTMX POST/PUT/DELETE requests must include the CSRF token via `hx-headers`. 
 
 Set `hx-headers` at the `<body>` level if most interactions on a page are HTMX-driven, rather than repeating it on every element.
 
-## Template Switching
+## Bootstrap hx-boost (opt-in)
 
-When using `hx-boost`, templates extend from the appropriate base depending on whether the request is an HTMX request:
+`hx-boost` converts standard `<a>` and `<form>` elements into AJAX requests, giving SPA-like navigation without a JavaScript framework. It is not enabled by default — use it only if you want full-page AJAX navigation.
+
+### 1. Add `hx-boost` to the body tag
+
+In `templates/base.html`, change the opening `<body>` tag:
 
 ```html
-{% extends request.htmx|yesno:"hx_base.html,default_base.html" %}
+<body hx-boost="true">
 ```
 
-`hx_base.html` is a minimal wrapper (title + content block, no chrome). Only use this pattern with `hx-boost` - for targeted partial updates, just return the partial directly from the view.
+### 2. Create `hx_base.html`
+
+Add `templates/hx_base.html` — a minimal wrapper returned for boosted navigation requests (title + content only, no surrounding chrome):
+
+```html
+{% spaceless %}
+  {% block title %}
+    {% title_tag %}
+  {% endblock title %}
+  {% block content %}
+  {% endblock content %}
+{% endspaceless %}
+```
+
+### 3. Switch base template per request type
+
+In each page template, extend from the appropriate base depending on whether the request is an HTMX request:
+
+```html
+{% extends request.htmx|yesno:"hx_base.html,base.html" %}
+```
+
+On a boosted navigation HTMX sends an XHR request with `HX-Request: true`, so `hx_base.html` is used (title + content, no chrome). On a full-page load `base.html` is used.
+
+### 4. Add `scrollIntoViewOnBoost` to HTMX config
+
+In `config/settings.py`, add the option to `HTMX_CONFIG` so boosted navigation scrolls to the top:
+
+```python
+HTMX_CONFIG = {
+    ...
+    "scrollIntoViewOnBoost": False,
+}
+```
+
+> For targeted partial updates (search results, forms, pagination), return a partial directly from the view — no `hx_base.html` needed.
 
 ## View Utilities
 
@@ -142,7 +180,7 @@ Default keyword arguments (override as needed):
 ## Best Practices
 
 1. Always include `hx-headers` with `{{ csrf_header }}` and `{{ csrf_token }}` on POST/PUT/DELETE requests.
-2. Use `hx-boost` + template switching only for full-page navigation. For element-level updates, return a partial directly.
+2. Use `hx-boost` + template switching only for full-page navigation (see "Bootstrap hx-boost" above). For element-level updates, return a partial directly.
 3. Use `hx-disabled-elt="this"` on submit buttons to prevent double-submission.
 4. Debounce search inputs: `hx-trigger="keyup changed delay:300ms"`.
 5. Use `hx-swap="outerHTML"` to replace a form with its re-rendered self on validation errors.

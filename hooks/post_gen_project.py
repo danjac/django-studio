@@ -5,7 +5,7 @@ Most feature-flag logic is handled by Jinja2 conditionals in the template
 files themselves (settings.py, urls.py, views.py, pyproject.toml, .env.example).
 
 This hook handles only what Jinja2 cannot:
-- HTML template manipulation (default_base.html uses marker comments)
+- HTML template manipulation (base.html uses marker comments)
 - File/directory creation and deletion based on feature flags
 - GitHub Actions workflow name substitution (files contain ${{ }} GHA syntax
   which conflicts with Jinja2, so PROJECT_SLUG is used as a plain placeholder)
@@ -14,7 +14,7 @@ This hook handles only what Jinja2 cannot:
 - uv lock file generation
 
 Invoked by copier as:
-    python hooks/post_gen_project.py <project_slug> <use_hx_boost> <use_storage>
+    python hooks/post_gen_project.py <project_slug> <use_storage>
                                      <use_pwa> <use_opentelemetry> <use_sentry>
                                      <license> <author>
 """
@@ -27,11 +27,11 @@ import sys
 from pathlib import Path
 
 _, PROJECT_SLUG, *_args = sys.argv
-USE_HX_BOOST, USE_STORAGE, USE_PWA, USE_OPENTELEMETRY, USE_SENTRY = (
-    f == "True" for f in _args[:5]
+USE_STORAGE, USE_PWA, USE_OPENTELEMETRY, USE_SENTRY = (
+    f == "True" for f in _args[:4]
 )
-LICENSE = _args[5] if len(_args) > 5 else "None"
-AUTHOR = _args[6] if len(_args) > 6 else ""
+LICENSE = _args[4] if len(_args) > 4 else "None"
+AUTHOR = _args[5] if len(_args) > 5 else ""
 
 # Template source root: hooks/post_gen_project.py → hooks/ → template root
 _TEMPLATE_ROOT = Path(sys.argv[0]).resolve().parent.parent
@@ -40,8 +40,6 @@ BASE_DIR = Path()
 
 TEMPLATES_DIR = BASE_DIR / "templates"
 BASE_HTML = TEMPLATES_DIR / "base.html"
-DEFAULT_BASE_HTML = TEMPLATES_DIR / "default_base.html"
-HX_BASE_HTML = TEMPLATES_DIR / "hx_base.html"
 
 DEPLOY_WORKFLOW = BASE_DIR / ".github" / "workflows" / "deploy.yml"
 # Files containing PROJECT_SLUG as a plain-text placeholder. These cannot be
@@ -58,13 +56,9 @@ TERRAFORM_STORAGE_DIR = BASE_DIR / "terraform" / "storage"
 OBSERVABILITY_HELM_DIR = BASE_DIR / "helm" / "observability"
 SERVICE_WORKER_JS = BASE_DIR / "static" / "service-worker.js"
 
-# Markers in default_base.html (plain text, not Jinja2, so no conflict).
-_MARKER_BODY_OPEN = "  [[ HOOK:body-open ]]"
+# Markers in base.html (plain text, not Jinja2, so no conflict).
 _MARKER_PWA_MANIFEST = "    [[ HOOK:pwa-manifest ]]"
 _MARKER_PWA_SW = "    [[ HOOK:pwa-sw ]]"
-
-_BODY_PLAIN = "  <body>"
-_BODY_HX_BOOST = '  <body\n    hx-boost="true">'
 
 _PWA_MANIFEST_LINK = '    <link rel="manifest" href="{% url \'manifest\' %}">'
 
@@ -84,12 +78,9 @@ def _replace_marker(content: str, marker: str, replacement: str) -> str:
 
 
 def resolve_markers() -> None:
-    """Replace all marker comments in default_base.html with actual content."""
-    with DEFAULT_BASE_HTML.open() as f:
+    """Replace all marker comments in base.html with actual content."""
+    with BASE_HTML.open() as f:
         content = f.read()
-
-    body_replacement = _BODY_HX_BOOST if USE_HX_BOOST else _BODY_PLAIN
-    content = _replace_marker(content, _MARKER_BODY_OPEN, body_replacement)
 
     pwa_manifest = _PWA_MANIFEST_LINK if USE_PWA else ""
     content = _replace_marker(content, _MARKER_PWA_MANIFEST, pwa_manifest)
@@ -97,26 +88,8 @@ def resolve_markers() -> None:
     pwa_sw = _PWA_SW_SCRIPT if USE_PWA else ""
     content = _replace_marker(content, _MARKER_PWA_SW, pwa_sw)
 
-    with DEFAULT_BASE_HTML.open("w") as f:
-        f.write(content)
-
-
-# ── hx-boost ─────────────────────────────────────────────────────────────────
-
-
-def enable_hx_boost() -> None:
-    """Wire up hx-boost: base.html dynamically extends hx_base or default_base."""
     with BASE_HTML.open("w") as f:
-        f.write(
-            "{" + '% extends request.htmx|yesno:"hx_base.html,default_base.html" %}\n'
-        )
-
-
-def remove_hx_base() -> None:
-    """Collapse default_base.html into base.html when hx-boost is not used."""
-    if HX_BASE_HTML.exists():
-        HX_BASE_HTML.unlink()
-    DEFAULT_BASE_HTML.replace(BASE_HTML)
+        f.write(content)
 
 
 # ── storage ──────────────────────────────────────────────────────────────────
@@ -244,15 +217,10 @@ def install_skills() -> None:
 
 # ── main ─────────────────────────────────────────────────────────────────────
 
-# 1. Resolve HTML marker comments (must happen before file renames)
+# 1. Resolve HTML marker comments in base.html
 resolve_markers()
 
 # 2. Feature-flag file operations
-if USE_HX_BOOST:
-    enable_hx_boost()
-else:
-    remove_hx_base()
-
 if not USE_STORAGE:
     remove_storage_terraform()
 

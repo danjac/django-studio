@@ -371,34 +371,6 @@ class TestStorageFeatureFlag:
         assert "HETZNER_STORAGE_ACCESS_KEY" not in content
 
 
-class TestHxBoostFeatureFlag:
-    """Test use_hx_boost flag behaviour."""
-
-    def test_hx_base_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": True})
-        assert (project / "templates" / "hx_base.html").exists()
-
-    def test_hx_base_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": False})
-        assert not (project / "templates" / "hx_base.html").exists()
-
-    def test_base_html_uses_htmx_extends_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": True})
-        content = (project / "templates" / "base.html").read_text()
-        assert "htmx" in content
-
-    def test_base_html_is_full_layout_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": False})
-        assert (project / "templates" / "base.html").exists()
-        assert not (project / "templates" / "default_base.html").exists()
-
-    def test_base_html_contains_full_html_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_hx_boost": False})
-        content = (project / "templates" / "base.html").read_text()
-        assert "<!doctype html>" in content
-        assert "extends" not in content
-
-
 class TestPwaFeatureFlag:
     """Test use_pwa flag behaviour."""
 
@@ -577,11 +549,8 @@ class TestSentryFeatureFlag:
 class TestFeatureFlagCombinations:
     """Test interactions between feature flags."""
 
-    def test_pwa_with_hx_boost_disabled(self, output_dir):
-        project = _render(
-            output_dir,
-            {**_DEFAULT_CONTEXT, "use_pwa": True, "use_hx_boost": False},
-        )
+    def test_pwa_enabled_base_html_has_pwa_assets(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": True})
         assert not (project / "templates" / "hx_base.html").exists()
         assert not (project / "templates" / "default_base.html").exists()
         base_content = (project / "templates" / "base.html").read_text()
@@ -602,19 +571,17 @@ class TestFeatureFlagCombinations:
             output_dir,
             {
                 **_DEFAULT_CONTEXT,
-                "use_hx_boost": True,
                 "use_storage": True,
                 "use_pwa": True,
                 "use_opentelemetry": True,
                 "use_sentry": True,
             },
         )
-        assert (project / "templates" / "hx_base.html").exists()
+        assert not (project / "templates" / "hx_base.html").exists()
+        assert not (project / "templates" / "default_base.html").exists()
         base_content = (project / "templates" / "base.html").read_text()
-        assert "htmx" in base_content
-        default_base_content = (project / "templates" / "default_base.html").read_text()
-        assert "manifest" in default_base_content
-        assert "service-worker.js" in default_base_content
+        assert "manifest" in base_content
+        assert "service-worker.js" in base_content
         assert (project / "static" / "service-worker.js").exists()
         assert "manifest" in (project / "config" / "urls.py").read_text()
         assert (project / "terraform" / "storage" / "main.tf").exists()
@@ -634,7 +601,6 @@ class TestFeatureFlagCombinations:
             output_dir,
             {
                 **_DEFAULT_CONTEXT,
-                "use_hx_boost": False,
                 "use_storage": False,
                 "use_pwa": False,
                 "use_opentelemetry": False,

@@ -4,9 +4,7 @@
 
 | Template | Purpose |
 |----------|---------|
-| `default_base.html` | Full HTML page: head, HTMX indicator, messages, navbar, main content |
-| `base.html` | Extends `default_base.html` - entry point for page templates |
-| `hx_base.html` | HTMX partial: title block + content block, no surrounding HTML |
+| `base.html` | Full HTML page: head, HTMX indicator, messages, navbar, main content |
 | `error_base.html` | Error pages (4xx, 5xx) - standalone, no nav |
 
 ### Full Page (`base.html`)
@@ -20,27 +18,13 @@
 {% endblock content %}
 ```
 
-### HTMX Partial (`hx_base.html`)
-
-Use for views that are called by HTMX and need to update the page title alongside the content:
-
-```html
-{% extends "hx_base.html" %}
-
-{% block title %}My Page - {{ request.site.name }}{% endblock title %}
-
-{% block content %}
-  <p>Partial content returned by HTMX.</p>
-{% endblock content %}
-```
-
 ---
 
 ## Page Layouts
 
 ### Centred Content (Default)
 
-`default_base.html` wraps `{% block content %}` in a centred max-width container:
+`base.html` wraps `{% block content %}` in a centred max-width container:
 
 ```html
 <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -118,7 +102,7 @@ Mobile-first breakpoints:
 
 ## HTMX Progress Indicator
 
-`default_base.html` renders an `#hx-indicator` element at the top of the page. It displays a thin indigo progress bar during any HTMX request - no per-request setup needed.
+`base.html` renders an `#hx-indicator` element at the top of the page. It displays a thin indigo progress bar during any HTMX request - no per-request setup needed.
 
 The indicator is driven purely by CSS classes that HTMX adds (`htmx-request`), with a small AlpineJS animation for the growing-bar effect:
 
@@ -136,6 +120,6 @@ To attach the indicator to a specific element instead of the global one, use `hx
 
 ## Cookie Banner
 
-`{% cookie_banner %}` is rendered by a template tag in `default_base.html`. It requires a `accept_cookies` URL and uses HTMX to dismiss itself without a page reload.
+`{% cookie_banner %}` is rendered by a template tag in `base.html`. It requires a `accept_cookies` URL and uses HTMX to dismiss itself without a page reload.
 
-To disable the cookie banner, remove `{% cookie_banner %}` from `default_base.html`.
+To disable the cookie banner, remove `{% cookie_banner %}` from `base.html`.

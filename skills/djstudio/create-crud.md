@@ -433,5 +433,5 @@ If `create-model` already created a factory with field declarations, use that
 
 ```bash
 just dj check
-just test
+just test-all
 ```

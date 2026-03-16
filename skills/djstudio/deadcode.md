@@ -138,9 +138,7 @@ Do not delete, edit, or move any file until the user confirms. Once confirmed,
 apply only the approved removals and run:
 
 ```bash
-just lint
-just typecheck
-just test
+just test-all
 ```
 
 Fix any failures before presenting the final summary.

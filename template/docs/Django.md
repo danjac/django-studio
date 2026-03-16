@@ -8,7 +8,7 @@ implementation patterns, see the focused docs:
 |---|---|
 | Views, decorators, response classes, async, URL config | `docs/Views.md` |
 | Models, querysets, full-text search, choices, relationships | `docs/Models.md` |
-| Forms and field rendering | `design/forms.md` |
+| Forms and validation | `docs/Validation.md` |
 | Adding a new package | `docs/Packages.md` |
 | Migrations and linear-migrations | `docs/Models.md` |
 

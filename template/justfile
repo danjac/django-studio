@@ -53,6 +53,14 @@ dj *args:
 serve:
    @just dj tailwind runserver
 
+# Run lint, type checks, Django system check, and all tests
+[group('development')]
+check-all:
+    just lint
+    just typecheck
+    just dj check
+    just test-all
+
 # Run all tests
 [group('development')]
 test-all: test test-e2e

@@ -77,4 +77,4 @@ Create a basic Django app with the standard file structure for this project.
     "<package_name>.<app_name>.tests.fixtures",
     ```
 
-13. Verify: `just dj check` then `just typecheck` then `just test-all`
+13. Verify: `just check-all`

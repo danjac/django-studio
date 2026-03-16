@@ -686,6 +686,36 @@ class TestLicensePrompt:
         content = (project / "LICENSE").read_text()
         assert "Apache License" in content
 
+    def test_lgpl_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "LGPL-3.0"})
+        content = (project / "LICENSE").read_text()
+        assert "GNU Lesser General Public License" in content
+
+    def test_mpl_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "MPL-2.0"})
+        content = (project / "LICENSE").read_text()
+        assert "Mozilla Public License" in content
+
+    def test_bsd2_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "BSD-2-Clause"})
+        content = (project / "LICENSE").read_text()
+        assert "BSD 2-Clause" in content
+
+    def test_bsd3_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "BSD-3-Clause"})
+        content = (project / "LICENSE").read_text()
+        assert "BSD 3-Clause" in content
+
+    def test_isc_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "ISC"})
+        content = (project / "LICENSE").read_text()
+        assert "ISC License" in content
+
+    def test_eupl_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "EUPL-1.2"})
+        content = (project / "LICENSE").read_text()
+        assert "European Union Public Licence" in content
+
     def test_none_license_skips_file(self, output_dir):
         project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "None"})
         assert not (project / "LICENSE").exists()

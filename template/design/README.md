@@ -8,21 +8,21 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 
 | Component         | Template file                                      | CSS layer               | Doc                            |
 | ----------------- | -------------------------------------------------- | ----------------------- | ------------------------------ |
-| Buttons           | _(utility classes only)_                           | `tailwind/buttons.css`  | [buttons.md](buttons.md)       |
-| Messages / Alerts | `templates/messages.html`                          | `tailwind/messages.css` | [messages.md](messages.md)     |
-| Forms             | `templates/form.html` _(fields via `as_field_group`)_ | `tailwind/forms.css`    | [forms.md](forms.md)           |
-| Navbar            | `templates/navbar.html`                            | -                       | [navigation.md](navigation.md) |
-| Sidebar           | `templates/sidebar.html`                           | -                       | [navigation.md](navigation.md) |
-| User Dropdown     | _(inside navbar.html)_                             | -                       | [navigation.md](navigation.md) |
-| Page Header       | `templates/header.html`                            | -                       | [headers.md](headers.md)       |
-| Cards (pattern)   | _(inline markup — see doc)_                        | -                       | [cards.md](cards.md)           |
-| Grid layout       | `templates/grid.html`                              | -                       | [cards.md](cards.md)           |
-| List layout       | `templates/browse.html`                            | -                       | [lists.md](lists.md)           |
-| Badges / Tags     | _(inline classes)_                                 | -                       | [badges.md](badges.md)         |
-| Pagination        | `templates/paginate.html`                          | -                       | [pagination.md](pagination.md) |
-| Markdown / Prose  | `templates/markdown.html`                          | -                       | [typography.md](typography.md) |
-| Layout patterns   | _(in base templates)_                              | -                       | [layout.md](layout.md)         |
-| File upload       | _(inline markup — see doc)_                        | -                       | [upload.md](upload.md)         |
+| Buttons           | _(utility classes only)_                           | `tailwind/buttons.css`  | [Buttons.md](Buttons.md)       |
+| Messages / Alerts | `templates/messages.html`                          | `tailwind/messages.css` | [Messages.md](Messages.md)     |
+| Forms             | `templates/form.html` _(fields via `as_field_group`)_ | `tailwind/forms.css`    | [Forms.md](Forms.md)           |
+| Navbar            | `templates/navbar.html`                            | -                       | [Navigation.md](Navigation.md) |
+| Sidebar           | `templates/sidebar.html`                           | -                       | [Navigation.md](Navigation.md) |
+| User Dropdown     | _(inside navbar.html)_                             | -                       | [Navigation.md](Navigation.md) |
+| Page Header       | `templates/header.html`                            | -                       | [Headers.md](Headers.md)       |
+| Cards (pattern)   | _(inline markup — see doc)_                        | -                       | [Cards.md](Cards.md)           |
+| Grid layout       | `templates/grid.html`                              | -                       | [Cards.md](Cards.md)           |
+| List layout       | `templates/browse.html`                            | -                       | [Lists.md](Lists.md)           |
+| Badges / Tags     | _(inline classes)_                                 | -                       | [Badges.md](Badges.md)         |
+| Pagination        | `templates/paginate.html`                          | -                       | [Pagination.md](Pagination.md) |
+| Markdown / Prose  | `templates/markdown.html`                          | -                       | [Typography.md](Typography.md) |
+| Layout patterns   | _(in base templates)_                              | -                       | [Layout.md](Layout.md)         |
+| File upload       | _(inline markup — see doc)_                        | -                       | [Upload.md](Upload.md)         |
 
 ## Stack
 

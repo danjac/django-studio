@@ -49,6 +49,7 @@ Then follow the prompts:
 | `author`            | `Your Name`             |                                  |
 | `author_email`      | `you@example.com`       |                                  |
 | `domain`            | `example.com`           | Production domain                |
+| `license`           | `MIT`                   | MIT, GPL-3.0, AGPL-3.0, Apache-2.0, None |
 | `use_hx_boost`      | `y` / `n`               | HTMX Boost (SPA-like navigation) |
 | `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
 | `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |

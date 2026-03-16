@@ -658,6 +658,56 @@ class TestFeatureFlagCombinations:
         assert "sentry-sdk" not in pyproject_content
 
 
+class TestLicensePrompt:
+    """Test license prompt behaviour."""
+
+    def test_mit_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "MIT"})
+        assert (project / "LICENSE").exists()
+
+    def test_mit_license_content(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "MIT"})
+        content = (project / "LICENSE").read_text()
+        assert "MIT License" in content
+        assert _DEFAULT_CONTEXT["author"] in content
+
+    def test_gpl_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "GPL-3.0"})
+        content = (project / "LICENSE").read_text()
+        assert "GNU General Public License" in content
+
+    def test_agpl_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "AGPL-3.0"})
+        content = (project / "LICENSE").read_text()
+        assert "GNU Affero General Public License" in content
+
+    def test_apache_license_file_created(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "Apache-2.0"})
+        content = (project / "LICENSE").read_text()
+        assert "Apache License" in content
+
+    def test_none_license_skips_file(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "None"})
+        assert not (project / "LICENSE").exists()
+
+    def test_pyproject_license_set_when_chosen(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "MIT"})
+        content = (project / "pyproject.toml").read_text()
+        assert 'license = { text = "MIT" }' in content
+
+    def test_pyproject_license_absent_when_none(self, output_dir):
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "None"})
+        content = (project / "pyproject.toml").read_text()
+        assert "license" not in content
+
+    def test_license_year_substituted(self, output_dir):
+        import datetime
+
+        project = _render(output_dir, {**_DEFAULT_CONTEXT, "license": "MIT"})
+        content = (project / "LICENSE").read_text()
+        assert str(datetime.date.today().year) in content
+
+
 class TestClaudeSkillsInstallation:
     """Verify that skills/ are copied to .claude/commands/ by the post-gen hook."""
 

@@ -34,6 +34,17 @@ domain:
     help: Production domain (e.g. example.com)
     default: "example.com"
 
+license:
+    type: str
+    help: Project license
+    choices:
+        - MIT
+        - GPL-3.0
+        - AGPL-3.0
+        - Apache-2.0
+        - None
+    default: MIT
+
 use_hx_boost:
     type: bool
     help: Enable HTMX hx-boost for full-page navigation?
@@ -71,3 +82,5 @@ _tasks:
         "{{ use_pwa }}"
         "{{ use_opentelemetry }}"
         "{{ use_sentry }}"
+        "{{ license }}"
+        "{{ author }}"

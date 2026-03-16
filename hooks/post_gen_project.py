@@ -9,24 +9,29 @@ This hook handles only what Jinja2 cannot:
 - File/directory creation and deletion based on feature flags
 - GitHub Actions workflow name substitution (files contain ${{ }} GHA syntax
   which conflicts with Jinja2, so PROJECT_SLUG is used as a plain placeholder)
+- License file installation
 - Skill installation and Claude Code settings.json generation
 - uv lock file generation
 
 Invoked by copier as:
     python hooks/post_gen_project.py <project_slug> <use_hx_boost> <use_storage>
                                      <use_pwa> <use_opentelemetry> <use_sentry>
+                                     <license> <author>
 """
 
+import datetime
 import json
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-_, PROJECT_SLUG, *_flags = sys.argv
+_, PROJECT_SLUG, *_args = sys.argv
 USE_HX_BOOST, USE_STORAGE, USE_PWA, USE_OPENTELEMETRY, USE_SENTRY = (
-    f == "True" for f in _flags
+    f == "True" for f in _args[:5]
 )
+LICENSE = _args[5] if len(_args) > 5 else "None"
+AUTHOR = _args[6] if len(_args) > 6 else ""
 
 # Template source root: hooks/post_gen_project.py → hooks/ → template root
 _TEMPLATE_ROOT = Path(sys.argv[0]).resolve().parent.parent
@@ -141,6 +146,21 @@ def remove_pwa_static() -> None:
         SERVICE_WORKER_JS.unlink()
 
 
+# ── license ──────────────────────────────────────────────────────────────────
+
+
+def install_license() -> None:
+    """Copy the chosen license file to LICENSE, substituting year and author."""
+    if LICENSE == "None":
+        return
+    src = _TEMPLATE_ROOT / "licenses" / LICENSE
+    if not src.exists():
+        return
+    year = str(datetime.date.today().year)
+    text = src.read_text().replace("[YEAR]", year).replace("[AUTHOR]", AUTHOR)
+    (BASE_DIR / "LICENSE").write_text(text)
+
+
 # ── skills ───────────────────────────────────────────────────────────────────
 
 
@@ -241,6 +261,8 @@ if not USE_OPENTELEMETRY:
 
 if not USE_PWA:
     remove_pwa_static()
+
+install_license()
 
 # 3. Substitute PROJECT_SLUG in files that cannot be .jinja templates because
 #    they use ${{ }}, {{ args }}, or other syntax that conflicts with Jinja2.

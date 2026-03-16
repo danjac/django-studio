@@ -51,7 +51,14 @@ Item.objects.search("django", "title", "description")  # override fields
 
 ### Search Vector Updates via Triggers
 
-Maintain `search_vector` via a database trigger rather than `post_save`:
+Maintain `search_vector` via a database trigger rather than `post_save`.
+
+**Important:** the trigger config and the `Searchable.search()` config must
+match. The mixin defaults to `config='simple'`, so the trigger must also use
+`pg_catalog.simple`. Using `pg_catalog.english` in the trigger would apply
+English stemming when building the vector (`"alice"` → `"alic"`) but the query
+would search for the literal token `"alice"`, silently breaking search for many
+common words.
 
 ```python
 # migrations/0002_add_search_trigger.py
@@ -67,7 +74,7 @@ class Migration(migrations.Migration):
 CREATE TRIGGER myapp_update_search_trigger
 BEFORE INSERT OR UPDATE OF title, description ON myapp_item
 FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(
-    search_vector, 'pg_catalog.english', title, description);
+    search_vector, 'pg_catalog.simple', title, description);
 UPDATE myapp_item SET search_vector = NULL;""",
             reverse_sql=(
                 "DROP TRIGGER IF EXISTS myapp_update_search_trigger ON myapp_item;"

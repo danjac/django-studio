@@ -84,6 +84,20 @@ Before adding or modifying any code under `template/`, read the generated projec
 
 These docs describe the patterns, types, and conventions the generated project uses. Code that ignores them will be wrong.
 
+After any change to `template/`, regenerate the project and verify all checks pass before committing:
+
+```bash
+cd /tmp && trash my_app
+uvx copier copy --trust --defaults --data project_name="My App" . /tmp/my_app
+cd /tmp/my_app
+git init && git add -A
+uv run pre-commit run --all-files   # run twice if hooks auto-fix files
+uv run pre-commit run --all-files
+just typecheck
+```
+
+**Do not commit until all checks are clean.**
+
 ## Feature Flags
 
 `copier.yml` exposes five boolean feature flags. The post-generation hook (`hooks/post_gen_project.py`) removes unused files based on these selections:

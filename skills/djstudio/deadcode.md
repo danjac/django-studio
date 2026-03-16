@@ -138,6 +138,7 @@ Do not delete, edit, or move any file until the user confirms. Once confirmed,
 apply only the approved removals and run:
 
 ```bash
+just typecheck
 just test-all
 ```
 

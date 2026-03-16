@@ -31,4 +31,4 @@ Add a background task using `django-tasks-db`. See `docs/Django-Tasks.md`.
 4. If adding a management command for cron scheduling, create
    `<package_name>/<app_name>/management/commands/<name>.py` and add a test.
 
-5. Verify: `just dj check` then `just test-all`
+5. Verify: `just dj check` then `just typecheck` then `just test-all`

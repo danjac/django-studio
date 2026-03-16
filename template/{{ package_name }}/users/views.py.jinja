@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -8,9 +10,11 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 
-from {{ package_name }}.http.request import AuthenticatedHttpRequest
-from {{ package_name }}.http.response import RenderOrRedirectResponse
 from {{ package_name }}.users.gdpr import anonymise_user
+
+if TYPE_CHECKING:
+    from {{ package_name }}.http.request import AuthenticatedHttpRequest
+    from {{ package_name }}.http.response import RenderOrRedirectResponse
 
 
 @require_http_methods(["GET", "HEAD", "DELETE"])

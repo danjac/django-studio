@@ -171,6 +171,13 @@ gh-set-secrets:
     gh secret set HELM_VALUES_SECRET < helm/site/values.secret.yaml
     gh secret list
 
+# Push updated values.secret.yaml to GitHub AND apply to the cluster atomically.
+# Use this whenever you change a config value (admin email, feature flag, etc.)
+# to keep CI secrets and the running cluster in sync.
+[group('deployment')]
+deploy-config: gh-set-secrets
+    just helm site
+
 # Install or upgrade a Helm chart, e.g. 'just helm site' or 'just helm observability'
 [group('deployment')]
 helm chart="site":

@@ -409,6 +409,12 @@ just gh-set-secrets
 This pushes `KUBECONFIG_BASE64` and `HELM_VALUES_SECRET` to the GitHub repository secrets.
 Tell the user what was pushed and confirm with `gh secret list`.
 
+> **After the initial deploy:** whenever you change a config value in
+> `values.secret.yaml` (e.g. admin email, feature flag), run `just deploy-config`
+> instead of `just gh-set-secrets` and `just helm site` separately. It pushes the
+> secrets to GitHub **and** applies the updated Helm chart to the cluster in one step,
+> keeping CI and the running cluster in sync.
+
 ---
 
 ## Step 6 — First deploy

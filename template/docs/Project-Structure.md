@@ -59,9 +59,10 @@ myproject/
 │
 ├── tailwind/             # Tailwind CSS source
 │   ├── app.css
+│   ├── theme.css
 │   ├── tokens.css
 │   ├── base.css
-│   ├── loaders.css
+│   ├── htmx.css
 │   ├── buttons.css
 │   ├── forms.css
 │   └── messages.css

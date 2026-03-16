@@ -1,3 +1,6 @@
+/* HTMX transition variant */
+@custom-variant htmx-added (& .htmx-added,.htmx-added &);
+
 @layer base {
     /* HTMX progress indicator */
     #hx-indicator {

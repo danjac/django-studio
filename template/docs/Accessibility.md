@@ -136,7 +136,7 @@ replace them:
   tokens (`primary`, `danger`, `success`, `error`, `info`, `warning`) are
   mapped to Tailwind shades chosen to meet AA at their standard usages, but
   always verify when combining custom values or overriding tokens in
-  `tailwind/app.css`.
+  `tailwind/theme.css`.
 
 ---
 

@@ -33,15 +33,36 @@ This project organizes Tailwind CSS into multiple files:
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 
-/* Custom variant for HTMX */
-@custom-variant htmx-added (& .htmx-added,.htmx-added &);
-
+@import "./theme.css";
 @import "./tokens.css";
 @import "./base.css";
-@import "./loaders.css";
+@import "./htmx.css";
 @import "./buttons.css";
 @import "./forms.css";
 @import "./messages.css";
+```
+
+### theme.css
+
+Tailwind `@theme` aliases that generate utility classes. Change these to rebrand
+the entire project — `text-primary-600`, `bg-danger-50`, etc. map back to these:
+
+```css
+@theme {
+  --color-primary-50:  var(--color-indigo-50);
+  /* ... through 950 */
+
+  --color-secondary-50: var(--color-violet-50);
+  /* ... */
+
+  --color-danger-50: var(--color-rose-50);
+  /* ... */
+
+  --color-success-400: var(--color-emerald-400);
+  --color-error-400:   var(--color-rose-400);
+  --color-info-400:    var(--color-sky-400);
+  --color-warning-400: var(--color-amber-400);
+}
 ```
 
 ### tokens.css
@@ -94,11 +115,13 @@ Global resets and framework utilities. Consumes tokens from `tokens.css`:
 }
 ```
 
-### loaders.css
+### htmx.css
 
-HTMX progress indicator:
+HTMX utilities:
 
 ```css
+@custom-variant htmx-added (& .htmx-added,.htmx-added &);
+
 @layer base {
     #hx-indicator {
         display: none;

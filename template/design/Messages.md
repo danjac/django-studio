@@ -25,7 +25,7 @@ The CSS class `message-{{ message.tags }}` is set automatically from the Django 
 | `messages.WARNING` | `warning` | `message-warning` | `--color-warning-*` (default: amber) |
 | `messages.ERROR` | `error` | `message-error` | `--color-error-*` (default: rose) |
 
-To restyle all message toasts at once, override the semantic tokens in `tailwind/app.css`:
+To restyle all message toasts at once, override the semantic tokens in `tailwind/theme.css`:
 
 ```css
 --color-success-400: var(--color-teal-400);

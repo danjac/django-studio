@@ -45,7 +45,7 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 
 Light and dark variants are set automatically via the `@variant dark` media query.
 
-### Brand color tokens (`tailwind/app.css`)
+### Brand color tokens (`tailwind/theme.css`)
 
 ```css
 --color-primary-*   /* brand color, default: indigo - buttons, focus rings, links */
@@ -53,11 +53,11 @@ Light and dark variants are set automatically via the `@variant dark` media quer
 --color-danger-*    /* destructive color, default: rose - btn-danger, error states */
 ```
 
-These are defined as `@theme` aliases in `tailwind/app.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** - use the semantic token names so rebranding stays in one place.
+These are defined as `@theme` aliases in `tailwind/theme.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** - use the semantic token names so rebranding stays in one place.
 
 ### Rebranding
 
-To change the primary brand color from indigo to (e.g.) teal, update the `--color-primary-*` block in `tailwind/app.css`:
+To change the primary brand color from indigo to (e.g.) teal, update the `--color-primary-*` block in `tailwind/theme.css`:
 
 ```css
 @theme {

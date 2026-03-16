@@ -258,7 +258,7 @@ If a doc contradicts what you see in existing code, flag it - do not silently pi
 
 ### Template Tags
 
-- **One library per app, named after the app.** Each app has at most one template tag library, placed at `<app>/templatetags/<app>.py` and loaded via `{% load <app> %}`. Do not create multiple libraries per app or use a name that differs from the app name.
+{% raw %}- **One library per app, named after the app.** Each app has at most one template tag library, placed at `<app>/templatetags/<app>.py` and loaded via `{% load <app> %}`. Do not create multiple libraries per app or use a name that differs from the app name.{% endraw %}
 
 - **Test template tags as plain Python functions.** `simple_tag` and `filter` decorators wrap ordinary Python functions. Import and call them directly in tests — do not instantiate `Template`/`Context` unless the test genuinely requires template rendering behaviour.
 
@@ -269,7 +269,7 @@ If a doc contradicts what you see in existing code, flag it - do not silently pi
       assert my_tag(obj) == expected
 
   # Avoid
-  template = Template("{% load myapp %}{% my_tag obj %}")
+  {% raw %}template = Template("{% load myapp %}{% my_tag obj %}"){% endraw %}
   result = template.render(Context({"obj": obj}))
   ```
 

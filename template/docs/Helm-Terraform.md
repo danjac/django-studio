@@ -52,6 +52,12 @@ cd terraform/cloudflare && cp terraform.tfvars.example terraform.tfvars
 just terraform cloudflare apply
 ```
 
+After applying, create a Cloudflare origin certificate so TLS terminates at your server:
+
+> Cloudflare Dashboard → SSL/TLS → Origin Server → Create Certificate (15-year validity)
+
+Paste the certificate and key into `helm/site/values.secret.yaml` before deploying.
+
 ### Variables
 
 Copy the example file and fill in required values:
@@ -112,7 +118,19 @@ Copy and fill in the secrets file:
 cp helm/site/values.secret.yaml.example helm/site/values.secret.yaml
 ```
 
-`values.secret.yaml` is gitignored - never commit it.
+`values.secret.yaml` is gitignored — never commit it.
+
+The `postgres.volumePath` value must match the Hetzner volume mount path provisioned by
+Terraform:
+
+```bash
+terraform -chdir=terraform/hetzner output -raw postgres_volume_mount_path
+# e.g. /mnt/HC_Volume_12345678
+```
+
+Both charts ship resource defaults tuned for the Terraform default server type (`cx23`:
+2 vCPU, 4 GB RAM). If you change `server_type` in `terraform.tfvars`, override the
+corresponding resource values in `values.secret.yaml`.
 
 ## CI/CD Pipeline
 
@@ -235,4 +253,15 @@ just kube logs -f deployment/django-app
 
 # Fetch kubeconfig
 just get-kubeconfig
+```
+
+### Upgrade PostgreSQL major version
+
+Set the upgrade flags in `helm/site/values.secret.yaml` before running `just helm site`:
+
+```yaml
+pgUpgrade:
+  enabled: true
+  newImage: postgres:17
+  newVolumePath: /mnt/HC_Volume_<new-volume-id>
 ```

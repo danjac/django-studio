@@ -186,4 +186,4 @@ Python 3.14 is managed automatically by `uv` - no separate install needed.
 | [kubectl](https://kubernetes.io/docs/tasks/tools/)             | Kubernetes CLI                                      | See install docs |
 | [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                   | See install docs |
 
-See `DEPLOYMENT.md` in the generated project for full deployment instructions.
+See `docs/Helm-Terraform.md` in the generated project for full deployment instructions.

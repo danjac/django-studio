@@ -218,7 +218,7 @@ Add extra methods for:
 just dj makemigrations <app_name>
 just dj check
 just typecheck
-just test
+just test-all
 ```
 
 ---

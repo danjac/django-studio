@@ -34,8 +34,7 @@ This project organizes Tailwind CSS into multiple files:
 @plugin "@tailwindcss/typography";
 
 @import "./theme.css";
-@import "./tokens.css";
-@import "./base.css";
+@import "./tweaks.css";
 @import "./htmx.css";
 @import "./buttons.css";
 @import "./forms.css";
@@ -44,76 +43,19 @@ This project organizes Tailwind CSS into multiple files:
 
 ### theme.css
 
-Tailwind `@theme` aliases that generate utility classes. Change these to rebrand
-the entire project — `text-primary-600`, `bg-danger-50`, etc. map back to these:
+Brand palette and semantic layout tokens. The two sections serve different roles
+but are edited together when rebranding:
 
-```css
-@theme {
-  --color-primary-50:  var(--color-indigo-50);
-  /* ... through 950 */
+- **`@theme` block** — Tailwind palette aliases that generate utility classes
+  (`text-primary-600`, `bg-danger-50`, etc.). Change these to rebrand. Never use
+  `indigo-*`, `violet-*`, or `rose-*` directly in templates.
+- **`:root` block** — Runtime CSS custom properties used with `var()` throughout
+  the project. Change these to retheme the layout or dark mode palette. Do not
+  rename them — they are referenced across all component files.
 
-  --color-secondary-50: var(--color-violet-50);
-  /* ... */
+### tweaks.css
 
-  --color-danger-50: var(--color-rose-50);
-  /* ... */
-
-  --color-success-400: var(--color-emerald-400);
-  --color-error-400:   var(--color-rose-400);
-  --color-info-400:    var(--color-sky-400);
-  --color-warning-400: var(--color-amber-400);
-}
-```
-
-### tokens.css
-
-Semantic CSS custom properties for light and dark mode. Override these to retheme
-the layout without touching brand colors:
-
-```css
-@layer base {
-    :root {
-        scrollbar-width: thin;
-        --color-bg: var(--color-white);
-        --color-surface: var(--color-zinc-50);
-        --color-border: var(--color-zinc-200);
-        --color-text: var(--color-zinc-900);
-        --color-text-muted: var(--color-zinc-500);
-
-        @variant dark {
-            color-scheme: dark;
-            --color-bg: var(--color-zinc-950);
-            --color-surface: var(--color-zinc-900);
-            --color-border: var(--color-zinc-800);
-            --color-text: var(--color-zinc-100);
-            --color-text-muted: var(--color-zinc-400);
-        }
-    }
-}
-```
-
-### base.css
-
-Global resets and framework utilities. Consumes tokens from `tokens.css`:
-
-```css
-@layer base {
-    /* Tailwind v4 border-color reset */
-    *, ::after, ::before, ::backdrop, ::file-selector-button {
-        border-color: var(--color-zinc-200, currentColor);
-    }
-
-    body {
-        background-color: var(--color-bg);
-        color: var(--color-text);
-    }
-
-    /* AlpineJS */
-    [x-cloak] {
-        display: none !important;
-    }
-}
-```
+Global resets, body defaults, Alpine utilities, and dark mode border corrections.
 
 ### htmx.css
 

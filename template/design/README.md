@@ -33,7 +33,9 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 
 ## Design Tokens
 
-### Layout tokens (`tailwind/tokens.css`)
+All tokens live in `tailwind/theme.css`. Two sections, both safe to change:
+
+### Layout tokens (`:root`)
 
 ```css
 --color-bg          /* page background */
@@ -45,7 +47,7 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 
 Light and dark variants are set automatically via the `@variant dark` media query.
 
-### Brand color tokens (`tailwind/theme.css`)
+### Brand color tokens (`@theme`)
 
 ```css
 --color-primary-*   /* brand color, default: indigo - buttons, focus rings, links */

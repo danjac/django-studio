@@ -6,8 +6,7 @@
 @plugin "@tailwindcss/typography";
 
 @import "./theme.css";
-@import "./tokens.css";
-@import "./base.css";
+@import "./tweaks.css";
 @import "./htmx.css";
 @import "./buttons.css";
 @import "./forms.css";

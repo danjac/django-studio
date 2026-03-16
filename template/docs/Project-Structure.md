@@ -60,8 +60,7 @@ myproject/
 ├── tailwind/             # Tailwind CSS source
 │   ├── app.css
 │   ├── theme.css
-│   ├── tokens.css
-│   ├── base.css
+│   ├── tweaks.css
 │   ├── htmx.css
 │   ├── buttons.css
 │   ├── forms.css

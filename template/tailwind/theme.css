@@ -1,3 +1,11 @@
+/* =============================================================================
+   BRAND PALETTE — safe to change, this is how you rebrand the project
+   These @theme aliases generate Tailwind utility classes:
+   text-primary-600, bg-danger-50, border-secondary-200, etc.
+   Never use indigo-*, violet-*, or rose-* directly in templates or CSS —
+   always use the semantic names so rebranding stays in one place.
+   ============================================================================= */
+
 @theme {
   /* Primary brand color (default: indigo) */
   --color-primary-50:  var(--color-indigo-50);
@@ -38,7 +46,7 @@
   --color-danger-900: var(--color-rose-900);
   --color-danger-950: var(--color-rose-950);
 
-  /* Message semantic colors - change these to restyle all message toasts */
+  /* Message semantic colors — change these to restyle all message toasts */
   --color-success-400: var(--color-emerald-400);
   --color-success-600: var(--color-emerald-600);
 
@@ -50,4 +58,32 @@
 
   --color-warning-400: var(--color-amber-400);
   --color-warning-600: var(--color-amber-600);
+}
+
+/* =============================================================================
+   SEMANTIC LAYOUT TOKENS — safe to change, affects light/dark mode palette
+   These are plain CSS custom properties used with var() throughout the project.
+   Change these to retheme the layout without touching the brand colors above.
+   Do not remove or rename them — they are referenced across all component files.
+   ============================================================================= */
+
+@layer base {
+    :root {
+        scrollbar-width: thin;
+
+        --color-bg: var(--color-white);
+        --color-surface: var(--color-zinc-50);
+        --color-border: var(--color-zinc-200);
+        --color-text: var(--color-zinc-900);
+        --color-text-muted: var(--color-zinc-500);
+
+        @variant dark {
+            color-scheme: dark;
+            --color-bg: var(--color-zinc-950);
+            --color-surface: var(--color-zinc-900);
+            --color-border: var(--color-zinc-800);
+            --color-text: var(--color-zinc-100);
+            --color-text-muted: var(--color-zinc-400);
+        }
+    }
 }

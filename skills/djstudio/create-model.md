@@ -217,7 +217,8 @@ Add extra methods for:
 ```bash
 just dj makemigrations <app_name>
 just dj check
-just test
+just typecheck
+just test-all
 ```
 
 ---

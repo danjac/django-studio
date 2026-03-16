@@ -149,14 +149,7 @@ def install_claude_hooks() -> None:
     settings = {
         "permissions": {
             "allow": [
-                "Bash(just lint:*)",
-                "Bash(just test:*)",
-                "Bash(just typecheck:*)",
-                "Bash(just dj:*)",
-                "Bash(just start:*)",
-                "Bash(just stop:*)",
-                "Bash(just serve:*)",
-                "Bash(just psql:*)",
+                "Bash(just:*)",
                 "Bash(git status:*)",
                 "Bash(git log:*)",
                 "Bash(git diff:*)",

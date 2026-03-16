@@ -99,11 +99,14 @@ def <model_lower>_detail(request: HttpRequest, pk: int) -> TemplateResponse:
 @login_required
 @require_form_methods
 def <model_lower>_create(request: HttpRequest) -> TemplateResponse | HttpResponseRedirect:
-    form = <model_name>Form(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "<model_name> created.")
-        return redirect(reverse("<app_name>:<model_lower>_list"))
+    if request.method == "POST":
+        form = <model_name>Form(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "<model_name> created.")
+            return redirect(reverse("<app_name>:<model_lower>_list"))
+    else:
+        form = <model_name>Form()
     return render_partial_response(
         request,
         "<app_name>/<model_lower>_form.html",
@@ -119,11 +122,14 @@ def <model_lower>_edit(
     request: HttpRequest, pk: int
 ) -> TemplateResponse | HttpResponseRedirect:
     <model_lower> = get_object_or_404(<model_name>, pk=pk)
-    form = <model_name>Form(request.POST or None, instance=<model_lower>)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "<model_name> updated.")
-        return redirect(reverse("<app_name>:<model_lower>_list"))
+    if request.method == "POST":
+        form = <model_name>Form(request.POST, instance=<model_lower>)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "<model_name> updated.")
+            return redirect(reverse("<app_name>:<model_lower>_list"))
+    else:
+        form = <model_name>Form(instance=<model_lower>)
     return render_partial_response(
         request,
         "<app_name>/<model_lower>_form.html",
@@ -270,6 +276,13 @@ urlpatterns = [
 
 ### 5. Tests
 
+**Fixture convention:** `create-model` Step 6 creates a `<model_lower>` pytest
+fixture in `<package_name>/<app_name>/tests/fixtures.py`. Use it as a parameter
+in tests that need a single instance — do not call `<model_name>Factory()`
+directly for those cases. Only use `<model_name>Factory.create_batch()` (or
+direct factory calls) when you need multiple objects or need to control specific
+field values.
+
 Add to `<package_name>/<app_name>/tests/test_views.py`:
 
 ```python
@@ -300,18 +313,16 @@ class Test<model_name>List:
 
 @pytest.mark.django_db
 class Test<model_name>Detail:
-    def test_get(self, client, auth_user):
-        obj = <model_name>Factory()
-        response = client.get(reverse("<app_name>:<model_lower>_detail", args=[obj.pk]))
+    def test_get(self, client, auth_user, <model_lower>):
+        response = client.get(reverse("<app_name>:<model_lower>_detail", args=[<model_lower>.pk]))
         assert response.status_code == 200
 
     def test_404(self, client, auth_user):
         response = client.get(reverse("<app_name>:<model_lower>_detail", args=[0]))
         assert response.status_code == 404
 
-    def test_redirect_if_not_logged_in(self, client):
-        obj = <model_name>Factory()
-        response = client.get(reverse("<app_name>:<model_lower>_detail", args=[obj.pk]))
+    def test_redirect_if_not_logged_in(self, client, <model_lower>):
+        response = client.get(reverse("<app_name>:<model_lower>_detail", args=[<model_lower>.pk]))
         assert response.status_code == 302
 
 
@@ -346,31 +357,27 @@ class Test<model_name>Create:
 
 @pytest.mark.django_db
 class Test<model_name>Edit:
-    def test_get(self, client, auth_user):
-        obj = <model_name>Factory()
-        response = client.get(reverse("<app_name>:<model_lower>_edit", args=[obj.pk]))
+    def test_get(self, client, auth_user, <model_lower>):
+        response = client.get(reverse("<app_name>:<model_lower>_edit", args=[<model_lower>.pk]))
         assert response.status_code == 200
 
-    def test_htmx_partial(self, client, auth_user):
-        obj = <model_name>Factory()
+    def test_htmx_partial(self, client, auth_user, <model_lower>):
         response = client.get(
-            reverse("<app_name>:<model_lower>_edit", args=[obj.pk]),
+            reverse("<app_name>:<model_lower>_edit", args=[<model_lower>.pk]),
             headers={"HX-Request": "true", "HX-Target": "<model_lower>-form"},
         )
         assert response.status_code == 200
 
-    def test_post_valid(self, client, auth_user):
-        obj = <model_name>Factory()
+    def test_post_valid(self, client, auth_user, <model_lower>):
         response = client.post(
-            reverse("<app_name>:<model_lower>_edit", args=[obj.pk]),
+            reverse("<app_name>:<model_lower>_edit", args=[<model_lower>.pk]),
             data={},  # fill in valid form data
         )
         assert response.status_code == 302
 
-    def test_post_invalid(self, client, auth_user):
-        obj = <model_name>Factory()
+    def test_post_invalid(self, client, auth_user, <model_lower>):
         response = client.post(
-            reverse("<app_name>:<model_lower>_edit", args=[obj.pk]),
+            reverse("<app_name>:<model_lower>_edit", args=[<model_lower>.pk]),
             data={},
         )
         assert response.status_code == 200
@@ -379,32 +386,29 @@ class Test<model_name>Edit:
         response = client.get(reverse("<app_name>:<model_lower>_edit", args=[0]))
         assert response.status_code == 404
 
-    def test_redirect_if_not_logged_in(self, client):
-        obj = <model_name>Factory()
-        response = client.get(reverse("<app_name>:<model_lower>_edit", args=[obj.pk]))
+    def test_redirect_if_not_logged_in(self, client, <model_lower>):
+        response = client.get(reverse("<app_name>:<model_lower>_edit", args=[<model_lower>.pk]))
         assert response.status_code == 302
 
 
 @pytest.mark.django_db
 class Test<model_name>Delete:
-    def test_get(self, client, auth_user):
-        obj = <model_name>Factory()
-        response = client.get(reverse("<app_name>:<model_lower>_delete", args=[obj.pk]))
+    def test_get(self, client, auth_user, <model_lower>):
+        response = client.get(reverse("<app_name>:<model_lower>_delete", args=[<model_lower>.pk]))
         assert response.status_code == 200
 
-    def test_delete(self, client, auth_user):
-        obj = <model_name>Factory()
-        response = client.delete(reverse("<app_name>:<model_lower>_delete", args=[obj.pk]))
+    def test_delete(self, client, auth_user, <model_lower>):
+        pk = <model_lower>.pk
+        response = client.delete(reverse("<app_name>:<model_lower>_delete", args=[pk]))
         assert response.status_code == 302
-        assert not <model_name>.objects.filter(pk=obj.pk).exists()
+        assert not <model_name>.objects.filter(pk=pk).exists()
 
     def test_404(self, client, auth_user):
         response = client.delete(reverse("<app_name>:<model_lower>_delete", args=[0]))
         assert response.status_code == 404
 
-    def test_redirect_if_not_logged_in(self, client):
-        obj = <model_name>Factory()
-        response = client.get(reverse("<app_name>:<model_lower>_delete", args=[obj.pk]))
+    def test_redirect_if_not_logged_in(self, client, <model_lower>):
+        response = client.get(reverse("<app_name>:<model_lower>_delete", args=[<model_lower>.pk]))
         assert response.status_code == 302
 ```
 
@@ -433,5 +437,6 @@ If `create-model` already created a factory with field declarations, use that
 
 ```bash
 just dj check
+just typecheck
 just test-all
 ```

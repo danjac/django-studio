@@ -75,4 +75,4 @@ where the template goes, and where the URL is wired.
    - Any auth/permission branch
    100% coverage is required.
 
-5. Verify: `just dj check` then `just test-all`
+5. Verify: `just dj check` then `just typecheck` then `just test-all`

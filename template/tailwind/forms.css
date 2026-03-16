@@ -37,6 +37,46 @@
         }
     }
 
+    /* django-money MoneyWidget — responsive amount + currency layout */
+    .money-widget {
+        display: inline-flex;
+        flex-direction: column;
+        gap: theme("spacing.2");
+
+        @media (min-width: theme("screens.sm")) {
+            flex-direction: row;
+            align-items: stretch;
+        }
+
+        input,
+        select {
+            width: theme("spacing.36");
+            background: var(--color-surface);
+            color: var(--color-text);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            padding: theme("padding.2") theme("padding.3");
+            transition: border-color 200ms ease, box-shadow 200ms ease;
+
+            @variant focus {
+                border-color: var(--color-primary-500);
+                box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary-500) 10%, transparent);
+                outline: none;
+            }
+
+            @variant dark {
+                background: var(--color-zinc-800);
+                border-color: var(--color-zinc-600);
+                color: var(--color-zinc-200);
+
+                @variant focus {
+                    border-color: var(--color-primary-400);
+                    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary-500) 20%, transparent);
+                }
+            }
+        }
+    }
+
     /* search inputs */
 
     input[type="search"]::-webkit-search-decoration,

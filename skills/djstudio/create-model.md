@@ -52,8 +52,10 @@ Model: <model_name>  →  <package_name>/<app_name>/models.py
   <field>     <FieldType>(<options>)
   …
   __str__:    returns <description>
-  Meta:       ordering = [<fields>]
 ```
+
+Only include `Meta: ordering = [...]` in the sketch if the user has explicitly
+requested a default ordering. Never infer ordering from the model name or fields.
 
 ---
 
@@ -64,8 +66,9 @@ Append to `<package_name>/<app_name>/models.py`. Do not touch existing models.
 Conventions:
 - `from __future__ import annotations` at the top of the file
 - Use `models.TextChoices` / `models.IntegerChoices` for enums, as inner classes
-- Always define `__str__`
-- Add `class Meta` with `ordering` when there is a natural sort order
+- Always define `__str__`; only reference fields on the model itself — never FK
+  relations (e.g. use `self.event_id`, not `self.event`)
+- Only add `class Meta` with `ordering` if the user explicitly requested it
 - FK `related_name` must always be explicit — never rely on the Django default
 
 ```python
@@ -80,11 +83,11 @@ class <model_name>(models.Model):
 
     <field_name> = models.<FieldType>(...)
 
-    class Meta:
-        ordering = [...]
+    # class Meta:
+    #     ordering = [...]  # only if user explicitly requested it
 
     def __str__(self) -> str:
-        return ...
+        return ...  # use self fields only, never FK relations
 ```
 
 ---
@@ -217,6 +220,7 @@ Add extra methods for:
 ```bash
 just dj makemigrations <app_name>
 just dj check
+just typecheck
 just test-all
 ```
 

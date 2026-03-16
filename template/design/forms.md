@@ -103,7 +103,9 @@ Built-in widgets and their partials:
 | `EmailInput` | `emailinput` |
 | `URLInput` | `urlinput` |
 | `FileInput` | `fileinput` |
+| `ClearableFileInput` | `clearablefileinput` |
 | `DateInput` | `dateinput` |
+| `DateTimeInput` | `datetimeinput` |
 | `Textarea` | `textarea` |
 | `CheckboxInput` | `checkboxinput` |
 | `CheckboxSelectMultiple` | `checkboxselectmultiple` |
@@ -113,22 +115,12 @@ Built-in widgets and their partials:
 
 ### Custom Widget Partials
 
-If you add a custom widget — from a third-party package (e.g. `django-money`,
-`django-phonenumber-field`) or from within this project — **you must add a
-matching `{% partialdef %}` block to `templates/form/field.html`**. Without it
-the field renders nothing, with no error.
+If you add a custom widget — from a third-party package or from within this
+project — **you must add a matching `{% partialdef %}` block to
+`templates/form/field.html`**. Without it the field renders nothing, with no
+error.
 
-The partial name is the widget's class name, lowercased. For example, if
-`django-money` uses a widget class named `MoneyWidget`, the partial name is
-`moneywidget`:
-
-```html
-{# django-money MoneyWidget #}
-{% partialdef moneywidget %}
-  {% partial label %}
-  {% render_field field class="form-input" %}  {# adjust markup to suit the widget #}
-{% endpartialdef %}
-```
+The partial name is the widget's class name, lowercased.
 
 Steps for any custom widget:
 
@@ -140,6 +132,26 @@ Steps for any custom widget:
    to keep label/error/help-text rendering consistent with built-in widgets.
 4. Test by rendering the field with `{{ field.as_field_group }}` and verifying
    the output is not empty.
+
+#### Example: `django-money` `MoneyWidget`
+
+`MoneyWidget` is a `MultiWidget` that combines an amount `TextInput` and a
+currency `Select`. The partial and CSS are pre-built in the template:
+
+```html
+{# templates/form/field.html — already present #}
+{% partialdef moneywidget %}
+  {% partial label %}
+  <div class="money-widget">
+    {% render_field field %}
+  </div>
+{% endpartialdef %}
+```
+
+The `.money-widget` class in `tailwind/forms.css` stacks the two sub-widgets
+vertically on mobile and side-by-side on `sm+`, giving both the same styling as
+`form-input`/`form-select`. No additional configuration is needed beyond
+installing `django-money` and using `MoneyField` in the model.
 
 ## CSS Classes
 
@@ -169,11 +181,14 @@ The `form/field.html` template applies `has-errors` to the fieldset and renders 
 
 ```python
 def my_view(request):
-    form = MyForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "Saved.")
-        return redirect("index")
+    if request.method == "POST":
+        form = MyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Saved.")
+            return redirect("index")
+    else:
+        form = MyForm()
     return TemplateResponse(request, "my_page.html", {"form": form})
 ```
 

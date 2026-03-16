@@ -123,6 +123,9 @@ A component library lives in `design/`. It documents every ready-made UI compone
 | `design/lists.md`      | `browse.html` - divided list layout                 |
 | `design/badges.md`     | Status badges, count chips, category tags           |
 | `design/pagination.md` | `paginate.html` - Previous/Next with HTMX           |
+| `design/search.md`     | HTMX debounced search input with URL push + clear   |
+| `design/carousel.md`   | Alpine.js lightbox carousel with sorl-thumbnail     |
+| `design/landing.md`    | Hero, feature grid, CTA — public landing page       |
 | `design/typography.md` | `markdown.html`, prose, heading scale, link style   |
 | `design/layout.md`     | Base templates, two-column layout, HTMX indicator   |
 | `design/upload.md`     | Multi-file upload widget (Alpine + drag-and-drop)   |
@@ -254,6 +257,26 @@ If a doc contradicts what you see in existing code, flag it - do not silently pi
 - **Scope discipline** - Only change what was explicitly requested.
 - **Diagnose before changing** - Read the code and state your diagnosis with a file:line reference before editing.
 - **Verify runtime behaviour** - Passing tests is necessary but not sufficient.
+- **Add imports and first usage in the same edit** - The pre-commit ruff hook strips unused imports immediately. If you add an import in one edit and the code that uses it in a second edit, the import will be removed before the second edit runs. Always add an import and its first usage together in a single edit operation.
+
+### Template Tags
+
+{% raw %}- **One library per app, named after the app.** Each app has at most one template tag library, placed at `<app>/templatetags/<app>.py` and loaded via `{% load <app> %}`. Do not create multiple libraries per app or use a name that differs from the app name.{% endraw %}
+
+- **Test template tags as plain Python functions.** `simple_tag` and `filter` decorators wrap ordinary Python functions. Import and call them directly in tests — do not instantiate `Template`/`Context` unless the test genuinely requires template rendering behaviour.
+
+  ```python
+  # Good
+  from myapp.templatetags.myapp import my_tag
+  def test_my_tag(obj):
+      assert my_tag(obj) == expected
+
+  # Avoid
+  {% raw %}template = Template("{% load myapp %}{% my_tag obj %}"){% endraw %}
+  result = template.render(Context({"obj": obj}))
+  ```
+
+- **Tag tests live in `<app>/tests/test_template_tags.py`.**
 
 ## Slash Commands
 

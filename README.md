@@ -145,11 +145,12 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | ---------- | -------------------------------------------------------------------------------- |
 | `launch`   | Interactive first-deploy wizard: provisions infra, configures secrets, deploys   |
 
-**Feedback**
+**Maintenance**
 
-| Subcommand  | Summary                                                      |
-| ----------- | ------------------------------------------------------------ |
-| `feedback`  | Report a bug or improvement against the django-studio template |
+| Subcommand  | Summary                                                                          |
+| ----------- | -------------------------------------------------------------------------------- |
+| `sync`      | Pull latest template changes via Copier and resolve merge conflicts interactively |
+| `feedback`  | Report a bug or improvement against the django-studio template                   |
 
 ## Hosting
 

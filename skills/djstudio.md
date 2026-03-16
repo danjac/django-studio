@@ -42,8 +42,9 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 |------------|------------------------------------------|--------------------------------------------------------------------|
 | `launch`   | `.claude/commands/djstudio/launch.md`    | Interactive first-deploy wizard (infra → certs → secrets → deploy) |
 
-**Feedback**
+**Maintenance**
 
 | Subcommand           | File                                      | Purpose                                             |
 |----------------------|-------------------------------------------|-----------------------------------------------------|
+| `sync`               | `.claude/commands/djstudio/sync.md`       | Pull latest template changes via Copier and resolve merge conflicts |
 | `feedback [description]` | `.claude/commands/djstudio/feedback.md` | File a GitHub issue against the django-studio repo |

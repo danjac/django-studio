@@ -3,6 +3,7 @@ name = "django-studio"
 version = "0.1.0"
 description = "Copier template for Django projects with HTMX, Alpine.js, and Tailwind CSS"
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = "==3.14.*"
 dependencies = [
     "copier>=9.13.0",

@@ -74,6 +74,16 @@ Run pre-commit hooks on all files in the cookiecutter project to ensure all chec
 git init && git commit -A && pre-commit run --all-files
 ```
 
+## Working on the Template
+
+Before adding or modifying any code under `template/`, read the generated project's documentation first:
+
+- `template/AGENTS.md.jinja` — agent workflow, conventions, and command reference
+- `template/docs/` — all reference docs (Django config, views, models, packages, HTMX, etc.)
+- `template/design/` — component library and design tokens
+
+These docs describe the patterns, types, and conventions the generated project uses. Code that ignores them will be wrong.
+
 ## Feature Flags
 
 `copier.yml` exposes five boolean feature flags. The post-generation hook (`hooks/post_gen_project.py`) removes unused files based on these selections:

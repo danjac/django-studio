@@ -436,7 +436,5 @@ If `create-model` already created a factory with field declarations, use that
 ### 6. Verify
 
 ```bash
-just dj check
-just typecheck
-just test-all
+just check-all
 ```

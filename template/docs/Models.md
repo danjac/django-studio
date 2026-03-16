@@ -22,7 +22,42 @@ class Item(models.Model):
     pub_date = models.DateTimeField(null=True)
 ```
 
-**NOTE** do not add default ordering to the model's `Meta` class. Instead, define an explicit `order_by()` where the model queryset is used. Default ordering can cause unexpected performance issues and is not always desired.
+**Never use `@classmethod` on the model for query logic.** QuerySet methods are
+the correct place — they chain correctly and receive `self` as a `QuerySet`,
+not the model class.
+
+**No `Meta.ordering` by default.** Do not add `ordering` to `Meta` unless the
+user explicitly requests it. Default ordering adds an `ORDER BY` clause to
+every query, including ones that don't need it, and can mask missing indexes.
+Add an explicit `.order_by()` at the call site instead.
+
+## `__str__` convention
+
+`__str__` must only reference fields on the model itself — never FK relations:
+
+```python
+# Good — only reads the model's own column
+def __str__(self) -> str:
+    return self.name
+
+# Good — FK id column is on this table, no extra query
+def __str__(self) -> str:
+    return f"Item {self.pk} (event {self.event_id})"
+
+# Bad — accessing self.event triggers an extra SQL query if not select_related
+def __str__(self) -> str:
+    return f"Item {self.pk} - {self.event}"
+```
+
+FK access in `__str__` causes N+1 queries in list views, admin changelistss, and
+logging — any place that calls `str()` on a queryset without `select_related`.
+
+## Linting bypass comments
+
+Do not add `# noqa: ...`, `# type: ignore`, or similar inline bypass comments
+without first asking the user. In most cases a code change avoids the bypass
+entirely. If there is truly no alternative, state the reason and ask before
+adding the comment.
 
 ## Full-Text Search
 

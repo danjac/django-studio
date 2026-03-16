@@ -114,3 +114,11 @@
   {% partial label %}
   {% render_field field class="form-multiselect" %}
 {% endpartialdef %}
+
+{# django-money MoneyWidget (amount + currency select) #}
+{% partialdef moneywidget %}
+  {% partial label %}
+  <div class="money-widget">
+    {% render_field field %}
+  </div>
+{% endpartialdef %}

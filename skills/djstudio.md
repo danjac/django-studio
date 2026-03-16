@@ -39,9 +39,10 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 
 **Deployment**
 
-| Subcommand | File                                     | Purpose                                                            |
-|------------|------------------------------------------|--------------------------------------------------------------------|
-| `launch`   | `.claude/commands/djstudio/launch.md`    | Interactive first-deploy wizard (infra → certs → secrets → deploy) |
+| Subcommand        | File                                            | Purpose                                                            |
+|-------------------|-------------------------------------------------|--------------------------------------------------------------------|
+| `launch`          | `.claude/commands/djstudio/launch.md`           | Interactive first-deploy wizard (infra → certs → secrets → deploy) |
+| `rotate-secrets`  | `.claude/commands/djstudio/rotate-secrets.md`   | Rotate auto-generated and third-party Helm secrets and redeploy    |
 
 **Maintenance**
 

@@ -760,6 +760,7 @@ class TestClaudeSkillsInstallation:
             "perf.md",
             "secure.md",
             "gdpr.md",
+            "a11y.md",
             "deadcode.md",
             "translate.md",
             "launch.md",

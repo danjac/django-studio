@@ -36,15 +36,18 @@ This project organizes Tailwind CSS into multiple files:
 /* Custom variant for HTMX */
 @custom-variant htmx-added (& .htmx-added,.htmx-added &);
 
+@import "./tokens.css";
 @import "./base.css";
+@import "./loaders.css";
 @import "./buttons.css";
 @import "./forms.css";
 @import "./messages.css";
 ```
 
-### base.css
+### tokens.css
 
-Base styles with CSS variables for theming:
+Semantic CSS custom properties for light and dark mode. Override these to retheme
+the layout without touching brand colors:
 
 ```css
 @layer base {
@@ -65,6 +68,19 @@ Base styles with CSS variables for theming:
             --color-text-muted: var(--color-zinc-400);
         }
     }
+}
+```
+
+### base.css
+
+Global resets and framework utilities. Consumes tokens from `tokens.css`:
+
+```css
+@layer base {
+    /* Tailwind v4 border-color reset */
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--color-zinc-200, currentColor);
+    }
 
     body {
         background-color: var(--color-bg);
@@ -75,15 +91,21 @@ Base styles with CSS variables for theming:
     [x-cloak] {
         display: none !important;
     }
+}
+```
 
-    /* HTMX loading indicator */
+### loaders.css
+
+HTMX progress indicator:
+
+```css
+@layer base {
     #hx-indicator {
         display: none;
         position: fixed;
-        top: 0;
-        left: 0;
+        top: 0; left: 0;
         height: 3px;
-        background: var(--color-indigo-500);
+        background: var(--color-primary-500);
         z-index: 9999;
     }
 

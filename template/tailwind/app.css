@@ -64,7 +64,9 @@
 /* Custom CSS for HTMX transitions */
 @custom-variant htmx-added (& .htmx-added,.htmx-added &);
 
+@import "./tokens.css";
 @import "./base.css";
+@import "./loaders.css";
 @import "./buttons.css";
 @import "./forms.css";
 @import "./images.css";

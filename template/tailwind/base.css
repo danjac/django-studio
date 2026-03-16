@@ -7,25 +7,6 @@
         border-color: var(--color-zinc-200, currentColor);
     }
 
-    :root {
-        scrollbar-width: thin;
-
-        --color-bg: var(--color-white);
-        --color-surface: var(--color-zinc-50);
-        --color-border: var(--color-zinc-200);
-        --color-text: var(--color-zinc-900);
-        --color-text-muted: var(--color-zinc-500);
-
-        @variant dark {
-            color-scheme: dark;
-            --color-bg: var(--color-zinc-950);
-            --color-surface: var(--color-zinc-900);
-            --color-border: var(--color-zinc-800);
-            --color-text: var(--color-zinc-100);
-            --color-text-muted: var(--color-zinc-400);
-        }
-    }
-
     body {
         background-color: var(--color-bg);
         color: var(--color-text);
@@ -35,28 +16,5 @@
 
     [x-cloak] {
         display: none !important;
-    }
-
-    /* HTMX */
-    #hx-indicator {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 3px;
-        background: var(--color-primary-500);
-        z-index: 9999;
-        transition:
-        width 300ms ease-out,
-        opacity 150ms 150ms ease-in;
-        transform: translate3d(0, 0, 0);
-
-        @variant dark {
-            background: var(--color-primary-400);
-        }
-    }
-
-    #hx-indicator.htmx-request {
-        display: block !important;
     }
 }

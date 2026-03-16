@@ -20,7 +20,7 @@ See [`design/README.md`](../design/README.md) for the full component index. Quic
 
 ## Dark Mode
 
-Uses Tailwind's `dark:` prefix driven by system preference via CSS media query. Design tokens are defined in `tailwind/base.css`:
+Uses Tailwind's `dark:` prefix driven by system preference via CSS media query. Design tokens are defined in `tailwind/tokens.css`:
 
 ```css
 @variant dark {

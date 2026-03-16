@@ -33,7 +33,7 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 
 ## Design Tokens
 
-### Layout tokens (`tailwind/base.css`)
+### Layout tokens (`tailwind/tokens.css`)
 
 ```css
 --color-bg          /* page background */

@@ -3,4 +3,23 @@
 
 {% block content %}
   {% include "header.html" with title=_("About") %}
+  {% with site=request.site %}
+    <div class="space-y-4 prose dark:prose-invert">
+      <p>
+        {% blocktranslate trimmed with name=site.name %}
+          Welcome to <strong>{{ name }}</strong>. This page is a placeholder — update it
+          with a description of your project.
+        {% endblocktranslate %}
+      </p>
+      <p>
+        {% blocktranslate trimmed with email=contact_email %}
+          If you have any questions or feedback, contact us at
+          <a href="mailto:{{ email }}" class="link">{{ email }}</a>.
+        {% endblocktranslate %}
+      </p>
+      <p>
+        <a href="{% url 'privacy' %}" class="link">{% translate "Privacy Policy" %}</a>
+      </p>
+    </div>
+  {% endwith %}
 {% endblock content %}

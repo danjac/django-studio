@@ -169,11 +169,14 @@ The `form/field.html` template applies `has-errors` to the fieldset and renders 
 
 ```python
 def my_view(request):
-    form = MyForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "Saved.")
-        return redirect("index")
+    if request.method == "POST":
+        form = MyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Saved.")
+            return redirect("index")
+    else:
+        form = MyForm()
     return TemplateResponse(request, "my_page.html", {"form": form})
 ```
 

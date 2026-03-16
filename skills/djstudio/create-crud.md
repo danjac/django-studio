@@ -99,11 +99,14 @@ def <model_lower>_detail(request: HttpRequest, pk: int) -> TemplateResponse:
 @login_required
 @require_form_methods
 def <model_lower>_create(request: HttpRequest) -> TemplateResponse | HttpResponseRedirect:
-    form = <model_name>Form(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "<model_name> created.")
-        return redirect(reverse("<app_name>:<model_lower>_list"))
+    if request.method == "POST":
+        form = <model_name>Form(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "<model_name> created.")
+            return redirect(reverse("<app_name>:<model_lower>_list"))
+    else:
+        form = <model_name>Form()
     return render_partial_response(
         request,
         "<app_name>/<model_lower>_form.html",
@@ -119,11 +122,14 @@ def <model_lower>_edit(
     request: HttpRequest, pk: int
 ) -> TemplateResponse | HttpResponseRedirect:
     <model_lower> = get_object_or_404(<model_name>, pk=pk)
-    form = <model_name>Form(request.POST or None, instance=<model_lower>)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "<model_name> updated.")
-        return redirect(reverse("<app_name>:<model_lower>_list"))
+    if request.method == "POST":
+        form = <model_name>Form(request.POST, instance=<model_lower>)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "<model_name> updated.")
+            return redirect(reverse("<app_name>:<model_lower>_list"))
+    else:
+        form = <model_name>Form(instance=<model_lower>)
     return render_partial_response(
         request,
         "<app_name>/<model_lower>_form.html",

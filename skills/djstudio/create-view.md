@@ -60,7 +60,7 @@ where the template goes, and where the URL is wired.
    switches to the named partial block when `HX-Target` matches `target`.
 
 2. **Create the template** at the path from the table above.
-   Start from a base template (see `design/layout.md`). For HTMX partials,
+   Start from a base template (see `design/Layout.md`). For HTMX partials,
    use Django 6 named partial blocks. Consult `design/` for all components.
 
 3. **Wire the URL** in the file from the table above:

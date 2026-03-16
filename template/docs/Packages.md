@@ -62,7 +62,7 @@ State your findings explicitly when suggesting a package — don't just name it.
   and configure `ASGI_APPLICATION`.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. Add a `{% partialdef moneywidget %}` block to
-  `templates/form/field.html` — see `design/forms.md`.
+  `templates/form/field.html` — see `design/Forms.md`.
 - **pydantic**: use for parsing and validating external API responses, complex
   form payloads, and structured config. Add to `pyproject.toml` to prevent
   ruff from moving base class imports into `TYPE_CHECKING` blocks:

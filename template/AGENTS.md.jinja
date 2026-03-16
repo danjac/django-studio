@@ -124,21 +124,21 @@ A component library lives in `design/`. It documents every ready-made UI compone
 
 | Doc                    | Components covered                                  |
 | ---------------------- | --------------------------------------------------- |
-| `design/buttons.md`    | `btn`, `btn-primary`, `btn-secondary`, `btn-danger` |
-| `design/messages.md`   | Django messages toast, HTMX OOB swap                |
-| `design/forms.md`      | `form.html`, `form/field.html`, widget classes      |
-| `design/navigation.md` | `navbar.html`, `sidebar.html`, user dropdown        |
-| `design/headers.md`    | `header.html` - page title with optional subtitle   |
-| `design/cards.md`      | card pattern with sorl-thumbnail example            |
-| `design/lists.md`      | `browse.html` - divided list layout                 |
-| `design/badges.md`     | Status badges, count chips, category tags           |
-| `design/pagination.md` | `paginate.html` - Previous/Next with HTMX           |
-| `design/search.md`     | HTMX debounced search input with URL push + clear   |
-| `design/carousel.md`   | Alpine.js lightbox carousel with sorl-thumbnail     |
-| `design/landing.md`    | Hero, feature grid, CTA — public landing page       |
-| `design/typography.md` | `markdown.html`, prose, heading scale, link style   |
-| `design/layout.md`     | Base templates, two-column layout, HTMX indicator   |
-| `design/upload.md`     | Multi-file upload widget (Alpine + drag-and-drop)   |
+| `design/Buttons.md`    | `btn`, `btn-primary`, `btn-secondary`, `btn-danger` |
+| `design/Messages.md`   | Django messages toast, HTMX OOB swap                |
+| `design/Forms.md`      | `form.html`, `form/field.html`, widget classes      |
+| `design/Navigation.md` | `navbar.html`, `sidebar.html`, user dropdown        |
+| `design/Headers.md`    | `header.html` - page title with optional subtitle   |
+| `design/Cards.md`      | card pattern with sorl-thumbnail example            |
+| `design/Lists.md`      | `browse.html` - divided list layout                 |
+| `design/Badges.md`     | Status badges, count chips, category tags           |
+| `design/Pagination.md` | `paginate.html` - Previous/Next with HTMX           |
+| `design/Search.md`     | HTMX debounced search input with URL push + clear   |
+| `design/Carousel.md`   | Alpine.js lightbox carousel with sorl-thumbnail     |
+| `design/Landing.md`    | Hero, feature grid, CTA — public landing page       |
+| `design/Typography.md` | `markdown.html`, prose, heading scale, link style   |
+| `design/Layout.md`     | Base templates, two-column layout, HTMX indicator   |
+| `design/Upload.md`     | Multi-file upload widget (Alpine + drag-and-drop)   |
 
 **Before writing new UI markup**, check `design/` first - the component you need likely already exists.
 
@@ -180,7 +180,7 @@ Hierarchy - use the first that fits:
 
 Never use `{{ form.as_div }}` - it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.{% endraw %}
 
-See `design/forms.md` for full field template documentation.
+See `design/Forms.md` for full field template documentation.
 
 ### Internationalisation
 
@@ -243,7 +243,7 @@ migrations. It also indexes the focused docs below.
 | ------------------------------- | ---------------------------------------------------------- |
 | Any view (new or modified)      | `docs/Views.md`                                            |
 | Any model or queryset           | `docs/Models.md`                                           |
-| Any form                        | `design/forms.md`                                          |
+| Any form                        | `design/Forms.md`                                          |
 | Admin registration              | `docs/Django.md`                                           |
 | Adding a dependency             | `docs/Packages.md`                                         |
 | Any feature handling user data, accounts, or PII | `docs/GDPR.md`                        |
@@ -256,8 +256,8 @@ migrations. It also indexes the focused docs below.
 | AlpineJS component              | `docs/Alpine.md`                                           |
 | Tailwind / CSS                  | `docs/Tailwind.md`                                         |
 | Authentication / allauth        | `docs/Authentication.md`                                   |
-| File uploads / media storage    | `docs/File-Storage.md`, `design/upload.md`                 |
-| Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/k3s-Hetzner-Cloudflare.md` |
+| File uploads / media storage    | `docs/File-Storage.md`, `design/Upload.md`                 |
+| Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/K3s-Hetzner-Cloudflare.md` |
 | Testing patterns                | `docs/Testing.md`                                          |
 | Any of the above                | `docs/Project-Structure.md`                                |
 

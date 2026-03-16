@@ -87,14 +87,14 @@ When adding template files that are conditional on a flag, update `hooks/post_ge
 The template includes a component library in `template/design/`. When modifying or adding UI components in the generated project, check the design system first:
 
 - `design/README.md` - component index and design tokens
-- `design/navigation.md` - navbar, sidebar, user dropdown
-- `design/forms.md` - form wrapper, field template, input classes
-- `design/buttons.md` - button variants
-- `design/messages.md` - toast alerts
-- `design/cards.md` - link card component
-- `design/pagination.md` - paginated list
-- `design/typography.md` - markdown/prose, heading scale
-- `design/layout.md` - base templates, page layout patterns
+- `design/Navigation.md` - navbar, sidebar, user dropdown
+- `design/Forms.md` - form wrapper, field template, input classes
+- `design/Buttons.md` - button variants
+- `design/Messages.md` - toast alerts
+- `design/Cards.md` - link card component
+- `design/Pagination.md` - paginated list
+- `design/Typography.md` - markdown/prose, heading scale
+- `design/Layout.md` - base templates, page layout patterns
 
 When adding a component to the template, add a corresponding doc to `design/`.
 

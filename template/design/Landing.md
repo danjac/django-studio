@@ -17,7 +17,7 @@ dedicated base or extend `base.html` with an empty `{% block sidebar %}`:
 ```
 
 If the landing page should have no sidebar at all, override or omit the sidebar
-block (see `design/layout.md`).
+block (see `design/Layout.md`).
 
 ## Hero section
 

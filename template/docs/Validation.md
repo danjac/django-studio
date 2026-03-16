@@ -53,7 +53,7 @@ Key rules:
 - On invalid POST, return `render_partial_response` (not a plain `TemplateResponse`)
   so HTMX swaps the re-rendered form with inline error messages.
 - For form rendering conventions (field templates, CSS classes, HTMX form wrapper),
-  see `design/forms.md`.
+  see `design/Forms.md`.
 
 ## Manual Query/POST Parameter Validation
 

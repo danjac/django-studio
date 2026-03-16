@@ -8,16 +8,15 @@ See [`design/README.md`](../design/README.md) for the full component index. Quic
 
 | Component | Doc |
 |-----------|-----|
-| Buttons | [`design/buttons.md`](../design/buttons.md) |
-| Forms | [`design/forms.md`](../design/forms.md) |
-| Navbar / Sidebar | [`design/navigation.md`](../design/navigation.md) |
-| Modal / Dialog | [`design/modals.md`](../design/modals.md) |
-| Cards | [`design/cards.md`](../design/cards.md) |
-| Badges | [`design/badges.md`](../design/badges.md) |
-| Pagination | [`design/pagination.md`](../design/pagination.md) |
-| Messages / Alerts | [`design/messages.md`](../design/messages.md) |
-| Typography / Prose | [`design/typography.md`](../design/typography.md) |
-| Layout | [`design/layout.md`](../design/layout.md) |
+| Buttons | [`design/Buttons.md`](../design/Buttons.md) |
+| Forms | [`design/Forms.md`](../design/Forms.md) |
+| Navbar / Sidebar | [`design/Navigation.md`](../design/Navigation.md) |
+| Cards | [`design/Cards.md`](../design/Cards.md) |
+| Badges | [`design/Badges.md`](../design/Badges.md) |
+| Pagination | [`design/Pagination.md`](../design/Pagination.md) |
+| Messages / Alerts | [`design/Messages.md`](../design/Messages.md) |
+| Typography / Prose | [`design/Typography.md`](../design/Typography.md) |
+| Layout | [`design/Layout.md`](../design/Layout.md) |
 
 ## Dark Mode
 

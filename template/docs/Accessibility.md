@@ -30,7 +30,7 @@ Form fields rendered via `{{ field.as_field_group }}` or
 - The `has-errors` class on the `<fieldset>` provides a visual indicator
 
 Do not bypass this rendering — `{% render_field %}` without a label wrapper
-breaks the label association. Always use `as_field_group`. See `design/forms.md`.
+breaks the label association. Always use `as_field_group`. See `design/Forms.md`.
 
 For groups of related inputs (radio buttons, checkboxes), use `<fieldset>` and
 `<legend>` rather than a plain `<label>`.
@@ -119,7 +119,7 @@ replace them:
 - Use `<nav>` for navigation landmarks, `<main>` for main content, `<header>`,
   `<footer>`, `<aside>` for regions.
 - Heading hierarchy must be sequential (`h1` → `h2` → `h3`). Do not skip
-  levels. See `design/typography.md` for the heading scale.
+  levels. See `design/Typography.md` for the heading scale.
 - Use `<table>` for tabular data, with `<th scope="col|row">` headers.
 - Use `<ul>`/`<ol>` for lists. Do not use CSS `list-style: none` without
   keeping the list role visible to screen readers.

@@ -7,7 +7,9 @@ authors = [
 ]
 requires-python = "==3.14.*"
 readme = "README.md"
-license = { text = "MIT" }
+{%- if license != "None" %}
+license = { text = "{{ license }}" }
+{%- endif %}
 
 dependencies = [
   "django-allauth[socialaccount]>=64.2.0",

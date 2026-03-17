@@ -22,3 +22,18 @@ bug or improvement belongs in the template, not this project.
    ```
 
 5. Print the new issue URL.
+
+---
+
+## Help
+
+**djstudio feedback [description]**
+
+Files a GitHub issue against the `danjac/django-studio` template repository.
+
+Use this when you find a bug or want to suggest an improvement to the template
+itself — not for issues specific to your project. Requires `gh` CLI authenticated
+with GitHub.
+
+Example:
+  /djstudio feedback "create-view doesn't wire URL for top-level views correctly"

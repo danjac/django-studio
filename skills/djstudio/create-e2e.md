@@ -138,3 +138,19 @@ just dj tailwind build
 ```
 
 before re-running the E2E suite.
+
+---
+
+## Help
+
+**djstudio create-e2e [<app_name>] <description>**
+
+Writes Playwright E2E tests for a described user interaction.
+
+Asks for authentication requirement (logged-in vs anonymous) if not clear from
+the description. Creates or appends to `test_playwright.py` in the app's tests
+directory.
+
+Examples:
+  /djstudio create-e2e store "user adds product to cart and checks out"
+  /djstudio create-e2e "user resets their password"

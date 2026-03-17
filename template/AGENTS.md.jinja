@@ -295,6 +295,14 @@ with `/djstudio <subcommand>` in Claude Code.
 
 All project commands live under `/djstudio <subcommand>`:
 
+**General**
+
+| Subcommand | Purpose |
+| ---------- | ---------------------------------------------------- |
+| `help [command]` | Print documentation for a subcommand |
+| `sync` | Pull latest template changes via Copier and resolve merge conflicts |
+| `feedback` | File a GitHub issue against the django-studio repo |
+
 **Generators**
 
 | Subcommand | Purpose |
@@ -331,12 +339,6 @@ All project commands live under `/djstudio <subcommand>`:
 | `launch`          | Interactive first-deploy wizard (infra → secrets → deploy) |
 | `rotate-secrets`  | Rotate auto-generated and third-party Helm secrets and redeploy |
 
-**Maintenance**
-
-| Subcommand | Purpose |
-| ---------- | ---------------------------------------------------- |
-| `sync` | Pull latest template changes via Copier and resolve merge conflicts |
-| `feedback` | File a GitHub issue against the django-studio repo |
 
 ## Template Feedback
 

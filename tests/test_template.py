@@ -723,6 +723,7 @@ class TestClaudeSkillsInstallation:
             "create-command.md",
             "create-cron.md",
             "create-model.md",
+            "help.md",
             "create-crud.md",
             "create-e2e.md",
             "perf.md",

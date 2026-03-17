@@ -11,6 +11,14 @@ Determine the main package name from the "Project Layout" section of `AGENTS.md`
 Dispatch on the first word of $ARGUMENTS. Read the matching file and follow its
 instructions exactly. If no subcommand is given, print the table below and stop.
 
+**General**
+
+| Subcommand           | File                                      | Purpose                                             |
+|----------------------|-------------------------------------------|-----------------------------------------------------|
+| `help [command]`     | `.claude/commands/djstudio/help.md`       | Print user documentation for a subcommand          |
+| `sync`               | `.claude/commands/djstudio/sync.md`       | Pull latest template changes via Copier and resolve merge conflicts |
+| `feedback [description]` | `.claude/commands/djstudio/feedback.md` | File a GitHub issue against the django-studio repo |
+
 **Generators**
 
 | Subcommand                              | File                                          | Purpose                                                  |
@@ -46,10 +54,3 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 |-------------------|-------------------------------------------------|--------------------------------------------------------------------|
 | `launch`          | `.claude/commands/djstudio/launch.md`           | Interactive first-deploy wizard (infra → certs → secrets → deploy) |
 | `rotate-secrets`  | `.claude/commands/djstudio/rotate-secrets.md`   | Rotate auto-generated and third-party Helm secrets and redeploy    |
-
-**Maintenance**
-
-| Subcommand           | File                                      | Purpose                                             |
-|----------------------|-------------------------------------------|-----------------------------------------------------|
-| `sync`               | `.claude/commands/djstudio/sync.md`       | Pull latest template changes via Copier and resolve merge conflicts |
-| `feedback [description]` | `.claude/commands/djstudio/feedback.md` | File a GitHub issue against the django-studio repo |

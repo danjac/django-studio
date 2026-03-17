@@ -78,3 +78,18 @@ Create a basic Django app with the standard file structure for this project.
     ```
 
 13. Verify: `just check-all`
+
+---
+
+## Help
+
+**djstudio create-app <app_name>**
+
+Scaffolds a new Django app with the standard project structure.
+
+Creates `apps.py`, `models.py`, `views.py`, `urls.py`, `admin.py`, and a `tests/`
+directory. Registers the app in `settings.py`, wires it into `config/urls.py`,
+and adds its fixtures to `conftest.py`.
+
+Example:
+  /djstudio create-app orders

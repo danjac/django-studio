@@ -165,3 +165,19 @@ Tell the user:
 > `djangoSecretKeyFallbacks` by running `/djstudio rotate-secrets` again
 > and choosing not to rotate the Django key — or remove the fallback
 > manually when all active sessions have expired.
+
+---
+
+## Help
+
+**djstudio rotate-secrets**
+
+Rotates auto-generated and third-party secrets in `helm/site/values.secret.yaml`
+and redeploys the Helm chart to apply them.
+
+Requires an existing deployment (`values.secret.yaml` must exist). Always shows
+exactly which secrets will change and waits for confirmation before writing
+anything.
+
+Example:
+  /djstudio rotate-secrets

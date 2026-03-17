@@ -76,3 +76,19 @@ where the template goes, and where the URL is wired.
    100% coverage is required.
 
 5. Verify: `just check-all`
+
+---
+
+## Help
+
+**djstudio create-view [<app_name>] <view_name>**
+
+Adds a view function, template, and URL. Omit `<app_name>` for a top-level view.
+
+Follows HTMX conventions — supports full-page and HTMX partial patterns. Writes
+the view, creates the template using the design system, wires the URL, and writes
+tests covering the happy path, HTMX partial path, and auth branches.
+
+Examples:
+  /djstudio create-view store product_list    # app-level view
+  /djstudio create-view dashboard             # top-level view

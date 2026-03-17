@@ -120,6 +120,14 @@ The design system is intended to provide a production-ready foundation for your 
 
 Generated projects include a `/djstudio` Claude Code slash command with subcommands for common workflows:
 
+**General**
+
+| Subcommand       | Summary                                                                           |
+| ---------------- | --------------------------------------------------------------------------------- |
+| `help [command]` | Print documentation for a subcommand                                              |
+| `sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
+| `feedback`       | Report a bug or improvement against the django-studio template                    |
+
 **Generators**
 
 | Subcommand                         | Summary                                                                |
@@ -155,13 +163,6 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | ---------------- | ------------------------------------------------------------------------------ |
 | `launch`         | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
 | `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy                |
-
-**Maintenance**
-
-| Subcommand | Summary                                                                           |
-| ---------- | --------------------------------------------------------------------------------- |
-| `sync`     | Pull latest template changes via Copier and resolve merge conflicts interactively |
-| `feedback` | Report a bug or improvement against the django-studio template                    |
 
 ## Hosting
 

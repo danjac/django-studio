@@ -54,24 +54,49 @@ Run `just` with no arguments to list all available commands.
 
 Claude Code slash commands are available via `/djstudio <subcommand>`:
 
-| Subcommand | Purpose |
-| ----------------------------------------- | ----------------------------------------------- |
-| `create-app <name>` | Create a Django app (apps.py, models, views, urls, admin, tests) |
-| `create-view [<app>] <view>` | Add a view, template, and URL; omit app for top-level views |
-| `create-task <app> <task>` | Add a background task |
-| `create-command <app> [desc]` | Add a management command with tests; optionally enqueues tasks |
-| `create-cron <app> <command>` | Schedule a management command as a Kubernetes cron job |
-| `create-model <app> <model>` | Design and write a Django model with factory, fixture, and model tests |
-| `create-crud <app> <model>` | Generate full CRUD views, templates, URLs, and tests |
-| `create-e2e [<app>] <description>` | Write Playwright E2E test(s) for a described interaction |
-| `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection |
-| `gdpr` | Audit the project for GDPR compliance issues |
-| `a11y` | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `deadcode` | Remove unused Python code and static assets |
+**General**
+
+| Subcommand       | Summary                                                                           |
+| ---------------- | --------------------------------------------------------------------------------- |
+| `help [command]` | Print documentation for a subcommand                                              |
+| `sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
+| `feedback`       | Report a bug or improvement against the django-studio template                    |
+
+**Generators**
+
+| Subcommand                         | Summary                                                                |
+| ---------------------------------- | ---------------------------------------------------------------------- |
+| `create-app <name>`                | Create a Django app (apps.py, models, views, urls, admin, tests)       |
+| `create-view [<app>] <view>`       | Add a view, template, and URL; omit app for top-level views            |
+| `create-task <app> <task>`         | Add a `django-tasks-db` background task with correct async patterns    |
+| `create-command <app> [desc]`      | Add a management command with tests; optionally enqueues tasks         |
+| `create-cron <app> <command>`      | Schedule a management command as a Kubernetes cron job                 |
+| `create-model <app> <model>`       | Design and write a Django model with factory, fixture, and model tests |
+| `create-crud <app> <model>`        | Generate full CRUD views, templates, URLs, and tests                   |
+| `create-e2e [<app>] <description>` | Write Playwright E2E test(s) for a described user interaction          |
+
+**Localisation**
+
+| Subcommand           | Summary                                                        |
+| -------------------- | -------------------------------------------------------------- |
 | `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue |
-| `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
-| `sync` | Pull latest django-studio template changes and resolve merge conflicts |
-| `feedback` | Report a bug or improvement against the django-studio template |
+
+**Audits**
+
+| Subcommand | Summary                                                                      |
+| ---------- | ---------------------------------------------------------------------------- |
+| `perf`     | Performance audit: N+1 queries, missing indexes, caching, async              |
+| `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
+| `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging              |
+| `a11y`     | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
+| `deadcode` | Remove unused Python code and static assets                                  |
+
+**Deployment**
+
+| Subcommand       | Summary                                                                        |
+| ---------------- | ------------------------------------------------------------------------------ |
+| `launch`         | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy                |
 
 ## Stack
 

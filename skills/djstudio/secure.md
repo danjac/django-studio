@@ -323,3 +323,19 @@ X critical · Y warnings · Z advisory
 If there are CRITICAL findings, recommend addressing them before any public
 deployment and offer to fix each one. Wait for the user to confirm before
 making any changes.
+
+---
+
+## Help
+
+**djstudio secure**
+
+Audits the codebase for security vulnerabilities.
+
+Checks: settings hardening, HTTP method decorators, authentication, IDOR, XSS,
+CSRF, SQL injection, open redirects, mass assignment, and dependency
+vulnerabilities. Reports CRITICAL, WARNING, and ADVISORY findings. Offers to
+fix critical issues.
+
+Example:
+  /djstudio secure

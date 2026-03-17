@@ -134,3 +134,20 @@ No new or changed strings found for <locale>. Catalogue is up to date.
 
 If any `msgid` contained Python format specifiers (`%(var)s`, `{var}`), remind
 the user to verify that the translated strings preserve them exactly.
+
+---
+
+## Help
+
+**djstudio translate <locale>**
+
+Extracts translatable strings, translates them with Claude, and compiles the
+message catalogue for the given locale.
+
+Requires `gettext` binaries (`xgettext`, `msgfmt`). On re-runs, only new or
+`#, fuzzy` strings are translated — existing translations are preserved.
+
+Examples:
+  /djstudio translate fr
+  /djstudio translate de
+  /djstudio translate fr_CA

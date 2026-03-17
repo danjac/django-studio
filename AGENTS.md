@@ -136,13 +136,21 @@ The `/djstudio` skill uses a thin dispatcher (`skills/djstudio.md`) that routes 
 **Adding or changing a subcommand:**
 
 1. Create or edit the file at `skills/djstudio/<subcommand>.md`.
-2. Add or update the row in the dispatcher table in `skills/djstudio.md`.
-3. Update the subcommand table in `template/AGENTS.md.jinja`.
-4. Always update relevant docs when adding, removing, or changing a command — at minimum:
+2. Every skill file **must** end with a `## Help` section — user-facing documentation
+   printed verbatim by `/djstudio help <command>`. Include: usage line, arguments,
+   what the command does, and at least one example invocation.
+3. Add or update the row in the dispatcher table in `skills/djstudio.md`. Place the row
+   in the correct section (General, Generators, Localisation, Audits, or Deployment).
+4. Update the subcommand table in `template/AGENTS.md.jinja`.
+5. Always update relevant docs when adding, removing, or changing a command — at minimum:
    - `template/AGENTS.md.jinja` — subcommand table
    - `template/README.md.jinja` — slash command table in the generated project
    - `README.md` — slash command table in this repo root
    - Any `docs/` page the subcommand references or produces output for
+
+   **The `## Skills` section in `README.md` and the `## Slash Commands` section in
+   `template/README.md.jinja` must stay in sync**: same sections (General, Generators,
+   Localisation, Audits, Deployment), same subcommand list, same summaries.
 
 **Tracking in version control:**
 

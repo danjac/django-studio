@@ -8,7 +8,7 @@ _Photo by James Kovin on [Unsplash](https://unsplash.com/photos/black-and-green-
 
 ## Overview
 
-Copier template for Django projects with HTMX, Alpine.js, and Tailwind CSS.
+[Copier](https://pypi.org/project/copier/) template for Django projects with HTMX, Alpine.js, and Tailwind CSS.
 
 This project is designed to be a starting point for building modern Django applications with a focus on simplicity, performance, and developer experience. It includes an opinionated and carefully curated stack of tools and libraries to help you get up and running quickly while following best practices, a design pattern library with tried-and-tested components and agentic Markdown documentation and custom Skills for AI-assisted development.
 
@@ -40,20 +40,20 @@ uvx copier copy --trust gh:danjac/django-studio my-project
 
 Then follow the prompts:
 
-| Prompt              | Example                 | Notes                            |
-| ------------------- | ----------------------- | -------------------------------- |
-| `project_name`      | `My Project`            | Human-readable name              |
-| `project_slug`      | `my_project`            | Python package directory name    |
-| `package_name`      | `my_project`            | Python package name (snake_case) |
-| `description`       | `A project that does X` | One-sentence description         |
-| `author`            | `Your Name`             |                                  |
-| `author_email`      | `you@example.com`       |                                  |
-| `domain`            | `example.com`           | Production domain                |
+| Prompt              | Example                 | Notes                                                                                                  |
+| ------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| `project_name`      | `My Project`            | Human-readable name                                                                                    |
+| `project_slug`      | `my_project`            | Python package directory name                                                                          |
+| `package_name`      | `my_project`            | Python package name (snake_case)                                                                       |
+| `description`       | `A project that does X` | One-sentence description                                                                               |
+| `author`            | `Your Name`             |                                                                                                        |
+| `author_email`      | `you@example.com`       |                                                                                                        |
+| `domain`            | `example.com`           | Production domain                                                                                      |
 | `license`           | `MIT`                   | MIT, Apache-2.0, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0, BSD-2-Clause, BSD-3-Clause, ISC, EUPL-1.2, None |
-| `use_storage`       | `y` / `n`               | S3/Hetzner object storage        |
-| `use_pwa`           | `y` / `n`               | PWA manifest + service worker    |
-| `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability      |
-| `use_sentry`        | `y` / `n`               | Sentry error tracking            |
+| `use_storage`       | `y` / `n`               | S3/Hetzner object storage                                                                              |
+| `use_pwa`           | `y` / `n`               | PWA manifest + service worker                                                                          |
+| `use_opentelemetry` | `y` / `n`               | OpenTelemetry observability                                                                            |
+| `use_sentry`        | `y` / `n`               | Sentry error tracking                                                                                  |
 
 ### Updating a generated project
 
@@ -64,7 +64,7 @@ cd my-project
 uvx copier update --trust
 ```
 
-Copier performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
+[Copier](https://pypi.org/project/copier/) performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
 
 The generated `README.md` will include instructions to get started with development, testing, and deployment.
 
@@ -135,13 +135,13 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **Audits**
 
-| Subcommand | Summary                                                         |
-| ---------- | --------------------------------------------------------------- |
-| `perf`     | Performance audit: N+1 queries, missing indexes, caching, async |
-| `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection |
-| `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging |
+| Subcommand | Summary                                                                      |
+| ---------- | ---------------------------------------------------------------------------- |
+| `perf`     | Performance audit: N+1 queries, missing indexes, caching, async              |
+| `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
+| `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging              |
 | `a11y`     | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `deadcode` | Remove unused Python code and static assets                     |
+| `deadcode` | Remove unused Python code and static assets                                  |
 
 **Deployment**
 

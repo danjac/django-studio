@@ -12,17 +12,17 @@
 {% block content %}
   <div class="mx-auto max-w-md py-12">
     {% if process == "connect" %}
-      <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
         {% blocktranslate with provider=provider.name %}Connect {{ provider }}{% endblocktranslate %}
       </h1>
-      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate with provider=provider.name %}You are about to connect a new third-party account from {{ provider }}.{% endblocktranslate %}
       </p>
     {% else %}
-      <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
         {% blocktranslate with provider=provider.name %}Sign In Via {{ provider }}{% endblocktranslate %}
       </h1>
-      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate with provider=provider.name %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktranslate %}
       </p>
     {% endif %}

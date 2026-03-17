@@ -42,7 +42,7 @@ Add a sidebar layout inside your content block:
 {% block content %}
   <div class="flex gap-8">
     <aside class="hidden w-64 shrink-0 xl:block">
-      <nav class="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+      <nav class="rounded-xl border border-muted-200 bg-muted-50 p-4 dark:border-muted-800 dark:bg-muted-900">
         {% include "sidebar.html" %}
       </nav>
     </aside>
@@ -62,7 +62,7 @@ For marketing pages or landing pages without the centred constraint, override th
 ```html
 {# Override the narrow container with a full-bleed section #}
 {% block content %}
-  <section class="-mx-4 -mt-8 bg-indigo-600 px-4 py-24 text-white sm:-mx-6 lg:-mx-8">
+  <section class="-mx-4 -mt-8 bg-primary-600 px-4 py-24 text-white sm:-mx-6 lg:-mx-8">
     <h1 class="text-4xl font-bold">Welcome</h1>
   </section>
   <div class="mt-12">

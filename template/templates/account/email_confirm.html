@@ -5,13 +5,13 @@
 
 {% block content %}
   <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
       {% translate "Confirm Email Address" %}
     </h1>
     {% if confirmation %}
       {% user_display confirmation.email_address.user as user_display %}
       {% if can_confirm %}
-        <p class="mb-6 text-sm text-zinc-600 dark:text-zinc-400">
+        <p class="mb-6 text-sm text-muted-600 dark:text-muted-400">
           {% blocktranslate with confirmation.email_address.email as email %}
             Please confirm that <a class="underline" href="mailto:{{ email }}">{{ email }}</a>
             is an email address for user {{ user_display }}.
@@ -23,7 +23,7 @@
           <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
         </form>
       {% else %}
-        <p class="text-sm text-zinc-600 dark:text-zinc-400">
+        <p class="text-sm text-muted-600 dark:text-muted-400">
           {% blocktranslate with confirmation.email_address.email as email %}
             Unable to confirm {{ email }} because it is already confirmed by a different account.
           {% endblocktranslate %}
@@ -31,7 +31,7 @@
       {% endif %}
     {% else %}
       {% url 'account_email' as email_url %}
-      <p class="text-sm text-zinc-600 dark:text-zinc-400">
+      <p class="text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate %}
           This email confirmation link expired or is invalid.
           Please <a class="underline" href="{{ email_url }}">issue a new email confirmation request</a>.

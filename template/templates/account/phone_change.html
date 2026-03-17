@@ -5,22 +5,22 @@
 
 {% block content %}
   <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
       {% translate "Change Phone Number" %}
     </h1>
     {% if phone %}
-      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate %}
           Your current phone number is <strong>{{ phone }}</strong>.
         {% endblocktranslate %}
         {% if not phone_verified %}
-          <span class="ml-1 text-amber-600 dark:text-amber-400">
+          <span class="ml-1 text-danger-600 dark:text-danger-400">
             {% translate "(unverified)" %}
           </span>
         {% endif %}
       </p>
       {% if not phone_verified %}
-        <div class="mb-6 rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+        <div class="mb-6 rounded border border-danger-200 bg-danger-50 p-4 text-sm text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
           {% translate "Your phone number is still pending verification." %}
           <form id="verify-phone" method="post" action="{% url 'account_change_phone' %}" class="mt-2">
             {% csrf_token %}

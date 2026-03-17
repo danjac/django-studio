@@ -21,7 +21,7 @@
 
 {% partialdef label %}
   <label
-    class="block font-semibold text-zinc-700 dark:text-zinc-300{% if field.errors %} text-danger-600 dark:text-danger-400{% endif %}"
+    class="block font-semibold text-muted-700 dark:text-muted-300{% if field.errors %} text-danger-600 dark:text-danger-400{% endif %}"
     for="{{ field.id_for_label }}"
   >
     {{ field.label }}
@@ -39,7 +39,7 @@
 
 {% partialdef help_text %}
   {% if field.help_text %}
-    <div class="text-sm text-zinc-500 dark:text-zinc-400" id="{{ field.auto_id }}_helptext">
+    <div class="text-sm text-muted-500 dark:text-muted-400" id="{{ field.auto_id }}_helptext">
       {{ field.help_text }}
     </div>
   {% endif %}
@@ -101,11 +101,11 @@
       type="button"
       x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';"
       aria-label="{% translate "Toggle password visibility" %}"
-      class="absolute inset-y-0 right-0 flex h-full items-center justify-center px-3 text-zinc-500 dark:text-zinc-400"
+      class="absolute inset-y-0 right-0 flex h-full items-center justify-center px-3 text-muted-500 dark:text-muted-400"
       tabindex="-1"
     >
-      {% heroicon_mini "eye" class="w-5 h-5 text-zinc-500 dark:text-zinc-400" x_show="show" %}
-      {% heroicon_mini "eye-slash" class="w-5 h-5 text-zinc-500 dark:text-zinc-400" x_show="!show" %}
+      {% heroicon_mini "eye" class="w-5 h-5 text-muted-500 dark:text-muted-400" x_show="show" %}
+      {% heroicon_mini "eye-slash" class="w-5 h-5 text-muted-500 dark:text-muted-400" x_show="!show" %}
     </button>
   </div>
 {% endpartialdef %}

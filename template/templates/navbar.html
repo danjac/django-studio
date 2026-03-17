@@ -1,6 +1,6 @@
 {% load heroicons i18n %}
 <header
-  class="sticky top-0 z-10 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-lg dark:border-zinc-800 dark:bg-zinc-950/80"
+  class="sticky top-0 z-10 w-full border-b border-muted-200 bg-white/80 backdrop-blur-lg dark:border-muted-800 dark:bg-muted-950/80"
   x-data="{ showMobileMenu: false, showUserDropdown: false }"
   x-init="
     $watch('showMobileMenu', v => { if (v) showUserDropdown = false; });
@@ -12,7 +12,7 @@
   <nav class="flex items-center justify-between p-4">
     <a
       href="{% url 'index' %}"
-      class="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+      class="text-lg font-semibold text-muted-900 dark:text-muted-100"
     >
       {{ request.site.name }}
     </a>
@@ -25,7 +25,7 @@
           >
             <button
               type="button"
-              class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-muted-700 transition-colors hover:bg-muted-100 dark:text-muted-300 dark:hover:bg-muted-800"
               :aria-expanded="showUserDropdown.toString()"
               @click="showUserDropdown = !showUserDropdown"
             >
@@ -34,20 +34,20 @@
               {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
             </button>
             <div
-              class="absolute right-0 z-20 mt-1 w-56 rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
+              class="absolute right-0 z-20 mt-1 w-56 rounded-xl border border-muted-200 bg-white shadow-xl dark:border-muted-700 dark:bg-muted-900"
               x-cloak
               x-show="showUserDropdown"
               x-transition.scale.origin.top
             >
               <ul class="py-2" role="menu">
-                <li class="border-b border-zinc-200 px-4 py-2 text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+                <li class="border-b border-muted-200 px-4 py-2 text-sm text-muted-500 dark:border-muted-700 dark:text-muted-400">
                   {% translate "Signed in as" %}
-                  <strong class="text-zinc-900 dark:text-zinc-100">{{ user.email }}</strong>
+                  <strong class="text-muted-900 dark:text-muted-100">{{ user.email }}</strong>
                 </li>
                 <li role="menuitem">
                   <a
                     href="{% url 'account_email' %}"
-                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
                   >
                     {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
                     {% translate "Account settings" %}
@@ -59,7 +59,7 @@
                       href="{% url 'admin:index' %}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                      class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
                     >
                       {% heroicon_mini "wrench-screwdriver" class="size-4 shrink-0" aria_hidden="true" %}
                       {% translate "Site admin" %}
@@ -69,7 +69,7 @@
                 <li role="menuitem">
                   <a
                     href="{% url 'users:delete_account' %}"
-                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-danger-600 hover:bg-danger-50 dark:text-danger-400 dark:hover:bg-zinc-800"
+                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-danger-600 hover:bg-danger-50 dark:text-danger-400 dark:hover:bg-muted-800"
                   >
                     {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}
                     {% translate "Delete my account" %}
@@ -80,7 +80,7 @@
                     {% csrf_token %}
                     <button
                       type="submit"
-                      class="flex w-full items-center gap-2 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                      class="flex w-full items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
                     >
                       {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria_hidden="true" %}
                       {% translate "Sign out" %}
@@ -106,7 +106,7 @@
       <li class="md:hidden">
         <button
           type="button"
-          class="rounded-xl p-2 text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          class="rounded-xl p-2 text-muted-700 transition-colors hover:bg-muted-100 dark:text-muted-300 dark:hover:bg-muted-800"
           :aria-expanded="showMobileMenu.toString()"
           aria-label="{% translate "Toggle navigation menu" %}"
           @click="showMobileMenu = !showMobileMenu"
@@ -123,7 +123,7 @@
   </nav>
   {% if user.is_authenticated %}
     <nav
-      class="absolute left-0 z-50 w-full border-b border-zinc-200 bg-white px-4 py-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 md:hidden"
+      class="absolute left-0 z-50 w-full border-b border-muted-200 bg-white px-4 py-6 shadow-xl dark:border-muted-700 dark:bg-muted-900 md:hidden"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
@@ -139,7 +139,7 @@
     </nav>
   {% else %}
     <nav
-      class="absolute left-0 z-50 w-full border-b border-zinc-200 bg-white px-4 py-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 md:hidden"
+      class="absolute left-0 z-50 w-full border-b border-muted-200 bg-white px-4 py-6 shadow-xl dark:border-muted-700 dark:bg-muted-900 md:hidden"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"

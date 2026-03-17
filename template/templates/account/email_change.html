@@ -5,18 +5,18 @@
 
 {% block content %}
   <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
       {% translate "Change Email" %}
     </h1>
     {% if current_emailaddress %}
-      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate with email=current_emailaddress.email %}
           Your current email address is <strong>{{ email }}</strong>.
         {% endblocktranslate %}
       </p>
     {% endif %}
     {% if new_emailaddress %}
-      <div class="mb-6 rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+      <div class="mb-6 rounded border border-danger-200 bg-danger-50 p-4 text-sm text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
         <p class="mb-2">
           {% blocktranslate with email=new_emailaddress.email %}
             A verification email has been sent to <strong>{{ email }}</strong>. Check your inbox and

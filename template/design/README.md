@@ -57,6 +57,29 @@ Light and dark variants are set automatically via the `@variant dark` media quer
 
 These are defined as `@theme` aliases in `tailwind/theme.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** - use the semantic token names so rebranding stays in one place.
 
+Additional semantic token scales available in templates:
+
+```css
+--color-muted-*     /* neutral chrome, default: zinc */
+--color-success-*   /* success states, default: emerald */
+--color-warning-*   /* warning indicators, default: amber */
+--color-error-*     /* validation errors, default: rose */
+--color-info-*      /* informational banners, default: sky */
+```
+
+### Token usage in templates vs CSS
+
+The **layout CSS variables** (`--color-text`, `--color-text-muted`, `--color-bg`, `--color-surface`, `--color-border`) are designed for use in **CSS files** via `var()` (e.g. `color: var(--color-text)`). Do not use CSS variable syntax in HTML class attributes.
+
+In templates, always use the **`@theme`-generated utility classes** instead:
+
+| Instead of | Use |
+|---|---|
+| `text-(--color-text)` | `text-muted-900 dark:text-muted-100` |
+| `text-(--color-text-muted)` | `text-muted-500 dark:text-muted-400` |
+| `border-(--color-border)` | `border-muted-200 dark:border-muted-800` |
+| `bg-(--color-bg)` | `bg-white dark:bg-muted-950` |
+
 ### Rebranding
 
 To change the primary brand color from indigo to (e.g.) teal, update the `--color-primary-*` block in `tailwind/theme.css`:
@@ -76,9 +99,13 @@ All buttons, focus rings, active states, and error colors update automatically.
 - Use `heroicons` for all icons - see [Icons](../docs/UI-Design-Patterns.md#icons)
 - Use `btn`, `btn-primary`, `btn-secondary`, `btn-danger` for all buttons
 - Use `form-input`, `form-select`, `form-textarea` for all inputs
-- Never use Tailwind colors e.g. `indigo-*`, `violet-*`, `rose-*`, or `zinc-*` directly in templates or CSS unless user requests specifically
+- Never use raw Tailwind colors (`indigo-*`, `violet-*`, `rose-*`, `zinc-*`, `sky-*`, `amber-*`, etc.) directly in templates or CSS — always use semantic tokens
 - Use `text-primary-*` / `bg-primary-*` for brand color
-- Use `text-muted-*` / `bg-muted-*` for inactive/muted UI chrome
-- Use `text-danger-*` / `bg-danger-*` for error/destructive states
+- Use `text-muted-*` / `bg-muted-*` for neutral/inactive UI chrome (replaces `zinc-*`)
+- Use `text-danger-*` / `bg-danger-*` for error, destructive, and warning states
+- Use `text-success-*` / `bg-success-*` for success/verified states
+- Use `text-info-*` / `bg-info-*` for informational banners and notices
+- Use `text-warning-*` / `bg-warning-*` for caution/advisory states
+- Do not use CSS variable syntax (`text-(--color-text)`) in template class attributes — use `@theme`-generated utility classes (see Design Tokens section above)
 - Prefer `{% include %}` with context variables over copy-pasting markup
 - All interactive elements must have visible focus rings (see accessibility section in each doc)

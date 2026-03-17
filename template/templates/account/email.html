@@ -5,11 +5,11 @@
 
 {% block content %}
   <div class="mx-auto max-w-lg py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
       {% translate "Email Addresses" %}
     </h1>
     {% if emailaddresses %}
-      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% translate "The following email addresses are associated with your account:" %}
       </p>
       <form method="post" action="{% url 'account_email' %}" class="space-y-4">
@@ -26,14 +26,14 @@
                   {% if radio.checked %}checked{% endif %}
                   class="h-4 w-4 accent-primary-600"
                 />
-                <label for="{{ radio.id }}" class="text-sm text-zinc-700 dark:text-zinc-300">
+                <label for="{{ radio.id }}" class="text-sm text-muted-700 dark:text-muted-300">
                   {{ emailaddress.email }}
                   {% if emailaddress.verified %}
-                    <span class="ml-2 text-xs font-medium text-green-600 dark:text-green-400">
+                    <span class="ml-2 text-xs font-medium text-success-600 dark:text-success-400">
                       {% translate "Verified" %}
                     </span>
                   {% else %}
-                    <span class="ml-2 text-xs font-medium text-amber-600 dark:text-amber-400">
+                    <span class="ml-2 text-xs font-medium text-danger-600 dark:text-danger-400">
                       {% translate "Unverified" %}
                     </span>
                   {% endif %}
@@ -60,12 +60,12 @@
         </div>
       </form>
     {% else %}
-      <p class="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% translate "You have no email addresses associated with your account." %}
       </p>
     {% endif %}
     {% if can_add_email %}
-      <h2 class="mb-4 mt-8 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+      <h2 class="mb-4 mt-8 text-xl font-semibold text-muted-900 dark:text-muted-100">
         {% translate "Add Email Address" %}
       </h2>
       <form method="post" action="{% url 'account_email' %}" class="space-y-4">

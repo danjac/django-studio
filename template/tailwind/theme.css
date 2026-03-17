@@ -66,8 +66,12 @@
   --color-error-400: var(--color-rose-400);
   --color-error-600: var(--color-rose-600);
 
+  --color-info-50:  var(--color-sky-50);
+  --color-info-200: var(--color-sky-200);
   --color-info-400: var(--color-sky-400);
   --color-info-600: var(--color-sky-600);
+  --color-info-800: var(--color-sky-800);
+  --color-info-950: var(--color-sky-950);
 
   --color-warning-400: var(--color-amber-400);
   --color-warning-600: var(--color-amber-600);
@@ -81,22 +85,22 @@
    ============================================================================= */
 
 @layer base {
-    :root {
-        scrollbar-width: thin;
+  :root {
+    scrollbar-width: thin;
 
-        --color-bg: var(--color-white);
-        --color-surface: var(--color-zinc-50);
-        --color-border: var(--color-zinc-200);
-        --color-text: var(--color-zinc-900);
-        --color-text-muted: var(--color-zinc-500);
+    --color-bg: var(--color-white);
+    --color-surface: var(--color-zinc-50);
+    --color-border: var(--color-zinc-200);
+    --color-text: var(--color-zinc-900);
+    --color-text-muted: var(--color-zinc-500);
 
-        @variant dark {
-            color-scheme: dark;
-            --color-bg: var(--color-zinc-950);
-            --color-surface: var(--color-zinc-900);
-            --color-border: var(--color-zinc-800);
-            --color-text: var(--color-zinc-100);
-            --color-text-muted: var(--color-zinc-400);
-        }
+    @variant dark {
+      color-scheme: dark;
+      --color-bg: var(--color-zinc-950);
+      --color-surface: var(--color-zinc-900);
+      --color-border: var(--color-zinc-800);
+      --color-text: var(--color-zinc-100);
+      --color-text-muted: var(--color-zinc-400);
     }
+  }
 }

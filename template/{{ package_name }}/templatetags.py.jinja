@@ -84,43 +84,57 @@ _NAV_ACTIVE_CLASSES = (
     "bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300"
 )
 _NAV_INACTIVE_CLASSES = (
-    "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+    "text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
 )
 
 
 @register.simple_tag(takes_context=True)
-def active_app(context: "RequestContext", *app_names: str) -> str:
+def active_app(
+    context: "RequestContext",
+    *app_names: str,
+    active: str = _NAV_ACTIVE_CLASSES,
+    inactive: str = _NAV_INACTIVE_CLASSES,
+) -> str:
     """Return active nav link CSS classes if the current app matches.
 
     Compares against ``request.resolver_match.app_name``. Pass multiple names
-    to match any app in a group.
+    to match any app in a group. Override ``active`` or ``inactive`` to use
+    different CSS classes for a specific nav item.
 
     Example:
         {% raw %}{% active_app 'podcasts' %}{% endraw %}
         {% raw %}{% active_app 'podcasts' 'episodes' %}{% endraw %}
+        {% raw %}{% active_app 'podcasts' active='bg-secondary-50 text-secondary-700' %}{% endraw %}
     """
     return (
-        _NAV_ACTIVE_CLASSES
+        active
         if context.request.resolver_match.app_name in app_names
-        else _NAV_INACTIVE_CLASSES
+        else inactive
     )
 
 
 @register.simple_tag(takes_context=True)
-def active_url(context: "RequestContext", *url_names: str) -> str:
+def active_url(
+    context: "RequestContext",
+    *url_names: str,
+    active: str = _NAV_ACTIVE_CLASSES,
+    inactive: str = _NAV_INACTIVE_CLASSES,
+) -> str:
     """Return active nav link CSS classes if the current URL name matches.
 
     Compares against ``request.resolver_match.url_name``. Pass multiple names
-    to match any of several views within a section.
+    to match any of several views within a section. Override ``active`` or
+    ``inactive`` to use different CSS classes for a specific nav item.
 
     Example:
         {% raw %}{% active_url 'account_email' %}{% endraw %}
         {% raw %}{% active_url 'account_email' 'account_change_password' %}{% endraw %}
+        {% raw %}{% active_url 'account_email' inactive='text-secondary-700' %}{% endraw %}
     """
     return (
-        _NAV_ACTIVE_CLASSES
+        active
         if context.request.resolver_match.url_name in url_names
-        else _NAV_INACTIVE_CLASSES
+        else inactive
     )
 
 

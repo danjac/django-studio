@@ -176,7 +176,7 @@ Override `{% block sidebar %}` in a page template to swap in a different navigat
   <li>
     <a href="{% url 'index' %}"
        class="flex gap-3 items-center py-2 px-3 text-sm font-semibold rounded-lg transition-colors
-              text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800">
+              text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800">
       {% heroicon_mini "arrow-left" class="size-4 shrink-0" aria_hidden="true" %}
       {% translate "Back to site" %}
     </a>
@@ -185,7 +185,7 @@ Override `{% block sidebar %}` in a page template to swap in a different navigat
     <a href="{% url 'account_email' %}"
        class="flex gap-3 items-center py-2 px-3 text-sm font-semibold rounded-lg transition-colors
               {% if request.resolver_match.url_name == 'account_email' %}bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300
-              {% else %}text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800{% endif %}">
+              {% else %}text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800{% endif %}">
       {% heroicon_mini "envelope" class="size-4 shrink-0" aria_hidden="true" %}
       {% translate "Email" %}
     </a>
@@ -244,7 +244,7 @@ Add `<li role="menuitem">` elements before the logout item:
 <li role="menuitem">
   <a
     href="{% url 'users:preferences' %}"
-    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
   >
     {% heroicon_mini "adjustments-horizontal" class="size-4 shrink-0" aria-hidden="true" %}
     {% translate "Preferences" %}

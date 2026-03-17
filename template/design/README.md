@@ -76,7 +76,9 @@ All buttons, focus rings, active states, and error colors update automatically.
 - Use `heroicons` for all icons - see [Icons](../docs/UI-Design-Patterns.md#icons)
 - Use `btn`, `btn-primary`, `btn-secondary`, `btn-danger` for all buttons
 - Use `form-input`, `form-select`, `form-textarea` for all inputs
-- Use `text-primary-*` / `bg-primary-*` for brand color; never hardcode `indigo-*`
-- Use `text-danger-*` / `bg-danger-*` for error/destructive states; never hardcode `rose-*`
+- Never use Tailwind palette colors (e.g. `indigo-*`, `violet-*`, `rose-*`, `zinc-*`) directly in templates or CSS — always use the semantic token names below
+- Use `text-primary-*` / `bg-primary-*` for brand color
+- Use `text-muted-*` / `bg-muted-*` for inactive/muted UI chrome
+- Use `text-danger-*` / `bg-danger-*` for error/destructive states
 - Prefer `{% include %}` with context variables over copy-pasting markup
 - All interactive elements must have visible focus rings (see accessibility section in each doc)

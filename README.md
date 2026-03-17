@@ -101,6 +101,8 @@ The focus of this project is a simple and robust foundation for both user and de
 
 [K3s](https://k3s.io) is a lightweight Kubernetes distribution that allows for easy deployment and scaling of applications. By using K3s, we can ensure that our application is production-ready and can handle increased traffic as needed. Helm Charts have been provided to deploy your project along with Grafana dashboards for monitoring. Full Github Actions CI/CD pipelines are included for testing and deployment.
 
+This stack will be assessed constantly to ensure it remains the best choice for the target audience and use cases. If better tools or libraries become available, they will be evaluated and potentially integrated into the template in addition to or in place of the current choices.
+
 ## Design system
 
 - Modern design patterns and best practices

@@ -2,8 +2,8 @@
    BRAND PALETTE — safe to change, this is how you rebrand the project
    These @theme aliases generate Tailwind utility classes:
    text-primary-600, bg-danger-50, border-secondary-200, etc.
-   Never use Tailwind palette colors (e.g. indigo-*, violet-*, rose-*, zinc-*) directly
-   in templates or CSS — always use the semantic names so rebranding stays in one place.
+   Never use Tailwind colors e.g. indigo-*, violet-*, rose-*, or zinc-* directly in
+   templates or CSS unless user requests specifically.
    ============================================================================= */
 
 @theme {

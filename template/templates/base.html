@@ -12,21 +12,7 @@
     <script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
   </head>
   <body>
-    <div
-      id="hx-indicator"
-      x-data="{ width: 0 }"
-      x-init="
-        setInterval(() => {
-          if ($el.classList.contains('htmx-request')) {
-            width = width + (Math.random() / 100) + 1;
-            width = width > 30 ? -30 : width;
-          } else {
-            width = 0;
-          }
-          $el.style.width = width > 0 ? `${10 + width * 90}%` : '0px';
-        }, 36);
-      "
-    ></div>
+    <div id="hx-indicator" x-data="hxIndicator"></div>
     {% include "messages.html" %}
     {% cookie_banner %}
     {% include "navbar.html" %}
@@ -34,6 +20,26 @@
       {% block content %}
       {% endblock content %}
     </main>
+    {% block scripts %}
+    <script>
+      document.addEventListener('alpine:init', () => {
+        Alpine.data('hxIndicator', () => ({
+          width: 0,
+          init() {
+            setInterval(() => {
+              if (this.$el.classList.contains('htmx-request')) {
+                this.width = this.width + (Math.random() / 100) + 1;
+                this.width = this.width > 30 ? -30 : this.width;
+              } else {
+                this.width = 0;
+              }
+              this.$el.style.width = this.width > 0 ? `${10 + this.width * 90}%` : '0px';
+            }, 36);
+          },
+        }));
+      });
+    </script>
     [[ HOOK:pwa-sw ]]
+    {% endblock scripts %}
   </body>
 </html>

@@ -127,6 +127,8 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | `create-app <name>`                | Create a Django app (apps.py, models, views, urls, admin, tests)       |
 | `create-view [<app>] <view>`       | Add a view, template, and URL; omit app for top-level views            |
 | `create-task <app> <task>`         | Add a `django-tasks-db` background task with correct async patterns    |
+| `create-command <app> [desc]`      | Add a management command with tests; optionally enqueues tasks         |
+| `create-cron <app> <command>`      | Schedule a management command as a Kubernetes cron job                 |
 | `create-model <app> <model>`       | Design and write a Django model with factory, fixture, and model tests |
 | `create-crud <app> <model>`        | Generate full CRUD views, templates, URLs, and tests                   |
 | `create-e2e [<app>] <description>` | Write Playwright E2E test(s) for a described user interaction          |

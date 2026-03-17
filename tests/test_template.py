@@ -720,6 +720,8 @@ class TestClaudeSkillsInstallation:
             "create-app.md",
             "create-view.md",
             "create-task.md",
+            "create-command.md",
+            "create-cron.md",
             "create-model.md",
             "create-crud.md",
             "create-e2e.md",

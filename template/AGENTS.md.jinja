@@ -302,6 +302,8 @@ All project commands live under `/djstudio <subcommand>`:
 | `create-app <app_name>` | Scaffold a complete Django app |
 | `create-view [<app_name>] <view>` | Add a view + template + URL; omit app for top-level views |
 | `create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
+| `create-command <app_name> [desc]` | Add a management command with tests; optionally enqueues tasks |
+| `create-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
 | `create-model <app_name> <model>` | Design a model with factory, fixture, and tests |
 | `create-crud <app_name> <model>` | Full CRUD views, templates, URLs, and tests |
 | `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |

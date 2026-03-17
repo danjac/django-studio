@@ -18,6 +18,8 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 | `create-app <app_name>`                 | `.claude/commands/djstudio/create-app.md`     | Scaffold a complete Django app                           |
 | `create-view [<app_name>] <view>`       | `.claude/commands/djstudio/create-view.md`    | Add a view + template + URL (app optional for top-level views) |
 | `create-task <app_name> <task>`         | `.claude/commands/djstudio/create-task.md`    | Add a background task using django-tasks-db              |
+| `create-command <app_name> [desc]`      | `.claude/commands/djstudio/create-command.md` | Add a management command with tests; optionally enqueues tasks |
+| `create-cron <app_name> <command>`      | `.claude/commands/djstudio/create-cron.md`    | Schedule a management command as a Kubernetes cron job   |
 | `create-model <app_name> <model>`       | `.claude/commands/djstudio/create-model.md`   | Design a model with factory, fixture, and tests          |
 | `create-crud <app_name> <model>`        | `.claude/commands/djstudio/create-crud.md`    | Full CRUD views, templates, URLs, and tests              |
 | `create-e2e [<app_name>] <description>` | `.claude/commands/djstudio/create-e2e.md`     | Write Playwright E2E test(s) for a described interaction |

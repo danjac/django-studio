@@ -4,15 +4,15 @@
 how the project is configured and the conventions that apply everywhere. For
 implementation patterns, see the focused docs:
 
-| Topic | Doc |
-|---|---|
-| Views, decorators, response classes, async, URL config | `docs/Views.md` |
-| Models, querysets, full-text search, choices, relationships | `docs/Models.md` |
-| Forms and validation | `docs/Validation.md` |
-| Adding a new package | `docs/Packages.md` |
-| Migrations and linear-migrations | `docs/Models.md` |
-| Background tasks | `docs/Django-Tasks.md` |
-| Scheduled cron jobs | `docs/CronJobs.md` |
+| Topic                                                       | Doc                    |
+| ----------------------------------------------------------- | ---------------------- |
+| Views, decorators, response classes, async, URL config      | `docs/Views.md`        |
+| Models, querysets, full-text search, choices, relationships | `docs/Models.md`       |
+| Forms and validation                                        | `docs/Validation.md`   |
+| Adding a new package                                        | `docs/Packages.md`     |
+| Migrations and linear-migrations                            | `docs/Models.md`       |
+| Background tasks                                            | `docs/Django-Tasks.md` |
+| Scheduled cron jobs                                         | `docs/CronJobs.md`     |
 
 ## Django Version
 
@@ -176,17 +176,21 @@ def _csrf_header_name() -> str | None:
 
 ## Template Tags
 
-All tags in `myapp/templatetags.py` are registered as builtins — no `{% load %}` required.
+All tags in `templatetags.py` are registered as builtins — no `{% load %}` required.
 
-| Tag | Description |
-|-----|-------------|
-| `{% title_tag "Page" %}` | Renders `<title>Site Name \| Page</title>` |
-| `{% meta_tags %}` | Renders META tags including HTMX config |
-| `{% cookie_banner %}` | Renders the GDPR cookie consent banner |
-| `{% absolute_uri site path %}` | Returns an absolute URI for a path |
-| `{% fragment "tmpl.html" %}...{% endfragment %}` | Includes a template with block content as `{{ content }}` |
-| `{% active_app 'app' %}` | Returns active/inactive nav CSS classes matched on `app_name` |
-| `{% active_url 'name' %}` | Returns active/inactive nav CSS classes matched on `url_name` |
+| Tag                                              | Description                                                   |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| `{% title_tag "Page" %}`                         | Renders `<title>Site Name \| Page</title>`                    |
+| `{% meta_tags %}`                                | Renders META tags including HTMX config                       |
+| `{% cookie_banner %}`                            | Renders the GDPR cookie consent banner                        |
+| `{% absolute_uri site path %}`                   | Returns an absolute URI for a path                            |
+| `{% fragment "tmpl.html" %}...{% endfragment %}` | Includes a template with block content as `{{ content }}`     |
+| `{% active_app 'app' %}`                         | Returns active/inactive nav CSS classes matched on `app_name` |
+| `{% active_url 'name' %}`                        | Returns active/inactive nav CSS classes matched on `url_name` |
+
+New tags which are not specific to a single app should be added here.
+
+App-specific tags should be added to `<app_name>/templatetags/<app_name>.py` unless the user specifies otherwise.
 
 See `design/Navigation.md` for `active_app` / `active_url` usage.
 

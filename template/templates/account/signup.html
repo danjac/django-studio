@@ -19,9 +19,9 @@
         {{ form.email.as_field_group }}
         {{ form.password1.as_field_group }}
         {{ form.password2.as_field_group }}
-        <div>
+        {% fragment "form.html#buttons" %}
           <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>
-        </div>
+        {% endfragment %}
       {% endfragment %}
     </div>
   </div>

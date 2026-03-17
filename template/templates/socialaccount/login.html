@@ -28,9 +28,9 @@
         </p>
       {% endif %}
       {% fragment "form.html" %}
-        <div>
+        {% fragment "form.html#buttons" %}
           <button type="submit" class="btn btn-primary">{% translate "Continue" %}</button>
-        </div>
+        {% endfragment %}
       {% endfragment %}
     </div>
   </div>

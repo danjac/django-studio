@@ -69,11 +69,11 @@
         </h2>
         {% fragment "form.html" action=form_action %}
           {{ form }}
-          <div>
+          {% fragment "form.html#buttons" %}
             <button type="submit" name="action_add" class="btn btn-primary">
               {% translate "Add Email" %}
             </button>
-          </div>
+          {% endfragment %}
         {% endfragment %}
       {% endif %}
     </div>

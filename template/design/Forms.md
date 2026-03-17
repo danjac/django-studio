@@ -48,11 +48,20 @@ For forms with a non-current-page action, capture the URL first with `{% url ...
 {% endfragment %}
 ```
 
-### Multiple Action Buttons
+### Buttons Partial
 
-Use `{% fragment "form.html#buttons" %}` when the form has more than one submit button:
+Always use `{% fragment "form.html#buttons" %}` for the button area — for both single and multiple buttons. It wraps buttons in a consistent flex container:
 
 ```html
+{# Single button #}
+{% fragment "form.html" %}
+  {{ form }}
+  {% fragment "form.html#buttons" %}
+    <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
+  {% endfragment %}
+{% endfragment %}
+
+{# Multiple action buttons #}
 {% url 'account_email' as form_action %}
 {% fragment "form.html" action=form_action %}
   {{ form }}

@@ -40,11 +40,11 @@
           {% fragment "form.html" action=form_action %}
             {{ change_form }}
             {{ redirect_field }}
-            <div>
+            {% fragment "form.html#buttons" %}
               <button type="submit" name="action" value="change" class="btn btn-secondary">
                 {% translate "Change" %}
               </button>
-            </div>
+            {% endfragment %}
           {% endfragment %}
         </div>
       {% endif %}

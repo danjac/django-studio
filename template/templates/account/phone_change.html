@@ -34,11 +34,11 @@
       {% url 'account_change_phone' as form_action %}
       {% fragment "form.html" action=form_action %}
         {{ form }}
-        <div>
+        {% fragment "form.html#buttons" %}
           <button type="submit" name="action_add" class="btn btn-primary">
             {% translate "Change Phone Number" %}
           </button>
-        </div>
+        {% endfragment %}
       {% endfragment %}
     </div>
   </div>

@@ -32,9 +32,9 @@
               {% endwith %}
             {% endfor %}
           </div>
-          <div>
+          {% fragment "form.html#buttons" %}
             <button type="submit" class="btn btn-danger">{% translate "Remove" %}</button>
-          </div>
+          {% endfragment %}
         {% endfragment %}
       {% else %}
         <p class="mb-6 text-sm text-muted-600 dark:text-muted-400">

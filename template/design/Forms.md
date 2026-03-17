@@ -175,23 +175,6 @@ Use `django-widget-tweaks` to add classes or attributes from the template:
 {% render_field form.bio class="form-textarea" rows="4" %}
 ```
 
-## Validation Error Display
-
-The `form/field.html` template applies `has-errors` to the fieldset and renders an error list automatically. In views, re-render the form on invalid POST:
-
-```python
-def my_view(request):
-    if request.method == "POST":
-        form = MyForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Saved.")
-            return redirect("index")
-    else:
-        form = MyForm()
-    return TemplateResponse(request, "my_page.html", {"form": form})
-```
-
 ## Accessibility
 
 - Every field has an associated `<label>` via `field.id_for_label` - never omit it.

@@ -11,10 +11,10 @@ load and on validation failure, with the full page rendered only on first visit:
 ```python
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
-from django.template.response import TemplateResponse
 
 from myapp.http.decorators import require_form_methods
 from myapp.http.request import AuthenticatedHttpRequest
+from myapp.http.response import RenderOrRedirectResponse
 from myapp.partials import render_partial_response
 
 
@@ -22,7 +22,7 @@ from myapp.partials import render_partial_response
 @require_form_methods
 def edit_item(
     request: AuthenticatedHttpRequest, pk: int
-) -> TemplateResponse | HttpResponseRedirect:
+) -> RenderOrRedirectResponse:
     item = get_object_or_404(Item, pk=pk, owner=request.user)
     if request.method == "POST":
         form = ItemForm(request.POST, instance=item)

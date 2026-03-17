@@ -1,8 +1,19 @@
 import pytest
 from django.template import TemplateSyntaxError
+from unittest.mock import Mock
 
 from {{ package_name }}.http.request import RequestContext
-from {{ package_name }}.templatetags import absolute_uri, cookie_banner, fragment, meta_tags, title_tag
+from {{ package_name }}.templatetags import (
+    _NAV_ACTIVE_CLASSES,
+    _NAV_INACTIVE_CLASSES,
+    absolute_uri,
+    active_app,
+    active_url,
+    cookie_banner,
+    fragment,
+    meta_tags,
+    title_tag,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -75,6 +86,41 @@ class TestAbsoluteUri:
         settings.USE_HTTPS = False
         result = absolute_uri(site, "/")
         assert result == f"http://{site.domain}/"
+
+
+def _nav_context(app_name: str = "", url_name: str = "") -> Mock:
+    ctx = Mock()
+    ctx.request.resolver_match.app_name = app_name
+    ctx.request.resolver_match.url_name = url_name
+    return ctx
+
+
+class TestActiveApp:
+    def test_active_when_app_matches(self):
+        assert active_app(_nav_context(app_name="podcasts"), "podcasts") == _NAV_ACTIVE_CLASSES
+
+    def test_active_when_any_app_matches(self):
+        assert active_app(_nav_context(app_name="episodes"), "podcasts", "episodes") == _NAV_ACTIVE_CLASSES
+
+    def test_inactive_when_no_match(self):
+        assert active_app(_nav_context(app_name="other"), "podcasts") == _NAV_INACTIVE_CLASSES
+
+    def test_inactive_for_empty_app_name(self):
+        assert active_app(_nav_context(), "podcasts") == _NAV_INACTIVE_CLASSES
+
+
+class TestActiveUrl:
+    def test_active_when_url_matches(self):
+        assert active_url(_nav_context(url_name="account_email"), "account_email") == _NAV_ACTIVE_CLASSES
+
+    def test_active_when_any_url_matches(self):
+        assert active_url(_nav_context(url_name="account_change_password"), "account_email", "account_change_password") == _NAV_ACTIVE_CLASSES
+
+    def test_inactive_when_no_match(self):
+        assert active_url(_nav_context(url_name="index"), "account_email") == _NAV_INACTIVE_CLASSES
+
+    def test_inactive_for_empty_url_name(self):
+        assert active_url(_nav_context(), "account_email") == _NAV_INACTIVE_CLASSES
 
 
 class TestFragment:

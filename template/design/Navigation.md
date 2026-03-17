@@ -89,19 +89,14 @@ The `item` partial renders a consistent `<li><a>` with icon and label. Resolve t
 
 ### Active Item Highlighting
 
-`{% partial item %}` does not support active state. When you need active highlighting, write the link directly:
+`{% partial item %}` does not support active state. When you need active highlighting, write the link directly using the `active_app` or `active_url` template tags (auto-loaded as builtins):
 
 ```html
 <ul class="space-y-1">
   <li>
     <a
       href="{% url 'podcasts:subscriptions' %}"
-      class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors
-             {% if request.resolver_match.app_name == 'podcasts' %}
-               bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300
-             {% else %}
-               text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800
-             {% endif %}"
+      class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors {% active_app 'podcasts' %}"
     >
       {% heroicon_mini "rss" class="size-4 shrink-0" aria_hidden="true" %}
       {% translate "Subscriptions" %}
@@ -110,7 +105,12 @@ The `item` partial renders a consistent `<li><a>` with icon and label. Resolve t
 </ul>
 ```
 
-Match against `request.resolver_match.app_name` to highlight all pages within an app, or `request.resolver_match.url_name` for a single named view.
+| Tag | Matches against | Use for |
+|-----|----------------|---------|
+| `{% active_app 'app' %}` | `request.resolver_match.app_name` | All pages within an app |
+| `{% active_url 'name' %}` | `request.resolver_match.url_name` | A specific named view |
+
+Both tags accept multiple names: `{% active_app 'podcasts' 'episodes' %}` is active on either app.
 
 ---
 

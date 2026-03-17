@@ -176,22 +176,19 @@ def _csrf_header_name() -> str | None:
 
 ## Template Tags
 
-```python
-# myapp/templatetags.py
-from django import template
+All tags in `myapp/templatetags.py` are registered as builtins — no `{% load %}` required.
 
-register = template.Library()
+| Tag | Description |
+|-----|-------------|
+| `{% title_tag "Page" %}` | Renders `<title>Site Name \| Page</title>` |
+| `{% meta_tags %}` | Renders META tags including HTMX config |
+| `{% cookie_banner %}` | Renders the GDPR cookie consent banner |
+| `{% absolute_uri site path %}` | Returns an absolute URI for a path |
+| `{% fragment "tmpl.html" %}...{% endfragment %}` | Includes a template with block content as `{{ content }}` |
+| `{% active_app 'app' %}` | Returns active/inactive nav CSS classes matched on `app_name` |
+| `{% active_url 'name' %}` | Returns active/inactive nav CSS classes matched on `url_name` |
 
-@register.simple_tag
-def meta_tags() -> str:
-    """Renders meta tags including HTMX config."""
-    ...
-
-@register.simple_block_tag(takes_context=True)
-def fragment(context, content: str, template_name: str, *, only: bool = False, **extra_context):
-    """Include template with block content."""
-    ...
-```
+See `design/Navigation.md` for `active_app` / `active_url` usage.
 
 ## Admin
 

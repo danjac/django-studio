@@ -80,6 +80,50 @@ def absolute_uri(site: Site, path: str, *args, **kwargs) -> str:
     return f"{scheme}://{site.domain}{url}"
 
 
+_NAV_ACTIVE_CLASSES = (
+    "bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300"
+)
+_NAV_INACTIVE_CLASSES = (
+    "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+)
+
+
+@register.simple_tag(takes_context=True)
+def active_app(context: "RequestContext", *app_names: str) -> str:
+    """Return active nav link CSS classes if the current app matches.
+
+    Compares against ``request.resolver_match.app_name``. Pass multiple names
+    to match any app in a group.
+
+    Example:
+        {% raw %}{% active_app 'podcasts' %}{% endraw %}
+        {% raw %}{% active_app 'podcasts' 'episodes' %}{% endraw %}
+    """
+    return (
+        _NAV_ACTIVE_CLASSES
+        if context.request.resolver_match.app_name in app_names
+        else _NAV_INACTIVE_CLASSES
+    )
+
+
+@register.simple_tag(takes_context=True)
+def active_url(context: "RequestContext", *url_names: str) -> str:
+    """Return active nav link CSS classes if the current URL name matches.
+
+    Compares against ``request.resolver_match.url_name``. Pass multiple names
+    to match any of several views within a section.
+
+    Example:
+        {% raw %}{% active_url 'account_email' %}{% endraw %}
+        {% raw %}{% active_url 'account_email' 'account_change_password' %}{% endraw %}
+    """
+    return (
+        _NAV_ACTIVE_CLASSES
+        if context.request.resolver_match.url_name in url_names
+        else _NAV_INACTIVE_CLASSES
+    )
+
+
 @register.simple_block_tag(takes_context=True)
 def fragment(
     context: Context,

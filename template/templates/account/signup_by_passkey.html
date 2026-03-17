@@ -10,14 +10,14 @@
       <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate with url=login_url %}Already have an account? <a class="underline" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
       </p>
-      <form method="post" action="{% url 'account_signup_by_passkey' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'account_signup_by_passkey' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ form }}
         {{ redirect_field }}
         <div>
           <button type="submit" class="btn btn-primary">{% translate "Sign Up with Passkey" %}</button>
         </div>
-      </form>
+      {% endfragment %}
       <p class="mt-6 text-sm text-muted-600 dark:text-muted-400">
         <a href="{{ signup_url }}" class="underline">{% translate "Other sign-up options" %}</a>
       </p>

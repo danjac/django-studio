@@ -16,8 +16,8 @@
           {% translate "We sent you a code. The code expires shortly — enter it below." %}
         {% endif %}
       </p>
-      <form method="post" action="{% url 'account_confirm_login_code' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'account_confirm_login_code' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ verify_form }}
         {{ redirect_field }}
         <div class="flex flex-wrap gap-3">
@@ -28,7 +28,7 @@
             </button>
           {% endif %}
         </div>
-      </form>
+      {% endfragment %}
       {% if can_resend %}
         <form id="resend-form" method="post" action="{% url 'account_confirm_login_code' %}">
           {% csrf_token %}

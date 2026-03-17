@@ -12,8 +12,8 @@
           {% blocktranslate %}We sent a verification code to <strong>{{ phone }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
         </p>
       {% endif %}
-      <form method="post" action="{% url 'account_verify_phone' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'account_verify_phone' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ verify_form }}
         {{ redirect_field }}
         <div class="flex flex-wrap gap-3">
@@ -24,7 +24,7 @@
             </button>
           {% endif %}
         </div>
-      </form>
+      {% endfragment %}
       {% if can_resend %}
         <form id="resend-form" method="post" action="{% url 'account_verify_phone' %}">
           {% csrf_token %}
@@ -37,8 +37,7 @@
           <h2 class="mb-4 text-lg font-semibold text-muted-900 dark:text-muted-100">
             {% translate "Use a different phone number" %}
           </h2>
-          <form method="post" action="{% url 'account_verify_phone' %}" class="space-y-4">
-            {% csrf_token %}
+          {% fragment "form.html" action=form_action %}
             {{ change_form }}
             {{ redirect_field }}
             <div>
@@ -46,7 +45,7 @@
                 {% translate "Change" %}
               </button>
             </div>
-          </form>
+          {% endfragment %}
         </div>
       {% endif %}
     </div>

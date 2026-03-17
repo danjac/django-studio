@@ -7,12 +7,12 @@
   <div class="py-12 mx-auto max-w-lg">
     {% include "header.html" with title=_("Email Addresses") %}
     <div class="mt-6">
+      {% url 'account_email' as form_action %}
       {% if emailaddresses %}
         <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
           {% translate "The following email addresses are associated with your account:" %}
         </p>
-        <form method="post" action="{% url 'account_email' %}" class="space-y-4">
-          {% csrf_token %}
+        {% fragment "form.html" action=form_action %}
           <div class="space-y-2">
             {% for radio in emailaddress_radios %}
               {% with emailaddress=radio.emailaddress %}
@@ -57,7 +57,7 @@
               {% translate "Remove" %}
             </button>
           </div>
-        </form>
+        {% endfragment %}
       {% else %}
         <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
           {% translate "You have no email addresses associated with your account." %}
@@ -67,15 +67,14 @@
         <h2 class="mt-8 mb-4 text-xl font-semibold text-muted-900 dark:text-muted-100">
           {% translate "Add Email Address" %}
         </h2>
-        <form method="post" action="{% url 'account_email' %}" class="space-y-4">
-          {% csrf_token %}
+        {% fragment "form.html" action=form_action %}
           {{ form }}
           <div>
             <button type="submit" name="action_add" class="btn btn-primary">
               {% translate "Add Email" %}
             </button>
           </div>
-        </form>
+        {% endfragment %}
       {% endif %}
     </div>
   </div>

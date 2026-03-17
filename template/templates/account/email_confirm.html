@@ -16,11 +16,11 @@
               is an email address for user {{ user_display }}.
             {% endblocktranslate %}
           </p>
-          <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-            {% csrf_token %}
+          {% url 'account_confirm_email' confirmation.key as form_action %}
+          {% fragment "form.html" action=form_action %}
             {{ redirect_field }}
             <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
-          </form>
+          {% endfragment %}
         {% else %}
           <p class="text-sm text-muted-600 dark:text-muted-400">
             {% blocktranslate with email=confirmation.email_address.email %}

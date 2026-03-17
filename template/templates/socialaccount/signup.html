@@ -13,14 +13,14 @@
           As a final step, please complete the following form:
         {% endblocktranslate %}
       </p>
-      <form method="post" action="{% url 'socialaccount_signup' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'socialaccount_signup' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ form }}
         {{ redirect_field }}
         <div>
           <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>
         </div>
-      </form>
+      {% endfragment %}
     </div>
   </div>
 {% endblock content %}

@@ -10,14 +10,14 @@
       <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% translate "Enter your email or phone number and we will send you a one-time sign-in code." %}
       </p>
-      <form method="post" action="{% url 'account_request_login_code' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'account_request_login_code' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ form }}
         {{ redirect_field }}
         <div>
           <button type="submit" class="btn btn-primary">{% translate "Send Code" %}</button>
         </div>
-      </form>
+      {% endfragment %}
       <p class="mt-4 text-sm text-muted-600 dark:text-muted-400">
         <a href="{% url 'account_login' %}" class="underline">{% translate "Other sign-in options" %}</a>
       </p>

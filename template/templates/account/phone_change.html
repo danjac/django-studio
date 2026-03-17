@@ -31,15 +31,15 @@
           </div>
         {% endif %}
       {% endif %}
-      <form method="post" action="{% url 'account_change_phone' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'account_change_phone' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ form }}
         <div>
           <button type="submit" name="action_add" class="btn btn-primary">
             {% translate "Change Phone Number" %}
           </button>
         </div>
-      </form>
+      {% endfragment %}
     </div>
   </div>
 {% endblock content %}

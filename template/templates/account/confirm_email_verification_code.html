@@ -10,8 +10,8 @@
       <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate with email=email %}We've sent a code to <a class="underline" href="mailto:{{ email }}">{{ email }}</a>. The code expires shortly, so please enter it soon.{% endblocktranslate %}
       </p>
-      <form method="post" action="{% url 'account_email_verification_sent' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'account_email_verification_sent' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ verify_form }}
         {{ redirect_field }}
         <div class="flex flex-wrap gap-3">
@@ -25,7 +25,7 @@
             <button type="submit" form="logout-from-stage" class="btn btn-secondary">{% translate "Cancel" %}</button>
           {% endif %}
         </div>
-      </form>
+      {% endfragment %}
       <form id="resend" method="post" action="{% url 'account_email_verification_sent' %}">
         <input type="hidden" name="action" value="resend" />
         {{ redirect_field }}
@@ -42,14 +42,13 @@
           <summary class="text-sm font-medium cursor-pointer text-muted-700 dark:text-muted-300">
             {% translate "Use a different email address" %}
           </summary>
-          <form method="post" action="{% url 'account_email_verification_sent' %}" class="mt-4 space-y-4">
-            {% csrf_token %}
+          {% fragment "form.html" action=form_action class="mt-4 space-y-4" %}
             {{ change_form }}
             {{ redirect_field }}
             <div>
               <button type="submit" name="action" value="change" class="btn btn-primary">{% translate "Change" %}</button>
             </div>
-          </form>
+          {% endfragment %}
         </details>
       {% endif %}
     </div>

@@ -10,8 +10,7 @@
       <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% blocktranslate with url=signup_url %}No account? <a class="underline" href="{{ url }}">Sign up</a>.{% endblocktranslate %}
       </p>
-      <form method="post" class="space-y-4">
-        {% csrf_token %}
+      {% fragment "form.html" %}
         {% if redirect_field_value %}
           <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
@@ -19,7 +18,7 @@
         <div>
           <button type="submit" class="btn btn-primary">{% translate "Sign In" %}</button>
         </div>
-      </form>
+      {% endfragment %}
     </div>
   </div>
 {% endblock content %}

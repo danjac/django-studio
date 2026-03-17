@@ -10,14 +10,14 @@
       <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
         {% translate "Enter your password:" %}
       </p>
-      <form method="post" action="{% url 'account_reauthenticate' %}" class="space-y-4">
-        {% csrf_token %}
+      {% url 'account_reauthenticate' as form_action %}
+      {% fragment "form.html" action=form_action %}
         {{ redirect_field }}
         {{ form }}
         <div>
           <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
         </div>
-      </form>
+      {% endfragment %}
     </div>
   </div>
 {% endblock content %}

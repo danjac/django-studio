@@ -11,8 +11,8 @@
         <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
           {% translate "You can sign in to your account using any of the following third-party accounts:" %}
         </p>
-        <form method="post" action="{% url 'socialaccount_connections' %}" class="space-y-4">
-          {% csrf_token %}
+        {% url 'socialaccount_connections' as form_action %}
+        {% fragment "form.html" action=form_action %}
           <div class="space-y-2">
             {% for account_choice in form.fields.account.choices %}
               {% with account=account_choice.0.instance.get_provider_account %}
@@ -35,7 +35,7 @@
           <div>
             <button type="submit" class="btn btn-danger">{% translate "Remove" %}</button>
           </div>
-        </form>
+        {% endfragment %}
       {% else %}
         <p class="mb-6 text-sm text-muted-600 dark:text-muted-400">
           {% translate "You currently have no third-party accounts connected to this account." %}

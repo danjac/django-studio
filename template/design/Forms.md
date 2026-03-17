@@ -14,19 +14,52 @@ CSS source: `tailwind/forms.css`
 | `content` | _(required)_ | Block content rendered inside the form |
 | `action` | `request.path` | Form action URL |
 | `method` | `"post"` | HTTP method |
-| `class` | `"space-y-6"` | CSS classes on the form element |
+| `class` | `"space-y-4"` | CSS classes on the form element |
 | `htmx` | `False` | Enable HTMX attributes |
 | `hx_swap` | `"outerHTML"` | HTMX swap mode (when `htmx=True`) |
 | `hx_target` | `"this"` | HTMX target selector (when `htmx=True`) |
 
 ### Standard Form
 
+Always use `{% fragment "form.html" %}` — never write a raw `<form>` element in a template. `form.html` handles `<form>`, `method`, `action`, and `{% csrf_token %}` automatically.
+
 ```html
 {% fragment "form.html" %}
-  {% for field in form %}
-    {{ field.as_field_group }}
-  {% endfor %}
+  {{ form }}
   <button type="submit" class="btn btn-primary">Save</button>
+{% endfragment %}
+```
+
+When to use each field rendering method:
+
+| Pattern | When to use |
+|---------|-------------|
+| `{{ form }}` | Default — use when you don't need custom field ordering |
+| `{% for field in form %}{{ field.as_field_group }}{% endfor %}` | When you need to loop over all fields but exclude some, or add per-field markup |
+| `{{ form.fieldname.as_field_group }}` | When you need explicit field ordering or only want specific fields |
+
+For forms with a non-current-page action, capture the URL first with `{% url ... as form_action %}`:
+
+```html
+{% url 'myapp:save' as form_action %}
+{% fragment "form.html" action=form_action %}
+  {{ form }}
+  <button type="submit" class="btn btn-primary">Save</button>
+{% endfragment %}
+```
+
+### Multiple Action Buttons
+
+Use `{% fragment "form.html#buttons" %}` when the form has more than one submit button:
+
+```html
+{% url 'account_email' as form_action %}
+{% fragment "form.html" action=form_action %}
+  {{ form }}
+  {% fragment "form.html#buttons" %}
+    <button type="submit" name="action_save" class="btn btn-primary">{% translate "Save" %}</button>
+    <button type="submit" name="action_delete" class="btn btn-danger">{% translate "Delete" %}</button>
+  {% endfragment %}
 {% endfragment %}
 ```
 
@@ -58,7 +91,7 @@ Use Django's `as_field_group` method rather than including `form/field.html` dir
 
 ### Field Ordering
 
-Prefer Django 5+'s `as_field_group` for fine-grained control over which fields appear and in what order, rather than rendering `{{ form }}` wholesale or always iterating every field:
+Use `{{ form.fieldname.as_field_group }}` when you need explicit control over field order or want only a subset of fields:
 
 ```html
 {# Render specific fields in a chosen order #}

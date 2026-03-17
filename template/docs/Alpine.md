@@ -289,31 +289,88 @@ removal works correctly after the list is reordered:
 
 4. **Combine with HTMX** - Alpine handles client-side state, HTMX handles server communication
 
-### Complex Functionality
+### Alpine.data for Complex Components
 
-For complex functionality that exceeds what Alpine's declarative approach can handle elegantly, create a reusable JavaScript component:
+Follow this progression based on component complexity:
 
-```javascript
-// In a separate JS file
-document.addEventListener('alpine:init', () => {
-    Alpine.data('dropdown', () => ({
-        open: false,
-        toggle() {
-            this.open = !this.open
-        },
-        close() {
-            this.open = false
-        }
-    }))
-})
-```
+**1. Simple state** — inline `x-data` is fine for small, self-contained components:
 
-Then use in HTML:
 ```html
-<div x-data="dropdown">
-    <button @click="toggle()">Toggle</button>
-    <div x-show="open" @click.outside="close()">Content</div>
+<div x-data="{ open: false }">
+  <button @click="open = !open">Toggle</button>
+  <div x-show="open">Content</div>
 </div>
 ```
 
-See: https://alpinejs.dev/essentials/state#re-usable-data
+**2. Complex logic** — move to `Alpine.data()` in a `<script>` tag inside the
+page's `{% block scripts %}` block (rendered in the footer, before `</body>`):
+
+```html
+{% block scripts %}
+  {{ block.super }}
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('myComponent', (param) => ({
+        value: param,
+        doSomething() { ... },
+      }));
+    });
+  </script>
+{% endblock scripts %}
+```
+
+Then reference it in the template:
+
+```html
+<div x-data="myComponent('{{ django_var }}')">...</div>
+```
+
+**3. Reused across pages** — extract to a JS file under `static/` and include
+it via a `<script src="...">` tag:
+
+```html
+<script src="{% static 'my_component.js' %}" defer></script>
+```
+
+See: https://alpinejs.dev/globals/alpine-data
+
+### URL Resolution in Alpine Components
+
+Backend API endpoints must **never** be resolved in JavaScript. Always resolve
+them in the Django template or view using `{% url %}` or `reverse()`, then pass
+them as arguments to the component.
+
+**For a fixed URL** (no dynamic segments), pass it as a constructor argument:
+
+```html
+<div x-data="myComponent('{% url "app:some_action" object.pk %}')">
+```
+
+```js
+Alpine.data('myComponent', (actionUrl) => ({
+  doSomething() {
+    htmx.ajax('POST', actionUrl, { ... });
+  },
+}));
+```
+
+**For a per-item URL** (e.g. each item in a loop has its own URL), pass it
+alongside the item identifier in the event handler:
+
+```html
+{% for item in items %}
+  <li @dragstart="onDragStart({{ item.pk }}, '{% url "app:item_action" item.pk %}')">
+{% endfor %}
+```
+
+```js
+onDragStart(id, actionUrl) {
+  this.dragging = { id, actionUrl };
+},
+onDrop() {
+  htmx.ajax('POST', this.dragging.actionUrl, { ... });
+},
+```
+
+This keeps all URL knowledge in the template layer where Django's `{% url %}` tag
+can reverse them correctly, and avoids breakage when URL patterns change.

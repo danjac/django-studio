@@ -106,11 +106,8 @@ def active_app(
         {% raw %}{% active_app 'podcasts' 'episodes' %}{% endraw %}
         {% raw %}{% active_app 'podcasts' active='bg-secondary-50 text-secondary-700' %}{% endraw %}
     """
-    return (
-        active
-        if context.request.resolver_match.app_name in app_names
-        else inactive
-    )
+    match = context.request.resolver_match
+    return active if match is not None and match.app_name in app_names else inactive
 
 
 @register.simple_tag(takes_context=True)
@@ -131,11 +128,8 @@ def active_url(
         {% raw %}{% active_url 'account_email' 'account_change_password' %}{% endraw %}
         {% raw %}{% active_url 'account_email' inactive='text-secondary-700' %}{% endraw %}
     """
-    return (
-        active
-        if context.request.resolver_match.url_name in url_names
-        else inactive
-    )
+    match = context.request.resolver_match
+    return active if match is not None and match.url_name in url_names else inactive
 
 
 @register.simple_block_tag(takes_context=True)

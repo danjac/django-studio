@@ -178,7 +178,17 @@ def install_claude_hooks() -> None:
                                 " then echo 'BLOCKED: --no-verify is forbidden"
                                 " — fix the pre-commit issue instead.' >&2; exit 2; fi"
                             ),
-                        }
+                        },
+                        {
+                            "type": "command",
+                            "command": (
+                                "CMD=$(jq -r '.tool_input.command');"
+                                " if echo \"$CMD\" | grep -qE 'git commit';"
+                                " then echo 'Running just check-all before commit...' >&2;"
+                                " just check-all >&2 || { echo 'BLOCKED: just check-all failed"
+                                " — fix errors before committing.' >&2; exit 2; }; fi"
+                            ),
+                        },
                     ],
                 }
             ],

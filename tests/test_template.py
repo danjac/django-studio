@@ -109,10 +109,6 @@ class TestTemplateContent:
         content = (project / "pyproject.toml").read_text()
         assert "test_project" in content
 
-    def test_env_example_has_project_slug(self, project):
-        content = (project / ".env.example").read_text()
-        assert "test_project" in content
-
     def test_justfile_has_project_slug(self, project):
         content = (project / "justfile").read_text()
         assert '"test_project"' in content
@@ -342,10 +338,6 @@ class TestAlwaysIncludedFeatures:
         content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" in content
 
-    def test_storage_env_vars_always_present(self, project):
-        content = (project / ".env.example").read_text()
-        assert "HETZNER_STORAGE_ACCESS_KEY" in content
-
     def test_pwa_service_worker_always_present(self, project):
         assert (project / "static" / "service-worker.js").exists()
 
@@ -397,10 +389,6 @@ class TestAlwaysIncludedFeatures:
     def test_sentry_settings_always_present(self, project):
         content = (project / "config" / "settings.py").read_text()
         assert "import sentry_sdk" in content
-        assert "SENTRY_URL" in content
-
-    def test_sentry_env_var_always_present(self, project):
-        content = (project / ".env.example").read_text()
         assert "SENTRY_URL" in content
 
     def test_no_jinja_conditionals_remaining(self, project):

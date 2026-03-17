@@ -111,8 +111,8 @@ Define component styles in separate files:
 ## Development
 
 ```bash
-just dj tailwind build    # Build CSS
-just serve               # Dev server + Tailwind watcher
+just dj tailwind build    # One-off CSS build (production / CI)
+just serve                # Dev server with Tailwind watching for changes
 ```
 
 ## Common Classes

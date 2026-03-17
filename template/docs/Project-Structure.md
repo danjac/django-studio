@@ -48,8 +48,6 @@ myproject/
 │
 ├── templates/             # Django templates
 │   ├── base.html
-│   ├── default_base.html
-│   ├── hx_base.html
 │   ├── home.html
 │   ├── messages.html
 │   ├── 400.html
@@ -106,7 +104,6 @@ Templates are in the root `templates/` directory:
 ```
 templates/
 ├── base.html              # Main base template
-├── hx_base.html          # HTMX base (minimal)
 ├── partials/             # Reusable partials
 │   └── ...
 └── package_name/              # App-specific templates

@@ -4,7 +4,7 @@ Templates: `templates/navbar.html`, `templates/sidebar.html`
 
 ## Navbar
 
-`navbar.html` is a sticky, responsive site header included in `default_base.html`. It provides:
+`navbar.html` is a sticky, responsive site header included in `base.html`. It provides:
 
 - **Site logo** - links to `{% url 'index' %}`
 - **User dropdown** - account settings, admin link (staff only), sign out
@@ -14,7 +14,7 @@ Templates: `templates/navbar.html`, `templates/sidebar.html`
 
 ### How It's Included
 
-`default_base.html` includes the navbar after the HTMX progress indicator:
+`base.html` includes the navbar after the HTMX progress indicator:
 
 ```html
 {% cookie_banner %}

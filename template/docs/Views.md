@@ -72,9 +72,6 @@ Always type-annotate request parameters with `myapp.http.request.HttpRequest`.
 Use `AuthenticatedHttpRequest` in views protected by
 `@login_required` (from `django.contrib.auth.decorators`).
 
-````python
-from django.shortcuts import
-
 ## Basic View Pattern
 
 ```python

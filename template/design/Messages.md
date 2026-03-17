@@ -5,7 +5,7 @@ CSS source: `tailwind/messages.css`
 
 ## How It Works
 
-The Django messages framework is rendered via `messages.html`, which is included in `default_base.html`. Messages appear as a fixed toast stack in the bottom-right corner and auto-dismiss after 4 seconds using AlpineJS.
+The Django messages framework is rendered via `messages.html`, which is included in `base.html`. Messages appear as a fixed toast stack in the bottom-right corner and auto-dismiss after 4 seconds using AlpineJS.
 
 ```html
 {% if messages %}

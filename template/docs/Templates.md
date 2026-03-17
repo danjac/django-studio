@@ -4,179 +4,138 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 
 > **Design System** - Before writing new templates, check `design/` for ready-made components (navbar, sidebar, forms, cards, pagination, markdown, buttons, messages). See `design/README.md` for the full index.
 
-## Template Structure
+## Base Templates
 
-### Base Templates
-
-```html
-<!-- base.html - full page with all elements -->
-{% partialdef head inline %}
-    <head>...</head>
-{% endpartialdef %}
-
-{% partialdef sidebar inline %}
-    <aside>...</aside>
-{% endpartialdef %}
-
-{% partialdef scripts inline %}
-    <script src="..."></script>
-{% endpartialdef %}
-```
-
-### Using Partials
+`base.html` uses Django `{% block %}` tags. It renders the full page: `<head>`, HTMX indicator, messages, cookie banner, navbar, and a centred `<main>` wrapper. Page templates extend it:
 
 ```html
 {% extends "base.html" %}
 
 {% block content %}
-    {% partial sidebar %}
-
-    <main>
-        {{ content }}
-    </main>
-{% endblock %}
+  <h1>My Page</h1>
+{% endblock content %}
 ```
 
-## partialdef Pattern
+To add a global sidebar or other page-level partials, add them to `base.html`. See `design/Layout.md` for layout patterns.
 
-The `partialdef` tag (from django-htmx) defines reusable template fragments:
+The `{% block scripts %}` block is rendered just before `</body>` — use it for per-page JavaScript:
 
 ```html
-<!-- form.html -->
-{% partialdef buttons %}
-    <div class="flex">
-        <button type="submit">Submit</button>
-    </div>
+{% block scripts %}
+  {{ block.super }}
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('myComponent', () => ({ ... }));
+    });
+  </script>
+{% endblock scripts %}
+```
+
+## partialdef / partial
+
+`partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders it. This is the primary mechanism for HTMX partial swaps.
+
+```html
+<!-- myapp/items_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <div id="item-list">
+    {% partial item-list %}
+  </div>
+{% endblock content %}
+
+{% partialdef item-list %}
+  {% for item in items %}
+    <p>{{ item.name }}</p>
+  {% endfor %}
 {% endpartialdef %}
 ```
 
-Use with `{% partial %}`:
+On an HTMX request targeting `#item-list`, `render_partial_response` returns only the `item-list` partial. On a full-page load the whole template renders. See `docs/HTMX.md` for the view-side pattern.
+
+## fragment Tag
+
+`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `form/field.html` and `paginate.html`:
 
 ```html
-{% include "form.html" %}
-{% partial buttons %}
-```
-
-### Inline Partials
-
-Use `inline` to render immediately without separate template:
-
-```html
-{% partialdef form inline %}
-    <form>...</form>
-{% endpartialdef %}
-```
-
-This is useful for HTMX responses that need to swap content.
-
-## Fragment Tag
-
-The `fragment` tag (custom) includes a template with block content:
-
-```html
-<!-- Calling template -->
-{% fragment "header.html" %}
-title content here
+{% fragment "form.html" htmx=True target="my-form" %}
+  {{ form }}
 {% endfragment %}
-
-<!-- header.html -->
-<h1>{{ content }}</h1>
 ```
 
-This passes content between tags into the included template.
+## Forms
 
-## Pagination Pattern
+### Rendering fields
+
+Use `{{ field.as_field_group }}` to render a form field with its label, errors, and help text. The project ships `templates/form/field.html` which dispatches to a per-widget `partialdef` based on the field's widget type:
 
 ```html
-<!-- paginate.html -->
-{% with has_other_pages=page.has_other_pages %}
-    {% fragment "browse.html" target=pagination_target %}
-        {% if has_other_pages %}
-            <li>{% partial links %}</li>
-        {% endif %}
-        {{ content }}
-        {% if has_other_pages %}
-            <li>{% partial links %}</li>
-        {% endif %}
+{% for field in form %}
+  {{ field.as_field_group }}
+{% endfor %}
+```
+
+For explicit field order:
+
+```html
+{{ form.title.as_field_group }}
+{{ form.body.as_field_group }}
+```
+
+See `design/Forms.md` for the full form wrapper and field conventions.
+
+### HTMX form wrapper
+
+`form.html` renders a `<form>` element. Include it via `{% fragment %}`, passing the form fields as `{{ content }}`:
+
+```html
+{% fragment "form.html" htmx=True target="my-form" %}
+  {{ form.title.as_field_group }}
+  {{ form.body.as_field_group }}
+  <button type="submit" class="btn btn-primary">Save</button>
+{% endfragment %}
+```
+
+Key variables:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `action` | `request.path` | Form action URL |
+| `method` | `"post"` | HTTP method |
+| `htmx` | — | Enable HTMX attributes |
+| `hx_swap` | `"outerHTML"` | HTMX swap strategy |
+| `hx_target` | `"this"` | HTMX target selector |
+| `multipart` | — | Enable file upload encoding |
+
+## Pagination
+
+`paginate.html` renders a paginated list with previous/next links. Include it via `{% fragment %}`:
+
+```html
+{% fragment "paginate.html" target=pagination_target %}
+  {% for item in page %}
+    <p>{{ item.name }}</p>
+  {% endfor %}
+{% endfragment %}
+```
+
+The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_target }}`. The view uses `render_paginated_response` which sets `page`, `pagination_target`, and related context automatically — see `docs/HTMX.md`.
+
+## Browse List
+
+`browse.html` renders a `<ul>` list with dividers. Use its `item` and `empty` partials:
+
+```html
+{% fragment "browse.html" target="item-list" %}
+  {% for item in items %}
+    {% fragment "browse.html#item" %}
+      <a href="{{ item.get_absolute_url }}">{{ item.name }}</a>
     {% endfragment %}
-{% endwith %}
-
-{% partialdef links %}
-    <nav hx-swap="outerHTML show:window:top" hx-target="#{{ pagination_target }}">
-        <ul class="flex">
-            {% if page.has_previous %}
-                <a href="?page={{ page.previous_page_number }}">Previous</a>
-            {% endif %}
-            {% if page.has_next %}
-                <a href="?page={{ page.next_page_number }}">Next</a>
-            {% endif %}
-        </ul>
-    </nav>
-{% endpartialdef %}
+  {% empty %}
+    {% fragment "browse.html#empty" %}
+      No items found.
+    {% endfragment %}
+  {% endfor %}
+{% endfragment %}
 ```
-
-## Forms with widget_tweaks
-
-Forms define fields only - no CSS classes:
-
-```python
-# forms.py
-class MyForm(forms.ModelForm):
-    class Meta:
-        model = MyModel
-        fields = ["field1", "field2"]
-```
-
-Classes added in template:
-
-```html
-{% load widget_tweaks %}
-
-{% render_field form.field1 class="form-input" %}
-{% render_field form.field2 class="form-textarea" %}
-```
-
-### Reusable Field Template
-
-```html
-<!-- form/field.html -->
-{% load widget_tweaks %}
-
-{% partialdef input %}
-    {% partial label %}
-    {% render_field field class="form-input" %}
-{% endpartialdef %}
-
-{% partialdef label %}
-    <label for="{{ field.id_for_label }}">
-        {{ field.label }}
-    </label>
-{% endpartialdef %}
-```
-
-## HTMX Form Template
-
-```html
-<!-- form.html -->
-{% with action=action|default:request.path method="post" %}
-<form method="{{ method }}"
-      class="{{ class|default:'space-y-6' }}"
-      {% if htmx %}
-        hx-{{ method }}="{{ action }}"
-        hx-disabled-elt="this"
-        hx-swap="{{ hx_swap|default:'outerHTML' }}"
-        hx-target="{{ hx_target|default:'this' }}"
-      {% endif %}>
-    {% csrf_token %}
-    {{ content }}
-</form>
-{% endwith %}
-```
-
-## Best Practices
-
-1. Use `partialdef` for reusable UI components
-2. Use `fragment` for template composition with content
-3. Keep forms simple - define fields in Python, styling in templates
-4. Use `inline` partials for HTMX response content
-5. Separate concerns - base templates define structure, partials define components

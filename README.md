@@ -92,7 +92,7 @@ The generated `README.md` will include instructions to get started with developm
 - [django-allauth](https://docs.allauth.org/en/latest/) for authentication
 - [pre-commit](https://pre-commit.com) hooks for linting
 - [Cloudflare](https://cloudflare.com) for DNS, CDN, SSL, and DDoS protection
-- [Hetzner Cloud](https://hetzner.com) for hosting (K3s)
+- [Hetzner Cloud](https://hetzner.com) for hosting (K3s) and object storage
 - Full test coverage ([pytest](https://docs.pytest.org/en/stable/) + [Playwright](https://playwright.dev/python/))
 
 The focus of this project is a simple and robust foundation for both user and developer experience. Django is a tried and tested framework with a strong emphasis on convention and best practices, making it an ideal choice for the backend. For the frontend, HTMX and Alpine.js provide a powerful combination for building dynamic interfaces without the complexity of a full JavaScript framework, while Tailwind CSS offers a utility-first approach to styling that promotes consistency and rapid development.

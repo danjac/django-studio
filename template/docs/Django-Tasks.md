@@ -30,6 +30,14 @@ TASKS = {
 # myapp/tasks.py
 from django.tasks import task
 
+# sync example
+@task
+def my_task(*, item_id: int) -> str:
+    """Task description."""
+    do_something(item_id)
+    return "completed"
+
+# async example
 @task
 async def my_task(*, item_id: int) -> str:
     """Task description."""
@@ -37,6 +45,8 @@ async def my_task(*, item_id: int) -> str:
     await do_something(item_id)
     return "completed"
 ```
+
+**NOTE** prefer sync functions over async. As with views, use async for specific I/O-bound tasks, such as Channels or external API calls. The database worker runs tasks in a thread pool, so async is not required for concurrency. If in doubt, check with the user.
 
 ## Enqueuing Tasks
 

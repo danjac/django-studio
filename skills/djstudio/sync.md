@@ -51,9 +51,7 @@ Repeat until no conflict markers remain.
 After all conflicts are resolved:
 
 ```bash
-just dj check
-just typecheck
-just test-all
+just check-all
 ```
 
 Fix any issues before continuing.

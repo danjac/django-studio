@@ -106,10 +106,8 @@ Open `helm/site/values.yaml` and:
 ## Step 7 — Verify
 
 ```bash
-just dj check
+just check-all
 ```
-
-(No migration or test run needed — this is a Helm values change only.)
 
 ---
 

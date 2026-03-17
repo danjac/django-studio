@@ -1,41 +1,41 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag _("Sign In") %}{% endblock title %}
+{% block title %}{% title_tag _("Sign In") %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Enter Sign-In Code" %}
-    </h1>
-    <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-      {% if email %}
-        {% blocktranslate %}We sent a code to <strong>{{ email }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
-      {% elif phone %}
-        {% blocktranslate %}We sent a code to <strong>{{ phone }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
-      {% else %}
-        {% translate "We sent you a code. The code expires shortly — enter it below." %}
-      {% endif %}
-    </p>
-    <form method="post" action="{% url 'account_confirm_login_code' %}" class="space-y-4">
-      {% csrf_token %}
-      {{ verify_form }}
-      {{ redirect_field }}
-      <div class="flex flex-wrap gap-3">
-        <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
-        {% if can_resend %}
-          <button type="submit" form="resend-form" class="btn btn-secondary">
-            {% translate "Request new code" %}
-          </button>
+  <div class="py-12 mx-auto max-w-md">
+    {% include "header.html" with title=_("Enter Sign-In Code") %}
+    <div class="mt-6">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        {% if email %}
+          {% blocktranslate %}We sent a code to <strong>{{ email }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
+        {% elif phone %}
+          {% blocktranslate %}We sent a code to <strong>{{ phone }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
+        {% else %}
+          {% translate "We sent you a code. The code expires shortly — enter it below." %}
         {% endif %}
-      </div>
-    </form>
-    {% if can_resend %}
-      <form id="resend-form" method="post" action="{% url 'account_confirm_login_code' %}">
+      </p>
+      <form method="post" action="{% url 'account_confirm_login_code' %}" class="space-y-4">
         {% csrf_token %}
-        <input type="hidden" name="action" value="resend" />
+        {{ verify_form }}
         {{ redirect_field }}
+        <div class="flex flex-wrap gap-3">
+          <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
+          {% if can_resend %}
+            <button type="submit" form="resend-form" class="btn btn-secondary">
+              {% translate "Request new code" %}
+            </button>
+          {% endif %}
+        </div>
       </form>
-    {% endif %}
+      {% if can_resend %}
+        <form id="resend-form" method="post" action="{% url 'account_confirm_login_code' %}">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="resend" />
+          {{ redirect_field }}
+        </form>
+      {% endif %}
+    </div>
   </div>
 {% endblock content %}

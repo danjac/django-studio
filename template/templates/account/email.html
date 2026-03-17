@@ -1,82 +1,82 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag _("Email Addresses") %}{% endblock title %}
+{% block title %}{% title_tag _("Email Addresses") %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-lg py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Email Addresses" %}
-    </h1>
-    {% if emailaddresses %}
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-        {% translate "The following email addresses are associated with your account:" %}
-      </p>
-      <form method="post" action="{% url 'account_email' %}" class="space-y-4">
-        {% csrf_token %}
-        <div class="space-y-2">
-          {% for radio in emailaddress_radios %}
-            {% with emailaddress=radio.emailaddress %}
-              <div class="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  name="email"
-                  value="{{ emailaddress.email }}"
-                  id="{{ radio.id }}"
-                  {% if radio.checked %}checked{% endif %}
-                  class="h-4 w-4 accent-primary-600"
-                />
-                <label for="{{ radio.id }}" class="text-sm text-muted-700 dark:text-muted-300">
-                  {{ emailaddress.email }}
-                  {% if emailaddress.verified %}
-                    <span class="ml-2 text-xs font-medium text-success-600 dark:text-success-400">
-                      {% translate "Verified" %}
-                    </span>
-                  {% else %}
-                    <span class="ml-2 text-xs font-medium text-danger-600 dark:text-danger-400">
-                      {% translate "Unverified" %}
-                    </span>
-                  {% endif %}
-                  {% if emailaddress.primary %}
-                    <span class="ml-2 text-xs font-medium text-primary-600 dark:text-primary-400">
-                      {% translate "Primary" %}
-                    </span>
-                  {% endif %}
-                </label>
-              </div>
-            {% endwith %}
-          {% endfor %}
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <button type="submit" name="action_primary" class="btn btn-primary">
-            {% translate "Make Primary" %}
-          </button>
-          <button type="submit" name="action_send" class="btn btn-secondary">
-            {% translate "Re-send Verification" %}
-          </button>
-          <button type="submit" name="action_remove" class="btn btn-danger">
-            {% translate "Remove" %}
-          </button>
-        </div>
-      </form>
-    {% else %}
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-        {% translate "You have no email addresses associated with your account." %}
-      </p>
-    {% endif %}
-    {% if can_add_email %}
-      <h2 class="mb-4 mt-8 text-xl font-semibold text-muted-900 dark:text-muted-100">
-        {% translate "Add Email Address" %}
-      </h2>
-      <form method="post" action="{% url 'account_email' %}" class="space-y-4">
-        {% csrf_token %}
-        {{ form }}
-        <div>
-          <button type="submit" name="action_add" class="btn btn-primary">
-            {% translate "Add Email" %}
-          </button>
-        </div>
-      </form>
-    {% endif %}
+  <div class="py-12 mx-auto max-w-lg">
+    {% include "header.html" with title=_("Email Addresses") %}
+    <div class="mt-6">
+      {% if emailaddresses %}
+        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+          {% translate "The following email addresses are associated with your account:" %}
+        </p>
+        <form method="post" action="{% url 'account_email' %}" class="space-y-4">
+          {% csrf_token %}
+          <div class="space-y-2">
+            {% for radio in emailaddress_radios %}
+              {% with emailaddress=radio.emailaddress %}
+                <div class="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="email"
+                    value="{{ emailaddress.email }}"
+                    id="{{ radio.id }}"
+                    {% if radio.checked %}checked{% endif %}
+                    class="w-4 h-4 accent-primary-600"
+                  />
+                  <label for="{{ radio.id }}" class="text-sm text-muted-700 dark:text-muted-300">
+                    {{ emailaddress.email }}
+                    {% if emailaddress.verified %}
+                      <span class="ml-2 text-xs font-medium text-success-600 dark:text-success-400">
+                        {% translate "Verified" %}
+                      </span>
+                    {% else %}
+                      <span class="ml-2 text-xs font-medium text-danger-600 dark:text-danger-400">
+                        {% translate "Unverified" %}
+                      </span>
+                    {% endif %}
+                    {% if emailaddress.primary %}
+                      <span class="ml-2 text-xs font-medium text-primary-600 dark:text-primary-400">
+                        {% translate "Primary" %}
+                      </span>
+                    {% endif %}
+                  </label>
+                </div>
+              {% endwith %}
+            {% endfor %}
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button type="submit" name="action_primary" class="btn btn-primary">
+              {% translate "Make Primary" %}
+            </button>
+            <button type="submit" name="action_send" class="btn btn-secondary">
+              {% translate "Re-send Verification" %}
+            </button>
+            <button type="submit" name="action_remove" class="btn btn-danger">
+              {% translate "Remove" %}
+            </button>
+          </div>
+        </form>
+      {% else %}
+        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+          {% translate "You have no email addresses associated with your account." %}
+        </p>
+      {% endif %}
+      {% if can_add_email %}
+        <h2 class="mt-8 mb-4 text-xl font-semibold text-muted-900 dark:text-muted-100">
+          {% translate "Add Email Address" %}
+        </h2>
+        <form method="post" action="{% url 'account_email' %}" class="space-y-4">
+          {% csrf_token %}
+          {{ form }}
+          <div>
+            <button type="submit" name="action_add" class="btn btn-primary">
+              {% translate "Add Email" %}
+            </button>
+          </div>
+        </form>
+      {% endif %}
+    </div>
   </div>
 {% endblock content %}

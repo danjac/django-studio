@@ -3,13 +3,13 @@
   class="sticky top-0 z-10 w-full border-b border-muted-200 bg-white/80 backdrop-blur-lg dark:border-muted-800 dark:bg-muted-950/80"
   x-data="{ showMobileMenu: false, showUserDropdown: false }"
   x-init="
-    $watch('showMobileMenu', v => { if (v) showUserDropdown = false; });
-    $watch('showUserDropdown', v => { if (v) showMobileMenu = false; });
-  "
+          $watch('showMobileMenu', v => { if (v) showUserDropdown = false; });
+          $watch('showUserDropdown', v => { if (v) showMobileMenu = false; });
+         "
   @htmx:before-request.window="showMobileMenu = false; showUserDropdown = false"
   @keyup.escape.window="showMobileMenu = false; showUserDropdown = false"
 >
-  <nav class="flex items-center justify-between p-4">
+  <nav class="flex justify-between items-center p-4">
     <a
       href="{% url 'index' %}"
       class="text-lg font-semibold text-muted-900 dark:text-muted-100"
@@ -25,7 +25,7 @@
           >
             <button
               type="button"
-              class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-muted-700 transition-colors hover:bg-muted-100 dark:text-muted-300 dark:hover:bg-muted-800"
+              class="flex gap-2 items-center py-2 px-3 text-sm font-semibold rounded-xl transition-colors text-muted-700 dark:text-muted-300 dark:hover:bg-muted-800 hover:bg-muted-100"
               :aria-expanded="showUserDropdown.toString()"
               @click="showUserDropdown = !showUserDropdown"
             >
@@ -34,20 +34,20 @@
               {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
             </button>
             <div
-              class="absolute right-0 z-20 mt-1 w-56 rounded-xl border border-muted-200 bg-white shadow-xl dark:border-muted-700 dark:bg-muted-900"
+              class="absolute right-0 z-20 mt-1 w-56 bg-white rounded-xl border shadow-xl border-muted-200 dark:border-muted-700 dark:bg-muted-900"
               x-cloak
               x-show="showUserDropdown"
               x-transition.scale.origin.top
             >
               <ul class="py-2" role="menu">
-                <li class="border-b border-muted-200 px-4 py-2 text-sm text-muted-500 dark:border-muted-700 dark:text-muted-400">
+                <li class="py-2 px-4 text-sm border-b border-muted-200 text-muted-500 dark:border-muted-700 dark:text-muted-400">
                   {% translate "Signed in as" %}
                   <strong class="text-muted-900 dark:text-muted-100">{{ user.email }}</strong>
                 </li>
                 <li role="menuitem">
                   <a
                     href="{% url 'account_email' %}"
-                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
+                    class="flex gap-2 items-center py-2 px-4 text-sm font-semibold text-muted-700 dark:text-muted-200 dark:hover:bg-muted-800 hover:bg-muted-100"
                   >
                     {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
                     {% translate "Account settings" %}
@@ -59,7 +59,7 @@
                       href="{% url 'admin:index' %}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
+                      class="flex gap-2 items-center py-2 px-4 text-sm font-semibold text-muted-700 dark:text-muted-200 dark:hover:bg-muted-800 hover:bg-muted-100"
                     >
                       {% heroicon_mini "wrench-screwdriver" class="size-4 shrink-0" aria_hidden="true" %}
                       {% translate "Site admin" %}
@@ -69,7 +69,7 @@
                 <li role="menuitem">
                   <a
                     href="{% url 'users:delete_account' %}"
-                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-danger-600 hover:bg-danger-50 dark:text-danger-400 dark:hover:bg-muted-800"
+                    class="flex gap-2 items-center py-2 px-4 text-sm font-semibold text-danger-600 dark:text-danger-400 dark:hover:bg-muted-800 hover:bg-danger-50"
                   >
                     {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}
                     {% translate "Delete my account" %}
@@ -80,7 +80,7 @@
                     {% csrf_token %}
                     <button
                       type="submit"
-                      class="flex w-full items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
+                      class="flex gap-2 items-center py-2 px-4 w-full text-sm font-semibold text-muted-700 dark:text-muted-200 dark:hover:bg-muted-800 hover:bg-muted-100"
                     >
                       {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria_hidden="true" %}
                       {% translate "Sign out" %}
@@ -106,7 +106,7 @@
       <li class="md:hidden">
         <button
           type="button"
-          class="rounded-xl p-2 text-muted-700 transition-colors hover:bg-muted-100 dark:text-muted-300 dark:hover:bg-muted-800"
+          class="p-2 rounded-xl transition-colors text-muted-700 dark:text-muted-300 dark:hover:bg-muted-800 hover:bg-muted-100"
           :aria-expanded="showMobileMenu.toString()"
           aria-label="{% translate "Toggle navigation menu" %}"
           @click="showMobileMenu = !showMobileMenu"
@@ -123,7 +123,7 @@
   </nav>
   {% if user.is_authenticated %}
     <nav
-      class="absolute left-0 z-50 w-full border-b border-muted-200 bg-white px-4 py-6 shadow-xl dark:border-muted-700 dark:bg-muted-900 md:hidden"
+      class="absolute left-0 z-50 py-6 px-4 w-full bg-white border-b shadow-xl md:hidden border-muted-200 dark:border-muted-700 dark:bg-muted-900"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
@@ -139,7 +139,7 @@
     </nav>
   {% else %}
     <nav
-      class="absolute left-0 z-50 w-full border-b border-muted-200 bg-white px-4 py-6 shadow-xl dark:border-muted-700 dark:bg-muted-900 md:hidden"
+      class="absolute left-0 z-50 py-6 px-4 w-full bg-white border-b shadow-xl md:hidden border-muted-200 dark:border-muted-700 dark:bg-muted-900"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
@@ -153,12 +153,12 @@
     >
       <ul class="flex flex-col gap-2">
         <li>
-          <a href="{% url 'account_login' %}" class="btn btn-secondary w-full justify-center">
+          <a href="{% url 'account_login' %}" class="justify-center w-full btn btn-secondary">
             {% translate "Sign in" %}
           </a>
         </li>
         <li>
-          <a href="{% url 'account_signup' %}" class="btn btn-primary w-full justify-center">
+          <a href="{% url 'account_signup' %}" class="justify-center w-full btn btn-primary">
             {% translate "Sign up" %}
           </a>
         </li>

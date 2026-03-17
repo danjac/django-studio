@@ -1,7 +1,6 @@
-{% load i18n %}
-{% load account %}
+{% load account i18n %}
 {% user_display user as user_display %}
-<div class="mb-4 rounded border border-info-200 bg-info-50 p-4 text-sm text-info-800 dark:border-info-800 dark:bg-info-950 dark:text-info-200">
+<div class="p-4 mb-4 text-sm rounded border border-info-200 bg-info-50 text-info-800 dark:border-info-800 dark:bg-info-950 dark:text-info-200">
   <strong>{% translate "Note" %}:</strong>
   {% blocktranslate %}You are already logged in as {{ user_display }}.{% endblocktranslate %}
 </div>

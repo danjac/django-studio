@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag "Sign Up" %}{% endblock title %}
+{% block title %}{% title_tag "Sign Up" %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Sign Up" %}
-    </h1>
-    <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-      {% blocktranslate with url=login_url %}Already have an account? <a class="underline" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
-    </p>
-    <form method="post" class="space-y-4">
-      {% csrf_token %}
-      {{ form.phone_number.as_hidden }}
-      {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-      {% endif %}
-      {{ form.username.as_field_group }}
-      {{ form.email.as_field_group }}
-      {{ form.password1.as_field_group }}
-      {{ form.password2.as_field_group }}
-      <div>
-        <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>
-      </div>
-    </form>
+  <div class="py-12 mx-auto max-w-md">
+    {% include "header.html" with title=_("Sign Up") %}
+    <div class="mt-6">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        {% blocktranslate with url=login_url %}Already have an account? <a class="underline" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
+      </p>
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.phone_number.as_hidden }}
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        {{ form.username.as_field_group }}
+        {{ form.email.as_field_group }}
+        {{ form.password1.as_field_group }}
+        {{ form.password2.as_field_group }}
+        <div>
+          <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>
+        </div>
+      </form>
+    </div>
   </div>
 {% endblock content %}

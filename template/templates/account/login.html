@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag "Sign In" %}{% endblock title %}
+{% block title %}{% title_tag "Sign In" %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Sign In" %}
-    </h1>
-    <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-      {% blocktranslate with url=signup_url %}No account? <a class="underline" href="{{ url }}">Sign up</a>.{% endblocktranslate %}
-    </p>
-    <form method="post" class="space-y-4">
-      {% csrf_token %}
-      {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-      {% endif %}
-      {{ form }}
-      <div>
-        <button type="submit" class="btn btn-primary">{% translate "Sign In" %}</button>
-      </div>
-    </form>
+  <div class="py-12 mx-auto max-w-md">
+    {% include "header.html" with title=_("Sign In") %}
+    <div class="mt-6">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        {% blocktranslate with url=signup_url %}No account? <a class="underline" href="{{ url }}">Sign up</a>.{% endblocktranslate %}
+      </p>
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        {{ form }}
+        <div>
+          <button type="submit" class="btn btn-primary">{% translate "Sign In" %}</button>
+        </div>
+      </form>
+    </div>
   </div>
 {% endblock content %}

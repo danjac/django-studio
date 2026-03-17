@@ -1,17 +1,17 @@
 {% with has_other_pages=page.has_other_pages %}
-<div id="{{ pagination_target }}">
-  {% if has_other_pages %}
-    <div class="pb-3">
-      {% partial links %}
-    </div>
-  {% endif %}
-  {{ content }}
-  {% if has_other_pages %}
-    <div class="pt-3">
-      {% partial links %}
-    </div>
-  {% endif %}
-</div>
+  <div id="{{ pagination_target }}">
+    {% if has_other_pages %}
+      <div class="pb-3">
+        {% partial links %}
+      </div>
+    {% endif %}
+    {{ content }}
+    {% if has_other_pages %}
+      <div class="pt-3">
+        {% partial links %}
+      </div>
+    {% endif %}
+  </div>
 {% endwith %}
 
 {% partialdef links %}
@@ -21,7 +21,7 @@
     hx-swap="outerHTML show:window:top"
     hx-target="#{{ pagination_target }}"
   >
-    <ul class="flex items-center justify-between">
+    <ul class="flex justify-between items-center">
       <li>
         {% if page.has_previous %}
           <a
@@ -56,4 +56,4 @@
       </li>
     </ul>
   </nav>
-{% endpartialdef %}
+{% endpartialdef links %}

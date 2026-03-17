@@ -1,45 +1,45 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag _("Change Phone") %}{% endblock title %}
+{% block title %}{% title_tag _("Change Phone") %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Change Phone Number" %}
-    </h1>
-    {% if phone %}
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-        {% blocktranslate %}
-          Your current phone number is <strong>{{ phone }}</strong>.
-        {% endblocktranslate %}
+  <div class="py-12 mx-auto max-w-md">
+    {% include "header.html" with title=_("Change Phone Number") %}
+    <div class="mt-6">
+      {% if phone %}
+        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+          {% blocktranslate %}
+            Your current phone number is <strong>{{ phone }}</strong>.
+          {% endblocktranslate %}
+          {% if not phone_verified %}
+            <span class="ml-1 text-danger-600 dark:text-danger-400">
+              {% translate "(unverified)" %}
+            </span>
+          {% endif %}
+        </p>
         {% if not phone_verified %}
-          <span class="ml-1 text-danger-600 dark:text-danger-400">
-            {% translate "(unverified)" %}
-          </span>
+          <div class="p-4 mb-6 text-sm rounded border border-danger-200 bg-danger-50 text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
+            {% translate "Your phone number is still pending verification." %}
+            <form id="verify-phone" method="post" action="{% url 'account_change_phone' %}" class="mt-2">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="verify" />
+              <button type="submit" class="btn btn-secondary">
+                {% translate "Re-send Verification" %}
+              </button>
+            </form>
+          </div>
         {% endif %}
-      </p>
-      {% if not phone_verified %}
-        <div class="mb-6 rounded border border-danger-200 bg-danger-50 p-4 text-sm text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
-          {% translate "Your phone number is still pending verification." %}
-          <form id="verify-phone" method="post" action="{% url 'account_change_phone' %}" class="mt-2">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="verify" />
-            <button type="submit" class="btn btn-secondary">
-              {% translate "Re-send Verification" %}
-            </button>
-          </form>
-        </div>
       {% endif %}
-    {% endif %}
-    <form method="post" action="{% url 'account_change_phone' %}" class="space-y-4">
-      {% csrf_token %}
-      {{ form }}
-      <div>
-        <button type="submit" name="action_add" class="btn btn-primary">
-          {% translate "Change Phone Number" %}
-        </button>
-      </div>
-    </form>
+      <form method="post" action="{% url 'account_change_phone' %}" class="space-y-4">
+        {% csrf_token %}
+        {{ form }}
+        <div>
+          <button type="submit" name="action_add" class="btn btn-primary">
+            {% translate "Change Phone Number" %}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 {% endblock content %}

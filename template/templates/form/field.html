@@ -17,7 +17,7 @@
       {% partial help_text %}
     </fieldset>
   {% endwith %}
-{% endpartialdef %}
+{% endpartialdef fieldset %}
 
 {% partialdef label %}
   <label
@@ -27,7 +27,7 @@
     {{ field.label }}
     {% if not field.field.required %}(optional){% endif %}
   </label>
-{% endpartialdef %}
+{% endpartialdef label %}
 
 {% partialdef errors %}
   {% if errors %}
@@ -35,7 +35,7 @@
       {{ errors|unordered_list }}
     </ul>
   {% endif %}
-{% endpartialdef %}
+{% endpartialdef errors %}
 
 {% partialdef help_text %}
   {% if field.help_text %}
@@ -43,13 +43,13 @@
       {{ field.help_text }}
     </div>
   {% endif %}
-{% endpartialdef %}
+{% endpartialdef help_text %}
 
 {# Default input #}
 {% partialdef input %}
   {% partial label %}
   {% render_field field class="form-input" %}
-{% endpartialdef %}
+{% endpartialdef input %}
 
 {# Simple text and file inputs - same as default #}
 {% partialdef textinput %}{% partial input %}{% endpartialdef %}
@@ -62,27 +62,27 @@
 {% partialdef dateinput %}
   {% partial label %}
   {% render_field field class="form-input" type="date" %}
-{% endpartialdef %}
+{% endpartialdef dateinput %}
 
 {# Date + time #}
 {% partialdef datetimeinput %}
   {% partial label %}
   {% render_field field class="form-input" type="datetime-local" %}
-{% endpartialdef %}
+{% endpartialdef datetimeinput %}
 
 {# Textarea #}
 {% partialdef textarea %}
   {% partial label %}
   {% render_field field class="form-textarea" %}
-{% endpartialdef %}
+{% endpartialdef textarea %}
 
 {# Checkbox #}
 {% partialdef checkboxinput %}
-  <div class="flex w-full items-center space-x-3">
+  <div class="flex items-center space-x-3 w-full">
     {% render_field field class="form-checkbox" %}
     {% partial label %}
   </div>
-{% endpartialdef %}
+{% endpartialdef checkboxinput %}
 
 {# Checkbox select multiple (e.g. M2M fields) #}
 {% partialdef checkboxselectmultiple %}
@@ -90,37 +90,37 @@
   <div class="space-y-2">
     {% render_field field %}
   </div>
-{% endpartialdef %}
+{% endpartialdef checkboxselectmultiple %}
 
 {# Password with show/hide toggle #}
 {% partialdef passwordinput %}
   {% partial label %}
-  <div x-data="{ show: false }" class="relative inline-block">
-    {% render_field field class="form-input pr-10" x-ref="password" %}
+  <div x-data="{ show: false }" class="inline-block relative">
+    {% render_field field class="pr-10 form-input" x-ref="password" %}
     <button
       type="button"
       x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';"
       aria-label="{% translate "Toggle password visibility" %}"
-      class="absolute inset-y-0 right-0 flex h-full items-center justify-center px-3 text-muted-500 dark:text-muted-400"
+      class="flex absolute inset-y-0 right-0 justify-center items-center px-3 h-full text-muted-500 dark:text-muted-400"
       tabindex="-1"
     >
       {% heroicon_mini "eye" class="w-5 h-5 text-muted-500 dark:text-muted-400" x_show="show" %}
       {% heroicon_mini "eye-slash" class="w-5 h-5 text-muted-500 dark:text-muted-400" x_show="!show" %}
     </button>
   </div>
-{% endpartialdef %}
+{% endpartialdef passwordinput %}
 
 {# Select dropdown #}
 {% partialdef select %}
   {% partial label %}
   {% render_field field class="form-select" %}
-{% endpartialdef %}
+{% endpartialdef select %}
 
 {# Multi-select #}
 {% partialdef selectmultiple %}
   {% partial label %}
   {% render_field field class="form-multiselect" %}
-{% endpartialdef %}
+{% endpartialdef selectmultiple %}
 
 {# django-money MoneyWidget (amount + currency select) #}
 {% partialdef moneywidget %}
@@ -128,4 +128,4 @@
   <div class="money-widget">
     {% render_field field %}
   </div>
-{% endpartialdef %}
+{% endpartialdef moneywidget %}

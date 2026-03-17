@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag _("Verify Your Email Address") %}{% endblock title %}
+{% block title %}{% title_tag _("Verify Your Email Address") %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Verify Your Email Address" %}
-    </h1>
-    <p class="text-sm text-muted-600 dark:text-muted-400">
-      {% blocktranslate %}We have sent an email to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification email in your main inbox, check your spam folder. Please contact us if you do not receive the verification email within a few minutes.{% endblocktranslate %}
-    </p>
+  <div class="py-12 mx-auto max-w-md">
+    {% include "header.html" with title=_("Verify Your Email Address") %}
+    <div class="mt-6">
+      <p class="text-sm text-muted-600 dark:text-muted-400">
+        {% blocktranslate %}We have sent an email to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification email in your main inbox, check your spam folder. Please contact us if you do not receive the verification email within a few minutes.{% endblocktranslate %}
+      </p>
+    </div>
   </div>
 {% endblock content %}

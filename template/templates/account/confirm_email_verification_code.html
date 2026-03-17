@@ -1,57 +1,57 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag _("Email Verification") %}{% endblock title %}
+{% block title %}{% title_tag _("Email Verification") %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Enter Email Verification Code" %}
-    </h1>
-    <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-      {% blocktranslate with email=email %}We've sent a code to <a class="underline" href="mailto:{{ email }}">{{ email }}</a>. The code expires shortly, so please enter it soon.{% endblocktranslate %}
-    </p>
-    <form method="post" action="{% url 'account_email_verification_sent' %}" class="space-y-4">
-      {% csrf_token %}
-      {{ verify_form }}
-      {{ redirect_field }}
-      <div class="flex flex-wrap gap-3">
-        <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
-        {% if can_resend %}
-          <button type="submit" form="resend" class="btn btn-secondary">{% translate "Request new code" %}</button>
-        {% endif %}
-        {% if cancel_url %}
-          <a href="{{ cancel_url }}" class="btn btn-secondary">{% translate "Cancel" %}</a>
-        {% else %}
-          <button type="submit" form="logout-from-stage" class="btn btn-secondary">{% translate "Cancel" %}</button>
-        {% endif %}
-      </div>
-    </form>
-    <form id="resend" method="post" action="{% url 'account_email_verification_sent' %}">
-      <input type="hidden" name="action" value="resend" />
-      {{ redirect_field }}
-      {% csrf_token %}
-    </form>
-    {% if not cancel_url %}
-      <form id="logout-from-stage" method="post" action="{% url 'account_logout' %}">
-        <input type="hidden" name="next" value="{% url 'account_login' %}" />
+  <div class="py-12 mx-auto max-w-md">
+    {% include "header.html" with title=_("Enter Email Verification Code") %}
+    <div class="mt-6">
+      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        {% blocktranslate with email=email %}We've sent a code to <a class="underline" href="mailto:{{ email }}">{{ email }}</a>. The code expires shortly, so please enter it soon.{% endblocktranslate %}
+      </p>
+      <form method="post" action="{% url 'account_email_verification_sent' %}" class="space-y-4">
+        {% csrf_token %}
+        {{ verify_form }}
+        {{ redirect_field }}
+        <div class="flex flex-wrap gap-3">
+          <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
+          {% if can_resend %}
+            <button type="submit" form="resend" class="btn btn-secondary">{% translate "Request new code" %}</button>
+          {% endif %}
+          {% if cancel_url %}
+            <a href="{{ cancel_url }}" class="btn btn-secondary">{% translate "Cancel" %}</a>
+          {% else %}
+            <button type="submit" form="logout-from-stage" class="btn btn-secondary">{% translate "Cancel" %}</button>
+          {% endif %}
+        </div>
+      </form>
+      <form id="resend" method="post" action="{% url 'account_email_verification_sent' %}">
+        <input type="hidden" name="action" value="resend" />
+        {{ redirect_field }}
         {% csrf_token %}
       </form>
-    {% endif %}
-    {% if can_change %}
-      <details class="mt-8" {% if change_form.errors %}open{% endif %}>
-        <summary class="cursor-pointer text-sm font-medium text-muted-700 dark:text-muted-300">
-          {% translate "Use a different email address" %}
-        </summary>
-        <form method="post" action="{% url 'account_email_verification_sent' %}" class="mt-4 space-y-4">
+      {% if not cancel_url %}
+        <form id="logout-from-stage" method="post" action="{% url 'account_logout' %}">
+          <input type="hidden" name="next" value="{% url 'account_login' %}" />
           {% csrf_token %}
-          {{ change_form }}
-          {{ redirect_field }}
-          <div>
-            <button type="submit" name="action" value="change" class="btn btn-primary">{% translate "Change" %}</button>
-          </div>
         </form>
-      </details>
-    {% endif %}
+      {% endif %}
+      {% if can_change %}
+        <details class="mt-8" {% if change_form.errors %}open{% endif %}>
+          <summary class="text-sm font-medium cursor-pointer text-muted-700 dark:text-muted-300">
+            {% translate "Use a different email address" %}
+          </summary>
+          <form method="post" action="{% url 'account_email_verification_sent' %}" class="mt-4 space-y-4">
+            {% csrf_token %}
+            {{ change_form }}
+            {{ redirect_field }}
+            <div>
+              <button type="submit" name="action" value="change" class="btn btn-primary">{% translate "Change" %}</button>
+            </div>
+          </form>
+        </details>
+      {% endif %}
+    </div>
   </div>
 {% endblock content %}

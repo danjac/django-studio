@@ -1,50 +1,50 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% title_tag _("Change Email") %}{% endblock title %}
+{% block title %}{% title_tag _("Change Email") %}{% endblock %}
 
 {% block content %}
-  <div class="mx-auto max-w-md py-12">
-    <h1 class="mb-6 text-2xl font-bold tracking-tight text-muted-900 dark:text-muted-100">
-      {% translate "Change Email" %}
-    </h1>
-    {% if current_emailaddress %}
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-        {% blocktranslate with email=current_emailaddress.email %}
-          Your current email address is <strong>{{ email }}</strong>.
-        {% endblocktranslate %}
-      </p>
-    {% endif %}
-    {% if new_emailaddress %}
-      <div class="mb-6 rounded border border-danger-200 bg-danger-50 p-4 text-sm text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
-        <p class="mb-2">
-          {% blocktranslate with email=new_emailaddress.email %}
-            A verification email has been sent to <strong>{{ email }}</strong>. Check your inbox and
-            click the link to confirm the change.
+  <div class="py-12 mx-auto max-w-md">
+    {% include "header.html" with title=_("Change Email") %}
+    <div class="mt-6">
+      {% if current_emailaddress %}
+        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+          {% blocktranslate with email=current_emailaddress.email %}
+            Your current email address is <strong>{{ email }}</strong>.
           {% endblocktranslate %}
         </p>
-        <form method="post" action="{% url 'account_email' %}" class="flex gap-2">
-          {% csrf_token %}
-          <input type="hidden" name="email" value="{{ new_emailaddress.email }}" />
-          <button type="submit" name="action_send" class="btn btn-secondary">
-            {% translate "Re-send Verification" %}
-          </button>
-          {% if current_emailaddress %}
-            <button type="submit" name="action_remove" class="btn btn-danger">
-              {% translate "Cancel Change" %}
+      {% endif %}
+      {% if new_emailaddress %}
+        <div class="p-4 mb-6 text-sm rounded border border-danger-200 bg-danger-50 text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
+          <p class="mb-2">
+            {% blocktranslate with email=new_emailaddress.email %}
+              A verification email has been sent to <strong>{{ email }}</strong>. Check your inbox and
+              click the link to confirm the change.
+            {% endblocktranslate %}
+          </p>
+          <form method="post" action="{% url 'account_email' %}" class="flex gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="email" value="{{ new_emailaddress.email }}" />
+            <button type="submit" name="action_send" class="btn btn-secondary">
+              {% translate "Re-send Verification" %}
             </button>
-          {% endif %}
-        </form>
-      </div>
-    {% endif %}
-    <form method="post" action="{% url 'account_email' %}" class="space-y-4">
-      {% csrf_token %}
-      {{ form }}
-      <div>
-        <button type="submit" name="action_add" class="btn btn-primary">
-          {% translate "Change Email" %}
-        </button>
-      </div>
-    </form>
+            {% if current_emailaddress %}
+              <button type="submit" name="action_remove" class="btn btn-danger">
+                {% translate "Cancel Change" %}
+              </button>
+            {% endif %}
+          </form>
+        </div>
+      {% endif %}
+      <form method="post" action="{% url 'account_email' %}" class="space-y-4">
+        {% csrf_token %}
+        {{ form }}
+        <div>
+          <button type="submit" name="action_add" class="btn btn-primary">
+            {% translate "Change Email" %}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 {% endblock content %}

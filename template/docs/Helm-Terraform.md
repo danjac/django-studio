@@ -30,7 +30,7 @@ terraform/
 │   ├── main.tf
 │   ├── variables.tf
 │   └── terraform.tfvars.example
-└── storage/        # Hetzner Object Storage bucket (use_storage=y only)
+└── storage/        # Hetzner Object Storage bucket (apply when ready to enable)
     ├── main.tf
     ├── variables.tf
     ├── outputs.tf

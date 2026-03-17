@@ -1,8 +1,8 @@
 # File Storage
 
 This project uses **Hetzner Object Storage** for user-uploaded media files in production.
-File storage is an opt-in feature: it is only included when `use_storage=y` was selected
-at project generation time.
+Storage is always included in the project scaffold — activate it by setting `USE_S3_STORAGE=true`
+and providing the Hetzner bucket credentials.
 
 ## Overview
 
@@ -112,7 +112,7 @@ just helm site
 
 ## Settings Reference
 
-Relevant block in `config/settings.py` (only present when `use_storage=y`):
+Relevant block in `config/settings.py`:
 
 ```python
 # Media files / Object Storage
@@ -140,8 +140,8 @@ Storage is S3-compatible, so the same library works without modification.
 
 ## Dependency
 
-`django-storages[s3]` is included in `pyproject.toml` automatically when `use_storage=y`.
-It brings in `boto3` as a transitive dependency. No manual `uv add` is needed.
+`django-storages[s3]` is included in `pyproject.toml`. It brings in `boto3` as a transitive
+dependency. No manual `uv add` is needed.
 
 ## sorl-thumbnail and S3
 

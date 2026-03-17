@@ -4,7 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Final
 
 from django.conf import settings
-from django.http import HttpResponse{%- if use_pwa %}, JsonResponse{% endif %}
+from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
@@ -93,7 +93,6 @@ def accept_cookies(_: HttpRequest) -> HttpResponse:
         samesite="Lax",
     )
     return response
-{%- if use_pwa %}
 
 
 @require_safe
@@ -140,4 +139,3 @@ def assetlinks(_) -> JsonResponse:
         ],
         safe=False,
     )
-{%- endif %}

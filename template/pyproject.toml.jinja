@@ -27,7 +27,6 @@ dependencies = [
   "environs[django]>=11.0.0",
   "gunicorn>=23.0.0",
   "heroicons[django]>=2.8.0",
-  {%- if use_opentelemetry %}
   "opentelemetry-api>=1.28.0",
   "opentelemetry-exporter-otlp-proto-http>=1.28.0",
   "opentelemetry-exporter-otlp>=1.28.0",
@@ -36,18 +35,13 @@ dependencies = [
   "opentelemetry-instrumentation-redis>=0.49b0",
   "opentelemetry-instrumentation-requests>=0.60b1",
   "opentelemetry-sdk>=1.28.0",
-{%- endif %}
   "psutil>=6.0.0",
   "psycopg[binary,pool]>=3.2.1",
   "redis>=5.0.8",
-  {%- if use_sentry %}
   "sentry-sdk>=2.13.0",
-{%- endif %}
   "uvicorn[standard]>=0.41.0",
   "whitenoise[brotli]>=6.11.0",
-{%- if use_storage %}
   "django-storages[s3]>=1.14.4",
-{%- endif %}
 ]
 [dependency-groups]
 dev = [

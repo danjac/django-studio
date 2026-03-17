@@ -310,11 +310,7 @@ class TestDomainPrefill:
     def test_helm_observability_grafana_host_has_domain(self, output_dir):
         project = _render(
             output_dir,
-            {
-                **_DEFAULT_CONTEXT,
-                "domain": "myapp.example.org",
-                "use_opentelemetry": True,
-            },
+            {**_DEFAULT_CONTEXT, "domain": "myapp.example.org"},
         )
         content = (
             project / "helm" / "observability" / "values.secret.yaml.example"
@@ -333,295 +329,108 @@ class TestDomainPrefill:
         assert "cookiecutter" not in content
 
 
-class TestStorageFeatureFlag:
-    """Test use_storage flag behaviour."""
+class TestAlwaysIncludedFeatures:
+    """Verify that storage, PWA, observability, and Sentry are always present."""
 
-    def test_storage_dir_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": True})
+    def test_storage_terraform_always_present(self, project):
         storage = project / "terraform" / "storage"
         assert (storage / "main.tf").exists()
         assert (storage / "variables.tf").exists()
         assert (storage / "outputs.tf").exists()
-        assert (storage / "terraform.tfvars.example").exists()
-        assert (storage / "README.md").exists()
-        assert (storage / ".gitignore").exists()
 
-    def test_storage_dir_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": False})
-        assert not (project / "terraform" / "storage").exists()
-
-    def test_s3_settings_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": True})
+    def test_s3_settings_always_present(self, project):
         content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" in content
 
-    def test_s3_settings_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": False})
-        content = (project / "config" / "settings.py").read_text()
-        assert "S3Boto3Storage" not in content
-
-    def test_env_storage_vars_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": True})
+    def test_storage_env_vars_always_present(self, project):
         content = (project / ".env.example").read_text()
         assert "HETZNER_STORAGE_ACCESS_KEY" in content
 
-    def test_env_storage_vars_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": False})
-        content = (project / ".env.example").read_text()
-        assert "HETZNER_STORAGE_ACCESS_KEY" not in content
-
-
-class TestPwaFeatureFlag:
-    """Test use_pwa flag behaviour."""
-
-    def test_service_worker_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": True})
+    def test_pwa_service_worker_always_present(self, project):
         assert (project / "static" / "service-worker.js").exists()
 
-    def test_service_worker_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": False})
-        assert not (project / "static" / "service-worker.js").exists()
-
-    def test_manifest_view_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": True})
+    def test_pwa_manifest_in_urls(self, project):
         content = (project / "config" / "urls.py").read_text()
         assert "manifest" in content
 
-    def test_manifest_view_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": False})
-        content = (project / "config" / "urls.py").read_text()
-        assert "manifest" not in content
+    def test_pwa_assets_in_base_html(self, project):
+        content = (project / "templates" / "base.html").read_text()
+        assert "manifest" in content
+        assert "service-worker.js" in content
 
+    def test_observability_helm_always_present(self, project):
+        assert (project / "helm" / "observability").is_dir()
 
-class TestOpenTelemetryFeatureFlag:
-    """Test use_opentelemetry flag behaviour."""
-
-    def test_otel_deps_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": True})
+    def test_otel_deps_always_present(self, project):
         content = (project / "pyproject.toml").read_text()
         assert "opentelemetry-api" in content
         assert "opentelemetry-sdk" in content
 
-    def test_otel_deps_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / "pyproject.toml").read_text()
-        assert "opentelemetry-api" not in content
-        assert "opentelemetry-sdk" not in content
-
-    def test_otel_settings_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": True})
+    def test_otel_settings_always_present(self, project):
         content = (project / "config" / "settings.py").read_text()
         assert "from opentelemetry" in content
         assert "OPEN_TELEMETRY_URL" in content
 
-    def test_otel_settings_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / "config" / "settings.py").read_text()
-        assert "from opentelemetry" not in content
-        assert "OPEN_TELEMETRY_URL" not in content
-
-    def test_otel_env_vars_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": True})
-        content = (project / ".env.example").read_text()
-        assert "OPEN_TELEMETRY_URL" in content
-
-    def test_otel_env_vars_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / ".env.example").read_text()
-        assert "OPEN_TELEMETRY_URL" not in content
-
-    def test_observability_helm_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": True})
-        assert (project / "helm" / "observability").is_dir()
-
-    def test_observability_helm_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        assert not (project / "helm" / "observability").exists()
-
-    def test_monitor_node_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": True})
+    def test_monitor_node_always_present(self, project):
         content = (project / "terraform" / "hetzner" / "main.tf").read_text()
         assert 'resource "hcloud_server" "monitor"' in content
         assert 'resource "hcloud_firewall" "monitor"' in content
 
-    def test_monitor_node_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
-        assert 'resource "hcloud_server" "monitor"' not in content
-        assert 'resource "hcloud_firewall" "monitor"' not in content
-        assert "monitor_private_ip" not in content
-
-    def test_monitor_outputs_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": True})
+    def test_monitor_outputs_always_present(self, project):
         content = (project / "terraform" / "hetzner" / "outputs.tf").read_text()
         assert '"monitor_public_ip"' in content
         assert '"monitor_private_ip"' in content
 
-    def test_monitor_outputs_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / "terraform" / "hetzner" / "outputs.tf").read_text()
-        assert '"monitor_public_ip"' not in content
-        assert '"monitor_private_ip"' not in content
-
-    def test_cloudflare_grafana_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": True})
-        main_content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
-        assert 'resource "cloudflare_record" "grafana"' in main_content
+    def test_cloudflare_grafana_always_present(self, project):
+        content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
+        assert 'resource "cloudflare_record" "grafana"' in content
         vars_content = (
             project / "terraform" / "cloudflare" / "variables.tf"
         ).read_text()
         assert '"monitor_ip"' in vars_content
         assert '"grafana_subdomain"' in vars_content
 
-    def test_cloudflare_origin_cert_resources_present(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
-        assert 'resource "tls_private_key" "origin"' in content
-        assert 'resource "tls_cert_request" "origin"' in content
-        assert 'resource "cloudflare_origin_ca_certificate" "origin"' in content
+    def test_sentry_dep_always_present(self, project):
+        content = (project / "pyproject.toml").read_text()
+        assert "sentry-sdk" in content
 
-    def test_cloudflare_origin_cert_outputs_present(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / "terraform" / "cloudflare" / "outputs.tf").read_text()
-        assert '"origin_cert_pem"' in content
-        assert '"origin_key_pem"' in content
+    def test_sentry_settings_always_present(self, project):
+        content = (project / "config" / "settings.py").read_text()
+        assert "import sentry_sdk" in content
+        assert "SENTRY_URL" in content
 
-    def test_cloudflare_tls_provider_declared(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
-        assert '"hashicorp/tls"' in content
+    def test_sentry_env_var_always_present(self, project):
+        content = (project / ".env.example").read_text()
+        assert "SENTRY_URL" in content
 
-    def test_cloudflare_grafana_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
-        main_content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
-        assert 'resource "cloudflare_record" "grafana"' not in main_content
-        vars_content = (
-            project / "terraform" / "cloudflare" / "variables.tf"
-        ).read_text()
-        assert '"monitor_ip"' not in vars_content
-        assert '"grafana_subdomain"' not in vars_content
+    def test_no_jinja_conditionals_remaining(self, project):
+        """Ensure no feature-flag Jinja2 conditionals leaked into generated files."""
+        for path in project.rglob("*.py"):
+            content = path.read_text()
+            assert "{%- if use_" not in content, f"{path} contains Jinja2 conditional"
+        for path in project.rglob("*.toml"):
+            content = path.read_text()
+            assert "{%- if use_" not in content, f"{path} contains Jinja2 conditional"
 
-    def test_no_cookiecutter_literals_in_terraform(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_opentelemetry": False})
+    def test_no_cookiecutter_literals_in_terraform(self, project):
         for tf_file in (project / "terraform").rglob("*.tf"):
             content = tf_file.read_text()
             assert "cookiecutter" not in content, (
                 f"{tf_file} contains cookiecutter literal"
             )
 
+    def test_cloudflare_origin_cert_present(self, project):
+        content = (project / "terraform" / "cloudflare" / "main.tf").read_text()
+        assert 'resource "tls_private_key" "origin"' in content
+        assert 'resource "cloudflare_origin_ca_certificate" "origin"' in content
+        assert '"hashicorp/tls"' in content
 
-class TestSentryFeatureFlag:
-    """Test use_sentry flag behaviour."""
-
-    def test_sentry_dep_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": True})
-        content = (project / "pyproject.toml").read_text()
-        assert "sentry-sdk" in content
-
-    def test_sentry_dep_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": False})
-        content = (project / "pyproject.toml").read_text()
-        assert "sentry-sdk" not in content
-
-    def test_sentry_settings_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": True})
-        content = (project / "config" / "settings.py").read_text()
-        assert "import sentry_sdk" in content
-        assert "SENTRY_URL" in content
-
-    def test_sentry_settings_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": False})
-        content = (project / "config" / "settings.py").read_text()
-        assert "import sentry_sdk" not in content
-        assert "SENTRY_URL" not in content
-
-    def test_sentry_env_vars_present_when_enabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": True})
-        content = (project / ".env.example").read_text()
-        assert "SENTRY_URL" in content
-
-    def test_sentry_env_vars_absent_when_disabled(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_sentry": False})
-        content = (project / ".env.example").read_text()
-        assert "SENTRY_URL" not in content
-
-
-class TestFeatureFlagCombinations:
-    """Test interactions between feature flags."""
-
-    def test_pwa_enabled_base_html_has_pwa_assets(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_pwa": True})
-        assert not (project / "templates" / "hx_base.html").exists()
-        assert not (project / "templates" / "default_base.html").exists()
-        base_content = (project / "templates" / "base.html").read_text()
-        assert "manifest" in base_content
-        assert "service-worker.js" in base_content
-        assert (project / "static" / "service-worker.js").exists()
-
-    def test_storage_and_i18n_enabled_together(self, output_dir):
-        project = _render(output_dir, {**_DEFAULT_CONTEXT, "use_storage": True})
+    def test_i18n_and_storage_coexist(self, project):
         settings_content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" in settings_content
         assert "USE_I18N = True" in settings_content
         assert (project / "terraform" / "storage" / "main.tf").exists()
         assert (project / "locale").is_dir()
-
-    def test_all_flags_enabled(self, output_dir):
-        project = _render(
-            output_dir,
-            {
-                **_DEFAULT_CONTEXT,
-                "use_storage": True,
-                "use_pwa": True,
-                "use_opentelemetry": True,
-                "use_sentry": True,
-            },
-        )
-        assert not (project / "templates" / "hx_base.html").exists()
-        assert not (project / "templates" / "default_base.html").exists()
-        base_content = (project / "templates" / "base.html").read_text()
-        assert "manifest" in base_content
-        assert "service-worker.js" in base_content
-        assert (project / "static" / "service-worker.js").exists()
-        assert "manifest" in (project / "config" / "urls.py").read_text()
-        assert (project / "terraform" / "storage" / "main.tf").exists()
-        settings_content = (project / "config" / "settings.py").read_text()
-        assert "S3Boto3Storage" in settings_content
-        assert (project / "locale").is_dir()
-        assert "USE_I18N = True" in settings_content
-        assert "opentelemetry" in settings_content
-        assert (project / "helm" / "observability").is_dir()
-        pyproject_content = (project / "pyproject.toml").read_text()
-        assert "opentelemetry-api" in pyproject_content
-        assert "sentry_sdk" in settings_content
-        assert "sentry-sdk" in pyproject_content
-
-    def test_all_flags_disabled(self, output_dir):
-        project = _render(
-            output_dir,
-            {
-                **_DEFAULT_CONTEXT,
-                "use_storage": False,
-                "use_pwa": False,
-                "use_opentelemetry": False,
-                "use_sentry": False,
-            },
-        )
-        assert not (project / "templates" / "hx_base.html").exists()
-        assert not (project / "templates" / "default_base.html").exists()
-        assert not (project / "static" / "service-worker.js").exists()
-        assert "manifest" not in (project / "config" / "urls.py").read_text()
-        assert not (project / "terraform" / "storage").exists()
-        settings_content = (project / "config" / "settings.py").read_text()
-        assert "S3Boto3Storage" not in settings_content
-        assert (project / "locale").is_dir()
-        assert "USE_I18N = True" in settings_content
-        assert "opentelemetry" not in settings_content
-        assert not (project / "helm" / "observability").exists()
-        pyproject_content = (project / "pyproject.toml").read_text()
-        assert "opentelemetry-api" not in pyproject_content
-        assert "sentry_sdk" not in settings_content
-        assert "sentry-sdk" not in pyproject_content
 
 
 class TestLicensePrompt:

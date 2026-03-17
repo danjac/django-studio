@@ -98,19 +98,6 @@ just typecheck
 
 **Do not commit until all checks are clean.**
 
-## Feature Flags
-
-`copier.yml` exposes five boolean feature flags. The post-generation hook (`hooks/post_gen_project.py`) removes unused files based on these selections:
-
-| Flag               | Default | Effect when disabled                          |
-| ------------------ | ------- | --------------------------------------------- |
-| `use_storage`      | `true`  | Removes `terraform/storage/`                  |
-| `use_pwa`          | `true`  | Removes PWA manifest and service worker        |
-| `use_opentelemetry`| `true`  | Removes observability Helm chart               |
-| `use_sentry`       | `true`  | Removes Sentry SDK from settings and pyproject |
-
-When adding template files that are conditional on a flag, update `hooks/post_gen_project.py` — do not hard-delete files from the template directory itself.
-
 **Jinja2 processing:** Only files with a `.jinja` suffix are processed by Copier's Jinja2 engine; all other files are copied verbatim. Files that contain conflicting `{{ }}` syntax (e.g. `justfile` uses `{{ args }}`, GitHub Actions workflows use `${{ }}`) must remain plain files and use `PROJECT_SLUG` as a plain-text placeholder, substituted by the hook.
 
 ## Design System

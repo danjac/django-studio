@@ -2,13 +2,10 @@ import logging
 import pathlib
 from email.utils import getaddresses
 
-{%- if use_sentry %}
 import sentry_sdk
-{%- endif %}
 from django.urls import reverse_lazy
 from django.utils.csp import CSP  # type: ignore[reportMissingTypeStubs]
 from environs import Env
-{%- if use_opentelemetry %}
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
@@ -18,11 +15,8 @@ from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-{%- endif %}
-{%- if use_sentry %}
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
-{%- endif %}
 
 BASE_DIR = pathlib.Path(__file__).resolve(strict=True).parents[1]
 
@@ -470,7 +464,6 @@ LOGGING = {
     },
 }
 
-{%- if use_opentelemetry %}
 
 # OpenTelemetry
 # https://opentelemetry.io/docs/instrumentation/python/automatic/
@@ -509,9 +502,6 @@ if OPEN_TELEMETRY_URL := env("OPEN_TELEMETRY_URL", default=None):
     # Suppress noise from OpenTelemetry libraries
     logging.getLogger("opentelemetry").setLevel(logging.WARNING)
     logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
-{%- endif %}
-
-{%- if use_sentry %}
 
 # Sentry
 # https://docs.sentry.io/platforms/python/guides/django/
@@ -527,7 +517,6 @@ if SENTRY_URL := env("SENTRY_URL", default=None):
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=env.bool("SENTRY_SEND_PII", default=False),
     )
-{%- endif %}
 
 # Dev tools
 
@@ -595,7 +584,6 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 LANGUAGES = [
     ("en", "English"),
 ]
-{%- if use_storage %}
 
 # Media files / Object Storage
 
@@ -617,8 +605,6 @@ if env.bool("USE_S3_STORAGE", default=False):
     AWS_S3_REGION_NAME = env("HETZNER_STORAGE_REGION", default="fsn1")
     AWS_DEFAULT_ACL = "public-read"
     MEDIA_URL = f"{AWS_S3_ENDPOINT_URL.rstrip('/')}/{AWS_STORAGE_BUCKET_NAME}/"
-{%- endif %}
-{%- if use_pwa %}
 
 # PWA
 
@@ -631,4 +617,3 @@ PWA_CONFIG = {
         "sha256_fingerprints": env.list("PWA_SHA256_FINGERPRINTS", default=[]),
     },
 }
-{%- endif %}

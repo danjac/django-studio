@@ -58,7 +58,6 @@ class TestAcceptCookies:
     def test_get_not_allowed(self, client):
         response = client.get(reverse("accept_cookies"))
         assert response.status_code == 405
-{%- if use_pwa %}
 
 
 class TestManifest:
@@ -85,4 +84,3 @@ class TestAssetlinks:
     def test_post_not_allowed(self, client):
         response = client.post(reverse("assetlinks"))
         assert response.status_code == 405
-{%- endif %}

@@ -19,7 +19,7 @@
           class="btn btn-danger"
           hx-delete="{% url 'users:delete_account' %}"
           hx-confirm='{% translate "Delete your account permanently? This cannot be undone." %}'
-          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+          hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'
           hx-target="body"
         >
           {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}

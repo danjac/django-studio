@@ -11,6 +11,8 @@ implementation patterns, see the focused docs:
 | Forms and validation | `docs/Validation.md` |
 | Adding a new package | `docs/Packages.md` |
 | Migrations and linear-migrations | `docs/Models.md` |
+| Background tasks | `docs/Django-Tasks.md` |
+| Scheduled cron jobs | `docs/CronJobs.md` |
 
 ## Django Version
 

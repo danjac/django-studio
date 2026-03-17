@@ -58,7 +58,8 @@ This runs the Django tasks database worker to process queued tasks.
 
 ## Task Scheduling
 
-Tasks can be scheduled via cron (using management commands):
+Tasks are triggered by Kubernetes cron jobs defined in `helm/site/values.yaml`. The cron
+job runs a management command that enqueues tasks; the worker processes them in parallel.
 
 ```python
 # myapp/management/commands/process_items.py
@@ -66,18 +67,22 @@ from django.core.management import BaseCommand
 from myapp import tasks
 
 class Command(BaseCommand):
-  def handle(self, **options):
-    """Process items."""
-    for item in Item.objects.all():
-        tasks.process_item.enqueue(item_id=item.id)
+    help = "Enqueue pending items for processing"
+
+    def handle(self, **options) -> None:
+        for item in Item.objects.filter(status="pending"):
+            tasks.process_item.enqueue(item_id=item.pk)
 ```
 
-Run via cron:
-
-```bash
-# /etc/cron.d/myapp
-*/15 * * * * user /path/to/venv/bin/python manage.py myapp process-items --limit=100
+```yaml
+# helm/site/values.yaml
+cronjobs:
+  process-items:
+    schedule: "*/15 * * * *"
+    command: "./manage.sh process_items"
 ```
+
+See `docs/CronJobs.md` for the full cron job reference.
 
 ## Testing
 

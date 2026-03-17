@@ -326,13 +326,48 @@ Then reference it in the template:
 ```
 
 **3. Reused across pages** — extract to a JS file under `static/` and include
-it via a `<script src="...">` tag:
+it via a `<script src="...">` tag in `{% block scripts %}`. Do **not** add
+`defer`:
 
 ```html
-<script src="{% static 'my_component.js' %}" defer></script>
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'my_component.js' %}"></script>
+{% endblock scripts %}
 ```
 
 See: https://alpinejs.dev/globals/alpine-data
+
+## Script Loading Order
+
+Alpine component scripts (`Alpine.data()`, `Alpine.store()`) must be placed in
+`{% block scripts %}` at the bottom of `<body>` and must **not** use `defer`.
+
+**Why:**
+
+Alpine itself loads with `defer` in `<head>`. Scripts at the bottom of `<body>`
+without `defer` execute before deferred scripts fire. This means by the time
+Alpine's deferred script dispatches `alpine:init`, the `Alpine.data()`
+registrations are already in place. If you add `defer` to component scripts in
+`<head>`, their execution order relative to Alpine is ambiguous and registration
+may fail silently.
+
+```django
+{# base.html <head> — Alpine itself uses defer #}
+<script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
+
+{# {% block scripts %} at bottom of <body> — NO defer on component scripts #}
+{% block scripts %}
+  <script src="{% static 'my-component.js' %}"></script>
+{% endblock scripts %}
+```
+
+**Wrong — do not do this:**
+
+```django
+{# In <head> with defer — component registration may fail #}
+<script src="{% static 'my-component.js' %}" defer></script>
+```
 
 ### URL Resolution in Alpine Components
 

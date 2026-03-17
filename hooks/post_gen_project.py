@@ -142,7 +142,20 @@ def install_claude_hooks() -> None:
     settings = {
         "permissions": {
             "allow": [
-                "Bash(just:*)",
+                "Bash(just lint:*)",
+                "Bash(just test:*)",
+                "Bash(just test-all:*)",
+                "Bash(just test-e2e:*)",
+                "Bash(just check-all:*)",
+                "Bash(just typecheck:*)",
+                "Bash(just dj:*)",
+                "Bash(just start:*)",
+                "Bash(just stop:*)",
+                "Bash(just serve:*)",
+                "Bash(just psql:*)",
+                "Bash(just tw:*)",
+                "Bash(just precommit:*)",
+                "Bash(just dc:*)",
                 "Bash(git status:*)",
                 "Bash(git log:*)",
                 "Bash(git diff:*)",
@@ -163,7 +176,7 @@ def install_claude_hooks() -> None:
                                 "CMD=$(jq -r '.tool_input.command');"
                                 " if echo \"$CMD\" | grep -q -- '--no-verify';"
                                 " then echo 'BLOCKED: --no-verify is forbidden"
-                                " - fix the pre-commit issue instead.' >&2; exit 2; fi"
+                                " — fix the pre-commit issue instead.' >&2; exit 2; fi"
                             ),
                         }
                     ],
@@ -190,7 +203,7 @@ def install_claude_hooks() -> None:
                                 "FILE=$(jq -r '.tool_input.file_path // empty');"
                                 " if echo \"$FILE\" | grep -qE '/models[^/]*\\.py$';"
                                 " then echo 'REMINDER: models file edited"
-                                " - run: just dj makemigrations'; fi"
+                                " — run: just dj makemigrations'; fi"
                             ),
                         },
                     ],

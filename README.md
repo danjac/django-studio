@@ -136,6 +136,8 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | `create-model <app> <model>`       | Design and write a Django model with factory, fixture, and model tests |
 | `create-crud <app> <model>`        | Generate full CRUD views, templates, URLs, and tests                   |
 | `create-e2e [<app>] <description>` | Write Playwright E2E test(s) for a described user interaction          |
+| `create-tag [<app>] [<module>]`    | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
+| `create-filter [<app>] [<module>]` | Add a template filter with correct escaping flags                      |
 
 **Localisation**
 

@@ -523,6 +523,8 @@ class TestClaudeSkillsInstallation:
             "help.md",
             "create-crud.md",
             "create-e2e.md",
+            "create-tag.md",
+            "create-filter.md",
             "perf.md",
             "secure.md",
             "gdpr.md",

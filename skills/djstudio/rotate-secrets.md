@@ -100,10 +100,43 @@ scope for rotation.
 
 ---
 
-## 4. Apply changes
+## 4. Observability secrets (conditional)
 
-Write the updated values to `helm/site/values.secret.yaml`, preserving all other
-keys unchanged. Each auto-generated value must have its own rotation comment
+Check whether `helm/observability/values.secret.yaml` exists. If it does, the
+observability stack (Grafana + Prometheus + Loki) is deployed and its secrets
+should also be offered for rotation.
+
+**Grafana admin password:**
+
+Read `kube-prometheus-stack.grafana.adminPassword` from the file. If it is set
+to a non-empty, non-`CHANGE_ME` value, ask:
+
+> Grafana admin password [current: ••••<last-4-chars>] (press Enter to keep,
+> or type a new password):
+
+If the user enters a new value, include it in the proposed changes summary
+(truncated to first 8 chars + `…`) and write it to
+`helm/observability/values.secret.yaml` as part of step 5.
+
+After applying, redeploy the observability stack:
+```bash
+just helm observability
+```
+
+Tell the user:
+> Grafana password rotated and observability stack redeployed. Log in at
+> https://grafana.<domain> with the new password.
+
+If `helm/observability/values.secret.yaml` does not exist, skip this section
+entirely — the observability stack has not been deployed.
+
+---
+
+## 5. Apply changes
+
+Write the updated values to `helm/site/values.secret.yaml` (and
+`helm/observability/values.secret.yaml` if Grafana password was changed),
+preserving all other keys unchanged. Each auto-generated value must have its own rotation comment
 immediately above it:
 
 ```yaml

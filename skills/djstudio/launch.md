@@ -548,7 +548,12 @@ If **yes**, first check `helm/observability/values.secret.yaml`:
   ```bash
   cp helm/observability/values.secret.yaml.example helm/observability/values.secret.yaml
   ```
-- Read the file and prompt for any values still set to `CHANGE_ME`.
+- Read the file. If `kube-prometheus-stack.grafana.adminPassword` is `CHANGE_ME`
+  or empty, prompt:
+  > Enter a Grafana admin password (press Enter to auto-generate one):
+  If the user presses Enter, generate one with `openssl rand -hex 4` (8 chars).
+  Write the chosen password to the file and tell the user what it is
+  (they will need it to log in at `https://grafana.<domain>`).
 
 Then deploy:
 ```bash

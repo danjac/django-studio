@@ -30,7 +30,9 @@ European-first audience. If you are based outside the EU, the template will stil
 work but the hosting defaults and compliance tooling are optimised for EU data
 residency requirements.
 
-This project is intended for experienced developers who are comfortable with the stack choices and general web development concepts. It is not a tutorial or learning resource for beginners, but rather a practical tool to jumpstart new projects with a solid foundation. This project provides AI-related features for those who wish to use LLMs as part of their workflow, but this is not a requirement and the project can be used without these features. You should always be comfortable taking the wheel and reviewing and modifying the code by hand as needed.
+This project is intended for experienced developers who are comfortable with the stack choices and general web development concepts. It is not a tutorial or learning resource for beginners, but rather a practical tool to jumpstart new projects with a solid foundation.
+
+This project provides AI-related features for those who wish to use LLMs as part of their workflow, but this is not a requirement and the project can be used without these features. You should always be comfortable taking the wheel and reviewing and modifying the code by hand as needed.
 
 ## Getting Started
 

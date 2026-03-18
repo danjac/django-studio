@@ -29,9 +29,11 @@ metadata:
   name: db-restore
 spec:
   restartPolicy: Never
+  nodeSelector:
+    role: jobrunner
   initContainers:
     - name: download
-      image: amazon/aws-cli:2
+      image: amazon/aws-cli:2.34.11
       command: ["/bin/bash", "/scripts/db_download.sh"]
       env:
         - name: FILENAME

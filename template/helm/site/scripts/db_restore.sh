@@ -7,5 +7,5 @@ echo "Clearing database..."
 psql -h postgres -U postgres -d postgres \
   -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres;"
 echo "Restoring from dump..."
-psql -h postgres -U postgres -d postgres < /backup/dump.sql
+gunzip -c /backup/dump.sql.gz | psql -h postgres -U postgres -d postgres
 echo "Restore complete."

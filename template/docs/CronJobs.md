@@ -103,6 +103,20 @@ All cron jobs use `concurrencyPolicy: Replace` — if a previous run is still ex
 when the next schedule fires, the old job is terminated and replaced. Design commands to
 be safe to interrupt (idempotent enqueue calls, no long transactions).
 
+## Node Scheduling
+
+All batch workloads — CronJobs, one-off restore pods, and Helm release jobs — must run
+on the `jobrunner` node. This is enforced via `nodeSelector` in every pod spec:
+
+```yaml
+nodeSelector:
+  role: jobrunner
+```
+
+This is already set in all chart templates (`cronjobs.yaml`, `postgres-backup-cronjob.yaml`,
+`release-job.yaml`) and in the `db-restore` pod created by `just rdb-restore`. When adding
+any new one-off job or CronJob, always include this selector.
+
 ## Observing Jobs
 
 ```bash

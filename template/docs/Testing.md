@@ -243,6 +243,29 @@ file_list.get_by_role("button", name="Remove file").first.click()
 # .first() here is intentional — removing the first file from the list
 ```
 
+## Troubleshooting
+
+### Playwright E2E tests fail with "Target closed" or SIGTRAP on Linux
+
+If Playwright browser launches suddenly start failing, check whether `/tmp` is full:
+
+```bash
+df -h /tmp
+du -sh /tmp/* 2>/dev/null | sort -rh | head -20
+```
+
+On distributions that mount `/tmp` as a tmpfs (e.g. Fedora), pytest temp directories
+(`/tmp/pytest-of-$USER`) can grow to fill the available space. Playwright needs `/tmp`
+for browser profile directories and downloads.
+
+**Fix:** Remove stale pytest temp files:
+
+```bash
+rm -rf /tmp/pytest-of-$USER
+```
+
+Then retry `uv run playwright install` if browser binaries were also cleared.
+
 ## When to Use E2E vs Unit Tests
 
 **Use E2E (Playwright) for:**

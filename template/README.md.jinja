@@ -64,24 +64,24 @@ Claude Code slash commands are available via `/djstudio <subcommand>`:
 
 **Generators**
 
-| Subcommand                         | Summary                                                                |
-| ---------------------------------- | ---------------------------------------------------------------------- |
-| `create-app <name>`                | Create a Django app (apps.py, models, views, urls, admin, tests)       |
-| `create-view [<app>] <view>`       | Add a view, template, and URL; omit app for top-level views            |
-| `create-task <app> <task>`         | Add a `django-tasks-db` background task with correct async patterns    |
-| `create-command <app> [desc]`      | Add a management command with tests; optionally enqueues tasks         |
-| `create-cron <app> <command>`      | Schedule a management command as a Kubernetes cron job                 |
-| `create-model <app> <model>`       | Design and write a Django model with factory, fixture, and model tests |
-| `create-crud <app> <model>`        | Generate full CRUD views, templates, URLs, and tests                   |
-| `create-e2e [<app>] <description>` | Write Playwright E2E test(s) for a described user interaction          |
-| `create-tag [<app>] [<module>]`    | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
-| `create-filter [<app>] [<module>]` | Add a template filter with correct escaping flags                      |
+| Subcommand       | Summary                                                                |
+| ---------------- | ---------------------------------------------------------------------- |
+| `create-app`     | Create a Django app (apps.py, models, views, urls, admin, tests)       |
+| `create-view`    | Add a view, template, and URL                                          |
+| `create-task`    | Add a `django-tasks-db` background task with correct async patterns    |
+| `create-command` | Add a management command with tests                                    |
+| `create-cron`    | Schedule a management command as a Kubernetes cron job                 |
+| `create-model`   | Design and write a Django model with factory, fixture, and model tests |
+| `create-crud`    | Generate full CRUD views, templates, URLs, and tests                   |
+| `create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
+| `create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
+| `create-filter`  | Add a template filter with correct escaping flags                      |
 
 **Localisation**
 
-| Subcommand           | Summary                                                        |
-| -------------------- | -------------------------------------------------------------- |
-| `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue |
+| Subcommand  | Summary                                                        |
+| ----------- | -------------------------------------------------------------- |
+| `translate` | Extract strings, translate via Claude, compile `.mo` catalogue |
 
 **Audits**
 

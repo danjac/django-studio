@@ -118,32 +118,32 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **General**
 
-| Subcommand       | Summary                                                                           |
-| ---------------- | --------------------------------------------------------------------------------- |
-| `help [command]` | Print documentation for a subcommand                                              |
-| `sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
-| `feedback`       | Report a bug or improvement against the django-studio template                    |
+| Subcommand        | Summary                                                                           |
+| ----------------- | --------------------------------------------------------------------------------- |
+| `help`            | Print documentation for a subcommand                                              |
+| `sync`            | Pull latest template changes via Copier and resolve merge conflicts interactively |
+| `feedback`        | Report a bug or improvement against the django-studio template                    |
 
 **Generators**
 
-| Subcommand                         | Summary                                                                |
-| ---------------------------------- | ---------------------------------------------------------------------- |
-| `create-app <name>`                | Create a Django app (apps.py, models, views, urls, admin, tests)       |
-| `create-view [<app>] <view>`       | Add a view, template, and URL; omit app for top-level views            |
-| `create-task <app> <task>`         | Add a `django-tasks-db` background task with correct async patterns    |
-| `create-command <app> [desc]`      | Add a management command with tests; optionally enqueues tasks         |
-| `create-cron <app> <command>`      | Schedule a management command as a Kubernetes cron job                 |
-| `create-model <app> <model>`       | Design and write a Django model with factory, fixture, and model tests |
-| `create-crud <app> <model>`        | Generate full CRUD views, templates, URLs, and tests                   |
-| `create-e2e [<app>] <description>` | Write Playwright E2E test(s) for a described user interaction          |
-| `create-tag [<app>] [<module>]`    | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
-| `create-filter [<app>] [<module>]` | Add a template filter with correct escaping flags                      |
+| Subcommand       | Summary                                                                |
+| ---------------- | ---------------------------------------------------------------------- |
+| `create-app`     | Create a Django app (apps.py, models, views, urls, admin, tests)       |
+| `create-view`    | Add a view, template, and URL                                          |
+| `create-task`    | Add a `django-tasks-db` background task with correct async patterns    |
+| `create-command` | Add a management command with tests                                    |
+| `create-cron`    | Schedule a management command as a Kubernetes cron job                 |
+| `create-model`   | Design and write a Django model with factory, fixture, and model tests |
+| `create-crud`    | Generate full CRUD views, templates, URLs, and tests                   |
+| `create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
+| `create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
+| `create-filter`  | Add a template filter with correct escaping flags                      |
 
 **Localisation**
 
-| Subcommand           | Summary                                                        |
-| -------------------- | -------------------------------------------------------------- |
-| `translate <locale>` | Extract strings, translate via Claude, compile `.mo` catalogue |
+| Subcommand  | Summary                                                        |
+| ----------- | -------------------------------------------------------------- |
+| `translate` | Extract strings, translate via Claude, compile `.mo` catalogue |
 
 **Audits**
 
@@ -157,8 +157,8 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **Deployment**
 
-| Subcommand       | Summary                                                                        |
-| ---------------- | ------------------------------------------------------------------------------ |
+| Subcommand          | Summary                                                                        |
+| ------------------- | ------------------------------------------------------------------------------ |
 | `launch`            | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
 | `rotate-secrets`    | Rotate auto-generated and third-party Helm secrets and redeploy                |
 | `enable-db-backups` | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |

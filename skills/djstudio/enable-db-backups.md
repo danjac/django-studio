@@ -113,7 +113,24 @@ Preserve all other existing values.
 
 ---
 
-## Step 3 — Deploy
+## Step 3 — Confirm schedule and retention
+
+Before deploying, tell the user:
+
+> The defaults are:
+> - **Schedule:** daily at 03:00 UTC (`backup.schedule: "0 3 * * *"`)
+> - **Retention:** 7 most recent backups (`backup.retention: 7`)
+>
+> Do you want to change either of these before deploying? (y/n)
+
+If **yes**, ask which they want to change and update the relevant value in
+`helm/site/values.yaml`. Then continue.
+
+If **no**, continue.
+
+---
+
+## Step 4 — Deploy
 
 ```bash
 just helm site
@@ -131,7 +148,7 @@ just kube get configmap db-scripts
 
 ---
 
-## Step 4 — Run a test backup
+## Step 5 — Run a test backup
 
 Tell the user:
 
@@ -165,7 +182,7 @@ just kube delete job postgres-backup-test
 
 ---
 
-## Step 5 — Push updated secrets to GitHub
+## Step 6 — Push updated secrets to GitHub
 
 The `values.secret.yaml` has changed. Push the updated secrets so the CI deploy workflow
 uses the new values:

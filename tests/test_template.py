@@ -620,14 +620,22 @@ class TestRenderedPreCommitChecks:
     """Verify the rendered project passes all pre-commit hooks."""
 
     def test_pre_commit_passes(self, project_with_deps):
-        # terraform_validate runs `terraform init` which downloads providers —
-        # unreliable in a test context (network, disk quota). Skip it here;
-        # it is exercised separately in the generated project's own CI.
+        # Skip terraform_validate: runs `terraform init` which downloads providers
+        # — unreliable in a test context (network, disk quota). All other hooks
+        # including terraform_fmt and helm-lint are exercised here.
         env = {"SKIP": "terraform_validate"}
         # Run twice to let auto-fixers (pyupgrade, ruff-format, etc.) reach idempotency
         for _ in range(2):
             subprocess.run(
-                ["uv", "run", "pre-commit", "run", "--all-files"],
+                [
+                    "uv",
+                    "run",
+                    "--with",
+                    "pre-commit-uv",
+                    "pre-commit",
+                    "run",
+                    "--all-files",
+                ],
                 cwd=str(project_with_deps),
                 capture_output=True,
                 text=True,
@@ -635,7 +643,15 @@ class TestRenderedPreCommitChecks:
             )
         # Third run must be fully clean
         result = subprocess.run(
-            ["uv", "run", "pre-commit", "run", "--all-files"],
+            [
+                "uv",
+                "run",
+                "--with",
+                "pre-commit-uv",
+                "pre-commit",
+                "run",
+                "--all-files",
+            ],
             cwd=str(project_with_deps),
             capture_output=True,
             text=True,

@@ -26,4 +26,6 @@ jobs:
       - uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
+      - uses: azure/setup-helm@v4
+      - uses: hashicorp/setup-terraform@v3
       - run: uv run pytest -v

@@ -25,7 +25,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Compile message catalogues
 FROM python-base AS messages
 COPY . .
-RUN apt-get update && apt-get install -y --no-install-recommends gettext=0.21-12 && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends gettext=0.21-12 \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN --mount=type=cache,target=/root/.cache/uv \
   uv run python manage.py compilemessages
 

@@ -143,14 +143,6 @@ The `/djstudio` skill uses a thin dispatcher (`skills/djstudio.md`) that routes 
 
 Command files live in `skills/` at the repo root and are copied to `.claude/commands/` in the generated project by the post-gen hook (`install_skills()`). They are always tracked in git — no `git add -f` needed.
 
-**Copying to global commands:**
-
-After editing any djstudio command file, copy it to `~/.claude/commands/` if you want the change reflected in the global command registry:
-
-```bash
-cp skills/djstudio.md ~/.claude/commands/djstudio.md
-```
-
 **Adding new subcommand files:**
 
 Create the file under `skills/djstudio/<subcommand>.md`. No `cookiecutter.json` change is needed — the post-gen hook copies the entire `skills/` tree verbatim.

@@ -594,7 +594,7 @@ class TestRenderedPythonLinting:
 
     def test_python_files_pass_ruff(self, project):
         result = subprocess.run(
-            ["ruff", "check", "--select", "F", "--no-cache", str(project)],
+            ["ruff", "check", "--no-cache", str(project)],
             capture_output=True,
             text=True,
         )

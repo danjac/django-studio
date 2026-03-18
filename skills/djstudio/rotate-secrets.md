@@ -88,8 +88,10 @@ prompt the user to update it (pressing Enter keeps the current value):
 | `secrets.mailgunApiKey` | Mailgun API key |
 | `secrets.sentryUrl` | Sentry DSN URL |
 | `secrets.openTelemetryUrl` | OpenTelemetry collector endpoint |
-| `secrets.hetznerStorageAccessKey` | Hetzner S3 access key |
-| `secrets.hetznerStorageSecretKey` | Hetzner S3 secret key |
+| `secrets.hetznerStorageAccessKey` | Hetzner media storage access key |
+| `secrets.hetznerStorageSecretKey` | Hetzner media storage secret key |
+| `secrets.backupAccessKey` | Hetzner backup storage access key |
+| `secrets.backupSecretKey` | Hetzner backup storage secret key |
 
 For each, show:
 > <Label> [current: ••••<last-4-chars>] (press Enter to keep):

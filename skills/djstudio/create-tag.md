@@ -2,9 +2,8 @@ Add a template tag to an existing app or the root `templatetags.py` module.
 
 **Parsing arguments:**
 
-- Two words (e.g. `create-tag blog my_tags`): first is `<app_name>`, second is `<module>`.
-- One word (e.g. `create-tag blog`): `<app_name>` is `blog`; `<module>` defaults to the app name.
-- Zero words (e.g. `create-tag`): no app — add to the root `<package_name>/templatetags.py`.
+- Two words (e.g. `create-tag blog my_tag`): first is `<app_name>`, second is `<tag_name>`.
+- One word (e.g. `create-tag my_tag`): no app — add to the root `<package_name>/templatetags.py`.
 
 **Before writing any code, ask the user: *What should this tag do?*** If the description is
 ambiguous, determine the tag type first:
@@ -36,20 +35,21 @@ approach with the user before writing any code.
 
    | Scenario | File |
    |----------|------|
-   | App-level, module = app name (default) | `<package_name>/<app_name>/templatetags/<app_name>.py` |
-   | App-level, custom module | `<package_name>/<app_name>/templatetags/<module>.py` |
+   | App-level | `<package_name>/<app_name>/templatetags/<app_name>.py` |
    | Root (no app) | `<package_name>/templatetags.py` |
 
-   If the app-level file does not exist, create it with:
-   ```python
-   from django import template
+   Check whether the file exists before writing:
+   - If it exists, append the new tag to it.
+   - If the app-level file does not exist, create it with:
+     ```python
+     from django import template
 
-   register = template.Library()
-   ```
-   Also create `<package_name>/<app_name>/templatetags/__init__.py` (empty) if it does not exist.
+     register = template.Library()
+     ```
+     Also create `<package_name>/<app_name>/templatetags/__init__.py` (empty) if missing.
 
-   The root `<package_name>/templatetags.py` ships with every project — append to it, do not
-   recreate it.
+   The root `<package_name>/templatetags.py` ships with every project — always append,
+   never recreate.
 
 2. **Write the tag function** and register it using the chosen type.
 
@@ -101,7 +101,7 @@ approach with the user before writing any code.
    Test the tag function directly — do not instantiate `Template`/`Context` unless the test
    genuinely requires full template rendering:
    ```python
-   from <package_name>.<app_name>.templatetags.<module> import <tag_name>
+   from <package_name>.<app_name>.templatetags.<app_name> import <tag_name>
 
    def test_<tag_name>():
        assert <tag_name>(...) == expected
@@ -115,18 +115,19 @@ approach with the user before writing any code.
 
 ## Help
 
-**djstudio create-tag [<app_name>] [<module>]**
+**djstudio create-tag [<app_name>] <tag_name>**
 
 Adds a template tag to an app's templatetags module or to the root `templatetags.py`.
 
-Omit `<app_name>` to add to the built-in root tags module. `<module>` defaults to
-`<app_name>` when omitted. Prompts for a description before writing, then picks the
-simplest fitting type: `simple_tag`, `simple_block_tag`, `inclusion_tag`, or custom
-`Node` (discussed with the user before implementing).
+With `<app_name>`: adds to `<app_name>/templatetags/<app_name>.py` (created if missing).
+Without `<app_name>`: adds to the root `<package_name>/templatetags.py`.
+
+Prompts for a description before writing, then picks the simplest fitting type:
+`simple_tag`, `simple_block_tag`, `inclusion_tag`, or custom `Node` (discussed
+with the user before implementing).
 
 Writes the tag function, any required companion template, and tests.
 
 Examples:
-  /djstudio create-tag blog                # blog/templatetags/blog.py
-  /djstudio create-tag blog post_tags      # blog/templatetags/post_tags.py
-  /djstudio create-tag                     # <package_name>/templatetags.py (root)
+  /djstudio create-tag blog my_tag    # blog/templatetags/blog.py
+  /djstudio create-tag my_tag         # <package_name>/templatetags.py (root)

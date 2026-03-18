@@ -2,9 +2,8 @@ Add a template filter to an existing app or the root `templatetags.py` module.
 
 **Parsing arguments:**
 
-- Two words (e.g. `create-filter blog my_tags`): first is `<app_name>`, second is `<module>`.
-- One word (e.g. `create-filter blog`): `<app_name>` is `blog`; `<module>` defaults to the app name.
-- Zero words (e.g. `create-filter`): no app — add to the root `<package_name>/templatetags.py`.
+- Two words (e.g. `create-filter blog my_filter`): first is `<app_name>`, second is `<filter_name>`.
+- One word (e.g. `create-filter my_filter`): no app — add to the root `<package_name>/templatetags.py`.
 
 **Before writing any code, ask the user: *What should this filter do?*** If the description
 is ambiguous, clarify:
@@ -21,20 +20,21 @@ is ambiguous, clarify:
 
    | Scenario | File |
    |----------|------|
-   | App-level, module = app name (default) | `<package_name>/<app_name>/templatetags/<app_name>.py` |
-   | App-level, custom module | `<package_name>/<app_name>/templatetags/<module>.py` |
+   | App-level | `<package_name>/<app_name>/templatetags/<app_name>.py` |
    | Root (no app) | `<package_name>/templatetags.py` |
 
-   If the app-level file does not exist, create it with:
-   ```python
-   from django import template
+   Check whether the file exists before writing:
+   - If it exists, append the new filter to it.
+   - If the app-level file does not exist, create it with:
+     ```python
+     from django import template
 
-   register = template.Library()
-   ```
-   Also create `<package_name>/<app_name>/templatetags/__init__.py` (empty) if it does not exist.
+     register = template.Library()
+     ```
+     Also create `<package_name>/<app_name>/templatetags/__init__.py` (empty) if missing.
 
-   The root `<package_name>/templatetags.py` ships with every project — append to it, do not
-   recreate it.
+   The root `<package_name>/templatetags.py` ships with every project — always append,
+   never recreate.
 
 2. **Write the filter function** and register it using the appropriate decorator.
 
@@ -80,7 +80,7 @@ is ambiguous, clarify:
    Import and call the filter function directly — do not instantiate `Template`/`Context`
    unless the test genuinely requires full template rendering:
    ```python
-   from <package_name>.<app_name>.templatetags.<module> import <filter_name>
+   from <package_name>.<app_name>.templatetags.<app_name> import <filter_name>
 
    def test_<filter_name>():
        assert <filter_name>(value) == expected
@@ -95,18 +95,18 @@ is ambiguous, clarify:
 
 ## Help
 
-**djstudio create-filter [<app_name>] [<module>]**
+**djstudio create-filter [<app_name>] <filter_name>**
 
 Adds a template filter to an app's templatetags module or to the root `templatetags.py`.
 
-Omit `<app_name>` to add to the built-in root tags module. `<module>` defaults to
-`<app_name>` when omitted. Prompts for a description before writing, then picks the
-correct decorator flags: plain `@register.filter`, `is_safe=True`, or
-`needs_autoescape=True`.
+With `<app_name>`: adds to `<app_name>/templatetags/<app_name>.py` (created if missing).
+Without `<app_name>`: adds to the root `<package_name>/templatetags.py`.
+
+Prompts for a description before writing, then picks the correct decorator flags:
+plain `@register.filter`, `is_safe=True`, or `needs_autoescape=True`.
 
 Writes the filter function and tests.
 
 Examples:
-  /djstudio create-filter blog                # blog/templatetags/blog.py
-  /djstudio create-filter blog post_tags      # blog/templatetags/post_tags.py
-  /djstudio create-filter                     # <package_name>/templatetags.py (root)
+  /djstudio create-filter blog my_filter    # blog/templatetags/blog.py
+  /djstudio create-filter my_filter         # <package_name>/templatetags.py (root)

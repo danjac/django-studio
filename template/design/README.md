@@ -6,23 +6,23 @@ This project ships with a ready-made set of UI components built on Tailwind CSS,
 
 ## Component Index
 
-| Component         | Template file                                      | CSS layer               | Doc                            |
-| ----------------- | -------------------------------------------------- | ----------------------- | ------------------------------ |
-| Buttons           | _(utility classes only)_                           | `tailwind/buttons.css`  | [Buttons.md](Buttons.md)       |
-| Messages / Alerts | `templates/messages.html`                          | `tailwind/messages.css` | [Messages.md](Messages.md)     |
+| Component         | Template file                                         | CSS layer               | Doc                            |
+| ----------------- | ----------------------------------------------------- | ----------------------- | ------------------------------ |
+| Buttons           | _(utility classes only)_                              | `tailwind/buttons.css`  | [Buttons.md](Buttons.md)       |
+| Messages / Alerts | `templates/messages.html`                             | `tailwind/messages.css` | [Messages.md](Messages.md)     |
 | Forms             | `templates/form.html` _(fields via `as_field_group`)_ | `tailwind/forms.css`    | [Forms.md](Forms.md)           |
-| Navbar            | `templates/navbar.html`                            | -                       | [Navigation.md](Navigation.md) |
-| Sidebar           | `templates/sidebar.html`                           | -                       | [Navigation.md](Navigation.md) |
-| User Dropdown     | _(inside navbar.html)_                             | -                       | [Navigation.md](Navigation.md) |
-| Page Header       | `templates/header.html`                            | -                       | [Headers.md](Headers.md)       |
-| Cards (pattern)   | _(inline markup — see doc)_                        | -                       | [Cards.md](Cards.md)           |
-| Grid layout       | `templates/grid.html`                              | -                       | [Cards.md](Cards.md)           |
-| List layout       | `templates/browse.html`                            | -                       | [Lists.md](Lists.md)           |
-| Badges / Tags     | _(inline classes)_                                 | -                       | [Badges.md](Badges.md)         |
-| Pagination        | `templates/paginate.html`                          | -                       | [Pagination.md](Pagination.md) |
-| Markdown / Prose  | `templates/markdown.html`                          | -                       | [Typography.md](Typography.md) |
-| Layout patterns   | _(in base templates)_                              | -                       | [Layout.md](Layout.md)         |
-| File upload       | _(inline markup — see doc)_                        | -                       | [Upload.md](Upload.md)         |
+| Navbar            | `templates/navbar.html`                               | -                       | [Navigation.md](Navigation.md) |
+| Sidebar           | `templates/sidebar.html`                              | -                       | [Navigation.md](Navigation.md) |
+| User Dropdown     | _(inside navbar.html)_                                | -                       | [Navigation.md](Navigation.md) |
+| Page Header       | `templates/header.html`                               | -                       | [Headers.md](Headers.md)       |
+| Cards (pattern)   | _(inline markup — see doc)_                           | -                       | [Cards.md](Cards.md)           |
+| Grid layout       | `templates/grid.html`                                 | -                       | [Cards.md](Cards.md)           |
+| List layout       | `templates/browse.html`                               | -                       | [Lists.md](Lists.md)           |
+| Badges / Tags     | _(inline classes)_                                    | -                       | [Badges.md](Badges.md)         |
+| Pagination        | `templates/paginate.html`                             | -                       | [Pagination.md](Pagination.md) |
+| Markdown / Prose  | `templates/markdown.html`                             | -                       | [Typography.md](Typography.md) |
+| Layout patterns   | _(in base templates)_                                 | -                       | [Layout.md](Layout.md)         |
+| File upload       | _(inline markup — see doc)_                           | -                       | [Upload.md](Upload.md)         |
 
 ## Stack
 
@@ -55,7 +55,7 @@ Light and dark variants are set automatically via the `@variant dark` media quer
 --color-danger-*    /* destructive color, default: rose - btn-danger, error states */
 ```
 
-These are defined as `@theme` aliases in `tailwind/theme.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** - use the semantic token names so rebranding stays in one place.
+These are defined as `@theme` aliases in `tailwind/theme.css` and generate Tailwind utilities (`text-primary-600`, `bg-danger-50`, etc.). **Never use named Tailwind colors such as `indigo-*`, `violet-*`, or `rose-*` directly in templates or CSS** - use the semantic token names so rebranding stays in one place.
 
 Additional semantic token scales available in templates:
 
@@ -73,12 +73,12 @@ The **layout CSS variables** (`--color-text`, `--color-text-muted`, `--color-bg`
 
 In templates, always use the **`@theme`-generated utility classes** instead:
 
-| Instead of | Use |
-|---|---|
-| `text-(--color-text)` | `text-muted-900 dark:text-muted-100` |
-| `text-(--color-text-muted)` | `text-muted-500 dark:text-muted-400` |
-| `border-(--color-border)` | `border-muted-200 dark:border-muted-800` |
-| `bg-(--color-bg)` | `bg-white dark:bg-muted-950` |
+| Instead of                  | Use                                      |
+| --------------------------- | ---------------------------------------- |
+| `text-(--color-text)`       | `text-muted-900 dark:text-muted-100`     |
+| `text-(--color-text-muted)` | `text-muted-500 dark:text-muted-400`     |
+| `border-(--color-border)`   | `border-muted-200 dark:border-muted-800` |
+| `bg-(--color-bg)`           | `bg-white dark:bg-muted-950`             |
 
 ### Rebranding
 
@@ -86,7 +86,7 @@ To change the primary brand color from indigo to (e.g.) teal, update the `--colo
 
 ```css
 @theme {
-  --color-primary-50:  var(--color-teal-50);
+  --color-primary-50: var(--color-teal-50);
   --color-primary-100: var(--color-teal-100);
   /* ... through 950 */
 }

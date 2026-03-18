@@ -407,6 +407,11 @@ Then prompt:
 
 Tell the user which URL was chosen.
 
+**Site name** — the human-readable name stored in the Django sites framework:
+> Enter the site name (e.g. `My Photo Blog`):
+
+Save this as `<site_name>` for use in Step 6c.
+
 **Meta author, description, keywords** — prompt for each, allow empty to skip.
 
 ### Observability credentials (conditional)
@@ -510,7 +515,18 @@ Then show pod status:
 just kube get pods
 ```
 
-If all pods are Running, tell the user:
+If all pods are Running:
+
+If `<site_name>` was provided in Step 4, run:
+```bash
+just rdj set_default_site <domain> "<site_name>"
+```
+
+If it was not provided, tell the user:
+> You can set the default site name at any time by running:
+> `just rdj set_default_site <domain> "Your Site Name"`
+
+Then tell the user:
 
 > **Launch complete!**
 > Your app is live at https://<domain>
@@ -573,8 +589,9 @@ Interactive first-deploy wizard. Guides you through provisioning infrastructure,
 configuring secrets, and deploying the application end-to-end.
 
 Covers: Hetzner infrastructure (Terraform), Cloudflare DNS and SSL, object
-storage (if enabled), Helm secrets, GitHub Actions secrets, and the three-step
-first production deploy (build image → deploy infra → deploy app). Idempotent —
+storage (if enabled), Helm secrets, GitHub Actions secrets, the three-step
+first production deploy (build image → deploy infra → deploy app), and
+configuring the default Django site (`set_default_site`). Idempotent —
 safe to re-run if interrupted; existing values are never overwritten.
 
 Requires: `gh`, `terraform`, `helm`, `kubectl`, and `just` installed and

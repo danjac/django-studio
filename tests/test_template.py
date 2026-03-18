@@ -45,6 +45,18 @@ def project(tmp_path_factory):
     return dst
 
 
+@pytest.fixture(scope="module")
+def project_with_deps(project):
+    """Install dependencies in the rendered project; reused across tests."""
+    subprocess.run(
+        ["uv", "sync", "--frozen"],
+        cwd=str(project),
+        check=True,
+        capture_output=True,
+    )
+    return project
+
+
 def _render(output_dir: Path, extra_context: dict) -> Path:
     dst = output_dir / "project"
     copier.run_copy(
@@ -83,6 +95,15 @@ class TestTemplateRendering:
         assert (project / "test_project" / "users").is_dir()
         assert (project / "test_project" / "users" / "apps.py").exists()
 
+    def test_root_app_has_apps_py(self, project):
+        assert (project / "test_project" / "apps.py").exists()
+
+    def test_root_app_has_management_command(self, project):
+        cmd = (
+            project / "test_project" / "management" / "commands" / "set_default_site.py"
+        )
+        assert cmd.exists()
+
     def test_design_directory_created(self, project):
         assert (project / "design").is_dir()
 
@@ -112,6 +133,18 @@ class TestTemplateContent:
     def test_justfile_has_project_slug(self, project):
         content = (project / "justfile").read_text()
         assert '"test_project"' in content
+
+    def test_root_apps_py_has_correct_class_name(self, project):
+        content = (project / "test_project" / "apps.py").read_text()
+        assert "class TestProjectConfig(AppConfig):" in content
+
+    def test_root_apps_py_has_correct_name(self, project):
+        content = (project / "test_project" / "apps.py").read_text()
+        assert 'name = "test_project"' in content
+
+    def test_root_app_in_installed_apps(self, project):
+        content = (project / "config" / "settings.py").read_text()
+        assert '"test_project",' in content
 
     def test_gha_build_workflow_has_project_slug(self, project):
         content = (project / ".github" / "workflows" / "build.yml").read_text()
@@ -567,4 +600,19 @@ class TestRenderedPythonLinting:
         )
         assert result.returncode == 0, (
             f"ruff check failed:\n{result.stdout}\n{result.stderr}"
+        )
+
+
+class TestRenderedPythonTypeCheck:
+    """Verify the rendered project passes basedpyright type checking."""
+
+    def test_python_files_pass_basedpyright(self, project_with_deps):
+        result = subprocess.run(
+            ["uv", "run", "basedpyright"],
+            cwd=str(project_with_deps),
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, (
+            f"basedpyright failed:\n{result.stdout}\n{result.stderr}"
         )

@@ -1,0 +1,6 @@
+from django.apps import AppConfig
+
+
+class {{ package_name | replace("_", " ") | title | replace(" ", "") }}Config(AppConfig):
+    name = "{{ package_name }}"
+    default_auto_field = "django.db.models.BigAutoField"

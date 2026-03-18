@@ -62,6 +62,30 @@ license:
         - None
     default: MIT
 
+_message_after_copy: |2
+  {{ '\x1b[38;5;72m\x1b[1m' }}Your project is ready!{{ '\x1b[0m' }} Next steps:
+
+    {{ '\x1b[1m' }}1. Start Docker services{{ '\x1b[0m' }}
+       just start
+
+    {{ '\x1b[1m' }}2. Install dependencies and set up your environment{{ '\x1b[0m' }}
+       just install
+
+    {{ '\x1b[1m' }}3. Create and apply the initial database migration{{ '\x1b[0m' }}
+       just dj makemigrations
+       just dj migrate
+
+    {{ '\x1b[1m' }}4. Run all unit and e2e tests, linters and type checks{{ '\x1b[0m' }}
+       just check-all
+
+    {{ '\x1b[1m' }}5. Set up the default site{{ '\x1b[0m' }}
+       just dj set_default_site localhost:8000 "{{ project_name }}"
+
+    {{ '\x1b[1m' }}6. Create a superuser{{ '\x1b[0m' }}
+       just dj createsuperuser
+
+  Using an agent, such as Claude Code? Run {{ '\x1b[1m' }}/djstudio help{{ '\x1b[0m' }} to see available AI skills for this project.
+
 _subdirectory: template
 _templates_suffix: .jinja
 

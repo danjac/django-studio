@@ -62,10 +62,20 @@ Set `location`.
 Write `terraform/backups/terraform.tfvars` with all collected values. Preserve any
 existing values that were already set.
 
-Then apply:
+Then:
 
 ```bash
 just terraform backups init    # skip if terraform/backups/.terraform/ already exists
+just terraform backups plan
+```
+
+Show the plan output to the user and ask:
+
+> Review the plan above. Proceed with apply? (y/n)
+
+If **n**, stop. If **y**:
+
+```bash
 just terraform backups apply -auto-approve
 ```
 
@@ -111,11 +121,12 @@ just helm site
 
 Wait for the command to complete. If it fails, show the error and help the user diagnose.
 
-Verify the CronJob and secret were created:
+Verify the CronJob, secret, and scripts ConfigMap were created:
 
 ```bash
 just kube get cronjob postgres-backup
 just kube get secret backup-secret
+just kube get configmap db-scripts
 ```
 
 ---
@@ -130,10 +141,10 @@ Tell the user:
 just kube create job postgres-backup-test --from=cronjob/postgres-backup
 ```
 
-Wait for the job to complete (poll every 5 seconds, timeout after 3 minutes):
+Wait for the job to complete (poll every 5 seconds, timeout after 5 minutes):
 
 ```bash
-just kube wait --for=condition=complete job/postgres-backup-test --timeout=180s
+just kube wait --for=condition=complete job/postgres-backup-test --timeout=300s
 ```
 
 If it times out or fails, show the logs from both containers:

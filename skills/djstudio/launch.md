@@ -126,6 +126,16 @@ existing values that were already set.
 Then:
 ```bash
 just terraform hetzner init    # skip if terraform/hetzner/.terraform/ already exists
+just terraform hetzner plan
+```
+
+Show the plan output to the user and ask:
+
+> Review the plan above. Proceed with apply? (y/n)
+
+If **n**, stop. If **y**:
+
+```bash
 just terraform hetzner apply -auto-approve
 ```
 
@@ -242,6 +252,16 @@ Write `terraform/cloudflare/terraform.tfvars` with all collected values, includi
 Then:
 ```bash
 just terraform cloudflare init    # skip if terraform/cloudflare/.terraform/ already exists
+just terraform cloudflare plan
+```
+
+Show the plan output to the user and ask:
+
+> Review the plan above. Proceed with apply? (y/n)
+
+If **n**, stop. If **y**:
+
+```bash
 just terraform cloudflare apply -auto-approve
 ```
 
@@ -304,6 +324,16 @@ Write `terraform/storage/terraform.tfvars` with collected values.
 
 ```bash
 just terraform storage init    # skip if terraform/storage/.terraform/ already exists
+just terraform storage plan
+```
+
+Show the plan output to the user and ask:
+
+> Review the plan above. Proceed with apply? (y/n)
+
+If **n**, stop. If **y**:
+
+```bash
 just terraform storage apply -auto-approve
 ```
 

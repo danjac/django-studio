@@ -31,4 +31,8 @@ provider "minio" {
 resource "minio_s3_bucket" "media" {
   bucket = var.bucket_name
   acl    = "public-read"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

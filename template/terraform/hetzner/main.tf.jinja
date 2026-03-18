@@ -179,6 +179,10 @@ resource "hcloud_volume" "postgres" {
   size     = var.postgres_volume_size
   location = var.location
   format   = "ext4"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Server node (k3s control plane + Traefik load balancer)

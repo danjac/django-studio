@@ -31,4 +31,8 @@ provider "minio" {
 resource "minio_s3_bucket" "backups" {
   bucket = var.bucket_name
   acl    = "private"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

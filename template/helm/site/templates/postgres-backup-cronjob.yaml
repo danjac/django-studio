@@ -47,31 +47,10 @@ spec:
           containers:
             - name: upload
               image: {{ .Values.backup.awsCliImage }}
-              command: ["/bin/bash", "-c"]
-              args:
-                - |
-                  set -euo pipefail
-                  FILENAME=$(cat /backup/latest)
-                  echo "Uploading: ${FILENAME}"
-                  aws --endpoint-url "${BACKUP_ENDPOINT}" s3 cp \
-                    /backup/${FILENAME} \
-                    s3://${BACKUP_BUCKET}/${FILENAME}
-                  echo "Upload complete"
-                  RETENTION={{ .Values.backup.retention }}
-                  TO_DELETE=$(aws --endpoint-url "${BACKUP_ENDPOINT}" s3 ls \
-                    s3://${BACKUP_BUCKET}/ \
-                    | sort \
-                    | head -n -${RETENTION} \
-                    | awk '{print $4}')
-                  if [ -n "${TO_DELETE}" ]; then
-                    echo "Pruning old backups:"
-                    echo "${TO_DELETE}"
-                    echo "${TO_DELETE}" | xargs -I{} aws --endpoint-url "${BACKUP_ENDPOINT}" \
-                      s3 rm s3://${BACKUP_BUCKET}/{}
-                  else
-                    echo "No backups to prune (fewer than ${RETENTION} stored)"
-                  fi
+              command: ["/bin/bash", "/scripts/db_backup.sh"]
               env:
+                - name: RETENTION
+                  value: "{{ .Values.backup.retention }}"
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
@@ -107,7 +86,13 @@ spec:
               volumeMounts:
                 - name: backup-staging
                   mountPath: /backup
+                - name: scripts
+                  mountPath: /scripts
           volumes:
             - name: backup-staging
               emptyDir: {}
+            - name: scripts
+              configMap:
+                name: db-scripts
+                defaultMode: 0555
 {{- end }}

@@ -72,16 +72,7 @@ spec:
   containers:
     - name: restore
       image: ${POSTGRES_IMAGE}
-      command: ["/bin/bash", "-c"]
-      args:
-        - |
-          set -euo pipefail
-          echo "Clearing database..."
-          psql -h postgres -U postgres -d postgres \\
-            -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres;"
-          echo "Restoring from dump..."
-          psql -h postgres -U postgres -d postgres < /backup/dump.sql
-          echo "Restore complete."
+      command: ["/bin/bash", "/scripts/db_restore.sh"]
       env:
         - name: PGPASSWORD
           valueFrom:
@@ -91,9 +82,15 @@ spec:
       volumeMounts:
         - name: data
           mountPath: /backup
+        - name: scripts
+          mountPath: /scripts
   volumes:
     - name: data
       emptyDir: {}
+    - name: scripts
+      configMap:
+        name: db-scripts
+        defaultMode: 0555
 EOF
 
 echo "==> Waiting for restore to complete (timeout: 10 minutes)..."

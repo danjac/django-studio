@@ -146,10 +146,11 @@ Run a one-off pod using the `backup-secret` credentials already in your cluster:
 just kube run --rm -it list-backups \
   --image=amazon/aws-cli:2 \
   --restart=Never \
-  --env-from=secret/backup-secret \
   --env="AWS_ACCESS_KEY_ID=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
   --env="AWS_SECRET_ACCESS_KEY=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
   --env="AWS_DEFAULT_REGION=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
+  --env="BACKUP_ENDPOINT=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
+  --env="BACKUP_BUCKET=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
   -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls s3://$BACKUP_BUCKET/ | sort'
 ```
 
@@ -260,7 +261,7 @@ just kube logs job/<job-name> -c dump
 
 Common causes:
 - **`pg_isready` healthy but pg_dump fails** — the postgres pod may be under heavy load.
-  Check `just kube logs deployment/postgres`.
+  Check `just kube logs statefulset/postgres`.
 - **Password error** — the `backup-secret` may be out of sync with the postgres password.
   Re-run `just helm site` to re-apply secrets.
 

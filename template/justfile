@@ -2,7 +2,7 @@
 
 # Project-specific deployment configuration (set by cookiecutter)
 project_slug := "PROJECT_SLUG"
-script_dir := justfile_directory() / "scripts"
+script_dir := justfile_directory() / "just"
 kubeconfig := env("KUBECONFIG", env("HOME") + "/.kube/" + project_slug + ".yaml")
 
 @_default:

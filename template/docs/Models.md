@@ -6,21 +6,33 @@ Define a custom `QuerySet` for every model that needs filtering or annotation
 methods. Attach it via `as_manager()`:
 
 ```python
+from typing import Self
+
 from django.db import models
 
 
-class ItemQuerySet(models.QuerySet):
-    def published(self) -> "ItemQuerySet":
+class ItemQuerySet(models.QuerySet["Item"]):
+    def published(self) -> Self:
         return self.filter(pub_date__isnull=False)
 
-    def by_user(self, user) -> "ItemQuerySet":
+    def by_user(self, user: "User") -> Self:
         return self.filter(user=user)
 
 
 class Item(models.Model):
-    objects: ItemQuerySet = ItemQuerySet.as_manager()
+    objects: ItemQuerySet = ItemQuerySet.as_manager()  # type: ignore[assignment]
     pub_date = models.DateTimeField(null=True)
 ```
+
+**Typing notes:**
+
+- `QuerySet["Item"]` — parameterise the base class so `.get()`, `.first()`,
+  and other single-object methods return `Item`, not `Any`.
+- `Self` (from `typing`) — use on all chaining methods instead of the class
+  name as a string. Correct on subclasses and avoids forward-reference strings.
+- `# type: ignore[assignment]` — `as_manager()` returns `Manager[Item]`, not
+  `ItemQuerySet`; the annotation is intentionally wider for full type inference
+  on chained calls (e.g. `Item.objects.published().by_user(u)`).
 
 **Never use `@classmethod` on the model for query logic.** QuerySet methods are
 the correct place — they chain correctly and receive `self` as a `QuerySet`,

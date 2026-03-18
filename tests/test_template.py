@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import py_compile
 import shutil
 import subprocess
@@ -47,9 +48,21 @@ def project(tmp_path_factory):
 
 @pytest.fixture(scope="module")
 def project_with_deps(project):
-    """Install dependencies in the rendered project; reused across tests."""
+    """Install dependencies and initialise git in the rendered project."""
     subprocess.run(
         ["uv", "sync", "--frozen"],
+        cwd=str(project),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "init"],
+        cwd=str(project),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "add", "-A"],
         cwd=str(project),
         check=True,
         capture_output=True,
@@ -600,6 +613,36 @@ class TestRenderedPythonLinting:
         )
         assert result.returncode == 0, (
             f"ruff check failed:\n{result.stdout}\n{result.stderr}"
+        )
+
+
+class TestRenderedPreCommitChecks:
+    """Verify the rendered project passes all pre-commit hooks."""
+
+    def test_pre_commit_passes(self, project_with_deps):
+        # terraform_validate runs `terraform init` which downloads providers —
+        # unreliable in a test context (network, disk quota). Skip it here;
+        # it is exercised separately in the generated project's own CI.
+        env = {"SKIP": "terraform_validate"}
+        # Run twice to let auto-fixers (pyupgrade, ruff-format, etc.) reach idempotency
+        for _ in range(2):
+            subprocess.run(
+                ["uv", "run", "pre-commit", "run", "--all-files"],
+                cwd=str(project_with_deps),
+                capture_output=True,
+                text=True,
+                env={**os.environ, **env},
+            )
+        # Third run must be fully clean
+        result = subprocess.run(
+            ["uv", "run", "pre-commit", "run", "--all-files"],
+            cwd=str(project_with_deps),
+            capture_output=True,
+            text=True,
+            env={**os.environ, **env},
+        )
+        assert result.returncode == 0, (
+            f"pre-commit failed after auto-fix passes:\n{result.stdout}\n{result.stderr}"
         )
 
 

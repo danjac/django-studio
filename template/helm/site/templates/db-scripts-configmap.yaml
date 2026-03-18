@@ -6,6 +6,8 @@ metadata:
 data:
   db_backup.sh: |
 {{ .Files.Get "scripts/db_backup.sh" | indent 4 }}
+  db_download.sh: |
+{{ .Files.Get "scripts/db_download.sh" | indent 4 }}
   db_restore.sh: |
 {{ .Files.Get "scripts/db_restore.sh" | indent 4 }}
 {{- end }}

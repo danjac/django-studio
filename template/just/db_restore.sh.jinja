@@ -32,15 +32,10 @@ spec:
   initContainers:
     - name: download
       image: amazon/aws-cli:2
-      command: ["/bin/bash", "-c"]
-      args:
-        - |
-          set -euo pipefail
-          aws --endpoint-url "\${BACKUP_ENDPOINT}" s3 cp \\
-            "s3://\${BACKUP_BUCKET}/${FILENAME}" /backup/dump.sql.gz
-          gunzip /backup/dump.sql.gz
-          echo "Download complete: \$(du -h /backup/dump.sql | cut -f1)"
+      command: ["/bin/bash", "/scripts/db_download.sh"]
       env:
+        - name: FILENAME
+          value: "${FILENAME}"
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -69,6 +64,8 @@ spec:
       volumeMounts:
         - name: data
           mountPath: /backup
+        - name: scripts
+          mountPath: /scripts
   containers:
     - name: restore
       image: ${POSTGRES_IMAGE}

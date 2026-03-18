@@ -399,10 +399,13 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 
 ## Backup
 
-PostgreSQL backups via:
+Automated daily backups are optional and set up separately after initial deployment.
+See `docs/Backups.md` for the full setup and restore guide, or run `/djstudio enable-db-backups`
+to be guided through the process interactively.
 
-- K3s volume snapshots
-- Cron job with pg_dump
+In brief: a Kubernetes CronJob runs `pg_dump` nightly and uploads compressed dumps to a
+private Hetzner Object Storage bucket (`<project>-db-backups`). Backup credentials are
+stored in a dedicated `backup-secret` and are never exposed to the app pods.
 
 ## Cost
 

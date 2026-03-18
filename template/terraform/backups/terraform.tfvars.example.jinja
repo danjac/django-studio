@@ -1,0 +1,13 @@
+# Hetzner Object Storage S3 credentials
+# These are project-level credentials — the same pair used by terraform/storage/ works here.
+# Create in: Cloud Console → <your project> → Security → S3 credentials → Generate credentials
+access_key = ""
+secret_key = ""
+
+# Backup bucket name (must be globally unique within the region)
+# Kept separate from the media bucket so backup permissions can be managed independently.
+bucket_name = "{{ project_slug }}-db-backups"
+
+# Hetzner datacenter location - must match where your cluster is deployed
+# Options: fsn1 (Falkenstein), nbg1 (Nuremberg), hel1 (Helsinki), ash (Ashburn), hil (Hillsboro)
+location = "fsn1"

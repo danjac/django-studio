@@ -309,6 +309,72 @@ class TestTerraformRendering:
         ).read_text()
         assert "test_project" in content
 
+    def test_backups_module_exists(self, project):
+        assert (project / "terraform" / "backups" / "main.tf").exists()
+
+    def test_backups_has_project_slug(self, project):
+        content = (project / "terraform" / "backups" / "variables.tf").read_text()
+        assert "test_project-db-backups" in content
+
+    def test_backups_no_cookiecutter_literals(self, project):
+        for tf_file in (project / "terraform" / "backups").glob("*.tf"):
+            content = tf_file.read_text()
+            assert "cookiecutter" not in content, (
+                f"{tf_file} contains cookiecutter literal"
+            )
+
+    def test_backups_variables_tf_exists(self, project):
+        assert (project / "terraform" / "backups" / "variables.tf").exists()
+
+    def test_backups_outputs_tf_exists(self, project):
+        assert (project / "terraform" / "backups" / "outputs.tf").exists()
+
+    def test_backups_tfvars_example_exists(self, project):
+        assert (project / "terraform" / "backups" / "terraform.tfvars.example").exists()
+
+    def test_backups_readme_exists(self, project):
+        assert (project / "terraform" / "backups" / "README.md").exists()
+
+    def test_backups_gitignore_exists(self, project):
+        assert (project / "terraform" / "backups" / ".gitignore").exists()
+
+    def test_backups_main_has_private_acl(self, project):
+        content = (project / "terraform" / "backups" / "main.tf").read_text()
+        assert 'acl    = "private"' in content
+
+    def test_backups_main_has_required_version(self, project):
+        content = (project / "terraform" / "backups" / "main.tf").read_text()
+        assert 'required_version = ">= 1.0"' in content
+
+    def test_backups_variables_has_all_variables(self, project):
+        content = (project / "terraform" / "backups" / "variables.tf").read_text()
+        assert 'variable "access_key"' in content
+        assert 'variable "secret_key"' in content
+        assert 'variable "bucket_name"' in content
+        assert 'variable "location"' in content
+
+    def test_backups_outputs_has_both_outputs(self, project):
+        content = (project / "terraform" / "backups" / "outputs.tf").read_text()
+        assert 'output "bucket_name"' in content
+        assert 'output "endpoint_url"' in content
+
+    def test_backups_tfvars_example_has_project_slug(self, project):
+        content = (
+            project / "terraform" / "backups" / "terraform.tfvars.example"
+        ).read_text()
+        assert "test_project-db-backups" in content
+
+    def test_backups_separate_from_media(self, project):
+        """Backup bucket name must differ from media bucket name."""
+        backups = (
+            project / "terraform" / "backups" / "terraform.tfvars.example"
+        ).read_text()
+        media = (
+            project / "terraform" / "storage" / "terraform.tfvars.example"
+        ).read_text()
+        assert "db-backups" in backups
+        assert "db-backups" not in media
+
 
 class TestDomainPrefill:
     """Test that the domain variable is substituted into config files."""
@@ -459,6 +525,29 @@ class TestAlwaysIncludedFeatures:
         assert 'resource "cloudflare_origin_ca_certificate" "origin"' in content
         assert '"hashicorp/tls"' in content
 
+    def test_backup_cronjob_template_exists(self, project):
+        assert (
+            project / "helm" / "site" / "templates" / "postgres-backup-cronjob.yaml"
+        ).exists()
+
+    def test_backup_secret_template_exists(self, project):
+        assert (project / "helm" / "site" / "templates" / "backup-secret.yaml").exists()
+
+    def test_backup_disabled_by_default_in_values(self, project):
+        content = (project / "helm" / "site" / "values.yaml").read_text()
+        assert "backup:" in content
+        assert "enabled: false" in content
+
+    def test_backup_credentials_in_values(self, project):
+        content = (project / "helm" / "site" / "values.yaml").read_text()
+        assert "backupAccessKey" in content
+        assert "backupSecretKey" in content
+        assert "backupBucket" in content
+        assert "backupEndpoint" in content
+
+    def test_backup_docs_exist(self, project):
+        assert (project / "docs" / "Backups.md").exists()
+
     def test_i18n_and_storage_coexist(self, project):
         settings_content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" in settings_content
@@ -579,6 +668,7 @@ class TestClaudeSkillsInstallation:
             "translate.md",
             "launch.md",
             "rotate-secrets.md",
+            "enable-db-backups.md",
             "sync.md",
             "feedback.md",
         }

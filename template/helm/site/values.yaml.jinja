@@ -104,6 +104,13 @@ cronjobs:
     schedule: "25 9 * * *"
     command: "./manage.sh prune_db_task_results --min-age-days=1"
 
+# Database backups - disabled by default, see docs/Backups.md to enable
+backup:
+  enabled: false
+  schedule: "0 3 * * *"
+  retention: 7
+  awsCliImage: "amazon/aws-cli:2"
+
 # PostgreSQL major-version upgrade (disabled by default)
 pgUpgrade:
   enabled: false
@@ -129,6 +136,12 @@ secrets:
   hetznerStorageBucket: ""
   hetznerStorageEndpoint: ""
   hetznerStorageRegion: "fsn1"
+  # Database backups (backup.enabled: true) - see docs/Backups.md
+  backupAccessKey: ""
+  backupSecretKey: ""
+  backupBucket: ""
+  backupEndpoint: ""
+  backupRegion: "fsn1"
   cloudflare:
     cert: ""
     key: ""

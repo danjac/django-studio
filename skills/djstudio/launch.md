@@ -309,6 +309,23 @@ just terraform storage apply -auto-approve
 
 ---
 
+## Database backups
+
+Tell the user:
+
+> **Optional: Automated database backups**
+>
+> This project supports daily PostgreSQL backups to a private Hetzner Object Storage bucket.
+> Backups are not set up as part of this wizard — they are most useful once your project
+> is live and actively used.
+>
+> When you are ready, run `/djstudio enable-db-backups` to set them up, or follow
+> `docs/Backups.md` to do it manually.
+
+Then continue to Step 4.
+
+---
+
 ## Step 4 — Helm secrets
 
 **Check:** If `helm/site/values.secret.yaml` does not exist, copy it from the example:

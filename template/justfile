@@ -211,13 +211,27 @@ terraform-value dir name:
 rdj *args:
     {{ script_dir }}/manage.sh {{ args }}
 
-# Run Psql commands remotely on production database
+# Open a psql shell on the production database via Django dbshell
 [group('production')]
 [confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
-rpsql *args:
-    {{ script_dir }}/psql.sh {{ args }}
+rpsql:
+    {{ script_dir }}/manage.sh dbshell
 
 # Run kubectl commands on the production cluster
 [group('production')]
 kube *args:
     kubectl --kubeconfig {{ kubeconfig }} {{ args }}
+
+# Trigger an immediate database backup on the production cluster (requires backup.enabled: true)
+[group('production')]
+[confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
+rdb-backup:
+    {{ script_dir }}/db_backup.sh
+
+# Restore production database from a named backup file - runs entirely in-cluster, no local tools needed
+# Usage: just rdb-restore backup-20240103-030000.sql.gz
+# See docs/Backups.md for the full restore guide including how to list available backups.
+[group('production')]
+[confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
+rdb-restore filename:
+    {{ script_dir }}/db_restore.sh {{ filename }}

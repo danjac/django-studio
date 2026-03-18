@@ -1,0 +1,113 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          nodeSelector:
+            role: jobrunner
+          initContainers:
+            - name: dump
+              image: {{ .Values.postgres.image }}
+              command: ["/bin/bash", "-c"]
+              args:
+                - |
+                  set -euo pipefail
+                  FILENAME="backup-$(date +%Y%m%d-%H%M%S).sql.gz"
+                  echo "Starting dump: ${FILENAME}"
+                  pg_dump -h postgres -U postgres -d postgres | gzip > /backup/${FILENAME}
+                  echo "${FILENAME}" > /backup/latest
+                  echo "Dump complete: $(du -h /backup/${FILENAME} | cut -f1)"
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: POSTGRES_PASSWORD
+              resources:
+                requests:
+                  memory: {{ .Values.resources.cronjob.requests.memory | quote }}
+                  cpu: {{ .Values.resources.cronjob.requests.cpu | quote }}
+                limits:
+                  memory: {{ .Values.resources.cronjob.limits.memory | quote }}
+                  cpu: {{ .Values.resources.cronjob.limits.cpu | quote }}
+              volumeMounts:
+                - name: backup-staging
+                  mountPath: /backup
+          containers:
+            - name: upload
+              image: {{ .Values.backup.awsCliImage }}
+              command: ["/bin/bash", "-c"]
+              args:
+                - |
+                  set -euo pipefail
+                  FILENAME=$(cat /backup/latest)
+                  echo "Uploading: ${FILENAME}"
+                  aws --endpoint-url "${BACKUP_ENDPOINT}" s3 cp \
+                    /backup/${FILENAME} \
+                    s3://${BACKUP_BUCKET}/${FILENAME}
+                  echo "Upload complete"
+                  RETENTION={{ .Values.backup.retention }}
+                  TO_DELETE=$(aws --endpoint-url "${BACKUP_ENDPOINT}" s3 ls \
+                    s3://${BACKUP_BUCKET}/ \
+                    | sort \
+                    | head -n -${RETENTION} \
+                    | awk '{print $4}')
+                  if [ -n "${TO_DELETE}" ]; then
+                    echo "Pruning old backups:"
+                    echo "${TO_DELETE}"
+                    echo "${TO_DELETE}" | xargs -I{} aws --endpoint-url "${BACKUP_ENDPOINT}" \
+                      s3 rm s3://${BACKUP_BUCKET}/{}
+                  else
+                    echo "No backups to prune (fewer than ${RETENTION} stored)"
+                  fi
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secret
+                      key: BACKUP_ACCESS_KEY
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secret
+                      key: BACKUP_SECRET_KEY
+                - name: AWS_DEFAULT_REGION
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secret
+                      key: BACKUP_REGION
+                - name: BACKUP_ENDPOINT
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secret
+                      key: BACKUP_ENDPOINT
+                - name: BACKUP_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secret
+                      key: BACKUP_BUCKET
+              resources:
+                requests:
+                  memory: {{ .Values.resources.cronjob.requests.memory | quote }}
+                  cpu: {{ .Values.resources.cronjob.requests.cpu | quote }}
+                limits:
+                  memory: {{ .Values.resources.cronjob.limits.memory | quote }}
+                  cpu: {{ .Values.resources.cronjob.limits.cpu | quote }}
+              volumeMounts:
+                - name: backup-staging
+                  mountPath: /backup
+          volumes:
+            - name: backup-staging
+              emptyDir: {}
+{{- end }}

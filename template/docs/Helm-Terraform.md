@@ -30,15 +30,23 @@ terraform/
 │   ├── main.tf
 │   ├── variables.tf
 │   └── terraform.tfvars.example
-└── storage/        # Hetzner Object Storage bucket (apply when ready to enable)
+├── storage/        # Hetzner Object Storage bucket for media uploads
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── terraform.tfvars.example
+└── backups/        # Hetzner Object Storage bucket for database backups (private)
     ├── main.tf
     ├── variables.tf
     ├── outputs.tf
     └── terraform.tfvars.example
 ```
 
-The `storage/` module is independent of the other two — it can be applied at any time after
-the bucket credentials are created. See `docs/File-Storage.md` for the full workflow.
+The `storage/` and `backups/` modules are independent of the other two — each can be
+applied at any time after the bucket credentials are created.
+
+- See `docs/File-Storage.md` for the media storage workflow.
+- See `docs/Backups.md` for the database backup workflow, or run `/djstudio enable-db-backups`.
 
 ### Commands
 

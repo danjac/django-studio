@@ -40,11 +40,26 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Final production image
 FROM python:${PYTHON_IMAGE} AS webapp
+# Must match postgres.image major version in helm/site/values.yaml
+ARG POSTGRES_MAJOR=18
 ENV LC_CTYPE=C.utf8 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.venv/bin:$PATH"
+
+# Install postgresql-client (version-matched to production DB) for manage.py dbshell
+# hadolint ignore=DL3008
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gnupg \
+    && gpg --no-default-keyring --keyring /usr/share/keyrings/postgresql.gpg \
+       --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8 \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" \
+       > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client-${POSTGRES_MAJOR} \
+    && apt-get purge -y --auto-remove gnupg \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user FIRST, before any file copies
 RUN useradd -m -u 1000 django

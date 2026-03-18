@@ -159,8 +159,9 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 | Subcommand       | Summary                                                                        |
 | ---------------- | ------------------------------------------------------------------------------ |
-| `launch`         | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
-| `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| `launch`            | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `rotate-secrets`    | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| `enable-db-backups` | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
 
 ## Hosting
 

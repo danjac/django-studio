@@ -34,6 +34,12 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 | `create-tag [<app_name>] [<module>]`    | `.claude/commands/djstudio/create-tag.md`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, or Node) |
 | `create-filter [<app_name>] [<module>]` | `.claude/commands/djstudio/create-filter.md`  | Add a template filter with correct escaping flags |
 
+**Design**
+
+| Subcommand                | File                                        | Purpose                                              |
+|---------------------------|---------------------------------------------|------------------------------------------------------|
+| `daisyui <component>`    | `.claude/commands/djstudio/daisyui.md`      | Fetch DaisyUI component docs with project conventions |
+
 **Localisation**
 
 | Subcommand           | File                                        | Purpose                                       |

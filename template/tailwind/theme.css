@@ -1,106 +1,83 @@
 /* =============================================================================
    BRAND PALETTE — safe to change, this is how you rebrand the project
-   These @theme aliases generate Tailwind utility classes:
-   text-primary-600, bg-danger-50, border-secondary-200, etc.
-   Never use Tailwind colors e.g. indigo-*, violet-*, rose-*, or zinc-* directly in
-   templates or CSS unless user requests specifically.
+   Uses DaisyUI theme system. Each color is an oklch value.
+   See https://daisyui.com/docs/themes/ for reference.
    ============================================================================= */
 
-@theme {
-  /* Primary brand color (default: indigo) */
-  --color-primary-50:  var(--color-indigo-50);
-  --color-primary-100: var(--color-indigo-100);
-  --color-primary-200: var(--color-indigo-200);
-  --color-primary-300: var(--color-indigo-300);
-  --color-primary-400: var(--color-indigo-400);
-  --color-primary-500: var(--color-indigo-500);
-  --color-primary-600: var(--color-indigo-600);
-  --color-primary-700: var(--color-indigo-700);
-  --color-primary-800: var(--color-indigo-800);
-  --color-primary-900: var(--color-indigo-900);
-  --color-primary-950: var(--color-indigo-950);
+@plugin "./daisyui-theme.mjs" {
+  name: "light";
+  default: true;
+  color-scheme: light;
 
-  /* Secondary color (default: violet) */
-  --color-secondary-50:  var(--color-violet-50);
-  --color-secondary-100: var(--color-violet-100);
-  --color-secondary-200: var(--color-violet-200);
-  --color-secondary-300: var(--color-violet-300);
-  --color-secondary-400: var(--color-violet-400);
-  --color-secondary-500: var(--color-violet-500);
-  --color-secondary-600: var(--color-violet-600);
-  --color-secondary-700: var(--color-violet-700);
-  --color-secondary-800: var(--color-violet-800);
-  --color-secondary-900: var(--color-violet-900);
-  --color-secondary-950: var(--color-violet-950);
+  /* Brand */
+  --color-primary: oklch(0.50 0.18 264);
+  --color-primary-content: oklch(0.98 0.01 264);
+  --color-secondary: oklch(0.55 0.20 293);
+  --color-secondary-content: oklch(0.98 0.01 293);
+  --color-accent: oklch(0.60 0.18 230);
+  --color-accent-content: oklch(0.98 0.01 230);
 
-  /* Muted color (default: zinc) — inactive nav states, muted UI chrome */
-  --color-muted-50:  var(--color-zinc-50);
-  --color-muted-100: var(--color-zinc-100);
-  --color-muted-200: var(--color-zinc-200);
-  --color-muted-300: var(--color-zinc-300);
-  --color-muted-400: var(--color-zinc-400);
-  --color-muted-500: var(--color-zinc-500);
-  --color-muted-600: var(--color-zinc-600);
-  --color-muted-700: var(--color-zinc-700);
-  --color-muted-800: var(--color-zinc-800);
-  --color-muted-900: var(--color-zinc-900);
-  --color-muted-950: var(--color-zinc-950);
+  /* Neutral chrome */
+  --color-neutral: oklch(0.32 0.02 260);
+  --color-neutral-content: oklch(0.95 0.01 260);
 
-  /* Danger color (default: rose) */
-  --color-danger-50:  var(--color-rose-50);
-  --color-danger-100: var(--color-rose-100);
-  --color-danger-200: var(--color-rose-200);
-  --color-danger-300: var(--color-rose-300);
-  --color-danger-400: var(--color-rose-400);
-  --color-danger-500: var(--color-rose-500);
-  --color-danger-600: var(--color-rose-600);
-  --color-danger-700: var(--color-rose-700);
-  --color-danger-800: var(--color-rose-800);
-  --color-danger-900: var(--color-rose-900);
-  --color-danger-950: var(--color-rose-950);
+  /* Surfaces */
+  --color-base-100: oklch(1.00 0 0);
+  --color-base-200: oklch(0.97 0.005 260);
+  --color-base-300: oklch(0.92 0.01 260);
+  --color-base-content: oklch(0.25 0.02 260);
 
-  /* Message semantic colors — change these to restyle all message toasts */
-  --color-success-400: var(--color-emerald-400);
-  --color-success-600: var(--color-emerald-600);
+  /* Semantic */
+  --color-info: oklch(0.62 0.14 230);
+  --color-info-content: oklch(0.98 0.01 230);
+  --color-success: oklch(0.60 0.18 155);
+  --color-success-content: oklch(0.98 0.01 155);
+  --color-warning: oklch(0.75 0.15 75);
+  --color-warning-content: oklch(0.20 0.05 75);
+  --color-error: oklch(0.58 0.22 18);
+  --color-error-content: oklch(0.98 0.01 18);
 
-  --color-error-400: var(--color-rose-400);
-  --color-error-600: var(--color-rose-600);
-
-  --color-info-50:  var(--color-sky-50);
-  --color-info-200: var(--color-sky-200);
-  --color-info-400: var(--color-sky-400);
-  --color-info-600: var(--color-sky-600);
-  --color-info-800: var(--color-sky-800);
-  --color-info-950: var(--color-sky-950);
-
-  --color-warning-400: var(--color-amber-400);
-  --color-warning-600: var(--color-amber-600);
+  /* Radius */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
 }
 
-/* =============================================================================
-   SEMANTIC LAYOUT TOKENS — safe to change, affects light/dark mode palette
-   These are plain CSS custom properties used with var() throughout the project.
-   Change these to retheme the layout without touching the brand colors above.
-   Do not remove or rename them — they are referenced across all component files.
-   ============================================================================= */
+@plugin "./daisyui-theme.mjs" {
+  name: "dark";
+  prefersdark: true;
+  color-scheme: dark;
 
-@layer base {
-  :root {
-    scrollbar-width: thin;
+  /* Brand */
+  --color-primary: oklch(0.62 0.18 264);
+  --color-primary-content: oklch(0.15 0.02 264);
+  --color-secondary: oklch(0.65 0.20 293);
+  --color-secondary-content: oklch(0.15 0.02 293);
+  --color-accent: oklch(0.68 0.18 230);
+  --color-accent-content: oklch(0.15 0.02 230);
 
-    --color-bg: var(--color-white);
-    --color-surface: var(--color-zinc-50);
-    --color-border: var(--color-zinc-200);
-    --color-text: var(--color-zinc-900);
-    --color-text-muted: var(--color-zinc-500);
+  /* Neutral chrome */
+  --color-neutral: oklch(0.75 0.02 260);
+  --color-neutral-content: oklch(0.15 0.02 260);
 
-    @variant dark {
-      color-scheme: dark;
-      --color-bg: var(--color-zinc-950);
-      --color-surface: var(--color-zinc-900);
-      --color-border: var(--color-zinc-800);
-      --color-text: var(--color-zinc-100);
-      --color-text-muted: var(--color-zinc-400);
-    }
-  }
+  /* Surfaces */
+  --color-base-100: oklch(0.20 0.02 260);
+  --color-base-200: oklch(0.17 0.02 260);
+  --color-base-300: oklch(0.14 0.02 260);
+  --color-base-content: oklch(0.90 0.01 260);
+
+  /* Semantic */
+  --color-info: oklch(0.68 0.14 230);
+  --color-info-content: oklch(0.15 0.02 230);
+  --color-success: oklch(0.65 0.18 155);
+  --color-success-content: oklch(0.15 0.02 155);
+  --color-warning: oklch(0.80 0.15 75);
+  --color-warning-content: oklch(0.15 0.05 75);
+  --color-error: oklch(0.65 0.22 18);
+  --color-error-content: oklch(0.15 0.02 18);
+
+  /* Radius */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
 }

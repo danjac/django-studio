@@ -1,6 +1,6 @@
 {% load heroicons i18n %}
 <header
-  class="sticky top-0 z-10 w-full border-b border-muted-200 bg-white/80 backdrop-blur-lg dark:border-muted-800 dark:bg-muted-950/80"
+  class="navbar sticky top-0 z-10 border-b border-base-300 bg-base-100/80 backdrop-blur-lg"
   x-data="{ showMobileMenu: false, showUserDropdown: false }"
   x-init="
           $watch('showMobileMenu', v => { if (v) showUserDropdown = false; });
@@ -9,121 +9,102 @@
   @htmx:before-request.window="showMobileMenu = false; showUserDropdown = false"
   @keyup.escape.window="showMobileMenu = false; showUserDropdown = false"
 >
-  <nav class="flex justify-between items-center p-4">
+  <div class="navbar-start">
     <a
       href="{% url 'index' %}"
-      class="text-lg font-semibold text-muted-900 dark:text-muted-100"
+      class="btn btn-ghost text-lg font-semibold"
     >
       {{ request.site.name }}
     </a>
-    <ul class="flex items-center space-x-1">
-      {% if user.is_authenticated %}
-        <li>
-          <div
-            class="relative"
-            @click.outside="showUserDropdown = false"
-          >
-            <button
-              type="button"
-              class="flex gap-2 items-center py-2 px-3 text-sm font-semibold rounded-xl transition-colors text-muted-700 dark:text-muted-300 dark:hover:bg-muted-800 hover:bg-muted-100"
-              :aria-expanded="showUserDropdown.toString()"
-              @click="showUserDropdown = !showUserDropdown"
-            >
-              {% heroicon_mini "user-circle" class="size-5 shrink-0" aria_hidden="true" %}
-              <span class="hidden sm:inline">{{ user.username }}</span>
-              {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
-            </button>
-            <div
-              class="absolute right-0 z-20 mt-1 w-56 bg-white rounded-xl border shadow-xl border-muted-200 dark:border-muted-700 dark:bg-muted-900"
-              x-cloak
-              x-show="showUserDropdown"
-              x-transition.scale.origin.top
-            >
-              <ul class="py-2" role="menu">
-                <li class="py-2 px-4 text-sm border-b border-muted-200 text-muted-500 dark:border-muted-700 dark:text-muted-400">
-                  {% translate "Signed in as" %}
-                  <strong class="text-muted-900 dark:text-muted-100">{{ user.email }}</strong>
-                </li>
-                <li role="menuitem">
-                  <a
-                    href="{% url 'account_email' %}"
-                    class="flex gap-2 items-center py-2 px-4 text-sm font-semibold text-muted-700 dark:text-muted-200 dark:hover:bg-muted-800 hover:bg-muted-100"
-                  >
-                    {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
-                    {% translate "Account settings" %}
-                  </a>
-                </li>
-                {% if user.is_staff %}
-                  <li role="menuitem">
-                    <a
-                      href="{% url 'admin:index' %}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="flex gap-2 items-center py-2 px-4 text-sm font-semibold text-muted-700 dark:text-muted-200 dark:hover:bg-muted-800 hover:bg-muted-100"
-                    >
-                      {% heroicon_mini "wrench-screwdriver" class="size-4 shrink-0" aria_hidden="true" %}
-                      {% translate "Site admin" %}
-                    </a>
-                  </li>
-                {% endif %}
-                <li role="menuitem">
-                  <a
-                    href="{% url 'users:delete_account' %}"
-                    class="flex gap-2 items-center py-2 px-4 text-sm font-semibold text-danger-600 dark:text-danger-400 dark:hover:bg-muted-800 hover:bg-danger-50"
-                  >
-                    {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}
-                    {% translate "Delete my account" %}
-                  </a>
-                </li>
-                <li role="menuitem">
-                  <form method="post" action="{% url 'account_logout' %}" hx-disable="true">
-                    {% csrf_token %}
-                    <button
-                      type="submit"
-                      class="flex gap-2 items-center py-2 px-4 w-full text-sm font-semibold text-muted-700 dark:text-muted-200 dark:hover:bg-muted-800 hover:bg-muted-100"
-                    >
-                      {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria_hidden="true" %}
-                      {% translate "Sign out" %}
-                    </button>
-                  </form>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </li>
-      {% else %}
-        <li>
-          <a href="{% url 'account_login' %}" class="btn btn-secondary">
-            {% translate "Sign in" %}
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'account_signup' %}" class="btn btn-primary">
-            {% translate "Sign up" %}
-          </a>
-        </li>
-      {% endif %}
-      <li class="md:hidden">
+  </div>
+  <div class="navbar-end gap-1">
+    {% if user.is_authenticated %}
+      <div
+        class="relative"
+        @click.outside="showUserDropdown = false"
+      >
         <button
           type="button"
-          class="p-2 rounded-xl transition-colors text-muted-700 dark:text-muted-300 dark:hover:bg-muted-800 hover:bg-muted-100"
-          :aria-expanded="showMobileMenu.toString()"
-          aria-label="{% translate "Toggle navigation menu" %}"
-          @click="showMobileMenu = !showMobileMenu"
+          class="btn btn-ghost gap-2"
+          :aria-expanded="showUserDropdown.toString()"
+          @click="showUserDropdown = !showUserDropdown"
         >
-          <span x-show="!showMobileMenu">
-            {% heroicon_outline "bars-3" class="size-6" aria_hidden="true" %}
-          </span>
-          <span x-cloak x-show="showMobileMenu">
-            {% heroicon_outline "x-mark" class="size-6" aria_hidden="true" %}
-          </span>
+          {% heroicon_mini "user-circle" class="size-5 shrink-0" aria_hidden="true" %}
+          <span class="hidden sm:inline">{{ user.username }}</span>
+          {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
         </button>
-      </li>
-    </ul>
-  </nav>
+        <ul
+          class="menu bg-base-100 rounded-box absolute right-0 z-20 mt-1 w-56 border border-base-300 p-2 shadow-xl"
+          x-cloak
+          x-show="showUserDropdown"
+          x-transition.scale.origin.top
+          role="menu"
+        >
+          <li class="menu-title text-xs">
+            {% translate "Signed in as" %}
+            <strong>{{ user.email }}</strong>
+          </li>
+          <li role="menuitem">
+            <a href="{% url 'account_email' %}">
+              {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
+              {% translate "Account settings" %}
+            </a>
+          </li>
+          {% if user.is_staff %}
+            <li role="menuitem">
+              <a
+                href="{% url 'admin:index' %}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {% heroicon_mini "wrench-screwdriver" class="size-4 shrink-0" aria_hidden="true" %}
+                {% translate "Site admin" %}
+              </a>
+            </li>
+          {% endif %}
+          <li role="menuitem">
+            <a href="{% url 'users:delete_account' %}" class="text-error">
+              {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}
+              {% translate "Delete my account" %}
+            </a>
+          </li>
+          <form id="logout-form" method="post" action="{% url 'account_logout' %}" hx-disable="true" hidden>
+            {% csrf_token %}
+          </form>
+          <li role="menuitem">
+            <button type="submit" form="logout-form">
+              {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria_hidden="true" %}
+              {% translate "Sign out" %}
+            </button>
+          </li>
+        </ul>
+      </div>
+    {% else %}
+      <a href="{% url 'account_login' %}" class="btn btn-ghost">
+        {% translate "Sign in" %}
+      </a>
+      <a href="{% url 'account_signup' %}" class="btn btn-primary">
+        {% translate "Sign up" %}
+      </a>
+    {% endif %}
+    <button
+      type="button"
+      class="btn btn-ghost btn-square md:hidden"
+      :aria-expanded="showMobileMenu.toString()"
+      aria-label="{% translate "Toggle navigation menu" %}"
+      @click="showMobileMenu = !showMobileMenu"
+    >
+      <span x-show="!showMobileMenu">
+        {% heroicon_outline "bars-3" class="size-6" aria_hidden="true" %}
+      </span>
+      <span x-cloak x-show="showMobileMenu">
+        {% heroicon_outline "x-mark" class="size-6" aria_hidden="true" %}
+      </span>
+    </button>
+  </div>
   {% if user.is_authenticated %}
     <nav
-      class="absolute left-0 z-50 py-6 px-4 w-full bg-white border-b shadow-xl md:hidden border-muted-200 dark:border-muted-700 dark:bg-muted-900"
+      class="absolute left-0 top-full z-50 w-full border-b border-base-300 bg-base-100 p-4 shadow-xl md:hidden"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
@@ -139,7 +120,7 @@
     </nav>
   {% else %}
     <nav
-      class="absolute left-0 z-50 py-6 px-4 w-full bg-white border-b shadow-xl md:hidden border-muted-200 dark:border-muted-700 dark:bg-muted-900"
+      class="absolute left-0 top-full z-50 w-full border-b border-base-300 bg-base-100 p-4 shadow-xl md:hidden"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
@@ -153,12 +134,12 @@
     >
       <ul class="flex flex-col gap-2">
         <li>
-          <a href="{% url 'account_login' %}" class="justify-center w-full btn btn-secondary">
+          <a href="{% url 'account_login' %}" class="btn btn-ghost btn-block justify-center">
             {% translate "Sign in" %}
           </a>
         </li>
         <li>
-          <a href="{% url 'account_signup' %}" class="justify-center w-full btn btn-primary">
+          <a href="{% url 'account_signup' %}" class="btn btn-primary btn-block justify-center">
             {% translate "Sign up" %}
           </a>
         </li>

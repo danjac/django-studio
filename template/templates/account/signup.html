@@ -7,8 +7,8 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Sign Up") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-        {% blocktranslate with url=login_url %}Already have an account? <a class="underline" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% blocktranslate with url=login_url %}Already have an account? <a class="link link-primary" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
       </p>
       {% fragment "form.html" %}
         {{ form.phone_number.as_hidden }}

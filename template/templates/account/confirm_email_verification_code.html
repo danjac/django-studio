@@ -7,7 +7,7 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Enter Email Verification Code") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% blocktranslate with email=email %}We've sent a code to <a class="underline" href="mailto:{{ email }}">{{ email }}</a>. The code expires shortly, so please enter it soon.{% endblocktranslate %}
       </p>
       {% url 'account_email_verification_sent' as form_action %}
@@ -39,7 +39,7 @@
       {% endif %}
       {% if can_change %}
         <details class="mt-8" {% if change_form.errors %}open{% endif %}>
-          <summary class="text-sm font-medium cursor-pointer text-muted-700 dark:text-muted-300">
+          <summary class="text-sm font-medium cursor-pointer text-base-content/70">
             {% translate "Use a different email address" %}
           </summary>
           {% fragment "form.html" action=form_action class="mt-4 space-y-4" %}

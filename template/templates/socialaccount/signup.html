@@ -7,7 +7,7 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Sign Up") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% blocktranslate with provider_name=account.get_provider.name site_name=site.name %}
           You are about to use your {{ provider_name }} account to login to {{ site_name }}.
           As a final step, please complete the following form:

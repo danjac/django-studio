@@ -8,13 +8,13 @@
     {% include "header.html" with title=_("Verify Your Email Address") %}
     <div class="mt-6">
       {% url 'account_email' as email_url %}
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% blocktranslate %}This part of the site requires us to verify that you are who you claim to be. For this purpose, we require that you verify ownership of your email address.{% endblocktranslate %}
       </p>
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% blocktranslate %}We have sent an email to you for verification. Please click on the link inside that email. If you do not see the verification email in your main inbox, check your spam folder. Otherwise contact us if you do not receive it within a few minutes.{% endblocktranslate %}
       </p>
-      <p class="text-sm text-muted-600 dark:text-muted-400">
+      <p class="text-sm text-base-content/60">
         {% blocktranslate %}<strong>Note:</strong> you can still <a class="underline" href="{{ email_url }}">change your email address</a>.{% endblocktranslate %}
       </p>
     </div>

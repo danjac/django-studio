@@ -9,7 +9,7 @@
     <div class="mt-6">
       {% url 'account_email' as form_action %}
       {% if emailaddresses %}
-        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        <p class="mb-4 text-sm text-base-content/60">
           {% translate "The following email addresses are associated with your account:" %}
         </p>
         {% fragment "form.html" action=form_action %}
@@ -23,21 +23,21 @@
                     value="{{ emailaddress.email }}"
                     id="{{ radio.id }}"
                     {% if radio.checked %}checked{% endif %}
-                    class="w-4 h-4 accent-primary-600"
+                    class="w-4 h-4 accent-primary"
                   />
-                  <label for="{{ radio.id }}" class="text-sm text-muted-700 dark:text-muted-300">
+                  <label for="{{ radio.id }}" class="text-sm text-base-content/70">
                     {{ emailaddress.email }}
                     {% if emailaddress.verified %}
                       <span class="ml-2 text-xs font-medium text-success-600 dark:text-success-400">
                         {% translate "Verified" %}
                       </span>
                     {% else %}
-                      <span class="ml-2 text-xs font-medium text-danger-600 dark:text-danger-400">
+                      <span class="ml-2 text-xs font-medium text-error">
                         {% translate "Unverified" %}
                       </span>
                     {% endif %}
                     {% if emailaddress.primary %}
-                      <span class="ml-2 text-xs font-medium text-primary-600 dark:text-primary-400">
+                      <span class="ml-2 text-xs font-medium text-primary">
                         {% translate "Primary" %}
                       </span>
                     {% endif %}
@@ -53,18 +53,18 @@
             <button type="submit" name="action_send" class="btn btn-secondary">
               {% translate "Re-send Verification" %}
             </button>
-            <button type="submit" name="action_remove" class="btn btn-danger">
+            <button type="submit" name="action_remove" class="btn btn-error">
               {% translate "Remove" %}
             </button>
           </div>
         {% endfragment %}
       {% else %}
-        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        <p class="mb-4 text-sm text-base-content/60">
           {% translate "You have no email addresses associated with your account." %}
         </p>
       {% endif %}
       {% if can_add_email %}
-        <h2 class="mt-8 mb-4 text-xl font-semibold text-muted-900 dark:text-muted-100">
+        <h2 class="mt-8 mb-4 text-xl font-semibold text-base-content">
           {% translate "Add Email Address" %}
         </h2>
         {% fragment "form.html" action=form_action %}

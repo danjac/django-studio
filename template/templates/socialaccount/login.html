@@ -19,11 +19,11 @@
     {% include "header.html" with title=title %}
     <div class="mt-6">
       {% if process == "connect" %}
-        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        <p class="mb-4 text-sm text-base-content/60">
           {% blocktranslate with provider=provider.name %}You are about to connect a new third-party account from {{ provider }}.{% endblocktranslate %}
         </p>
       {% else %}
-        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        <p class="mb-4 text-sm text-base-content/60">
           {% blocktranslate with provider=provider.name %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktranslate %}
         </p>
       {% endif %}

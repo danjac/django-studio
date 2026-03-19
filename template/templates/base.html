@@ -8,10 +8,10 @@
     {% meta_tags %}
     <link rel="manifest" href="{% url 'manifest' %}">
     <link rel="stylesheet" href="{% static 'app.css' %}" />
-    <script src="{% static 'vendor/htmx-2.0.8.min.js' %}" defer></script>
-    <script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
+    <script src="{% static 'vendor/htmx.js' %}" defer></script>
+    <script src="{% static 'vendor/alpine.js' %}" defer></script>
   </head>
-  <body>
+  <body class="bg-base-100 text-base-content min-h-screen">
     <div id="hx-indicator" x-data="hxIndicator"></div>
     {% include "messages.html" %}
     {% cookie_banner %}

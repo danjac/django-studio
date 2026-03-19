@@ -7,7 +7,7 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Passkey Sign Up") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% blocktranslate with url=login_url %}Already have an account? <a class="underline" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
       </p>
       {% url 'account_signup_by_passkey' as form_action %}
@@ -18,7 +18,7 @@
           <button type="submit" class="btn btn-primary">{% translate "Sign Up with Passkey" %}</button>
         {% endfragment %}
       {% endfragment %}
-      <p class="mt-6 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mt-6 text-sm text-base-content/60">
         <a href="{{ signup_url }}" class="underline">{% translate "Other sign-up options" %}</a>
       </p>
     </div>

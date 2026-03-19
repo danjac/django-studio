@@ -7,7 +7,7 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Confirm Access") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% translate "Enter your password:" %}
       </p>
       {% url 'account_reauthenticate' as form_action %}

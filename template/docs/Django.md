@@ -192,7 +192,7 @@ New tags which are not specific to a single app should be added here.
 
 App-specific tags should be added to `<app_name>/templatetags/<app_name>.py` unless the user specifies otherwise.
 
-See `design/Navigation.md` for `active_app` / `active_url` usage.
+See `docs/Templates.md` for `active_app` / `active_url` usage.
 
 ## Admin
 

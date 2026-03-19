@@ -7,16 +7,16 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Delete your account") %}
     <div class="mt-6">
-      <p class="mb-2 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-2 text-sm text-base-content/60">
         {% translate "This will permanently delete your account and all associated data. This action cannot be undone." %}
       </p>
-      <p class="mb-8 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-8 text-sm text-base-content/60">
         {% translate "Are you sure you want to continue?" %}
       </p>
       <div class="flex flex-wrap gap-3 items-center">
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-error"
           hx-delete="{% url 'users:delete_account' %}"
           hx-confirm='{% translate "Delete your account permanently? This cannot be undone." %}'
           hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'

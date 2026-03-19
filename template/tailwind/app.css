@@ -2,15 +2,9 @@
 
 /* Plugins */
 
-@plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
+@plugin "./daisyui.mjs";
 
 @import "./theme.css";
 @import "./tweaks.css";
 @import "./htmx.css";
-@import "./buttons.css";
-@import "./forms.css";
-@import "./images.css";
-@import "./links.css";
-@import "./messages.css";
-@import "./tweaks.css";

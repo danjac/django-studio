@@ -1,41 +1,10 @@
 @layer base {
-    /* Tailwind v4 border-color reset */
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
-        border-color: var(--color-zinc-200, currentColor);
-    }
-
-    body {
-        background-color: var(--color-bg);
-        color: var(--color-text);
+    :root {
+        scrollbar-width: thin;
     }
 
     /* AlpineJS */
     [x-cloak] {
         display: none !important;
-    }
-
-    /* Dark mode border overrides for Tailwind border utilities */
-    .divide-x,
-    .divide-y {
-        @variant dark {
-            & > * + *,
-            & > * {
-                border-color: var(--color-zinc-600);
-            }
-        }
-    }
-
-    .border,
-    .border-t,
-    .border-l,
-    .border-r,
-    .border-b {
-        @variant dark {
-            border-color: var(--color-zinc-600);
-        }
     }
 }

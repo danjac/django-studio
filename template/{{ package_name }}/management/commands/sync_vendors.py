@@ -39,10 +39,15 @@ class Command(BaseCommand):
             help="Skip confirmation prompt",
         )
 
-    async def handle(  # type: ignore[override]
+    def handle(
         self, *, package: str | None, check: bool, no_input: bool, **options: Any
     ) -> None:
         """Check for and download vendor updates."""
+        asyncio.run(self._handle(package=package, check=check, no_input=no_input))
+
+    async def _handle(
+        self, *, package: str | None, check: bool, no_input: bool
+    ) -> None:
         vendors_path = settings.BASE_DIR / VENDORS_FILE
         if not vendors_path.exists():
             raise CommandError(f"{VENDORS_FILE} not found at {vendors_path}.")

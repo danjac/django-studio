@@ -26,7 +26,7 @@ MOCK_VENDORS = {
 def vendors_path(tmp_path, settings):
     path = tmp_path / "vendors.json"
     path.write_text(json.dumps(MOCK_VENDORS))
-    settings.BASE_DIR = tmp_path
+    settings.VENDORS_FILE = path
     return path
 
 
@@ -101,13 +101,14 @@ class TestSyncVendors:
             call_command("sync_vendors", "nonexistent")
 
     def test_missing_vendors_file_raises_error(self, tmp_path, settings):
-        settings.BASE_DIR = tmp_path
-        with pytest.raises(CommandError, match="vendors.json not found"):
+        settings.VENDORS_FILE = tmp_path / "vendors.json"
+        with pytest.raises(CommandError, match="not found"):
             call_command("sync_vendors")
 
     def test_empty_vendors_file_raises_error(self, tmp_path, settings):
-        (tmp_path / "vendors.json").write_text("{}")
-        settings.BASE_DIR = tmp_path
+        path = tmp_path / "vendors.json"
+        path.write_text("{}")
+        settings.VENDORS_FILE = path
         with pytest.raises(CommandError, match="No vendors defined"):
             call_command("sync_vendors")
 

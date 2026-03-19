@@ -5,14 +5,12 @@ import json
 import re
 from typing import TYPE_CHECKING, Any
 
-import aiohttp
-from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError, CommandParser
-
 if TYPE_CHECKING:
     from pathlib import Path
 
-VENDORS_FILE = "vendors.json"
+import aiohttp
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError, CommandParser
 
 
 class Command(BaseCommand):
@@ -48,13 +46,12 @@ class Command(BaseCommand):
     async def _handle(
         self, *, package: str | None, check: bool, no_input: bool
     ) -> None:
-        vendors_path = settings.BASE_DIR / VENDORS_FILE
-        if not vendors_path.exists():
-            raise CommandError(f"{VENDORS_FILE} not found at {vendors_path}.")
+        if not settings.VENDORS_FILE.exists():
+            raise CommandError(f"{settings.VENDORS_FILE} not found.")
 
-        all_vendors: dict[str, Any] = json.loads(vendors_path.read_text())
+        all_vendors: dict[str, Any] = json.loads(settings.VENDORS_FILE.read_text())
         if not all_vendors:
-            raise CommandError(f"No vendors defined in {VENDORS_FILE}.")
+            raise CommandError(f"No vendors defined in {settings.VENDORS_FILE}.")
 
         vendors = all_vendors
         if package:
@@ -88,7 +85,7 @@ class Command(BaseCommand):
                 return
 
         async with aiohttp.ClientSession() as session:
-            await self._download_updates(session, updates, all_vendors, vendors_path)
+            await self._download_updates(session, updates, all_vendors)
         self.stdout.write(self.style.SUCCESS(f"\n{len(updates)} package(s) updated."))
 
     async def _latest_github_version(
@@ -125,7 +122,12 @@ class Command(BaseCommand):
         repo = config.get("repo")
         try:
             latest = await self._latest_github_version(session, source_url, repo=repo)
-        except (aiohttp.ClientError, TimeoutError, json.JSONDecodeError, KeyError) as exc:
+        except (
+            aiohttp.ClientError,
+            TimeoutError,
+            json.JSONDecodeError,
+            KeyError,
+        ) as exc:
             self.stdout.write(self.style.WARNING(f"  {name}: failed to check ({exc})"))
             return None
 
@@ -178,7 +180,6 @@ class Command(BaseCommand):
         session: aiohttp.ClientSession,
         updates: list[tuple[str, str]],
         all_vendors: dict[str, Any],
-        vendors_path: Path,
     ) -> None:
         """Download all updated vendor files in parallel, then update vendors.json."""
         tasks = []
@@ -198,5 +199,5 @@ class Command(BaseCommand):
             all_vendors[name]["version"] = latest
             self.stdout.write(self.style.SUCCESS(f"  {name} updated to {latest}"))
 
-        vendors_path.write_text(json.dumps(all_vendors, indent=2) + "\n")
-        self.stdout.write(self.style.SUCCESS(f"  Updated {vendors_path.name}"))
+        settings.VENDORS_FILE.write_text(json.dumps(all_vendors, indent=2) + "\n")
+        self.stdout.write(self.style.SUCCESS(f"  Updated {settings.VENDORS_FILE.name}"))

@@ -20,6 +20,8 @@ from sentry_sdk.integrations.logging import ignore_logger
 
 BASE_DIR = pathlib.Path(__file__).resolve(strict=True).parents[1]
 
+VENDORS_FILE = BASE_DIR / "vendors.json"
+
 env = Env()
 env.read_env()
 

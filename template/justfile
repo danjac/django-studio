@@ -26,7 +26,7 @@ install:
 
 # Update all dependencies
 [group('development')]
-update: pyupdate pyinstall precommitupdate
+update: pyupdate pyinstall vendorupdate precommitupdate
 
 # Install all Python dependencies
 [group('development')]
@@ -42,6 +42,11 @@ pyinstall:
 [group('development')]
 pyupdate:
    uv lock --upgrade
+
+# Update vendored frontend assets
+[group('development')]
+vendorupdate:
+   just dj sync_vendors --no-input
 
 # Run Django management command
 [group('development')]

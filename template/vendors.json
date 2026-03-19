@@ -6,7 +6,7 @@
     "dest": "static/vendor/htmx.js"
   },
   "alpinejs": {
-    "version": "3.15.2",
+    "version": "3.15.8",
     "repo": "alpinejs/alpine",
     "source": "https://cdn.jsdelivr.net/npm/alpinejs@{version}/dist/cdn.min.js",
     "dest": "static/vendor/alpine.js"

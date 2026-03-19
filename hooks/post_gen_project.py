@@ -86,7 +86,26 @@ def install_claude_hooks() -> None:
                 "Bash(ast-grep:*)",
             ]
         },
+        "customInstructions": (
+            "When working on a multi-step task, update .claude/current-task.md at the end "
+            "of each response: what was just done, what's next, any blockers or open questions. "
+            "Clear the file when the task is complete."
+        ),
         "hooks": {
+            "UserPromptSubmit": [
+                {
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": (
+                                "if [ -s .claude/current-task.md ];"
+                                " then echo '--- Resuming task ---';"
+                                " cat .claude/current-task.md; fi"
+                            ),
+                        }
+                    ]
+                }
+            ],
             "PreToolUse": [
                 {
                     "matcher": "Bash",

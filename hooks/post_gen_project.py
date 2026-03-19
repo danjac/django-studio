@@ -35,7 +35,13 @@ PLAIN_SLUG_FILES = [
     BASE_DIR / "justfile",
     *[
         BASE_DIR / ".github" / "workflows" / name
-        for name in ("build.yml", "checks.yml", "default.yml", "docker.yml", "deploy.yml")
+        for name in (
+            "build.yml",
+            "checks.yml",
+            "default.yml",
+            "docker.yml",
+            "deploy.yml",
+        )
     ],
 ]
 
@@ -86,26 +92,7 @@ def install_claude_hooks() -> None:
                 "Bash(ast-grep:*)",
             ]
         },
-        "customInstructions": (
-            "When working on a multi-step task, update .claude/current-task.md at the end "
-            "of each response: what was just done, what's next, any blockers or open questions. "
-            "Clear the file when the task is complete."
-        ),
         "hooks": {
-            "UserPromptSubmit": [
-                {
-                    "hooks": [
-                        {
-                            "type": "command",
-                            "command": (
-                                "if [ -s .claude/current-task.md ];"
-                                " then echo '--- Resuming task ---';"
-                                " cat .claude/current-task.md; fi"
-                            ),
-                        }
-                    ]
-                }
-            ],
             "PreToolUse": [
                 {
                     "matcher": "Bash",
@@ -140,11 +127,11 @@ def install_claude_hooks() -> None:
                             "type": "command",
                             "command": (
                                 "FILE=$(jq -r '.tool_input.file_path // empty');"
-                                " if [ -n \"$FILE\" ]"
+                                ' if [ -n "$FILE" ]'
                                 " && echo \"$FILE\" | grep -q '\\.py$'"
                                 " && ! echo \"$FILE\" | grep -q '/migrations/';"
-                                " then uv run ruff check --fix \"$FILE\""
-                                " && uv run ruff format \"$FILE\"; fi"
+                                ' then uv run ruff check --fix "$FILE"'
+                                ' && uv run ruff format "$FILE"; fi'
                             ),
                         },
                         {

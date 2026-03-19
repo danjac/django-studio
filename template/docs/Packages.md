@@ -43,6 +43,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Natural language processing                               | `nltk`                | `uv add nltk`             |
 | Markdown parsing / rendering                              | `markdown-it-py`      | `uv add markdown-it-py`   |
 | Country names & codes                                     | `django-countries`    | `uv add django-countries` |
+| Geocoding (address → lat/lng)                             | `geopy`               | `uv add geopy`            |
 | XML / HTML parsing                                        | `lxml`                | `uv add lxml`             |
 | Date parsing & relative deltas                            | `python-dateutil`     | `uv add python-dateutil`  |
 | Scientific computing                                      | `scipy` + `numpy`     | `uv add scipy numpy`      |
@@ -85,6 +86,9 @@ State your findings explicitly when suggesting a package — don't just name it.
   Integrates with Django's standard `has_perm`/`has_object_perm` via a custom
   backend. No DB overhead. Best fit when authorization logic is expressed in
   code (ownership checks, role membership, state-based rules).
+- **geopy**: use the `Nominatim` geocoder (no API key required). Run geocoding in
+  a background task — never in a request handler. See `docs/Maps.md` for the full
+  pattern including the django-tasks integration and OSM embed.
 - **django-guardian**: per-object permissions stored in the database. Best fit
   when permissions must be assigned at runtime by users or admins (e.g. "grant
   user A edit access to document B"). Has admin integration and queryset

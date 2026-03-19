@@ -8,7 +8,7 @@
     {% include "header.html" with title=_("Enter Phone Verification Code") %}
     <div class="mt-6">
       {% if phone %}
-        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        <p class="mb-4 text-sm text-base-content/60">
           {% blocktranslate %}We sent a verification code to <strong>{{ phone }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
         </p>
       {% endif %}
@@ -34,7 +34,7 @@
       {% endif %}
       {% if change_form %}
         <div class="mt-8">
-          <h2 class="mb-4 text-lg font-semibold text-muted-900 dark:text-muted-100">
+          <h2 class="mb-4 text-lg font-semibold text-base-content">
             {% translate "Use a different phone number" %}
           </h2>
           {% fragment "form.html" action=form_action %}

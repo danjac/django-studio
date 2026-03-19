@@ -1,0 +1,143 @@
+import pytest
+from django.core.management import call_command
+from django.core.management.base import CommandError
+
+
+MOCK_VENDORS = {
+    "htmx": {
+        "version": "2.0.7",
+        "source": "https://github.com/bigskysoftware/htmx/releases/download/v{version}/htmx.min.js",
+        "dest": "static/vendor/htmx.js",
+    },
+    "daisyui": {
+        "version": "5.5.18",
+        "files": [
+            {
+                "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui.mjs",
+                "dest": "tailwind/daisyui.mjs",
+            },
+        ],
+    },
+}
+
+
+@pytest.fixture
+def vendors(settings):
+    settings.VENDORS = MOCK_VENDORS
+    return settings.VENDORS
+
+
+class TestSyncVendors:
+    def test_check_shows_available_updates(self, vendors, mocker, capsys):
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            return_value="2.0.8",
+        )
+        call_command("sync_vendors", "--check")
+        output = capsys.readouterr().out
+        assert "2.0.7 -> 2.0.8" in output
+        assert "update(s) available" in output
+
+    def test_check_up_to_date(self, vendors, mocker, capsys):
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            return_value="2.0.7",
+        )
+        call_command("sync_vendors", "--check")
+        output = capsys.readouterr().out
+        assert "up to date" in output
+
+    def test_download_single_file_package(self, vendors, mocker, tmp_path, settings):
+        settings.BASE_DIR = tmp_path
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            return_value="2.0.8",
+        )
+        mock_download = mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._download",
+        )
+        call_command("sync_vendors", "--no-input")
+
+        calls = [str(c) for c in mock_download.call_args_list]
+        assert any("htmx" in c for c in calls)
+        assert any("daisyui" in c for c in calls)
+
+    def test_download_single_package_filter(self, vendors, mocker, tmp_path, settings):
+        settings.BASE_DIR = tmp_path
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            return_value="2.0.8",
+        )
+        mock_download = mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._download",
+        )
+        call_command("sync_vendors", "htmx", "--no-input")
+
+        calls = [str(c) for c in mock_download.call_args_list]
+        assert any("htmx" in c for c in calls)
+        assert not any("daisyui" in c for c in calls)
+
+    def test_unknown_package_raises_error(self, vendors):
+        with pytest.raises(CommandError, match="Unknown package"):
+            call_command("sync_vendors", "nonexistent")
+
+    def test_no_vendors_setting_raises_error(self, settings):
+        settings.VENDORS = {}
+        with pytest.raises(CommandError, match="No VENDORS setting found"):
+            call_command("sync_vendors")
+
+    def test_confirmation_prompt_aborts(self, vendors, mocker, capsys):
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch("builtins.input", return_value="n")
+        mock_download = mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._download",
+        )
+        call_command("sync_vendors")
+        mock_download.assert_not_called()
+        assert "Aborted" in capsys.readouterr().out
+
+    def test_confirmation_prompt_proceeds(self, vendors, mocker, tmp_path, settings):
+        settings.BASE_DIR = tmp_path
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch("builtins.input", return_value="y")
+        mock_download = mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._download",
+        )
+        call_command("sync_vendors")
+        assert mock_download.call_count > 0
+
+    def test_api_failure_warns_and_continues(self, vendors, mocker, capsys):
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            side_effect=TimeoutError("timed out"),
+        )
+        call_command("sync_vendors", "--check")
+        output = capsys.readouterr().out
+        assert "failed to check" in output
+
+    def test_download_failure_raises_error(self, vendors, mocker, tmp_path, settings):
+        settings.BASE_DIR = tmp_path
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors._download",
+            side_effect=OSError("connection refused"),
+        )
+        with pytest.raises(CommandError, match="Failed to download"):
+            call_command("sync_vendors", "--no-input")

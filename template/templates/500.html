@@ -3,9 +3,9 @@
 
 {% block content %}
   <div class="py-12 text-center">
-    <p class="text-base font-semibold text-primary-600 dark:text-primary-400">500</p>
-    <h1 class="mt-2 text-4xl font-bold tracking-tight text-muted-900 dark:text-muted-100">{% translate "Server Error" %}</h1>
-    <p class="mt-4 text-lg text-muted-600 dark:text-muted-400">{% translate "Something went wrong on our end. Please try again later." %}</p>
+    <p class="text-base font-semibold text-primary">500</p>
+    <h1 class="mt-2 text-4xl font-bold tracking-tight text-base-content">{% translate "Server Error" %}</h1>
+    <p class="mt-4 text-lg text-base-content/60">{% translate "Something went wrong on our end. Please try again later." %}</p>
     <div class="mt-8">
       <a href="{% url 'index' %}" class="btn btn-primary">{% translate "Go home" %}</a>
     </div>

@@ -1,6 +1,6 @@
 Generate a complete set of CRUD views for a model.
 
-Read `docs/Views.md`, `docs/HTMX.md`, and `design/` before writing any template.
+Read `docs/Views.md`, `docs/HTMX.md`, `docs/Templates.md`, and `docs/Tailwind.md` before writing any template.
 
 **Definitions:**
 - `<model_lower>` = `<model_name>` lower-cased (e.g. `Photo` → `photo`)

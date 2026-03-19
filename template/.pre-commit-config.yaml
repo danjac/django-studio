@@ -3,6 +3,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: '^tailwind/daisyui.*\.mjs$'
       - id: end-of-file-fixer
       - id: check-builtin-literals
       - id: check-merge-conflict
@@ -58,7 +59,7 @@ repos:
       - id: djcss
         exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
       - id: djjs
-        exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
+        exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*|^tailwind/daisyui.*\.mjs$)
   - repo: https://github.com/adamchainz/djade-pre-commit
     rev: 1.9.0
     hooks:

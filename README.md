@@ -103,14 +103,13 @@ This stack will be assessed constantly to ensure it remains the best choice for 
 
 ## Design system
 
-- Modern design patterns and best practices
-- Sample code using Django templates, AlpineJS and Tailwind CSS
-- Common UI components (forms, buttons, navigation, etc.)
+UI components are provided by [DaisyUI](https://daisyui.com/), a Tailwind CSS component library with 50+ production-ready components, built-in dark mode, and semantic theming. DaisyUI is vendored as `.mjs` files (no npm required) and works with the `django-tailwind-cli` standalone binary.
+
+- 50+ ready-made components (buttons, forms, modals, drawers, tabs, etc.)
+- Automatic dark/light mode via DaisyUI themes
+- Semantic color system (`primary`, `secondary`, `error`, etc.)
 - Focus on accessibility
 - Responsive layouts
-- Dark/light modes
-
-The design system is intended to provide a production-ready foundation for your UI. You are free to customize and extend the design system as needed, but the provided components and patterns should cover most common use cases and help you get up and running quickly.
 
 ## Skills
 
@@ -138,6 +137,12 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | `create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
 | `create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
 | `create-filter`  | Add a template filter with correct escaping flags                      |
+
+**Design**
+
+| Subcommand | Summary                                                     |
+| ---------- | ----------------------------------------------------------- |
+| `daisyui`  | Fetch DaisyUI component docs with project conventions       |
 
 **Localisation**
 

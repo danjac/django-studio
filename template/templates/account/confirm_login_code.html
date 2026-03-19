@@ -7,7 +7,7 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Enter Sign-In Code") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% if email %}
           {% blocktranslate %}We sent a code to <strong>{{ email }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
         {% elif phone %}

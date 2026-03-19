@@ -7,7 +7,7 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Login Cancelled") %}
     <div class="mt-6">
-      <p class="text-sm text-muted-600 dark:text-muted-400">
+      <p class="text-sm text-base-content/60">
         {% url 'account_login' as login_url %}
         {% blocktranslate %}You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a class="underline" href="{{ login_url }}">sign in</a>.{% endblocktranslate %}
       </p>

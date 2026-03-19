@@ -8,18 +8,18 @@
     {% include "header.html" with title=_("Change Phone Number") %}
     <div class="mt-6">
       {% if phone %}
-        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        <p class="mb-4 text-sm text-base-content/60">
           {% blocktranslate %}
             Your current phone number is <strong>{{ phone }}</strong>.
           {% endblocktranslate %}
           {% if not phone_verified %}
-            <span class="ml-1 text-danger-600 dark:text-danger-400">
+            <span class="ml-1 text-error">
               {% translate "(unverified)" %}
             </span>
           {% endif %}
         </p>
         {% if not phone_verified %}
-          <div class="p-4 mb-6 text-sm rounded border border-danger-200 bg-danger-50 text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
+          <div class="p-4 mb-6 text-sm rounded border alert alert-error alert-soft">
             {% translate "Your phone number is still pending verification." %}
             <form id="verify-phone" method="post" action="{% url 'account_change_phone' %}" class="mt-2">
               {% csrf_token %}

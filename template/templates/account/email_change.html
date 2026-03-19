@@ -8,7 +8,7 @@
     {% include "header.html" with title=_("Change Email") %}
     <div class="mt-6">
       {% if current_emailaddress %}
-        <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+        <p class="mb-4 text-sm text-base-content/60">
           {% blocktranslate with email=current_emailaddress.email %}
             Your current email address is <strong>{{ email }}</strong>.
           {% endblocktranslate %}
@@ -16,7 +16,7 @@
       {% endif %}
       {% url 'account_email' as form_action %}
       {% if new_emailaddress %}
-        <div class="p-4 mb-6 text-sm rounded border border-danger-200 bg-danger-50 text-danger-800 dark:border-danger-800 dark:bg-danger-950 dark:text-danger-200">
+        <div class="p-4 mb-6 text-sm rounded border alert alert-error alert-soft">
           <p class="mb-2">
             {% blocktranslate with email=new_emailaddress.email %}
               A verification email has been sent to <strong>{{ email }}</strong>. Check your inbox and
@@ -29,7 +29,7 @@
               {% translate "Re-send Verification" %}
             </button>
             {% if current_emailaddress %}
-              <button type="submit" name="action_remove" class="btn btn-danger">
+              <button type="submit" name="action_remove" class="btn btn-error">
                 {% translate "Cancel Change" %}
               </button>
             {% endif %}

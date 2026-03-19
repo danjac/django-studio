@@ -551,6 +551,37 @@ if env.bool("USE_DEBUG_TOOLBAR", default=False):
     # INTERNAL_IPS required for debug toolbar
     INTERNAL_IPS = env.list("INTERNAL_IPS", default=["127.0.0.1"])
 
+# Vendored frontend dependencies
+# Used by `manage.py sync_vendors` to download latest versions.
+
+VENDORS = {
+    "htmx": {
+        "version": "2.0.8",
+        "repo": "bigskysoftware/htmx",
+        "source": "https://cdn.jsdelivr.net/npm/htmx.org@{version}/dist/htmx.min.js",
+        "dest": "static/vendor/htmx.js",
+    },
+    "alpinejs": {
+        "version": "3.15.2",
+        "repo": "alpinejs/alpine",
+        "source": "https://cdn.jsdelivr.net/npm/alpinejs@{version}/dist/cdn.min.js",
+        "dest": "static/vendor/alpine.js",
+    },
+    "daisyui": {
+        "version": "5.5.19",
+        "files": [
+            {
+                "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui.mjs",
+                "dest": "tailwind/daisyui.mjs",
+            },
+            {
+                "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui-theme.mjs",
+                "dest": "tailwind/daisyui-theme.mjs",
+            },
+        ],
+    },
+}
+
 # PROJECT-SPECIFIC SETTINGS
 
 # Cookie used to check user accepts cookies

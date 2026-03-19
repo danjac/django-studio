@@ -7,7 +7,7 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Sign In with Code") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mb-4 text-sm text-base-content/60">
         {% translate "Enter your email or phone number and we will send you a one-time sign-in code." %}
       </p>
       {% url 'account_request_login_code' as form_action %}
@@ -18,7 +18,7 @@
           <button type="submit" class="btn btn-primary">{% translate "Send Code" %}</button>
         {% endfragment %}
       {% endfragment %}
-      <p class="mt-4 text-sm text-muted-600 dark:text-muted-400">
+      <p class="mt-4 text-sm text-base-content/60">
         <a href="{% url 'account_login' %}" class="underline">{% translate "Other sign-in options" %}</a>
       </p>
     </div>

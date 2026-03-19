@@ -27,10 +27,10 @@ Form fields rendered via `{{ field.as_field_group }}` or
 `{% fragment "form.html" %}` are accessible by default:
 - Every `<input>` has an associated `<label>` via `field.id_for_label`
 - Error messages are linked via `aria-describedby`
-- The `has-errors` class on the `<fieldset>` provides a visual indicator
+- Error states use `text-error` for visual indication
 
 Do not bypass this rendering — `{% render_field %}` without a label wrapper
-breaks the label association. Always use `as_field_group`. See `design/Forms.md`.
+breaks the label association. Always use `as_field_group`. See `docs/Templates.md`.
 
 For groups of related inputs (radio buttons, checkboxes), use `<fieldset>` and
 `<legend>` rather than a plain `<label>`.
@@ -119,7 +119,7 @@ replace them:
 - Use `<nav>` for navigation landmarks, `<main>` for main content, `<header>`,
   `<footer>`, `<aside>` for regions.
 - Heading hierarchy must be sequential (`h1` → `h2` → `h3`). Do not skip
-  levels. See `design/Typography.md` for the heading scale.
+  levels.
 - Use `<table>` for tabular data, with `<th scope="col|row">` headers.
 - Use `<ul>`/`<ol>` for lists. Do not use CSS `list-style: none` without
   keeping the list role visible to screen readers.
@@ -132,19 +132,19 @@ replace them:
   text) or **3:1** for large text (18pt+ or 14pt bold).
 - Do not convey information by colour alone — pair colour with a text label,
   icon, or pattern.
-- Verify contrast using the Tailwind palette. The design system's semantic
-  tokens (`primary`, `danger`, `success`, `error`, `info`, `warning`) are
-  mapped to Tailwind shades chosen to meet AA at their standard usages, but
-  always verify when combining custom values or overriding tokens in
-  `tailwind/theme.css`.
+- Verify contrast using the DaisyUI theme palette. The theme colors
+  (`primary`, `secondary`, `error`, `success`, `info`, `warning`) are
+  chosen to meet AA at their standard usages, but always verify when
+  customising theme values in `tailwind/theme.css`.
 
 ---
 
 ## Focus styles
 
-Never remove focus outlines without replacing them. The design system uses
-Tailwind's `focus-visible:ring` utilities — do not override these with
-`outline: none` or `outline: 0` unless a custom focus style is in place.
+Never remove focus outlines without replacing them. DaisyUI components include
+focus styles. For custom elements, use Tailwind's `focus-visible:ring`
+utilities — do not override these with `outline: none` or `outline: 0`
+unless a custom focus style is in place.
 
 ---
 

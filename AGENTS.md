@@ -80,8 +80,6 @@ Before adding or modifying any code under `template/`, read the generated projec
 
 - `template/AGENTS.md.jinja` — agent workflow, conventions, and command reference
 - `template/docs/` — all reference docs (Django config, views, models, packages, HTMX, etc.)
-- `template/design/` — component library and design tokens
-
 These docs describe the patterns, types, and conventions the generated project uses. Code that ignores them will be wrong.
 
 After any change to `template/`, regenerate the project and verify all checks pass before committing:
@@ -100,21 +98,9 @@ just typecheck
 
 **Jinja2 processing:** Only files with a `.jinja` suffix are processed by Copier's Jinja2 engine; all other files are copied verbatim. Files that contain conflicting `{{ }}` syntax (e.g. `justfile` uses `{{ args }}`, GitHub Actions workflows use `${{ }}`) must remain plain files and use `PROJECT_SLUG` as a plain-text placeholder, substituted by the hook.
 
-## Design System
+## UI Components
 
-The template includes a component library in `template/design/`. When modifying or adding UI components in the generated project, check the design system first:
-
-- `design/README.md` - component index and design tokens
-- `design/Navigation.md` - navbar, sidebar, user dropdown
-- `design/Forms.md` - form wrapper, field template, input classes
-- `design/Buttons.md` - button variants
-- `design/Messages.md` - toast alerts
-- `design/Cards.md` - link card component
-- `design/Pagination.md` - paginated list
-- `design/Typography.md` - markdown/prose, heading scale
-- `design/Layout.md` - base templates, page layout patterns
-
-When adding a component to the template, add a corresponding doc to `design/`.
+The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/Templates.md`. Tailwind and DaisyUI configuration is in `template/docs/Tailwind.md`.
 
 ## djstudio Commands
 

@@ -1,6 +1,6 @@
 # Tailwind CSS
 
-This project uses Tailwind CSS v4 with `django-tailwind-cli` for compilation.
+This project uses Tailwind CSS v4 with DaisyUI and `django-tailwind-cli` for compilation. No Node.js or npm required.
 
 ## Installation
 
@@ -21,118 +21,98 @@ TAILWIND_CLI_SRC_CSS = BASE_DIR / "tailwind" / "app.css"
 TAILWIND_CLI_DIST_CSS = "app.css"
 ```
 
-## CSS Structure (Tailwind v4)
-
-This project organizes Tailwind CSS into multiple files:
+## CSS Structure
 
 ```css
 /* tailwind/app.css */
 @import "tailwindcss";
 
-/* Plugins */
-@plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
+@plugin "./daisyui.mjs";
 
 @import "./theme.css";
 @import "./tweaks.css";
 @import "./htmx.css";
-@import "./buttons.css";
-@import "./forms.css";
-@import "./messages.css";
 ```
+
+### Plugins
+
+| Plugin | Purpose |
+|--------|---------|
+| `daisyui.mjs` | Component library (buttons, forms, alerts, navbar, etc.) |
+| `daisyui-theme.mjs` | Custom theme definitions |
+| `@tailwindcss/typography` | Prose styling for rendered markdown |
+
+DaisyUI is vendored as `.mjs` files in `tailwind/` — no npm needed. To update, download new releases from [daisyui.com](https://daisyui.com/pages/tailwind-css-without-node/).
 
 ### theme.css
 
-Brand palette and semantic layout tokens. The two sections serve different roles
-but are edited together when rebranding:
+Custom DaisyUI themes for light and dark mode. Each theme defines brand colors in oklch:
 
-- **`@theme` block** — Tailwind palette aliases that generate utility classes
-  (`text-primary-600`, `bg-danger-50`, etc.). Change these to rebrand. Never use
-  `indigo-*`, `violet-*`, or `rose-*` directly in templates.
-- **`:root` block** — Runtime CSS custom properties used with `var()` throughout
-  the project. Change these to retheme the layout or dark mode palette. Do not
-  rename them — they are referenced across all component files.
+```css
+@plugin "./daisyui-theme.mjs" {
+  name: "light";
+  default: true;
+  color-scheme: light;
+  --color-primary: oklch(0.50 0.18 264);
+  --color-secondary: oklch(0.55 0.20 293);
+  --color-error: oklch(0.58 0.22 18);
+  /* ... */
+}
+```
+
+To rebrand, edit the oklch values in `theme.css`. All DaisyUI components update automatically.
 
 ### tweaks.css
 
-Global resets, body defaults, Alpine utilities, and dark mode border corrections.
+Minimal global resets: scrollbar width and Alpine `[x-cloak]` rule.
 
 ### htmx.css
 
-HTMX utilities:
+HTMX utilities: progress indicator bar and `htmx-added` custom variant.
 
-```css
-@custom-variant htmx-added (& .htmx-added,.htmx-added &);
+## DaisyUI Component Reference
 
-@layer base {
-    #hx-indicator {
-        display: none;
-        position: fixed;
-        top: 0; left: 0;
-        height: 3px;
-        background: var(--color-primary-500);
-        z-index: 9999;
-    }
+Use DaisyUI's semantic classes instead of hand-rolling component CSS. Full docs at [daisyui.com/components](https://daisyui.com/components/).
 
-    #hx-indicator.htmx-request {
-        display: block !important;
-    }
-}
+Common classes used in this project:
+
+| Component | Classes |
+|-----------|---------|
+| Buttons | `btn`, `btn-primary`, `btn-secondary`, `btn-error`, `btn-ghost`, `btn-outline` |
+| Inputs | `input`, `select`, `textarea`, `checkbox` |
+| Form fields | `fieldset`, `fieldset-legend`, `label` |
+| Alerts | `alert`, `alert-info`, `alert-success`, `alert-warning`, `alert-error`, `alert-soft` |
+| Toast | `toast`, `toast-end`, `toast-bottom` |
+| Navbar | `navbar`, `navbar-start`, `navbar-center`, `navbar-end` |
+| Menu | `menu`, `menu-title` |
+| Join | `join`, `join-item` (pagination button groups) |
+| Cards | `card`, `card-body`, `card-title` |
+| Badges | `badge`, `badge-primary`, `badge-error` |
+
+### Color utilities
+
+DaisyUI provides semantic color classes that adapt to the active theme:
+
+```html
+<div class="bg-base-100 text-base-content">Surface</div>
+<div class="bg-primary text-primary-content">Brand</div>
+<div class="text-base-content/60">Muted text</div>
+<div class="text-error">Error text</div>
+<div class="border-base-300">Border</div>
 ```
 
-### Component CSS
+Never use raw Tailwind colors (`indigo-600`, `zinc-900`, etc.) in templates — use DaisyUI semantic names so themes work correctly.
 
-Define component styles in separate files:
+### Dark mode
 
-```css
-/* tailwind/buttons.css */
-@layer components {
-    .btn {
-        @apply px-4 py-2 rounded-lg font-semibold transition-colors;
-    }
-    .btn-primary {
-        @apply bg-indigo-600 text-white hover:bg-indigo-700;
-    }
-}
-```
-
-```css
-/* tailwind/forms.css */
-@layer components {
-    .form-input {
-        @apply w-full px-3 py-2 border rounded-lg;
-    }
-    .form-checkbox {
-        @apply rounded border-zinc-300;
-    }
-}
-```
+DaisyUI handles dark mode via themes. The dark theme is activated automatically by `prefers-color-scheme: dark`. No `dark:` prefix needed for DaisyUI component classes. Use `dark:` only for custom Tailwind utilities outside DaisyUI components.
 
 ## Development
 
 ```bash
 just dj tailwind build    # One-off CSS build (production / CI)
 just serve                # Dev server with Tailwind watching for changes
-```
-
-## Common Classes
-
-### Layout
-```html
-<div class="flex">flexbox</div>
-<div class="grid grid-cols-3">grid</div>
-<div class="space-y-4">vertical spacing</div>
-```
-
-### Responsive
-```html
-<div class="flex flex-col sm:flex-row">mobile-first responsive</div>
-```
-
-### Dark Mode
-```html
-<div class="bg-white dark:bg-zinc-900">dark mode support</div>
-<div class="text-zinc-700 dark:text-zinc-300">adaptive text</div>
 ```
 
 ## Linting
@@ -142,10 +122,3 @@ Use `rustywind` to sort Tailwind classes:
 ```bash
 rustywind templates/ --write
 ```
-
-## Key Differences from Tailwind v3
-
-- Uses `@import "tailwindcss"` instead of `@tailwind` directives
-- Uses `@plugin` for plugins instead of `plugins: []` in config
-- No `tailwind.config.js` required - use CSS for configuration
-- Uses `@variant dark` for dark mode instead of `darkMode: 'class'`

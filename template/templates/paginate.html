@@ -22,39 +22,35 @@
     hx-swap="outerHTML show:window:top"
     hx-target="#{{ pagination_target }}"
   >
-    <ul class="flex justify-between items-center">
-      <li>
-        {% if page.has_previous %}
-          <a
-            href="{{ request.path }}{% querystring page=page.previous_page_number %}"
-            aria-label="{% translate "Previous Page" %}"
-            title="{% translate "Previous Page" %}"
-            class="link"
-          >{% translate "Previous" %}</a>
-        {% else %}
-          <span
-            class="cursor-not-allowed text-muted-600 dark:text-muted-300"
-            title="{% translate "First Page" %}"
-            aria-label="{% translate "First Page" %}"
-          >{% translate "Previous" %}</span>
-        {% endif %}
-      </li>
-      <li>
-        {% if page.has_next %}
-          <a
-            href="{{ request.path }}{% querystring page=page.next_page_number %}"
-            aria-label="{% translate "Next Page" %}"
-            title="{% translate "Next Page" %}"
-            class="link"
-          >{% translate "Next" %}</a>
-        {% else %}
-          <span
-            class="cursor-not-allowed text-muted-600 dark:text-muted-300"
-            title="{% translate "Last Page" %}"
-            aria-label="{% translate "Last Page" %}"
-          >{% translate "Next" %}</span>
-        {% endif %}
-      </li>
-    </ul>
+    <div class="join">
+      {% if page.has_previous %}
+        <a
+          href="{{ request.path }}{% querystring page=page.previous_page_number %}"
+          aria-label="{% translate "Previous Page" %}"
+          title="{% translate "Previous Page" %}"
+          class="btn btn-ghost join-item"
+        >{% translate "Previous" %}</a>
+      {% else %}
+        <span
+          class="btn btn-ghost btn-disabled join-item"
+          title="{% translate "First Page" %}"
+          aria-label="{% translate "First Page" %}"
+        >{% translate "Previous" %}</span>
+      {% endif %}
+      {% if page.has_next %}
+        <a
+          href="{{ request.path }}{% querystring page=page.next_page_number %}"
+          aria-label="{% translate "Next Page" %}"
+          title="{% translate "Next Page" %}"
+          class="btn btn-ghost join-item"
+        >{% translate "Next" %}</a>
+      {% else %}
+        <span
+          class="btn btn-ghost btn-disabled join-item"
+          title="{% translate "Last Page" %}"
+          aria-label="{% translate "Last Page" %}"
+        >{% translate "Next" %}</span>
+      {% endif %}
+    </div>
   </nav>
 {% endpartialdef links %}

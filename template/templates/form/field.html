@@ -9,7 +9,7 @@
 {% partialdef fieldset %}
   {% with errors=field.errors described_by=field.aria_describedby %}
     <fieldset
-      class="form-control space-y-3{% if errors %} has-errors{% endif %}"
+      class="fieldset"
       {% if described_by %}aria-describedby="{{ described_by }}"{% endif %}
     >
       {{ content }}
@@ -20,18 +20,15 @@
 {% endpartialdef fieldset %}
 
 {% partialdef label %}
-  <label
-    class="block font-semibold text-muted-700 dark:text-muted-300{% if field.errors %} text-danger-600 dark:text-danger-400{% endif %}"
-    for="{{ field.id_for_label }}"
-  >
+  <legend class="fieldset-legend{% if field.errors %} text-error{% endif %}">
     {{ field.label }}
     {% if not field.field.required %}(optional){% endif %}
-  </label>
+  </legend>
 {% endpartialdef label %}
 
 {% partialdef errors %}
   {% if errors %}
-    <ul class="space-y-1 font-semibold text-danger-600 dark:text-danger-400">
+    <ul class="space-y-1 text-sm font-semibold text-error">
       {{ errors|unordered_list }}
     </ul>
   {% endif %}
@@ -39,16 +36,16 @@
 
 {% partialdef help_text %}
   {% if field.help_text %}
-    <div class="text-sm text-muted-500 dark:text-muted-400" id="{{ field.auto_id }}_helptext">
+    <p class="label" id="{{ field.auto_id }}_helptext">
       {{ field.help_text }}
-    </div>
+    </p>
   {% endif %}
 {% endpartialdef help_text %}
 
 {# Default input #}
 {% partialdef input %}
   {% partial label %}
-  {% render_field field class="form-input" %}
+  {% render_field field class="input w-full" %}
 {% endpartialdef input %}
 
 {# Simple text and file inputs - same as default #}
@@ -61,27 +58,30 @@
 {# Date #}
 {% partialdef dateinput %}
   {% partial label %}
-  {% render_field field class="form-input" type="date" %}
+  {% render_field field class="input w-full" type="date" %}
 {% endpartialdef dateinput %}
 
 {# Date + time #}
 {% partialdef datetimeinput %}
   {% partial label %}
-  {% render_field field class="form-input" type="datetime-local" %}
+  {% render_field field class="input w-full" type="datetime-local" %}
 {% endpartialdef datetimeinput %}
 
 {# Textarea #}
 {% partialdef textarea %}
   {% partial label %}
-  {% render_field field class="form-textarea" %}
+  {% render_field field class="textarea w-full" %}
 {% endpartialdef textarea %}
 
 {# Checkbox #}
 {% partialdef checkboxinput %}
-  <div class="flex items-center space-x-3 w-full">
-    {% render_field field class="form-checkbox" %}
-    {% partial label %}
-  </div>
+  <label class="label cursor-pointer gap-3">
+    {% render_field field class="checkbox" %}
+    <span class="label-text{% if field.errors %} text-error{% endif %}">
+      {{ field.label }}
+      {% if not field.field.required %}(optional){% endif %}
+    </span>
+  </label>
 {% endpartialdef checkboxinput %}
 
 {# Checkbox select multiple (e.g. M2M fields) #}
@@ -95,17 +95,17 @@
 {# Password with show/hide toggle #}
 {% partialdef passwordinput %}
   {% partial label %}
-  <div x-data="{ show: false }" class="inline-block relative">
-    {% render_field field class="pr-10 form-input" x-ref="password" %}
+  <div x-data="{ show: false }" class="relative">
+    {% render_field field class="input w-full pr-10" x-ref="password" %}
     <button
       type="button"
       x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';"
       aria-label="{% translate "Toggle password visibility" %}"
-      class="flex absolute inset-y-0 right-0 justify-center items-center px-3 h-full text-muted-500 dark:text-muted-400"
+      class="absolute inset-y-0 right-0 flex items-center justify-center px-3"
       tabindex="-1"
     >
-      {% heroicon_mini "eye" class="w-5 h-5 text-muted-500 dark:text-muted-400" x_show="show" %}
-      {% heroicon_mini "eye-slash" class="w-5 h-5 text-muted-500 dark:text-muted-400" x_show="!show" %}
+      {% heroicon_mini "eye" class="size-5 opacity-50" x_show="show" %}
+      {% heroicon_mini "eye-slash" class="size-5 opacity-50" x_show="!show" %}
     </button>
   </div>
 {% endpartialdef passwordinput %}
@@ -113,19 +113,19 @@
 {# Select dropdown #}
 {% partialdef select %}
   {% partial label %}
-  {% render_field field class="form-select" %}
+  {% render_field field class="select w-full" %}
 {% endpartialdef select %}
 
 {# Multi-select #}
 {% partialdef selectmultiple %}
   {% partial label %}
-  {% render_field field class="form-multiselect" %}
+  {% render_field field class="select w-full" %}
 {% endpartialdef selectmultiple %}
 
 {# django-money MoneyWidget (amount + currency select) #}
 {% partialdef moneywidget %}
   {% partial label %}
-  <div class="money-widget">
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-stretch">
     {% render_field field %}
   </div>
 {% endpartialdef moneywidget %}

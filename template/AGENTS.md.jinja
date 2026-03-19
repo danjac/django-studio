@@ -124,29 +124,11 @@ correct Python 3.14 syntax ([PEP 758](https://peps.python.org/pep-0758/)).
 Claude) may incorrectly flag this as invalid syntax and revert it — this is
 wrong (upstream tracking: [pyright#10546](https://github.com/microsoft/pyright/issues/10546)).
 
-### Design System
+### UI Components
 
-A component library lives in `design/`. It documents every ready-made UI component and when to use it:
+This project uses [DaisyUI](https://daisyui.com/components/) for component styling. See `docs/Tailwind.md` for project-specific configuration and `docs/Templates.md` for Django template patterns (forms, pagination, navigation, messages).
 
-| Doc                    | Components covered                                  |
-| ---------------------- | --------------------------------------------------- |
-| `design/Buttons.md`    | `btn`, `btn-primary`, `btn-secondary`, `btn-danger` |
-| `design/Messages.md`   | Django messages toast, HTMX OOB swap                |
-| `design/Forms.md`      | `form.html`, `form/field.html`, widget classes      |
-| `design/Navigation.md` | `navbar.html`, `sidebar.html`, user dropdown        |
-| `design/Headers.md`    | `header.html` - page title with optional subtitle   |
-| `design/Cards.md`      | card pattern with sorl-thumbnail example            |
-| `design/Lists.md`      | `browse.html` - divided list layout                 |
-| `design/Badges.md`     | Status badges, count chips, category tags           |
-| `design/Pagination.md` | `paginate.html` - Previous/Next with HTMX           |
-| `design/Search.md`     | HTMX debounced search input with URL push + clear   |
-| `design/Carousel.md`   | Alpine.js lightbox carousel with sorl-thumbnail     |
-| `design/Landing.md`    | Hero, feature grid, CTA — public landing page       |
-| `design/Typography.md` | `markdown.html`, prose, heading scale, link style   |
-| `design/Layout.md`     | Base templates, two-column layout, HTMX indicator   |
-| `design/Upload.md`     | Multi-file upload widget (Alpine + drag-and-drop)   |
-
-**Before writing new UI markup**, check `design/` first - the component you need likely already exists.
+**Before writing new UI markup**, check [daisyui.com/components](https://daisyui.com/components/) first — the component you need likely already exists.
 
 ### Frontend Dependencies
 
@@ -154,9 +136,10 @@ A component library lives in `design/`. It documents every ready-made UI compone
 
 Always vendor the latest stable minified library file directly into the project:
 
-- Place third-party vendored files under `static/vendor/` with the version in the filename (e.g. `static/vendor/htmx.2.0.4.min.js`).
+- Place third-party vendored files under `static/vendor/` with the version in the filename (e.g. `static/vendor/htmx-2.0.8.min.js`).
 - Reference them with Django's `static` template tag in templates.
 - See the existing HTMX and AlpineJS files in `static/vendor/` as examples.
+- All vendored dependencies are tracked in `VENDORS` in `config/settings.py` — update it when adding or upgrading a vendored library. Run `just dj sync_vendors` to check for and download updates.
 
 ### Icons
 
@@ -186,7 +169,7 @@ Hierarchy - use the first that fits:
 
 Never use `{{ form.as_div }}` - it bypasses the configured renderer. Never use `{% include "form/field.html" %}`.{% endraw %}
 
-See `design/Forms.md` for full field template documentation.
+See `docs/Templates.md` for full field template documentation.
 
 ### Internationalisation
 
@@ -249,20 +232,20 @@ migrations. It also indexes the focused docs below.
 | ------------------------------- | ---------------------------------------------------------- |
 | Any view (new or modified)      | `docs/Views.md`                                            |
 | Any model or queryset           | `docs/Models.md`                                           |
-| Any form                        | `design/Forms.md`                                          |
+| Any form                        | `docs/Templates.md`                                        |
 | Admin registration              | `docs/Django.md`                                           |
 | Adding a dependency             | `docs/Packages.md`                                         |
 | Any feature handling user data, accounts, or PII | `docs/GDPR.md`                        |
 | Any template or UI component    | also `docs/Accessibility.md`                               |
 | Async view                      | `docs/Views.md`                                            |
-| Any template or UI component    | `docs/UI-Design-Patterns.md` + all of `design/`            |
+| Any template or UI component    | `docs/UI-Design-Patterns.md`, `docs/Tailwind.md`           |
 | Background task                 | `docs/Django-Tasks.md`                                     |
 | Migrations / linear-migrations  | `docs/Models.md`                                           |
 | HTMX interaction                | `docs/HTMX.md`                                             |
 | AlpineJS component              | `docs/Alpine.md`                                           |
 | Tailwind / CSS                  | `docs/Tailwind.md`                                         |
 | Authentication / allauth        | `docs/Authentication.md`                                   |
-| File uploads / media storage    | `docs/File-Storage.md`, `design/Upload.md`                 |
+| File uploads / media storage    | `docs/File-Storage.md`                                     |
 | Deployment / infrastructure     | `docs/Helm-Terraform.md`, `docs/K3s-Hetzner-Cloudflare.md` |
 | Testing patterns                | `docs/Testing.md`                                          |
 | Any of the above                | `docs/Project-Structure.md`                                |
@@ -323,6 +306,12 @@ All project commands live under `/djstudio <subcommand>`:
 | `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
 | `create-tag [<app_name>] [<module>]`    | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
 | `create-filter [<app_name>] [<module>]` | Add a template filter with correct escaping flags |
+
+**Design**
+
+| Subcommand | Purpose |
+| ----------------------- | ----------------------------------------------------- |
+| `daisyui <component>` | Fetch DaisyUI component docs with project conventions |
 
 **Localisation**
 

@@ -7,8 +7,8 @@
   <div class="py-12 mx-auto max-w-md">
     {% include "header.html" with title=_("Sign In") %}
     <div class="mt-6">
-      <p class="mb-4 text-sm text-muted-600 dark:text-muted-400">
-        {% blocktranslate with url=signup_url %}No account? <a class="underline" href="{{ url }}">Sign up</a>.{% endblocktranslate %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% blocktranslate with url=signup_url %}No account? <a class="link link-primary" href="{{ url }}">Sign up</a>.{% endblocktranslate %}
       </p>
       {% fragment "form.html" %}
         {% if redirect_field_value %}

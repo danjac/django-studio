@@ -36,6 +36,15 @@ Use [`heroicons`](https://heroicons.com/) via `heroicons[django]` for all icons:
 - Decorative icons (next to visible text) get `aria-hidden="true"`.
 - Standalone icons (icon-only buttons) need `aria-label` on the parent button.
 
+## Forms
+
+Form rendering uses `{{ field.as_field_group }}` (dispatches through `templates/form/field.html`
+to widget-specific `{% partialdef %}` blocks), `django-widget-tweaks` for per-field attribute
+overrides, and `{% fragment "form.html" %}` as the HTMX-aware `<form>` wrapper.
+
+See `docs/Templates.md` for the full reference: field rendering, widget type dispatch, custom
+widget partials, the `form.html` wrapper variables, and the `{% partialdef %}` HTMX swap pattern.
+
 ## Accessibility
 
 Target WCAG 2.1 AA.
@@ -79,7 +88,9 @@ DaisyUI components include focus styles. For custom elements, use `focus-visible
 
 ### Forms
 
-Every input needs a `<label>`. Never rely on `placeholder` as a substitute. DaisyUI's `fieldset` + `fieldset-legend` pattern handles this — see `docs/Templates.md`.
+Every input needs a `<label>`. Never rely on `placeholder` as a substitute. The `fieldset` +
+`fieldset-legend` DaisyUI pattern used by `{{ field.as_field_group }}` handles this automatically
+— see `docs/Templates.md` for rendering details.
 
 ### HTMX Live Regions
 

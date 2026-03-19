@@ -52,8 +52,11 @@ Key rules:
 - Always redirect on success — never re-render after a valid POST.
 - On invalid POST, return `render_partial_response` (not a plain `TemplateResponse`)
   so HTMX swaps the re-rendered form with inline error messages.
-- For form rendering conventions (field templates, CSS classes, HTMX form wrapper),
-  see `docs/Templates.md`.
+
+**Form rendering** — use `{{ field.as_field_group }}` for fields (renders via
+`templates/form/field.html` with widget dispatch and DaisyUI classes), `django-widget-tweaks`
+`render_field` to override individual field attributes, and `{% fragment "form.html" %}` as the
+HTMX-aware form wrapper. See `docs/Templates.md` for the full reference.
 
 ## Manual Query/POST Parameter Validation
 

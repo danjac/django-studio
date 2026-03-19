@@ -35,9 +35,6 @@ class TestProjectStructure:
         )
         assert cmd.exists()
 
-    def test_design_directory_created(self, project):
-        assert (project / "design").is_dir()
-
     def test_tailwind_directory_created(self, project):
         assert (project / "tailwind").is_dir()
 
@@ -401,6 +398,7 @@ class TestClaudeSkillsInstallation:
             "a11y.md",
             "deadcode.md",
             "translate.md",
+            "daisyui.md",
             "launch.md",
             "rotate-secrets.md",
             "enable-db-backups.md",

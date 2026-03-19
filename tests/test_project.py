@@ -398,6 +398,7 @@ class TestClaudeSkillsInstallation:
             "a11y.md",
             "deadcode.md",
             "translate.md",
+            "docs.md",
             "daisyui.md",
             "launch.md",
             "rotate-secrets.md",

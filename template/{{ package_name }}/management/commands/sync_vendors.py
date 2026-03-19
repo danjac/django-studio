@@ -13,11 +13,13 @@ from django.core.management.base import BaseCommand, CommandError, CommandParser
 if TYPE_CHECKING:
     from django.core.management.base import OutputWrapper
 
+VENDORS_FILE = "vendors.json"
+
 
 class Command(BaseCommand):
     """Check and update vendored frontend dependencies."""
 
-    help = "Update vendored frontend dependencies defined in settings.VENDORS."
+    help = "Update vendored frontend dependencies defined in vendors.json."
 
     def add_arguments(self, parser: CommandParser) -> None:
         """Add optional package name argument."""
@@ -42,9 +44,13 @@ class Command(BaseCommand):
         self, *, package: str | None, check: bool, no_input: bool, **options: Any
     ) -> None:
         """Check for and download vendor updates."""
-        vendors: dict[str, Any] = getattr(settings, "VENDORS", {})
+        vendors_path = Path(settings.BASE_DIR) / VENDORS_FILE
+        if not vendors_path.exists():
+            raise CommandError(f"{VENDORS_FILE} not found at {vendors_path}.")
+
+        vendors: dict[str, Any] = json.loads(vendors_path.read_text())
         if not vendors:
-            raise CommandError("No VENDORS setting found.")
+            raise CommandError(f"No vendors defined in {VENDORS_FILE}.")
 
         if package:
             if package not in vendors:
@@ -77,7 +83,7 @@ class Command(BaseCommand):
                 self.stdout.write("Aborted.")
                 return
 
-        _download_updates(updates, settings.BASE_DIR, self.stdout, self.style)
+        _download_updates(updates, Path(settings.BASE_DIR), vendors_path, self.stdout, self.style)
         self.stdout.write(self.style.SUCCESS(f"\n{len(updates)} package(s) updated."))
 
 
@@ -139,12 +145,15 @@ def _check_versions(
 def _download_updates(
     updates: list[tuple[str, str, str]],
     base_dir: Path,
+    vendors_path: Path,
     stdout: OutputWrapper,
     style: Any,
 ) -> None:
-    """Download updated files for each vendor."""
+    """Download updated files for each vendor and update vendors.json."""
+    all_vendors: dict[str, Any] = json.loads(vendors_path.read_text())
+
     for name, _current, latest in updates:
-        config = settings.VENDORS[name]
+        config = all_vendors[name]
         files = config.get("files", [])
         if not files:
             files = [{"source": config["source"], "dest": config["dest"]}]
@@ -158,9 +167,8 @@ def _download_updates(
             except (urllib.error.URLError, OSError) as exc:
                 raise CommandError(f"Failed to download {name}: {exc}") from exc
 
+        all_vendors[name]["version"] = latest
         stdout.write(style.SUCCESS(f"  {name} updated to {latest}"))
-        stdout.write(
-            style.WARNING(
-                f"  Update VENDORS['{name}']['version'] in settings.py to '{latest}'"
-            )
-        )
+
+    vendors_path.write_text(json.dumps(all_vendors, indent=2) + "\n")
+    stdout.write(style.SUCCESS(f"  Updated {vendors_path.name}"))

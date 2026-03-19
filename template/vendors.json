@@ -1,0 +1,27 @@
+{
+  "htmx": {
+    "version": "2.0.7",
+    "repo": "bigskysoftware/htmx",
+    "source": "https://cdn.jsdelivr.net/npm/htmx.org@{version}/dist/htmx.min.js",
+    "dest": "static/vendor/htmx.js"
+  },
+  "alpinejs": {
+    "version": "3.15.2",
+    "repo": "alpinejs/alpine",
+    "source": "https://cdn.jsdelivr.net/npm/alpinejs@{version}/dist/cdn.min.js",
+    "dest": "static/vendor/alpine.js"
+  },
+  "daisyui": {
+    "version": "5.5.19",
+    "files": [
+      {
+        "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui.mjs",
+        "dest": "tailwind/daisyui.mjs"
+      },
+      {
+        "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui-theme.mjs",
+        "dest": "tailwind/daisyui-theme.mjs"
+      }
+    ]
+  }
+}

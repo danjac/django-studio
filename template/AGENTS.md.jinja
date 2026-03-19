@@ -139,7 +139,7 @@ Always vendor the latest stable minified library file directly into the project:
 - Place third-party vendored files under `static/vendor/` with the version in the filename (e.g. `static/vendor/htmx-2.0.8.min.js`).
 - Reference them with Django's `static` template tag in templates.
 - See the existing HTMX and AlpineJS files in `static/vendor/` as examples.
-- All vendored dependencies are tracked in `VENDORS` in `config/settings.py` — update it when adding or upgrading a vendored library. Run `just dj sync_vendors` to check for and download updates.
+- All vendored dependencies are tracked in `vendors.json` at the project root — update it when adding or upgrading a vendored library. Run `just dj sync_vendors` to check for and download updates (versions are updated in `vendors.json` automatically on success).
 
 ### Icons
 

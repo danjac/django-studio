@@ -29,6 +29,7 @@ opencode.json
 .gitattributes
 .dockerignore
 AGENTS.md
+vendors.json
 CLAUDE.md
 commitlint.config.js
 design

@@ -4,8 +4,13 @@ This project vendors all frontend JavaScript and CSS files directly into
 `static/vendor/` (and `tailwind/` for Tailwind plugins). There is no npm, no
 Node.js build step, and no CDN links in production.
 
-All vendored packages are tracked in `vendors.json` at the project root.
+Most vendored packages are tracked in `vendors.json` at the project root.
 The `sync_vendors` management command checks for updates and downloads them.
+
+Some assets have no versioned releases (e.g. certain HTMX extension plugins).
+These can be placed in `static/vendor/` directly — just copy the file manually
+and reference it from templates. There is no need to add them to `vendors.json`
+since `sync_vendors` would have nothing to check.
 
 ## vendors.json format
 

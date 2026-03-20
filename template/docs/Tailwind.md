@@ -43,7 +43,7 @@ TAILWIND_CLI_DIST_CSS = "app.css"
 | `daisyui-theme.mjs` | Custom theme definitions |
 | `@tailwindcss/typography` | Prose styling for rendered markdown |
 
-DaisyUI is vendored as `.mjs` files in `tailwind/` — no npm needed. To update, download new releases from [daisyui.com](https://daisyui.com/pages/tailwind-css-without-node/).
+DaisyUI is vendored as `.mjs` files in `tailwind/` — no npm needed. To update or add frontend dependencies, see `docs/Frontend-Dependencies.md`.
 
 ### theme.css
 

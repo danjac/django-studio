@@ -162,6 +162,8 @@ just pyinstall
 
 > **Important:** Always use `uv add` or `uv add --dev` to add dependencies. Never manually edit `pyproject.toml`.
 
+> **Frontend JS/CSS** (HTMX, Alpine.js, DaisyUI) are vendored, not pip packages. See `docs/Frontend-Dependencies.md`.
+
 ## Accessing Services
 
 - **App**: http://localhost:8000

@@ -1,5 +1,7 @@
 # Additional Packages
 
+> **Frontend JS/CSS dependencies** (HTMX, Alpine.js, DaisyUI) are vendored, not installed via pip. See `docs/Frontend-Dependencies.md` to add or update them.
+
 These packages are not in the default stack but are the preferred choices when
 the need arises. **Only add them when actually needed — do not install
 speculatively.**

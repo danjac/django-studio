@@ -59,7 +59,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 
 **Icons**: Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Never use character entities or emoji as icons. See `docs/UI-Design-Patterns.md`.
 
-**Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates.
+**Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/Frontend-Dependencies.md` for the full format and workflow.
 
 **Form rendering** — use the first option that fits:
 {% raw %}1. `{{ form.field.as_field_group }}` — explicit field order
@@ -86,7 +86,8 @@ migrations. It also indexes the focused docs below.
 | Any model or queryset           | `docs/Models.md` |
 | Any form                        | `docs/Templates.md` |
 | Admin registration              | `docs/Django.md` |
-| Adding a dependency             | `docs/Packages.md` |
+| Adding a Python dependency      | `docs/Packages.md` |
+| Adding a JS/CSS dependency      | `docs/Frontend-Dependencies.md` |
 | Any feature handling user data, accounts, or PII | `docs/GDPR.md` |
 | Any template or UI component    | `docs/UI-Design-Patterns.md`, `docs/Tailwind.md`, `docs/Accessibility.md` |
 | Background task                 | `docs/Django-Tasks.md` |

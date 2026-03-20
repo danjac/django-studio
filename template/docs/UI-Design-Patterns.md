@@ -1,6 +1,6 @@
 # UI Design Patterns
 
-This project uses DaisyUI (on Tailwind CSS v4) for component styling, AlpineJS for client-side interactivity, and HTMX for server-driven updates.
+This project uses DaisyUI (on Tailwind CSS v4) for component styling, AlpineJS for client-side interactivity, and HTMX for server-driven updates. All JS/CSS dependencies are vendored — no CDN, no npm. See `docs/Frontend-Dependencies.md` to add or update them.
 
 ## Component Library
 

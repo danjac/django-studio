@@ -4,7 +4,7 @@ Alpine.js provides reactive JavaScript behavior without writing JavaScript files
 
 ## Installation
 
-Alpine.js is bundled locally in `static/vendor/`.
+Alpine.js is bundled locally in `static/vendor/`. To update it or add new JS dependencies, see `docs/Frontend-Dependencies.md`.
 
 ```html
 <script src="/static/vendor/alpine-3.15.2.min.js" defer></script>

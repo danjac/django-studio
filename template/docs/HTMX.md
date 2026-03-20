@@ -2,6 +2,8 @@
 
 HTMX provides dynamic page behavior without writing JavaScript. This project uses `django-htmx` for seamless integration.
 
+HTMX is vendored into `static/vendor/`. To update it or add new JS dependencies, see `docs/Frontend-Dependencies.md`.
+
 ## Configuration
 
 HTMX is configured via `HTMX_CONFIG` in settings, rendered as a `<meta>` tag by `{% meta_tags %}` in the base template:

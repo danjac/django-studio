@@ -1,4 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": [".claude/commands/django-studio.md"]
+  "instructions": [
+    ".claude/commands/djstudio.md"
+  ]
 }

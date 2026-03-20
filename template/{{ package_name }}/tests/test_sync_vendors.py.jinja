@@ -105,6 +105,20 @@ class TestSyncVendors:
         with pytest.raises(CommandError, match="not found"):
             call_command("sync_vendors")
 
+    def test_invalid_json_vendors_file_raises_error(self, tmp_path, settings):
+        path = tmp_path / "vendors.json"
+        path.write_text("not valid json {")
+        settings.VENDORS_FILE = path
+        with pytest.raises(CommandError, match="not valid JSON"):
+            call_command("sync_vendors")
+
+    def test_malformed_vendor_raises_error(self, tmp_path, settings):
+        path = tmp_path / "vendors.json"
+        path.write_text(json.dumps({"htmx": {"source": "https://example.com/htmx.js"}}))
+        settings.VENDORS_FILE = path
+        with pytest.raises(CommandError, match="Malformed vendors config"):
+            call_command("sync_vendors", "--check")
+
     def test_empty_vendors_file_raises_error(self, tmp_path, settings):
         path = tmp_path / "vendors.json"
         path.write_text("{}")

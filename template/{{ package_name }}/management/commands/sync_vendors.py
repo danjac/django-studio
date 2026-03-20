@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NotRequired, TypedDict
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -11,6 +11,23 @@ if TYPE_CHECKING:
 import aiohttp
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError, CommandParser
+
+
+class VendorFile(TypedDict):
+    """A single file entry within a vendor package."""
+
+    source: str
+    dest: str
+
+
+class VendorConfig(TypedDict):
+    """Configuration for a vendored frontend package."""
+
+    version: str
+    source: NotRequired[str]
+    dest: NotRequired[str]
+    files: NotRequired[list[VendorFile]]
+    repo: NotRequired[str]
 
 
 class Command(BaseCommand):
@@ -36,24 +53,30 @@ class Command(BaseCommand):
             dest="no_input",
             help="Skip confirmation prompt",
         )
+        parser.add_argument(
+            "--timeout",
+            type=int,
+            default=30,
+            help="HTTP request timeout in seconds (default: 30)",
+        )
 
-    def handle(
-        self, *, package: str | None, check: bool, no_input: bool, **options: Any
-    ) -> None:
-        """Check for and download vendor updates."""
-        asyncio.run(self._handle(package=package, check=check, no_input=no_input))
+    def _load_vendors(self, package: str | None) -> tuple[dict[str, VendorConfig], dict[str, VendorConfig]]:
+        """Load vendors.json and return (vendors, all_vendors).
 
-    async def _handle(
-        self, *, package: str | None, check: bool, no_input: bool
-    ) -> None:
+        Raises CommandError if the file is missing, invalid, or the package is unknown.
+        """
         if not settings.VENDORS_FILE.exists():
             raise CommandError(f"{settings.VENDORS_FILE} not found.")
 
-        all_vendors: dict[str, Any] = json.loads(settings.VENDORS_FILE.read_text())
+        try:
+            all_vendors: dict[str, VendorConfig] = json.loads(settings.VENDORS_FILE.read_text())
+        except json.JSONDecodeError as exc:
+            raise CommandError(f"{settings.VENDORS_FILE} is not valid JSON: {exc}") from exc
+
         if not all_vendors:
             raise CommandError(f"No vendors defined in {settings.VENDORS_FILE}.")
 
-        vendors = all_vendors
+        vendors: dict[str, VendorConfig] = all_vendors
         if package:
             if package not in all_vendors:
                 raise CommandError(
@@ -61,8 +84,40 @@ class Command(BaseCommand):
                 )
             vendors = {package: all_vendors[package]}
 
+        return vendors, all_vendors
+
+    def handle(
+        self, *, package: str | None, check: bool, no_input: bool, timeout: int, **options: Any
+    ) -> None:
+        """Check for and download vendor updates."""
+        vendors, all_vendors = self._load_vendors(package)
+
+        try:
+            asyncio.run(
+                self._handle(
+                    vendors=vendors,
+                    all_vendors=all_vendors,
+                    check=check,
+                    no_input=no_input,
+                    timeout=timeout,
+                )
+            )
+        except KeyError as exc:
+            raise CommandError(
+                f"Malformed vendors config in {settings.VENDORS_FILE}: missing key {exc}"
+            ) from exc
+
+    async def _handle(
+        self,
+        *,
+        vendors: dict[str, VendorConfig],
+        all_vendors: dict[str, VendorConfig],
+        check: bool,
+        no_input: bool,
+        timeout: int,
+    ) -> None:
         async with aiohttp.ClientSession() as session:
-            updates = await self._check_versions(session, vendors)
+            updates = await self._check_versions(session, vendors, timeout=timeout)
 
         if not updates:
             self.stdout.write(self.style.SUCCESS("\nAll vendors up to date."))
@@ -85,7 +140,7 @@ class Command(BaseCommand):
                 return
 
         async with aiohttp.ClientSession() as session:
-            await self._download_updates(session, updates, all_vendors)
+            await self._download_updates(session, updates, all_vendors, timeout=timeout)
         self.stdout.write(self.style.SUCCESS(f"\n{len(updates)} package(s) updated."))
 
     async def _latest_github_version(
@@ -93,6 +148,7 @@ class Command(BaseCommand):
         session: aiohttp.ClientSession,
         source_url: str,
         repo: str | None = None,
+        timeout: int = 30,
     ) -> str | None:
         """Query GitHub for the latest release version of a repo."""
         if not repo:
@@ -101,11 +157,10 @@ class Command(BaseCommand):
                 return None
             repo = match.group(1)
         api_url = f"https://api.github.com/repos/{repo}/releases/latest"
-        timeout = aiohttp.ClientTimeout(total=15)
         async with session.get(
             api_url,
             headers={"Accept": "application/vnd.github+json"},
-            timeout=timeout,
+            timeout=aiohttp.ClientTimeout(total=timeout),
         ) as response:
             data = await response.json()
         return data["tag_name"].lstrip("v")
@@ -114,14 +169,17 @@ class Command(BaseCommand):
         self,
         session: aiohttp.ClientSession,
         name: str,
-        config: dict[str, Any],
+        config: VendorConfig,
+        timeout: int = 30,
     ) -> tuple[str, str] | None:
         """Check a single vendor for updates. Returns (name, latest) or None."""
         current = config["version"]
-        source_url = config.get("source") or config["files"][0]["source"]
+        source_url = config.get("source") or (config.get("files") or [])[0]["source"]
         repo = config.get("repo")
         try:
-            latest = await self._latest_github_version(session, source_url, repo=repo)
+            latest = await self._latest_github_version(
+                session, source_url, repo=repo, timeout=timeout
+            )
         except (
             aiohttp.ClientError,
             TimeoutError,
@@ -147,12 +205,13 @@ class Command(BaseCommand):
     async def _check_versions(
         self,
         session: aiohttp.ClientSession,
-        vendors: dict[str, Any],
+        vendors: dict[str, VendorConfig],
+        timeout: int = 30,
     ) -> list[tuple[str, str]]:
         """Check all vendors in parallel. Returns list of (name, latest)."""
         results = await asyncio.gather(
             *[
-                self._check_version(session, name, config)
+                self._check_version(session, name, config, timeout=timeout)
                 for name, config in vendors.items()
             ]
         )
@@ -164,12 +223,12 @@ class Command(BaseCommand):
         name: str,
         url: str,
         dest: Path,
+        timeout: int = 30,
     ) -> None:
         """Download a single vendor file."""
         self.stdout.write(f"  Downloading {name}: {url}")
         try:
-            timeout = aiohttp.ClientTimeout(total=30)
-            async with session.get(url, timeout=timeout) as response:
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) as response:
                 content = await response.read()
             dest.write_bytes(content)
         except (aiohttp.ClientError, OSError) as exc:
@@ -179,7 +238,8 @@ class Command(BaseCommand):
         self,
         session: aiohttp.ClientSession,
         updates: list[tuple[str, str]],
-        all_vendors: dict[str, Any],
+        all_vendors: dict[str, VendorConfig],
+        timeout: int = 30,
     ) -> None:
         """Download all updated vendor files in parallel, then update vendors.json."""
         tasks = []
@@ -187,11 +247,11 @@ class Command(BaseCommand):
             config = all_vendors[name]
             files = config.get("files", [])
             if not files:
-                files = [{"source": config["source"], "dest": config["dest"]}]
+                files = [{"source": config.get("source", ""), "dest": config.get("dest", "")}]
             for file_info in files:
                 url = file_info["source"].format(version=latest)
                 dest = settings.VENDORS_FILE.parent / file_info["dest"]
-                tasks.append(self._download_file(session, name, url, dest))
+                tasks.append(self._download_file(session, name, url, dest, timeout=timeout))
 
         await asyncio.gather(*tasks)
 

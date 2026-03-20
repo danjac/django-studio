@@ -171,6 +171,53 @@ Default keyword arguments (override as needed):
 </form>
 ```
 
+### hx-swap Patterns
+
+HTMX supports several swap strategies beyond the default `innerHTML`. See [hx-swap docs](https://htmx.org/attributes/hx-swap/) for the full list.
+
+#### Delete a list item in-place
+
+```html
+<button hx-delete="{% url 'item-delete' item.pk %}"
+        hx-target="#item-{{ item.pk }}"
+        hx-swap="delete"
+        hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+  Delete
+</button>
+```
+
+`hx-swap="delete"` removes the target element from the DOM after a successful response. No response body is required.
+
+#### Fire-and-forget (suppress DOM update)
+
+```html
+<button hx-post="{% url 'track' %}"
+        hx-swap="none"
+        hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+  Track click
+</button>
+```
+
+`hx-swap="none"` sends the request but performs no DOM swap. Use for analytics, logging, or side-effect-only actions.
+
+#### Scroll and show modifiers
+
+Modifiers appended to the swap strategy control scroll or viewport position after the swap:
+
+```html
+<!-- Scroll to the top of the page after replacing results -->
+<form hx-post="{% url 'search' %}"
+      hx-target="#results"
+      hx-swap="outerHTML show:top">
+</form>
+
+<!-- Append messages and scroll to the bottom of the container -->
+<div id="messages"
+     hx-post="{% url 'send-message' %}"
+     hx-swap="beforeend scroll:bottom">
+</div>
+```
+
 ## Loading Indicator CSS
 
 ```css
@@ -187,3 +234,11 @@ Default keyword arguments (override as needed):
 4. Debounce search inputs: `hx-trigger="keyup changed delay:300ms"`.
 5. Use `hx-swap="outerHTML"` to replace a form with its re-rendered self on validation errors.
 6. Use `hx-swap="delete"` to dismiss banners or remove list items after a destructive action.
+
+## References
+
+- [HTMX Documentation](https://htmx.org/docs/)
+- [hx-swap](https://htmx.org/attributes/hx-swap/)
+- [hx-trigger](https://htmx.org/attributes/hx-trigger/)
+- [hx-boost](https://htmx.org/attributes/hx-boost/)
+- [django-htmx](https://django-htmx.readthedocs.io/)

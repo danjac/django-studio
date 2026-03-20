@@ -57,7 +57,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 
 **UI components**: Use [DaisyUI](https://daisyui.com/components/) for all component styling. Check daisyui.com/components before writing new markup — the component you need likely already exists. See `docs/Tailwind.md` and `docs/Templates.md`.
 
-**Icons**: Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Never use character entities or emoji as icons. See `docs/UI-Design-Patterns.md`.
+**Icons**: Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Never use character entities or emoji as icons. See `docs/Design.md`.
 
 **Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/Frontend-Dependencies.md` for the full format and workflow.
 
@@ -86,12 +86,12 @@ actively, not as background reading.
 | What you are about to implement | Read first |
 | ------------------------------- | ---------- |
 | Python conventions and gotchas  | `docs/Python-Style-Guide.md` |
-| Any view (new or modified)      | `docs/Views.md` |
-| Any model or queryset           | `docs/Models.md` |
-| Any template (partials, fragments, pagination) | `docs/Templates.md` |
-| Any form                        | `docs/Templates.md`, `docs/Validation.md` |
+| Django views                    | `docs/Views.md` |
+| Django models / querysets       | `docs/Models.md` |
+| Django templates (partials, fragments, pagination) | `docs/Templates.md` |
+| Django forms                    | `docs/Templates.md`, `docs/Validation.md` |
 | Validating request params or external data | `docs/Validation.md` |
-| Any UI component (buttons, modals, layout)     | `docs/UI-Design-Patterns.md`, `docs/Tailwind.md` |
+| Any UI component (buttons, modals, layout)     | `docs/Design.md`, `docs/Tailwind.md` |
 | Accessibility                   | `docs/Accessibility.md` |
 | Admin registration              | `docs/Django.md` |
 | Internationalisation / i18n     | `docs/Django.md` |

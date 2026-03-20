@@ -76,10 +76,6 @@ class TestSyncVendors:
         with pytest.raises(CommandError, match="No vendors defined"):
             call_command("sync_vendors")
 
-    def test_unknown_package(self, vendors_dir):
-        with pytest.raises(CommandError, match="Unknown package"):
-            call_command("sync_vendors", "nonexistent")
-
     def test_all_up_to_date(self, vendors_dir):
         out = StringIO()
         with aioresponses() as m:
@@ -104,7 +100,9 @@ class TestSyncVendors:
             call_command("sync_vendors", no_input=True, stdout=out)
         vendors = json.loads((vendors_dir / "vendors.json").read_text())
         assert vendors["htmx"]["version"] == "2.0.8"
-        assert (vendors_dir / "static" / "vendor" / "htmx.js").read_bytes() == b"new-content"
+        assert (
+            vendors_dir / "static" / "vendor" / "htmx.js"
+        ).read_bytes() == b"new-content"
 
     def test_confirmation_yes_downloads(self, vendors_dir):
         with aioresponses() as m:
@@ -125,39 +123,11 @@ class TestSyncVendors:
         vendors = json.loads((vendors_dir / "vendors.json").read_text())
         assert vendors["htmx"]["version"] == "2.0.7"
 
-    def test_single_package_skips_others(self, tmp_path, settings):
-        settings.VENDORS_FILE = tmp_path / "vendors.json"
-        vendors = {
-            "htmx": {
-                "version": "2.0.7",
-                "repo": "bigskysoftware/htmx",
-                "source": "https://cdn.jsdelivr.net/npm/htmx.org@{version}/dist/htmx.min.js",
-                "dest": "static/vendor/htmx.js",
-            },
-            "alpinejs": {
-                "version": "3.15.2",
-                "repo": "alpinejs/alpine",
-                "source": "https://cdn.jsdelivr.net/npm/alpinejs@{version}/dist/cdn.min.js",
-                "dest": "static/vendor/alpine.js",
-            },
-        }
-        (tmp_path / "vendors.json").write_text(json.dumps(vendors))
-        (tmp_path / "static" / "vendor").mkdir(parents=True)
-        (tmp_path / "static" / "vendor" / "htmx.js").write_bytes(b"old")
-        (tmp_path / "static" / "vendor" / "alpine.js").write_bytes(b"old")
-
-        with aioresponses() as m:
-            m.get(GITHUB_API_RE, payload={"tag_name": "v2.0.8"})
-            m.get(CDN_RE, body=b"new-content")
-            call_command("sync_vendors", "htmx", no_input=True)
-
-        updated = json.loads((tmp_path / "vendors.json").read_text())
-        assert updated["htmx"]["version"] == "2.0.8"
-        assert updated["alpinejs"]["version"] == "3.15.2"
-
     def test_version_check_error_warns_and_continues(self, vendors_dir):
         out = StringIO()
         with aioresponses() as m:
-            m.get(GITHUB_API_RE, exception=aiohttp.ClientConnectionError("network error"))
+            m.get(
+                GITHUB_API_RE, exception=aiohttp.ClientConnectionError("network error")
+            )
             call_command("sync_vendors", stdout=out)
         assert "failed to check" in out.getvalue()

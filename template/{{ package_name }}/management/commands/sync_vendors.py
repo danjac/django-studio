@@ -36,12 +36,7 @@ class Command(BaseCommand):
     help = "Update vendored frontend dependencies defined in vendors.json."
 
     def add_arguments(self, parser: CommandParser) -> None:
-        """Add optional package name argument."""
-        parser.add_argument(
-            "package",
-            nargs="?",
-            help="Update a single package (default: all)",
-        )
+        """Add command arguments."""
         parser.add_argument(
             "--check",
             action="store_true",
@@ -60,58 +55,41 @@ class Command(BaseCommand):
             help="HTTP request timeout in seconds (default: 30)",
         )
 
-    def _load_vendors(self, package: str | None) -> tuple[dict[str, VendorConfig], dict[str, VendorConfig]]:
-        """Load vendors.json and return (vendors, all_vendors).
-
-        Raises CommandError if the file is missing, invalid, or the package is unknown.
-        """
-        if not settings.VENDORS_FILE.exists():
-            raise CommandError(f"{settings.VENDORS_FILE} not found.")
-
-        try:
-            all_vendors: dict[str, VendorConfig] = json.loads(settings.VENDORS_FILE.read_text())
-        except json.JSONDecodeError as exc:
-            raise CommandError(f"{settings.VENDORS_FILE} is not valid JSON: {exc}") from exc
-
-        if not all_vendors:
-            raise CommandError(f"No vendors defined in {settings.VENDORS_FILE}.")
-
-        vendors: dict[str, VendorConfig] = all_vendors
-        if package:
-            if package not in all_vendors:
-                raise CommandError(
-                    f"Unknown package '{package}'. Available: {', '.join(all_vendors)}"
-                )
-            vendors = {package: all_vendors[package]}
-
-        return vendors, all_vendors
-
-    def handle(
-        self, *, package: str | None, check: bool, no_input: bool, timeout: int, **options: Any
-    ) -> None:
+    def handle(self, *, check: bool, no_input: bool, timeout: int, **options: Any) -> None:
         """Check for and download vendor updates."""
-        vendors, all_vendors = self._load_vendors(package)
+        vendors = self._load_vendors()
 
         try:
             asyncio.run(
-                self._handle(
-                    vendors=vendors,
-                    all_vendors=all_vendors,
-                    check=check,
-                    no_input=no_input,
-                    timeout=timeout,
-                )
+                self._handle(vendors=vendors, check=check, no_input=no_input, timeout=timeout)
             )
         except KeyError as exc:
             raise CommandError(
                 f"Malformed vendors config in {settings.VENDORS_FILE}: missing key {exc}"
             ) from exc
 
+    def _load_vendors(self) -> dict[str, VendorConfig]:
+        """Load and return vendors.json contents.
+
+        Raises CommandError if the file is missing or invalid.
+        """
+        if not settings.VENDORS_FILE.exists():
+            raise CommandError(f"{settings.VENDORS_FILE} not found.")
+
+        try:
+            vendors: dict[str, VendorConfig] = json.loads(settings.VENDORS_FILE.read_text())
+        except json.JSONDecodeError as exc:
+            raise CommandError(f"{settings.VENDORS_FILE} is not valid JSON: {exc}") from exc
+
+        if not vendors:
+            raise CommandError(f"No vendors defined in {settings.VENDORS_FILE}.")
+
+        return vendors
+
     async def _handle(
         self,
         *,
         vendors: dict[str, VendorConfig],
-        all_vendors: dict[str, VendorConfig],
         check: bool,
         no_input: bool,
         timeout: int,
@@ -140,7 +118,7 @@ class Command(BaseCommand):
                 return
 
         async with aiohttp.ClientSession() as session:
-            await self._download_updates(session, updates, all_vendors, timeout=timeout)
+            await self._download_updates(session, updates, vendors, timeout=timeout)
         self.stdout.write(self.style.SUCCESS(f"\n{len(updates)} package(s) updated."))
 
     async def _latest_github_version(

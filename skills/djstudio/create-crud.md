@@ -2,9 +2,7 @@ Generate a complete set of CRUD views for a model.
 
 ## Required reading
 
-- `docs/Views.md`
 - `docs/HTMX.md`
-- `docs/Templates.md`
 - `docs/Tailwind.md`
 
 **Definitions:**

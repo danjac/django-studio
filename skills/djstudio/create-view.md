@@ -2,9 +2,7 @@ Add a view, template, and URL following HTMX conventions.
 
 ## Required reading
 
-- `docs/Views.md`
 - `docs/HTMX.md`
-- `docs/Templates.md`
 - `docs/Tailwind.md`
 
 **Parsing arguments:**

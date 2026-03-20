@@ -1,4 +1,9 @@
-Audit the project for GDPR compliance issues. Read `docs/GDPR.md` first.
+Audit the project for GDPR compliance issues.
+
+## Required reading
+
+- `docs/GDPR.md`
+
 Report findings in two groups: **REQUIRED** (likely non-compliant) and
 **ADVISORY** (worth reviewing).
 

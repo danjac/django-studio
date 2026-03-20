@@ -1,5 +1,9 @@
 Design and write a Django model with factory, fixture, and model tests.
 
+## Required reading
+
+- `docs/Models.md`
+
 **Before writing anything**, read:
 - `<package_name>/<app_name>/models.py` — existing models and patterns
 - `<package_name>/<app_name>/tests/factories.py` — existing factories

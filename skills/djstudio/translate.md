@@ -1,6 +1,10 @@
 Extract all translatable strings, translate them using Claude, and compile the
 message catalogue for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
 
+## Required reading
+
+- `docs/Django.md` — internationalisation conventions (`gettext`, `gettext_lazy`, template i18n)
+
 **Prerequisites:**
 
 `gettext` binaries (`xgettext`, `msgfmt`) must be installed.

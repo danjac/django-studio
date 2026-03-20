@@ -1,6 +1,8 @@
 Write one or more Playwright E2E tests that cover a described user interaction.
 
-Read `docs/Testing.md` before writing any test.
+## Required reading
+
+- `docs/Testing.md`
 
 **Step 1 — Gather requirements**
 

@@ -1,5 +1,8 @@
 Schedule a Django management command as a Kubernetes cron job in `helm/site/values.yaml`.
-Read `docs/CronJobs.md` before proceeding.
+
+## Required reading
+
+- `docs/CronJobs.md`
 
 Parse `$ARGUMENTS` as: `<app_name> <command_name>`
 

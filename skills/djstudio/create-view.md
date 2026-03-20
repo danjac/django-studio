@@ -1,8 +1,11 @@
 Add a view, template, and URL following HTMX conventions.
 
-Read `docs/Views.md`, `docs/HTMX.md`, `docs/Templates.md`, and `docs/Tailwind.md`. Check
-[daisyui.com/components](https://daisyui.com/components/) before writing any template
-markup — the component you need likely already exists.
+## Required reading
+
+- `docs/Views.md`
+- `docs/HTMX.md`
+- `docs/Templates.md`
+- `docs/Tailwind.md`
 
 **Parsing arguments:**
 
@@ -105,8 +108,7 @@ where the template goes, and where the URL is wired.
    ```
 
 2. **Create the template** at the path from the table above.
-   Start from a base template (see `docs/Templates.md`). For HTMX partials,
-   use Django 6 named partial blocks. Use DaisyUI classes for all components.
+   For HTMX partials, use Django 6 named partial blocks. Use DaisyUI classes for all components.
 
 3. **Wire the URL** in the file from the table above:
    ```python

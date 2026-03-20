@@ -5,6 +5,7 @@ import re
 from io import StringIO
 from unittest.mock import patch
 
+import aiohttp
 import pytest
 from aioresponses import aioresponses
 from django.contrib.sites.models import Site
@@ -42,7 +43,7 @@ class TestSetDefaultSite:
 
 @pytest.fixture
 def vendors_dir(tmp_path, settings):
-    settings.BASE_DIR = tmp_path
+    settings.VENDORS_FILE = tmp_path / "vendors.json"
     vendors = {
         "htmx": {
             "version": "2.0.7",
@@ -65,12 +66,12 @@ def vendors_dir(tmp_path, settings):
 
 class TestSyncVendors:
     def test_missing_vendors_file(self, tmp_path, settings):
-        settings.BASE_DIR = tmp_path
-        with pytest.raises(CommandError, match="vendors.json not found"):
+        settings.VENDORS_FILE = tmp_path / "vendors.json"
+        with pytest.raises(CommandError, match="not found"):
             call_command("sync_vendors")
 
     def test_empty_vendors_file(self, tmp_path, settings):
-        settings.BASE_DIR = tmp_path
+        settings.VENDORS_FILE = tmp_path / "vendors.json"
         (tmp_path / "vendors.json").write_text("{}")
         with pytest.raises(CommandError, match="No vendors defined"):
             call_command("sync_vendors")
@@ -125,7 +126,7 @@ class TestSyncVendors:
         assert vendors["htmx"]["version"] == "2.0.7"
 
     def test_single_package_skips_others(self, tmp_path, settings):
-        settings.BASE_DIR = tmp_path
+        settings.VENDORS_FILE = tmp_path / "vendors.json"
         vendors = {
             "htmx": {
                 "version": "2.0.7",
@@ -157,6 +158,6 @@ class TestSyncVendors:
     def test_version_check_error_warns_and_continues(self, vendors_dir):
         out = StringIO()
         with aioresponses() as m:
-            m.get(GITHUB_API_RE, exception=Exception("network error"))
+            m.get(GITHUB_API_RE, exception=aiohttp.ClientConnectionError("network error"))
             call_command("sync_vendors", stdout=out)
         assert "failed to check" in out.getvalue()

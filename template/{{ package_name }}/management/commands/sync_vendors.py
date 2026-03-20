@@ -190,7 +190,7 @@ class Command(BaseCommand):
                 files = [{"source": config["source"], "dest": config["dest"]}]
             for file_info in files:
                 url = file_info["source"].format(version=latest)
-                dest = settings.BASE_DIR / file_info["dest"]
+                dest = settings.VENDORS_FILE.parent / file_info["dest"]
                 tasks.append(self._download_file(session, name, url, dest))
 
         await asyncio.gather(*tasks)

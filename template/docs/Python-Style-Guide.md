@@ -21,6 +21,69 @@ it to the parenthesised form — that is wrong. The parenthesised form is the
 pre-3.14 style; the unparenthesised form is now correct.
 See [pyright#10546](https://github.com/microsoft/pyright/issues/10546) for upstream tracking.
 
+## Function and Method Ordering
+
+Private functions and methods must always be defined **after** public ones and prefixed with an underscore:
+
+```python
+class MyClass:
+    def public_method(self):
+        self._helper()
+
+    def _helper(self):  # private — after public, underscore prefix
+        ...
+
+def public_function():
+    _do_work()
+
+def _do_work():  # private — after public, underscore prefix
+    ...
+```
+
+This applies to both module-level functions and class methods.
+
+## Module Naming
+
+Avoid generic module or package names like `utils.py`, `helpers.py`, or `services.py`. Instead use specific names that describe what the module or package does:
+
+```
+# Bad
+myapp/utils.py
+myapp/helpers.py
+myapp/services.py
+
+# Good — modules
+myapp/geocoding.py
+myapp/notifications.py
+myapp/pdf_export.py
+
+# Good — packages (when functionality is large enough to split)
+myapp/geocoding/
+myapp/notifications/
+myapp/payments/
+```
+
+## Caching
+
+Use `cached_property` and `functools.cache` to avoid redundant computation:
+
+- **`@cached_property`** — for instance properties that are expensive to compute. Use `django.utils.functional.cached_property` on Django model/view classes; use `functools.cached_property` elsewhere.
+- **`@functools.cache`** — for module-level functions whose result depends only on their arguments (pure functions).
+
+Prefer a cached function over a module-level variable for anything that may be slow to initialise (file I/O, DB queries, network calls) — module-level code runs at import time and slows startup:
+
+```python
+import functools
+
+# Bad — runs at import time, slows startup
+COUNTRIES = load_countries_from_file()
+
+# Good — deferred until first call, then cached
+@functools.cache
+def get_countries():
+    return load_countries_from_file()
+```
+
 ## Imports
 
 - **Absolute imports only** — `absolufy-imports` enforces this; no relative imports.

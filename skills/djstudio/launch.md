@@ -1,6 +1,13 @@
 Interactive first-deploy wizard. Guides the user through provisioning infrastructure,
 configuring secrets, and deploying the application end-to-end.
 
+## Required reading
+
+- `docs/Infrastructure.md`
+- `docs/Deployment.md`
+
+---
+
 **Idempotency rule:** Never overwrite a value that is already set. Read existing files
 first. Only fill in what is missing or still `CHANGE_ME`. Re-running is safe — it resumes
 where it left off.

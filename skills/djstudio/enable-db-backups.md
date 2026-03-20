@@ -1,6 +1,12 @@
 Interactive wizard to enable automated daily PostgreSQL backups to a private Hetzner
 Object Storage bucket.
 
+## Required reading
+
+- `docs/Deployment.md`
+
+---
+
 **Idempotency rule:** Read existing config files before writing. Skip steps where values
 are already set. Re-running is safe.
 

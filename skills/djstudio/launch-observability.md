@@ -1,5 +1,11 @@
 Deploy the observability stack (Grafana + Prometheus + Loki) to a running cluster.
 
+## Required reading
+
+- `docs/Deployment.md`
+
+---
+
 Run this after `/djstudio launch` once your application is live.
 
 ---

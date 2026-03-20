@@ -1,4 +1,4 @@
-# Helm and Terraform
+# Deployment
 
 This project uses Terraform for infrastructure provisioning and Helm for Kubernetes deployment.
 

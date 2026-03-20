@@ -1,4 +1,4 @@
-# k3s + Hetzner + Cloudflare
+# Infrastructure
 
 This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudflare for DNS and CDN.
 
@@ -78,29 +78,7 @@ Full Kubernetes (kubeadm, EKS, GKE) is operationally heavy for a single develope
 
 ## Deployment
 
-### Infrastructure (Terraform)
-
-```bash
-cd terraform/hetzner
-terraform init
-terraform plan
-terraform apply
-```
-
-### DNS (Cloudflare Terraform)
-
-```bash
-cd terraform/cloudflare
-terraform init
-terraform plan
-terraform apply
-```
-
-### Application (Helm)
-
-```bash
-just helm site
-```
+See `docs/Deployment.md` for all deployment commands (Terraform, Helm, CI/CD pipeline).
 
 ## Services
 
@@ -265,28 +243,6 @@ Then run `just helm site` to apply.
 - **Django-q** or **Celery Beat**: For tasks tied to application lifecycle
 - **GitHub Actions scheduled workflows**: For maintenance tasks not requiring cluster access
 - **External cron services** (e.g., EasyCron): For simple webhooks when K3s overhead isn't justified
-
-## Production Commands
-
-```bash
-# Check pod status
-just kube get pods
-
-# View logs
-just kube logs -f deployment/myapp
-
-# Restart application
-just kube rollout restart deployment/myapp
-
-# Database migrations
-just rdj migrate
-
-# Create superuser
-just rdj createsuperuser
-
-# Connect to database
-just rpsql
-```
 
 ## Security
 

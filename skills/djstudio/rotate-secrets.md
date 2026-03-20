@@ -1,5 +1,11 @@
 Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 
+## Required reading
+
+- `docs/Deployment.md`
+
+---
+
 **Safety rule:** Always show the user exactly which secrets will change and wait
 for confirmation before writing any file or running any command.
 

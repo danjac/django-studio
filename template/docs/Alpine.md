@@ -7,7 +7,7 @@ Alpine.js provides reactive JavaScript behavior without writing JavaScript files
 Alpine.js is bundled locally in `static/vendor/`. To update it or add new JS dependencies, see `docs/Frontend-Dependencies.md`.
 
 ```html
-<script src="/static/vendor/alpine-3.15.2.min.js" defer></script>
+<script src="{% static 'vendor/alpine.js' %}" defer></script>
 ```
 
 ## Basic Usage
@@ -354,7 +354,7 @@ may fail silently.
 
 ```django
 {# base.html <head> — Alpine itself uses defer #}
-<script src="{% static 'vendor/alpine-3.15.2.min.js' %}" defer></script>
+<script src="{% static 'vendor/alpine.js' %}" defer></script>
 
 {# {% block scripts %} at bottom of <body> — NO defer on component scripts #}
 {% block scripts %}

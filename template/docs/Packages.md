@@ -59,13 +59,13 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **sorl-thumbnail**: add `"sorl.thumbnail"` to `INSTALLED_APPS`. Uses the
   Redis cache backend (already configured).
 - **aiohttp**: use for async HTTP calls to third-party APIs. See
-  `docs/Views.md` for the async view and HTTP client patterns.
+  `docs/Django-Views.md` for the async view and HTTP client patterns.
 - **channels + daphne**: replace the Uvicorn ASGI server with Daphne
   (`daphne config.asgi:application`). Add `"channels"` to `INSTALLED_APPS`
   and configure `ASGI_APPLICATION`.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. Add a `{% partialdef moneywidget %}` block to
-  `templates/form/field.html` — see `docs/Templates.md`.
+  `templates/form/field.html` — see `docs/Django-Templates.md`.
 - **pydantic**: use for parsing and validating external API responses, complex
   form payloads, and structured config. Add to `pyproject.toml` to prevent
   ruff from moving base class imports into `TYPE_CHECKING` blocks:

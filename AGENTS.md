@@ -100,7 +100,7 @@ just typecheck
 
 ## UI Components
 
-The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/Templates.md`. Tailwind and DaisyUI configuration is in `template/docs/Tailwind.md`.
+The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/Django-Templates.md`. Tailwind and DaisyUI configuration is in `template/docs/Tailwind.md`.
 
 ## djstudio Commands
 

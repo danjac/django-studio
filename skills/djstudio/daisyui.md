@@ -37,8 +37,8 @@ Remind the user of relevant conventions:
 - Use `{% heroicon_mini %}` / `{% heroicon_outline %}` for icons, not inline SVGs
 - Use `{% translate %}` for all user-visible text
 - Use semantic DaisyUI colors (`primary`, `secondary`, `error`, etc.) not raw Tailwind colors
-- For forms, use the `{% fragment "form.html" %}` wrapper — see `docs/Templates.md`
-- For HTMX partials, use `{% partialdef %}` / `{% partial %}` — see `docs/Templates.md`
+- For forms, use the `{% fragment "form.html" %}` wrapper — see `docs/Django-Templates.md`
+- For HTMX partials, use `{% partialdef %}` / `{% partial %}` — see `docs/Django-Templates.md`
 
 ## Help
 

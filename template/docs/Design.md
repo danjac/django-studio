@@ -42,7 +42,7 @@ Form rendering uses `{{ field.as_field_group }}` (dispatches through `templates/
 to widget-specific `{% partialdef %}` blocks), `django-widget-tweaks` for per-field attribute
 overrides, and `{% fragment "form.html" %}` as the HTMX-aware `<form>` wrapper.
 
-See `docs/Templates.md` for the full reference: field rendering, widget type dispatch, custom
+See `docs/Django-Templates.md` for the full reference: field rendering, widget type dispatch, custom
 widget partials, the `form.html` wrapper variables, and the `{% partialdef %}` HTMX swap pattern.
 
 ## Accessibility

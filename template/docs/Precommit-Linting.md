@@ -24,7 +24,7 @@ just precommit run --all-files  # Run all hooks manually
 # .pre-commit-config.yaml
 repos:
   # Python
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
+  - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.15.2"
     hooks:
       - id: ruff-check
@@ -137,7 +137,7 @@ custom_blocks = "cache,partialdef,fragment"
 
 Formats Django templates:
 ```bash
-djade --target-version 5.1 .
+djade --target-version 6.0 .
 ```
 
 ## Templates: rustywind

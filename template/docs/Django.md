@@ -6,11 +6,12 @@ implementation patterns, see the focused docs:
 
 | Topic                                                       | Doc                    |
 | ----------------------------------------------------------- | ---------------------- |
-| Views, decorators, response classes, async, URL config      | `docs/Views.md`        |
-| Models, querysets, full-text search, choices, relationships | `docs/Models.md`       |
+| Views, decorators, response classes, async, URL config      | `docs/Django-Views.md`        |
+| Models, querysets, full-text search, choices, relationships | `docs/Django-Models.md`       |
+| Templates, partials, fragments, pagination                  | `docs/Django-Templates.md`    |
 | Forms and validation                                        | `docs/Validation.md`   |
 | Adding a new package                                        | `docs/Packages.md`     |
-| Migrations and linear-migrations                            | `docs/Models.md`       |
+| Migrations and linear-migrations                            | `docs/Django-Models.md`       |
 | Background tasks                                            | `docs/Django-Tasks.md` |
 | Scheduled cron jobs                                         | `docs/CronJobs.md`     |
 
@@ -192,7 +193,7 @@ New tags which are not specific to a single app should be added here.
 
 App-specific tags should be added to `<app_name>/templatetags/<app_name>.py` unless the user specifies otherwise.
 
-See `docs/Templates.md` for `active_app` / `active_url` usage.
+See `docs/Django-Templates.md` for `active_app` / `active_url` usage.
 
 ## Admin
 

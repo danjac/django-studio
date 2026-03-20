@@ -84,7 +84,7 @@ from myapp.http.request import HttpRequest
 @require_safe
 def index(request: HttpRequest) -> TemplateResponse:
     return TemplateResponse(request, "index.html", {})
-````
+```
 
 ## Redirects
 
@@ -132,7 +132,7 @@ def item_list(request: HttpRequest) -> TemplateResponse:
     )
 ```
 
-See `docs/HTMX.md` for full HTMX conventions and `docs/Templates.md` for
+See `docs/HTMX.md` for full HTMX conventions and `docs/Django-Templates.md` for
 template authoring conventions.
 
 ## Paginated Views

@@ -135,5 +135,5 @@ See `docs/Django.md` for internationalisation conventions (`gettext`, `gettext_l
 ## Type Annotations
 
 - Type checking is done by `basedpyright` (`just typecheck`). Configuration is in `pyproject.toml` under `[tool.pyright]`.
-- Use typed request/response classes from `http/` — see `docs/Views.md`.
+- Use typed request/response classes from `http/` — see `docs/Django-Views.md`.
 - Migrations and test files are excluded from type checking.

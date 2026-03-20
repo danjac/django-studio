@@ -50,11 +50,7 @@ Access Mailpit web UI at http://localhost:8025 to view captured emails.
 
 ## Anymail
 
-This project uses Anymail for email backend abstraction:
-
-```bash
-uv add django-anymail
-```
+`django-anymail` is already in `pyproject.toml`. It provides the email backend abstraction used above.
 
 Benefits:
 - Easy to switch email providers

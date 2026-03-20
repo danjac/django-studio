@@ -56,7 +56,7 @@ Key rules:
 **Form rendering** — use `{{ field.as_field_group }}` for fields (renders via
 `templates/form/field.html` with widget dispatch and DaisyUI classes), `django-widget-tweaks`
 `render_field` to override individual field attributes, and `{% fragment "form.html" %}` as the
-HTMX-aware form wrapper. See `docs/Templates.md` for the full reference.
+HTMX-aware form wrapper. See `docs/Django-Templates.md` for the full reference.
 
 ## Manual Query/POST Parameter Validation
 

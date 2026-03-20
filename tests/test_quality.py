@@ -65,3 +65,18 @@ class TestRenderedPythonTypeCheck:
         assert result.returncode == 0, (
             f"basedpyright failed:\n{result.stdout}\n{result.stderr}"
         )
+
+
+class TestRenderedUnitTests:
+    """Verify the rendered project's unit tests pass (no database required)."""
+
+    def test_unit_tests_pass(self, project_with_deps):
+        result = subprocess.run(
+            ["uv", "run", "pytest", "-m", "not django_db", "-q", "--tb=short"],
+            cwd=str(project_with_deps),
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, (
+            f"pytest failed:\n{result.stdout}\n{result.stderr}"
+        )

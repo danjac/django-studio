@@ -1,4 +1,4 @@
-# Production Email (Mailgun)
+# Sending Emails
 
 This project uses Mailgun for transactional email in production.
 

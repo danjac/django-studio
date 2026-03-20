@@ -129,7 +129,7 @@ class Command(BaseCommand):
                 return
 
         async with aiohttp.ClientSession() as session:
-            await self._download_updates(session, updates, vendors, timeout=timeout)
+            await self._download_updates(session, updates=updates, vendors=vendors, timeout=timeout)
         self.stdout.write(self.style.SUCCESS(f"\n{len(updates)} package(s) updated."))
 
     async def _latest_github_version(
@@ -234,6 +234,7 @@ class Command(BaseCommand):
     async def _download_updates(
         self,
         session: aiohttp.ClientSession,
+        *,
         updates: list[tuple[str, str]],
         vendors: dict[str, VendorConfig],
         timeout: int = 30,

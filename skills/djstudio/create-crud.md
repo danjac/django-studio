@@ -62,6 +62,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_safe
@@ -103,7 +104,7 @@ def <model_lower>_create(request: HttpRequest) -> TemplateResponse | HttpRespons
         form = <model_name>Form(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "<model_name> created.")
+            messages.success(request, _("<model_name> created."))
             return redirect(reverse("<app_name>:<model_lower>_list"))
     else:
         form = <model_name>Form()
@@ -126,7 +127,7 @@ def <model_lower>_edit(
         form = <model_name>Form(request.POST, instance=<model_lower>)
         if form.is_valid():
             form.save()
-            messages.success(request, "<model_name> updated.")
+            messages.success(request, _("<model_name> updated."))
             return redirect(reverse("<app_name>:<model_lower>_list"))
     else:
         form = <model_name>Form(instance=<model_lower>)
@@ -147,7 +148,7 @@ def <model_lower>_delete(
     <model_lower> = get_object_or_404(<model_name>, pk=pk)
     if request.method == "DELETE":
         <model_lower>.delete()
-        messages.success(request, "<model_name> deleted.")
+        messages.success(request, _("<model_name> deleted."))
         return redirect(reverse("<app_name>:<model_lower>_list"))
     return TemplateResponse(
         request,

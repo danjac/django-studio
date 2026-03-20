@@ -1,10 +1,5 @@
 Generate a complete set of CRUD views for a model.
 
-## Required reading
-
-- `docs/HTMX.md`
-- `docs/Tailwind.md`
-
 **Definitions:**
 - `<model_lower>` = `<model_name>` lower-cased (e.g. `Photo` → `photo`)
 - `<model_plural>` = pluralised `<model_lower>` (e.g. `photos`) — adjust for

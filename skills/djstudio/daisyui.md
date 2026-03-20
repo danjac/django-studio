@@ -1,9 +1,5 @@
 Fetch a DaisyUI component's documentation and show how to use it in this project.
 
-## Required reading
-
-- `docs/Tailwind.md` — DaisyUI configuration, theme colours, and class conventions for this project
-
 **Arguments:** `<component_name>` — the DaisyUI component name (e.g. `modal`, `drawer`, `tabs`, `collapse`, `dropdown`, `tooltip`, `swap`, `loading`, `skeleton`, `diff`, `countdown`, `radial-progress`, `rating`, `steps`, `timeline`, etc.)
 
 **Step 1 — Check local cache**

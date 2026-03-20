@@ -1,10 +1,5 @@
 Add a view, template, and URL following HTMX conventions.
 
-## Required reading
-
-- `docs/HTMX.md`
-- `docs/Tailwind.md`
-
 **Parsing arguments:**
 
 - Two words (e.g. `create-view store product_list`): first is `<app_name>`, second is `<view_name>`.

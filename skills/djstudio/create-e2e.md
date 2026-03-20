@@ -1,9 +1,5 @@
 Write one or more Playwright E2E tests that cover a described user interaction.
 
-## Required reading
-
-- `docs/Testing.md`
-
 **Step 1 — Gather requirements**
 
 **Parsing arguments:** Check whether the first word of $ARGUMENTS matches an

@@ -84,6 +84,45 @@ def get_countries():
     return load_countries_from_file()
 ```
 
+## Function Arguments
+
+Use `*` to force keyword-only arguments on functions and methods with multiple parameters:
+
+```python
+# Bad — positional, easy to pass in the wrong order
+def do_something(name: str, num: int, active: bool = True): ...
+
+# Good — explicit naming required at call site
+def do_something(*, name: str, num: int, active: bool = True): ...
+```
+
+Only defaults belong on optional parameters; required parameters have no default. The
+default value for an optional parameter should be defined **once** — at the outermost
+entry point (e.g. `add_arguments` for management commands, the public API for libraries)
+— and passed explicitly through internal helpers:
+
+```python
+# Bad — default duplicated on every internal function
+def _helper(*, timeout: int = 30): ...
+
+# Good — default lives once at the entry point
+def handle(self, *, timeout: int, **options): ...
+def _helper(self, *, timeout: int): ...
+```
+
+If a function accumulates many arguments (especially ones shared across several
+functions), consider encapsulating them in a `dataclass`:
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class DownloadOptions:
+    timeout: int
+    retries: int
+    verify_ssl: bool = True
+```
+
 ## Imports
 
 - **Absolute imports only** — `absolufy-imports` enforces this; no relative imports.

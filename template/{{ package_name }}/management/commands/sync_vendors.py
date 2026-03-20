@@ -237,7 +237,7 @@ class Command(BaseCommand):
         *,
         updates: list[tuple[str, str]],
         vendors: dict[str, VendorConfig],
-        timeout: int = 30,
+        timeout: int,
     ) -> None:
         """Download all updated vendor files in parallel, then update vendors.json."""
         tasks = []

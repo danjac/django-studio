@@ -61,6 +61,7 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 
 | Subcommand        | File                                            | Purpose                                                            |
 |-------------------|-------------------------------------------------|--------------------------------------------------------------------|
-| `launch`              | `.claude/commands/djstudio/launch.md`               | Interactive first-deploy wizard (infra → certs → secrets → deploy) |
-| `rotate-secrets`      | `.claude/commands/djstudio/rotate-secrets.md`       | Rotate auto-generated and third-party Helm secrets and redeploy    |
-| `enable-db-backups`   | `.claude/commands/djstudio/enable-db-backups.md`    | Enable automated daily PostgreSQL backups to Object Storage        |
+| `launch`                  | `.claude/commands/djstudio/launch.md`                   | Interactive first-deploy wizard (infra → certs → secrets → deploy) |
+| `launch-observability`    | `.claude/commands/djstudio/launch-observability.md`     | Deploy the observability stack (Grafana + Prometheus + Loki)       |
+| `rotate-secrets`          | `.claude/commands/djstudio/rotate-secrets.md`           | Rotate auto-generated and third-party Helm secrets and redeploy    |
+| `enable-db-backups`       | `.claude/commands/djstudio/enable-db-backups.md`        | Enable automated daily PostgreSQL backups to Object Storage        |

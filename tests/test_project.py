@@ -401,6 +401,7 @@ class TestClaudeSkillsInstallation:
             "docs.md",
             "daisyui.md",
             "launch.md",
+            "launch-observability.md",
             "rotate-secrets.md",
             "enable-db-backups.md",
             "sync.md",

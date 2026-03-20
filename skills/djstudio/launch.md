@@ -343,14 +343,7 @@ just terraform storage apply -auto-approve
 
 Tell the user:
 
-> **Optional: Automated database backups**
->
-> This project supports daily PostgreSQL backups to a private Hetzner Object Storage bucket.
-> Backups are not set up as part of this wizard — they are most useful once your project
-> is live and actively used.
->
-> When you are ready, run `/djstudio enable-db-backups` to set them up, or follow
-> `docs/Backups.md` to do it manually.
+> Automated database backups are not set up here. Run `/djstudio enable-db-backups` when your project is live and actively used.
 
 Then continue to Step 4.
 
@@ -461,24 +454,15 @@ Save this as `<site_name>` for use in Step 6c.
 
 **Meta author, description, keywords** — prompt for each, allow empty to skip.
 
-### Observability credentials (conditional)
+### Observability credentials
 
-Check `pyproject.toml` for the presence of `sentry-sdk` and `opentelemetry-sdk` to detect
-which observability features are enabled in this project.
-
-**If `sentry-sdk` is present** and `secrets.sentryUrl` is empty:
-> Sentry is enabled in this project. Paste your Sentry DSN URL
-> (Sentry project → Settings → Client Keys → DSN):
->
-> Press Enter to skip and configure later.
+**If `secrets.sentryUrl` is empty**, ask:
+> Paste your Sentry DSN URL (Sentry project → Settings → Client Keys → DSN), or press Enter to skip:
 
 Set `secrets.sentryUrl` if provided.
 
-**If `opentelemetry-sdk` is present** and `secrets.openTelemetryUrl` is empty:
-> OpenTelemetry is enabled in this project. Paste your OTLP collector endpoint URL
-> (e.g. `https://otel.yourdomain.com`):
->
-> Press Enter to skip and configure later.
+**If `secrets.openTelemetryUrl` is empty**, ask:
+> Paste your OTLP collector endpoint URL (e.g. `https://otel.yourdomain.com`), or press Enter to skip:
 
 Set `secrets.openTelemetryUrl` if provided.
 
@@ -592,39 +576,14 @@ Diagnose and help the user fix the issue before declaring success.
 
 ---
 
-## Step 7 — Observability node (conditional)
+## Step 7 — Observability
 
-Only proceed with this step if `opentelemetry-sdk` is present in `pyproject.toml`.
+Check whether `helm/observability/values.secret.yaml` exists.
 
-Once all site pods are Running, ask:
+If it does **not** exist, tell the user:
 
-> OpenTelemetry is enabled in this project. Do you want to deploy the observability
-> node now (Grafana + Prometheus + Loki)? (y/n)
->
-> (This is optional — you can deploy it later with `just helm observability`.)
-
-If **no**, tell the user:
-> You can deploy the observability stack at any time by running `just helm observability`.
-
-If **yes**, first check `helm/observability/values.secret.yaml`:
-- If it does not exist, copy from example:
-  ```bash
-  cp helm/observability/values.secret.yaml.example helm/observability/values.secret.yaml
-  ```
-- Read the file. If `kube-prometheus-stack.grafana.adminPassword` is `CHANGE_ME`
-  or empty, prompt:
-  > Enter a Grafana admin password (press Enter to auto-generate one):
-  If the user presses Enter, generate one with `openssl rand -hex 4` (8 chars).
-  Write the chosen password to the file and tell the user what it is
-  (they will need it to log in at `https://grafana.<domain>`).
-
-Then deploy:
-```bash
-just helm observability
-```
-
-Wait for completion. Show pod status and confirm the Grafana ingress is accessible at
-`https://grafana.<domain>` once DNS propagates.
+> The observability stack (Grafana + Prometheus + Loki) is not yet deployed.
+> Run `/djstudio launch-observability` when you are ready to set it up.
 
 ---
 

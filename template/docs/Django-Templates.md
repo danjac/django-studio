@@ -29,7 +29,11 @@ The `{% block scripts %}` block is rendered just before `</body>` — use it for
 
 ## partialdef / partial
 
-`partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders it. This is the primary mechanism for HTMX partial swaps.
+`partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders a previously defined fragment by name. This is the primary mechanism for HTMX partial swaps.
+
+Use `inline` when the partial IS the content — i.e. the block should render in place on a full-page load AND be extractable by `render_partial_response` for HTMX swaps. Without `inline`, `{% partialdef %}` defines the fragment but does not render it — you need a separate `{% partial name %}` call to render it.
+
+**Page-level template (use `inline`):**
 
 ```html
 <!-- myapp/items_list.html -->
@@ -37,18 +41,20 @@ The `{% block scripts %}` block is rendered just before `</body>` — use it for
 
 {% block content %}
   <div id="item-list">
-    {% partial item-list %}
+    {% partialdef item-list inline %}
+      {% for item in items %}
+        <p>{{ item.name }}</p>
+      {% endfor %}
+    {% endpartialdef %}
   </div>
 {% endblock content %}
-
-{% partialdef item-list %}
-  {% for item in items %}
-    <p>{{ item.name }}</p>
-  {% endfor %}
-{% endpartialdef %}
 ```
 
-On an HTMX request targeting `#item-list`, `render_partial_response` returns only the `item-list` partial. On a full-page load the whole template renders. See `docs/HTMX.md` for the view-side pattern.
+On an HTMX request targeting `#item-list`, `render_partial_response` returns only the `item-list` partial. On a full-page load `inline` renders the block in place. See `docs/HTMX.md` for the view-side pattern.
+
+**Component template (no `inline`):**
+
+Component templates such as `browse.html`, `paginate.html`, and `sidebar.html` define partials without `inline` because they are always rendered via `{% fragment %}` or `{% partial %}` — never directly. The caller controls what gets rendered.
 
 ## fragment Tag
 

@@ -105,7 +105,7 @@ def my_form_view(request):
     )
 ```
 
-The template defines a `{% partialdef form %}` block that contains just the form markup. On a full-page load the entire template renders; on an HTMX form submit only the `form` partial is returned and swapped in.
+The template defines a `{% partialdef form inline %}` block containing the form markup. The `inline` keyword renders the block in place on a full-page load; on an HTMX submit `render_partial_response` returns only the `form` partial.
 
 ### `render_paginated_response` - paginated list with no COUNT query
 

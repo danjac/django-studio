@@ -41,8 +41,9 @@ def edit_item(
     )
 ```
 
-The template defines a `{% partialdef form %}` block containing the form markup. On
-an HTMX POST with a validation error, `render_partial_response` returns only that
+The template defines a `{% partialdef form inline %}` block containing the form
+markup. The `inline` keyword renders the block in place on a full-page load; on an
+HTMX POST with a validation error, `render_partial_response` returns only that
 partial so the form re-renders in place with error messages. On success, redirect
 (Post/Redirect/Get) as normal.
 

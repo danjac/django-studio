@@ -1,7 +1,15 @@
 import pytest
+from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator as DjangoPaginator
+from django_htmx.middleware import HtmxDetails
 
-from {{ package_name }}.paginator import Paginator, validate_page_number
+from {{ package_name }}.paginator import (
+    PaginationConfig,
+    Paginator,
+    render_paginated_response,
+    validate_page_number,
+)
 
 
 class TestPage:
@@ -101,3 +109,91 @@ class TestValidatePageNumber:
     def test_none_raises(self):
         with pytest.raises(PageNotAnInteger):
             validate_page_number(None)  # type: ignore[arg-type]
+
+
+class TestPaginationConfig:
+    def test_defaults(self):
+        config = PaginationConfig()
+        assert config.param == "page"
+        assert config.target == "pagination"
+        assert config.partial == "pagination"
+        assert config.paginator is None
+
+    def test_custom_values(self):
+        paginator = Paginator([], 10)
+        config = PaginationConfig(
+            param="p",
+            target="my-list",
+            partial="my-list",
+            paginator=paginator,
+        )
+        assert config.param == "p"
+        assert config.target == "my-list"
+        assert config.partial == "my-list"
+        assert config.paginator is paginator
+
+
+class TestRenderPaginatedResponse:
+    def _make_request(self, rf, *, htmx_target=None):
+        if htmx_target:
+            request = rf.get("/", HTTP_HX_TARGET=htmx_target, HTTP_HX_REQUEST="true")
+        else:
+            request = rf.get("/")
+        request.htmx = HtmxDetails(request)
+        return request
+
+    def test_context_contains_page_and_config(self, rf):
+        request = self._make_request(rf)
+        response = render_paginated_response(request, "template.html", [1, 2, 3])
+        assert response.context_data["page"].number == 1
+        assert response.context_data["paginator"].per_page == settings.DEFAULT_PAGE_SIZE
+        assert response.context_data["pagination_config"].target == "pagination"
+
+    def test_page_number_from_query_param(self, rf):
+        request = rf.get("/", {"page": "2"})
+        request.htmx = HtmxDetails(request)
+        response = render_paginated_response(request, "template.html", [1, 2, 3], config=PaginationConfig(paginator=Paginator([1, 2, 3], 2)))
+        assert response.context_data["page"].number == 2
+
+    def test_extra_context_merged(self, rf):
+        request = self._make_request(rf)
+        response = render_paginated_response(
+            request, "template.html", [], extra_context={"foo": "bar"}
+        )
+        assert response.context_data["foo"] == "bar"
+
+    def test_htmx_target_match_returns_partial(self, rf):
+        request = self._make_request(rf, htmx_target="pagination")
+        response = render_paginated_response(request, "template.html", [])
+        assert response.template_name == "template.html#pagination"
+
+    def test_htmx_target_no_match_returns_full(self, rf):
+        request = self._make_request(rf, htmx_target="other")
+        response = render_paginated_response(request, "template.html", [])
+        assert response.template_name == "template.html"
+
+    def test_non_htmx_returns_full(self, rf):
+        request = self._make_request(rf)
+        response = render_paginated_response(request, "template.html", [])
+        assert response.template_name == "template.html"
+
+    def test_custom_config_target(self, rf):
+        config = PaginationConfig(target="my-list", partial="my-list")
+        request = self._make_request(rf, htmx_target="my-list")
+        response = render_paginated_response(request, "template.html", [], config=config)
+        assert response.template_name == "template.html#my-list"
+        assert response.context_data["pagination_config"].target == "my-list"
+
+    def test_django_paginator_per_page(self, rf):
+        request = self._make_request(rf)
+        config = PaginationConfig(paginator=DjangoPaginator([1, 2, 3, 4, 5], 2))
+        response = render_paginated_response(request, "template.html", [], config=config)
+        assert response.context_data["paginator"].per_page == 2
+
+    def test_custom_page_param(self, rf):
+        request = rf.get("/", {"p": "2"})
+        request.htmx = HtmxDetails(request)
+        items = list(range(10))
+        config = PaginationConfig(param="p", paginator=Paginator(items, 3))
+        response = render_paginated_response(request, "template.html", items, config=config)
+        assert response.context_data["page"].number == 2

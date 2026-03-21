@@ -1,6 +1,6 @@
 {% load i18n %}
 {% with has_other_pages=page.has_other_pages %}
-  <div id="{{ pagination_target }}" aria-live="polite" aria-atomic="true">
+  <div id="{{ pagination_config.target }}" aria-live="polite" aria-atomic="true">
     {% if has_other_pages %}
       <div class="pb-3">
         {% partial links %}
@@ -20,7 +20,7 @@
     role="navigation"
     aria-label="{% translate "Pagination" %}"
     hx-swap="outerHTML show:window:top"
-    hx-target="#{{ pagination_target }}"
+    hx-target="#{{ pagination_config.target }}"
   >
     <div class="join">
       {% if page.has_previous %}

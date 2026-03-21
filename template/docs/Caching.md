@@ -178,6 +178,42 @@ Pass additional vary-keys after the fragment name to scope per-user or per-objec
 {% endcache %}
 ```
 
+### With HTMX partial swaps
+
+Template fragment caching works well with HTMX pagination and partial swaps. Wrap
+the `{% partialdef %}` content in `{% cache %}` — the cached HTML is returned on
+cache hits without re-rendering the template or re-querying the database:
+
+```html
+{% load cache %}
+
+<div id="article-list">
+  {% partialdef article-list inline %}
+    {% cache cache_timeout "article-list" page.number %}
+      {% for article in page %}
+        <article>{{ article.title }}</article>
+      {% endfor %}
+    {% endcache %}
+  {% endpartialdef %}
+</div>
+```
+
+On an HTMX page-change request, `render_partial_response` extracts `article-list`
+and returns the cached fragment directly if it is warm. Use the page number (or any
+other vary-key that changes with each HTMX request) to ensure each page has its own
+cache entry.
+
+Invalidate the fragment key when the underlying data changes:
+
+```python
+from django.core.cache import cache
+
+def publish_article(article):
+    article.save()
+    # Bust every cached page — bump a version suffix or delete by pattern
+    cache.delete_many([f"article-list:{n}" for n in range(1, MAX_PAGES + 1)])
+```
+
 ---
 
 ## Cache Invalidation

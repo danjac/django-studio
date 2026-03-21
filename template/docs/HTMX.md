@@ -19,7 +19,7 @@ HTMX_CONFIG = {
 
 ## CSRF
 
-All HTMX POST/PUT/DELETE requests must include the CSRF token via `hx-headers`. The `{{ csrf_header }}` context variable holds the header name derived from `settings.CSRF_HEADER_NAME`. It is injected into every template by the `csrf_header` context processor in `my_app/context_processors.py`, which is registered in `config/settings.py` by default.
+All HTMX POST/PUT/DELETE requests must include the CSRF token via `hx-headers`. The `{{ csrf_header }}` context variable holds the header name derived from `settings.CSRF_HEADER_NAME`. It is injected into every template by the `csrf_header` context processor in `my_package/context_processors.py`, which is registered in `config/settings.py` by default.
 
 ```html
 <form hx-post="{% url 'submit' %}"
@@ -85,10 +85,10 @@ This project ships two utilities for the common HTMX view patterns. Prefer these
 
 ### `render_partial_response` - partial swap on target match
 
-`my_app.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
+`my_package.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
 
 ```python
-from my_app.partials import render_partial_response
+from my_package.partials import render_partial_response
 
 def my_form_view(request):
     form = MyForm(request.POST or None)
@@ -98,10 +98,10 @@ def my_form_view(request):
         return redirect("index")
     return render_partial_response(
         request,
-        "my_app/my_form.html",
+        "my_package/my_form.html",
         {"form": form},
         target="my-form",   # matches hx-target="#my-form" in the template
-        partial="form",     # renders "my_app/my_form.html#form" on HTMX requests
+        partial="form",     # renders "my_package/my_form.html#form" on HTMX requests
     )
 ```
 
@@ -109,20 +109,20 @@ The template defines a `{% partialdef form inline %}` block containing the form 
 
 ### `render_paginated_response` - paginated list with no COUNT query
 
-`my_app.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `Paginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
+`my_package.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `Paginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
 
 ```python
-from my_app.paginator import render_paginated_response
+from my_package.paginator import render_paginated_response
 
 def items_list(request):
     return render_paginated_response(
         request,
-        "my_app/items_list.html",
+        "my_package/items_list.html",
         Item.objects.all(),
     )
 ```
 
-The view always renders `my_app/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `page_size`, and `pagination_target`.
+The view always renders `my_package/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `page_size`, and `pagination_target`.
 
 Default keyword arguments (override as needed):
 
@@ -135,7 +135,7 @@ Default keyword arguments (override as needed):
 
 ## Middleware
 
-Three custom middleware classes in `my_app/middleware.py` handle HTMX-specific behaviour. They must be placed **after** `django_htmx.middleware.HtmxMiddleware` in `MIDDLEWARE`.
+Three custom middleware classes in `my_package/middleware.py` handle HTMX-specific behaviour. They must be placed **after** `django_htmx.middleware.HtmxMiddleware` in `MIDDLEWARE`.
 
 ### `HtmxCacheMiddleware`
 

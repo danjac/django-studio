@@ -73,11 +73,11 @@ adding the comment.
 
 ## Full-Text Search
 
-Use the `Searchable` mixin from `my_app/db/search.py` for PostgreSQL full-text
+Use the `Searchable` mixin from `my_package/db/search.py` for PostgreSQL full-text
 search:
 
 ```python
-from my_app.db.search import Searchable
+from my_package.db.search import Searchable
 
 
 class ItemQuerySet(Searchable, models.QuerySet):
@@ -113,7 +113,7 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    dependencies = [("my_app", "0001_initial")]
+    dependencies = [("my_package", "0001_initial")]
 
     operations = [
         migrations.RunSQL(

@@ -156,7 +156,7 @@ spec:
 
 ```yaml
 # Database cleanup
-args: ["shell", "--command", "from my_app.models import OldRecord; OldRecord.objects.filter(created__lt=now()-timedelta(days=90).delete()"]
+args: ["shell", "--command", "from my_package.models import OldRecord; OldRecord.objects.filter(created__lt=now()-timedelta(days=90).delete()"]
 
 # RSS feed refresh
 args: ["refresh_feeds", "--workers=4"]

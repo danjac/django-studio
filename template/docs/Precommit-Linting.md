@@ -156,7 +156,7 @@ just typecheck
 Configured in pyproject.toml:
 ```toml
 [tool.pyright]
-include = ["my_app"]
+include = ["my_package"]
 exclude = ["**/migrations/*.py", "**/tests/**/*.py"]
 typeCheckingMode = "basic"
 ```

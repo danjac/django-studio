@@ -159,7 +159,8 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
 | `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging              |
 | `a11y`     | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `deadcode` | Remove unused Python code and static assets                                  |
+| `deadcode`      | Remove unused Python code and static assets                                  |
+| `full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
 
 **Deployment**
 

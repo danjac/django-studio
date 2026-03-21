@@ -191,7 +191,36 @@ def _settings_overrides(settings):
 
 ## Mocking
 
+Mock at system boundaries only — never mock private methods.
+
+**Rule: do not mock private methods** (names starting with `_`). They are implementation
+details. If you need to control behaviour inside a private method, either:
+- Intercept the external call the private method makes (HTTP, filesystem, DB), or
+- Refactor the private method into a public one if it genuinely needs independent testing.
+
+| Boundary type | Tool |
+|---------------|------|
+| Async HTTP (`aiohttp`) | `aioresponses` |
+| Sync HTTP (`requests`) | `responses` |
+| Any callable/module | `pytest-mock` (`mocker.patch`) |
+
 ```python
+# BAD: mocks a private implementation detail
+def test_version_check(mocker):
+    mocker.patch("my_package.management.commands.sync_vendors._latest_github_version",
+                 return_value="2.0.0")
+    call_command("sync_vendors", "--check")
+
+# GOOD: intercept the HTTP call the private method makes
+from aioresponses import aioresponses
+
+def test_version_check():
+    with aioresponses() as m:
+        m.get("https://api.github.com/repos/owner/repo/releases/latest",
+              payload={"tag_name": "v2.0.0"})
+        call_command("sync_vendors", "--check")
+
+# GOOD: mock at a public module boundary
 def test_external_api(mocker):
     mock = mocker.patch("my_package.client.get_data")
     mock.return_value = {"result": "mocked"}

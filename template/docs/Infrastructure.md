@@ -356,7 +356,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ## Backup
 
 Automated daily backups are optional and set up separately after initial deployment.
-See `docs/Backups.md` for the full setup and restore guide, or run `/djstudio enable-db-backups`
+See `docs/Database-Backups.md` for the full setup and restore guide, or run `/djstudio enable-db-backups`
 to be guided through the process interactively.
 
 In brief: a Kubernetes CronJob runs `pg_dump` nightly and uploads compressed dumps to a

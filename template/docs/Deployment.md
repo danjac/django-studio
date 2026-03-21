@@ -46,7 +46,7 @@ The `storage/` and `backups/` modules are independent of the other two — each 
 applied at any time after the bucket credentials are created.
 
 - See `docs/File-Storage.md` for the media storage workflow.
-- See `docs/Backups.md` for the database backup workflow, or run `/djstudio enable-db-backups`.
+- See `docs/Database-Backups.md` for the database backup workflow, or run `/djstudio enable-db-backups`.
 
 ### Commands
 

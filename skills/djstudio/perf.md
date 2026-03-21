@@ -81,13 +81,21 @@ are necessary and note what they do.
 
 ### 2a. Caching
 
+See `docs/Caching.md` for the full caching strategy — when to cache, when not to,
+and which mechanism to reach for first.
+
 Flag as **ADVISORY** any view that:
 - Makes the same DB query on every request for data that rarely changes (e.g.
-  site-wide config, category lists, featured items)
-- Could benefit from `@cache_page`, `cache_control`, or a Redis-backed cache
+  site-wide config, category lists, featured items) — consider low-level
+  `cache.get/set` or `cache.get_or_set`
+- Renders a public, user-agnostic page on every request — consider `@cache_page`
+- Contains an expensive template fragment shared across users — consider
+  `{% cache cache_timeout "key" %}` (pairs well with HTMX partial swaps)
+- Makes a repeated cross-process call (third-party API, aggregated stat) that
+  should be cached in Redis
 
-Note: only flag views where caching would be safe (i.e. not user-personalised
-responses without `Vary` headers).
+Note: only flag views where caching would be safe. Never suggest `@cache_page` for
+authenticated or user-personalised views — it will serve one user's data to another.
 
 ### 2b. Synchronous blocking in async views
 
@@ -128,7 +136,36 @@ for user in users:
 Flag as **WARNING** any string built with `+` concatenation inside a loop —
 prefer `"".join(parts)` or f-strings outside loops.
 
-### 3c. Unnecessary imports
+### 3c. Missing in-process memoization
+
+Flag as **ADVISORY** any:
+- Model or service property that recomputes the same expensive derived value
+  multiple times per instance — prefer `@cached_property` (computed once, stored
+  on the instance for its lifetime)
+- Pure module-level function called repeatedly with the same arguments across
+  requests — prefer `@functools.cache` (process-level memoization, no Redis needed)
+
+```python
+# ADVISORY: recomputed on every access
+class Article(models.Model):
+    @property
+    def reading_time(self):
+        return estimate_reading_time(self.body)  # expensive, called many times
+
+# FIX: cache on the instance
+from django.utils.functional import cached_property
+
+class Article(models.Model):
+    @cached_property
+    def reading_time(self):
+        return estimate_reading_time(self.body)
+```
+
+Reach for `@cached_property` or `functools.cache` before Redis — they have no
+network overhead and no invalidation complexity. Use Redis only when the value
+must be shared across processes or server instances. See `docs/Caching.md`.
+
+### 3e. Unnecessary imports
 
 Flag as **ADVISORY** any `import *` statements — they pollute the namespace and
 make dependency analysis harder.

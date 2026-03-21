@@ -163,7 +163,7 @@ Use `django-widget-tweaks` to add classes or attributes from the template:
 {% endfragment %}
 ```
 
-The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_target }}`. The view uses `render_paginated_response` which sets `page`, `pagination_target`, and related context automatically — see `docs/HTMX.md`.
+The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_target }}`. The view uses `render_paginated_response` which sets `page`, `pagination_target`, and related context automatically — see `docs/Pagination.md`.
 
 ## Browse List
 

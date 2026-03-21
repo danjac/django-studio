@@ -1,5 +1,6 @@
+import dataclasses
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, TypeAlias, TypeVar
+from typing import TYPE_CHECKING, Protocol, TypeAlias, TypeVar
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger
@@ -19,16 +20,28 @@ T_Model = TypeVar("T_Model", bound=Model)
 ObjectList: TypeAlias = Sequence[T | T_Model] | QuerySet[T_Model]
 
 
+class Paginated(Protocol):
+    """Protocol for paginator classes compatible with render_paginated_response."""
+
+    def get_page(self, number: int | str) -> "Page": ...  # noqa: D102
+
+
+@dataclasses.dataclass(kw_only=True)
+class PaginationConfig:
+    """Configuration for render_paginated_response."""
+
+    param: str = "page"
+    target: str = "pagination"
+    partial: str = "pagination"
+    paginator: Paginated | None = None
+
+
 def render_paginated_response(
     request: "HttpRequest",
     template_name: str,
     object_list: ObjectList,
     extra_context: dict | None = None,
-    *,
-    param: str = "page",
-    target: str = "pagination",
-    partial: str = "pagination",
-    per_page: int = settings.DEFAULT_PAGE_SIZE,
+    config: PaginationConfig | None = None,
 ) -> "TemplateResponse":
     """Render a paginated template response.
 
@@ -41,12 +54,13 @@ def render_paginated_response(
         template_name: Template to render.
         object_list: Queryset or sequence to paginate.
         extra_context: Additional template context.
-        param: Query-string parameter name for the page number.
-        target: HTMX target element ID (used for partial rendering).
-        partial: Named partial within the template.
-        per_page: Page size (defaults to ``settings.DEFAULT_PAGE_SIZE``).
+        config: Pagination configuration. Defaults to PaginationConfig().
     """
-    page = Paginator(object_list, per_page).get_page(request.GET.get(param, 1))
+    config = config or PaginationConfig()
+
+    paginator = config.paginator or Paginator(object_list, settings.DEFAULT_PAGE_SIZE)
+
+    page = paginator.get_page(request.GET.get(config.param, 1))
 
     return render_partial_response(
         request,
@@ -54,11 +68,11 @@ def render_paginated_response(
         {
             "page": page,
             "page_size": page.page_size,
-            "pagination_target": target,
+            "pagination_target": config.target,
         }
         | (extra_context or {}),
-        target=target,
-        partial=partial,
+        target=config.target,
+        partial=config.partial,
     )
 
 

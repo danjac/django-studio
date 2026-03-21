@@ -113,7 +113,7 @@ The `/djstudio` skill uses a thin dispatcher (`.agents/skills/djstudio/SKILL.md`
 
 **Adding or changing a subcommand:**
 
-1. Create or edit the file at `.agents/skills/djstudio/<subcommand>.md`.
+1. Create or edit the file at `.agents/skills/djstudio/commands/<subcommand>.md`.
 2. Every skill file **must** end with a `## Help` section — user-facing documentation
    printed verbatim by `/djstudio help <command>`. Include: usage line, arguments,
    what the command does, and at least one example invocation.
@@ -136,7 +136,7 @@ Command files live in `.agents/` at the repo root and are copied to `.agents/` i
 
 **Adding new subcommand files:**
 
-Create the file under `.agents/skills/djstudio/<subcommand>.md`. No `copier.yml` change is needed — the post-gen hook copies the entire `.agents/` tree verbatim.
+Create the file under `.agents/skills/djstudio/commands/<subcommand>.md`. No `copier.yml` change is needed — the post-gen hook copies the entire `.agents/` tree verbatim.
 
 ## Bugs and Improvements
 

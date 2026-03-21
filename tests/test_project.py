@@ -383,10 +383,9 @@ class TestClaudeSkillsInstallation:
         assert stub.read_text().strip() == "@.agents/skills/djstudio/SKILL.md"
 
     def test_subcommand_files_installed(self, project):
-        subcommands_dir = project / ".agents" / "skills" / "djstudio"
-        installed = {f.name for f in subcommands_dir.iterdir() if f.suffix == ".md"}
+        commands_dir = project / ".agents" / "skills" / "djstudio" / "commands"
+        installed = {f.name for f in commands_dir.iterdir() if f.suffix == ".md"}
         expected = {
-            "SKILL.md",
             "create-app.md",
             "create-view.md",
             "create-task.md",

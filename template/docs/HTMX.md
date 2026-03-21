@@ -98,10 +98,10 @@ def my_form_view(request):
         return redirect("index")
     return render_partial_response(
         request,
-        "my_package/my_form.html",
+        "my_app/my_form.html",
         {"form": form},
         target="my-form",   # matches hx-target="#my-form" in the template
-        partial="form",     # renders "my_package/my_form.html#form" on HTMX requests
+        partial="form",     # renders "my_app/my_form.html#form" on HTMX requests
     )
 ```
 
@@ -117,12 +117,12 @@ from my_package.paginator import render_paginated_response
 def items_list(request):
     return render_paginated_response(
         request,
-        "my_package/items_list.html",
+        "my_app/items_list.html",
         Item.objects.all(),
     )
 ```
 
-The view always renders `my_package/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `page_size`, and `pagination_target`.
+The view always renders `my_app/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `page_size`, and `pagination_target`.
 
 Default keyword arguments (override as needed):
 

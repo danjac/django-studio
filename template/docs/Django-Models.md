@@ -113,7 +113,7 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    dependencies = [("my_package", "0001_initial")]
+    dependencies = [("my_app", "0001_initial")]
 
     operations = [
         migrations.RunSQL(

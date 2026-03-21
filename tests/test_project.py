@@ -397,6 +397,7 @@ class TestClaudeSkillsInstallation:
             "gdpr.md",
             "a11y.md",
             "deadcode.md",
+            "full-coverage.md",
             "translate.md",
             "docs.md",
             "daisyui.md",

@@ -19,15 +19,12 @@ Mobile-first. Use `sm:` (640 px), `md:` (768 px), `lg:` (1024 px), `xl:` (1280 p
 Use [`heroicons`](https://heroicons.com/) via `heroicons[django]` for all icons:
 
 ```html
-{% load heroicons %}
-
-{% heroicon_outline "arrow-right" %}                              {# 24 px outline #}
-{% heroicon_solid "check" %}                                      {# 24 px filled #}
-{% heroicon_mini "x-mark" class="size-4" %}                      {# 20 px compact #}
-{% heroicon_micro "chevron-down" %}                               {# 16 px tight spaces #}
-
-{# Extra attributes pass through directly #}
-{% heroicon_outline "magnifying-glass" class="size-5 opacity-50" aria-hidden="true" %}
+{% load heroicons %} {% heroicon_outline "arrow-right" %} {# 24 px outline #} {%
+heroicon_solid "check" %} {# 24 px filled #} {% heroicon_mini "x-mark"
+class="size-4" %} {# 20 px compact #} {% heroicon_micro "chevron-down" %} {# 16
+px tight spaces #} {# Extra attributes pass through directly: underscores are
+converted to kebab-case #} {% heroicon_outline "magnifying-glass" class="size-5
+opacity-50" aria_hidden="true" %}
 ```
 
 - Use heroicons as the first choice for every icon.

@@ -25,6 +25,7 @@ component.
 
 Form fields rendered via `{{ field.as_field_group }}` or
 `{% fragment "form.html" %}` are accessible by default:
+
 - Every `<input>` has an associated `<label>` via `field.id_for_label`
 - Error messages are linked via `aria-describedby`
 - Error states use `text-error` for visual indication
@@ -45,6 +46,8 @@ decorative (adjacent text already communicates the meaning):
 ```html
 {% heroicon_mini "trash" class="size-4" aria_hidden="true" %}
 ```
+
+**Note:** heroicon template tags convert `aria_hidden` to `aria-hidden` in the output.
 
 When the icon is the only content of an interactive element, provide a label:
 
@@ -79,7 +82,9 @@ Alpine components must be keyboard-operable:
   >
     Menu
   </button>
-  <ul x-show="open" role="menu">...</ul>
+  <ul x-show="open" role="menu">
+    ...
+  </ul>
 </div>
 ```
 
@@ -169,10 +174,15 @@ before the image loads:
 
 ```html
 <!-- BAD: no dimensions, causes layout shift -->
-<img src="{{ item.photo.url }}" alt="{{ item.title }}">
+<img src="{{ item.photo.url }}" alt="{{ item.title }}" />
 
 <!-- GOOD: explicit dimensions -->
-<img src="{{ item.photo.url }}" alt="{{ item.title }}" width="400" height="300">
+<img
+  src="{{ item.photo.url }}"
+  alt="{{ item.title }}"
+  width="400"
+  height="300"
+/>
 ```
 
 When using `sorl-thumbnail`, derive dimensions from the thumbnail object rather
@@ -180,10 +190,12 @@ than hard-coding:
 
 ```html
 {% thumbnail item.photo "400x300" crop="center" as thumb %}
-  <img src="{{ thumb.url }}"
-       alt="{{ item.title }}"
-       width="{{ thumb.width }}"
-       height="{{ thumb.height }}">
+<img
+  src="{{ thumb.url }}"
+  alt="{{ item.title }}"
+  width="{{ thumb.width }}"
+  height="{{ thumb.height }}"
+/>
 {% endthumbnail %}
 ```
 

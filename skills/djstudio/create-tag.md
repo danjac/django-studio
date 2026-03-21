@@ -98,7 +98,7 @@ approach with the user before writing any code.
    `format_html` already calls `mark_safe` internally — never wrap its output in
    `mark_safe`. Only call `mark_safe` directly on strings you have pre-sanitized
    externally (e.g. with `nh3`) or via `conditional_escape`. Never pass user-supplied
-   data directly to `mark_safe`.
+   data to `mark_safe` or the `|safe` template filter — they are equally dangerous.
 
 3. **Write tests** in:
    - App-level: `<package_name>/<app_name>/tests/test_template_tags.py`

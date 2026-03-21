@@ -146,7 +146,7 @@ INSTALLED_APPS = [
 ```python
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # serves static files — see docs/Static-Files.md
     "django_permissions_policy.PermissionsPolicyMiddleware",
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

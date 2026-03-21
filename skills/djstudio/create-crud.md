@@ -174,7 +174,7 @@ def <model_lower>_delete(
       Add <model_name>
     </a>
   </div>
-  {% with pagination_target="<model_lower>-list" %}
+  {% partialdef pagination inline %}
     {% fragment "paginate.html" %}
       {% for item in page.object_list %}
         <div>{{ item }}</div>
@@ -182,7 +182,7 @@ def <model_lower>_delete(
         <p class="text-zinc-500">No items yet.</p>
       {% endfor %}
     {% endfragment %}
-  {% endwith %}
+  {% endpartialdef %}
 {% endblock content %}
 ```
 

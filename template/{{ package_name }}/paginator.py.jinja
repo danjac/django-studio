@@ -67,8 +67,8 @@ def render_paginated_response(
         template_name,
         {
             "page": page,
-            "page_size": page.page_size,
-            "pagination_target": config.target,
+            "paginator": paginator,
+            "pagination_config": config,
         }
         | (extra_context or {}),
         target=config.target,

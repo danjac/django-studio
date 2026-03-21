@@ -99,7 +99,7 @@ above and below the list without duplication:
 <!-- templates/paginate_numbered.html -->
 {% load i18n %}
 {% with has_other_pages=page.has_other_pages %}
-  <div id="{{ pagination_target }}" aria-live="polite" aria-atomic="true">
+  <div id="{{ pagination_config.target }}" aria-live="polite" aria-atomic="true">
     {% if has_other_pages %}
       <div class="pb-3">{% partial links %}</div>
     {% endif %}
@@ -113,7 +113,7 @@ above and below the list without duplication:
 {% partialdef links %}
   <nav role="navigation"
        aria-label="{% translate "Pagination" %}"
-       hx-target="#{{ pagination_target }}"
+       hx-target="#{{ pagination_config.target }}"
        hx-swap="outerHTML show:window:top">
     <div class="join">
       {% if page.has_previous %}

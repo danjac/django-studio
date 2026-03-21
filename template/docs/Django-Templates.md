@@ -156,14 +156,14 @@ Use `django-widget-tweaks` to add classes or attributes from the template:
 `paginate.html` renders a paginated list with previous/next links using DaisyUI `join` buttons. Include it via `{% fragment %}`:
 
 ```html
-{% fragment "paginate.html" target=pagination_target %}
+{% fragment "paginate.html" %}
   {% for item in page %}
     <p>{{ item.name }}</p>
   {% endfor %}
 {% endfragment %}
 ```
 
-The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_target }}`. The view uses `render_paginated_response` which sets `page`, `pagination_target`, and related context automatically — see `docs/Pagination.md`.
+The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_config.target }}`. The view uses `render_paginated_response` which sets `page`, `paginator`, and `pagination_config` in context automatically — see `docs/Pagination.md`.
 
 ## Browse List
 

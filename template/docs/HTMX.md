@@ -122,7 +122,7 @@ def items_list(request):
     )
 ```
 
-The view always renders `my_app/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `page_size`, and `pagination_target`.
+The view always renders `my_app/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `paginator`, and `pagination_config`.
 
 Pass a `PaginationConfig` to customise behaviour (target, partial name, page size, or
 paginator class). For numbered pagination and infinite scroll patterns see

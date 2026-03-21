@@ -12,10 +12,10 @@ load and on validation failure, with the full page rendered only on first visit:
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 
-from myapp.http.decorators import require_form_methods
-from myapp.http.request import AuthenticatedHttpRequest
-from myapp.http.response import RenderOrRedirectResponse
-from myapp.partials import render_partial_response
+from my_app.http.decorators import require_form_methods
+from my_app.http.request import AuthenticatedHttpRequest
+from my_app.http.response import RenderOrRedirectResponse
+from my_app.partials import render_partial_response
 
 
 @login_required

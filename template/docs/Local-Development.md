@@ -55,7 +55,7 @@ services:
 # Development
 just serve              # Dev server + Tailwind watcher
 just test              # Run unit tests
-just test myapp/users  # Test specific module
+just test my_app/users  # Test specific module
 just tw                # Watch mode
 just test-e2e          # E2E tests (headless)
 just test-e2e-headed   # E2E tests (visible browser)

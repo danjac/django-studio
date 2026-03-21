@@ -67,7 +67,7 @@ Also verify:
   must return a `github.com` URL. If not: STOP — tell the user to create a GitHub repo
   and push the project first. The image will be published to ghcr.io under this repo name.
 - Derive the GitHub owner/repo: `gh repo view --json nameWithOwner -q .nameWithOwner`
-  Save this as `<github_repo>` (e.g. `danjac/myapp`) for use in later steps.
+  Save this as `<github_repo>` (e.g. `danjac/my_project`) for use in later steps.
 
 Print a summary of what will be set up and ask the user to confirm before proceeding.
 
@@ -89,7 +89,7 @@ If `hcloud_token` is missing or empty, pause and tell the user:
 > 2. Select your project (or create one)
 > 3. Left sidebar → **Security** → **API Tokens**
 > 4. Click **Generate API Token**
-> 5. Name: anything (e.g. `myapp-terraform`)
+> 5. Name: anything (e.g. `my_project-terraform`)
 > 6. Permissions: **Read & Write**
 > 7. Click **Generate Token** — copy it immediately, it won't be shown again
 >
@@ -190,7 +190,7 @@ If `cloudflare_api_token` is missing or empty, pause and tell the user:
 >
 > 1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **Profile** (top right) → **API Tokens**
 > 2. Click **Create Token** → **Create Custom Token**
-> 3. Name: anything (e.g. `myapp-terraform`)
+> 3. Name: anything (e.g. `my_project-terraform`)
 > 4. Under **Permissions**, add all of these (Zone level):
 >    - Zone → Zone → Edit
 >    - Zone → Zone Settings → Edit
@@ -409,7 +409,7 @@ If `terraform/storage/` exists:
 ### Domain values
 
 - `domain` ← use the domain confirmed in Step 2
-- `app.allowedHosts` ← `.` + domain (e.g. `.myapp.com`)
+- `app.allowedHosts` ← `.` + domain (e.g. `.my_domain.com`)
 
 ### Image
 

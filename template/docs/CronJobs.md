@@ -25,7 +25,7 @@ and `Secret`, so management commands have full Django settings available.
 ## Writing the Management Command
 
 ```python
-# myapp/management/commands/my_command.py
+# my_app/management/commands/my_command.py
 from django.core.management import BaseCommand
 
 class Command(BaseCommand):
@@ -49,9 +49,9 @@ will be killed if they exceed the job deadline. For anything non-trivial, the ma
 command should enqueue tasks and return immediately; the worker processes them in parallel.
 
 ```python
-# myapp/management/commands/process_items.py
+# my_app/management/commands/process_items.py
 from django.core.management import BaseCommand
-from myapp import tasks
+from my_app import tasks
 
 class Command(BaseCommand):
     help = "Enqueue pending items for processing"
@@ -65,7 +65,7 @@ class Command(BaseCommand):
 The corresponding task does the real work:
 
 ```python
-# myapp/tasks.py
+# my_app/tasks.py
 from django.tasks import task
 
 @task

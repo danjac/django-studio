@@ -156,7 +156,7 @@ spec:
 
 ```yaml
 # Database cleanup
-args: ["shell", "--command", "from myapp.models import OldRecord; OldRecord.objects.filter(created__lt=now()-timedelta(days=90).delete()"]
+args: ["shell", "--command", "from my_app.models import OldRecord; OldRecord.objects.filter(created__lt=now()-timedelta(days=90).delete()"]
 
 # RSS feed refresh
 args: ["refresh_feeds", "--workers=4"]
@@ -343,7 +343,7 @@ uv add opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
 
 ```python
 # settings.py
-OTEL_SERVICE_NAME = "myapp"
+OTEL_SERVICE_NAME = "my_project"
 OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ```
 

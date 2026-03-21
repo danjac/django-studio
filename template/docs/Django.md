@@ -166,7 +166,7 @@ MIDDLEWARE = [
 ## Context Processors
 
 ```python
-# myapp/context_processors.py
+# my_app/context_processors.py
 def csrf_header(_) -> dict[str, str | None]:
     return {"csrf_header": _csrf_header_name()}
 
@@ -198,7 +198,7 @@ See `docs/Django-Templates.md` for `active_app` / `active_url` usage.
 ## Admin
 
 ```python
-# myapp/<app_name>/admin.py
+# my_app/<app_name>/admin.py
 from django.contrib import admin
 
 @admin.register(MyModel)

@@ -86,13 +86,13 @@ ENV LC_CTYPE=C.utf8 \
 ## Building
 
 ```bash
-docker build -t myapp .
+docker build -t my_project .
 ```
 
 ## Running
 
 ```bash
-docker run -p 8000:8000 myapp
+docker run -p 8000:8000 my_project
 ```
 
 ## Gunicorn

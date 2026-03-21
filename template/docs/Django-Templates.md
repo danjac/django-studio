@@ -36,7 +36,7 @@ Use `inline` when the partial IS the content — i.e. the block should render in
 **Page-level template (use `inline`):**
 
 ```html
-<!-- myapp/items_list.html -->
+<!-- my_app/items_list.html -->
 {% extends "base.html" %}
 
 {% block content %}

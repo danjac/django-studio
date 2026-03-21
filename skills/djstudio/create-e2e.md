@@ -114,7 +114,7 @@ page.get_by_role("button", name="Sign out").click()
 
 ```python
 def test_user_submits_form_and_sees_success(auth_page: Page, e2e_user, live_server):
-    auth_page.goto(f"{live_server.url}{reverse('myapp:create')}")
+    auth_page.goto(f"{live_server.url}{reverse('my_app:create')}")
     auth_page.get_by_label("Title").fill("My item")
     auth_page.get_by_role("button", name="Save").click()
     expect(auth_page.get_by_text("Item created.")).to_be_visible()

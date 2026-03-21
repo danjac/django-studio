@@ -9,7 +9,7 @@
 - `allauth`, `allauth.account`, `allauth.socialaccount` in `INSTALLED_APPS` (`config/settings.py`)
 - `allauth.account.middleware.AccountMiddleware` in `MIDDLEWARE`
 - `path("account/", include("allauth.urls"))` in `config/urls.py`
-- `AUTH_USER_MODEL = "users.User"` - custom user model in `{{ package_name }}/users/`
+- `AUTH_USER_MODEL = "users.User"` - custom user model in `my_app/users/`
 - Email/username login, mandatory email verification by code, password reset by code
 - All account templates already customised in `templates/account/` and `templates/socialaccount/`
 - GDPR cookie consent handled by the cookie banner in `base.html` - **do not add database fields for consent**
@@ -37,7 +37,7 @@ Social providers can be added at any time without touching the base allauth setu
 To collect extra fields at signup, set `ACCOUNT_SIGNUP_FORM_CLASS` to a form that inherits from `forms.Form` and implements `signup(self, request, user)`:
 
 ```python
-# {{ package_name }}/users/forms.py
+# my_app/users/forms.py
 from django import forms
 
 class SignupForm(forms.Form):
@@ -50,7 +50,7 @@ class SignupForm(forms.Form):
 
 ```python
 # config/settings.py
-ACCOUNT_SIGNUP_FORM_CLASS = "{{ package_name }}.users.forms.SignupForm"
+ACCOUNT_SIGNUP_FORM_CLASS = "my_app.users.forms.SignupForm"
 ```
 
 ## Login by default

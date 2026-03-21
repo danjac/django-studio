@@ -27,7 +27,7 @@ TASKS = {
 ## Defining Tasks
 
 ```python
-# myapp/tasks.py
+# my_app/tasks.py
 from django.tasks import task
 
 # sync example
@@ -52,7 +52,7 @@ async def my_task(*, item_id: int) -> str:
 
 ```python
 # From views or management commands
-from myapp.tasks import my_task
+from my_app.tasks import my_task
 
 # Enqueue with kwargs
 my_task.enqueue(item_id=123)
@@ -72,9 +72,9 @@ Tasks are triggered by Kubernetes cron jobs defined in `helm/site/values.yaml`. 
 job runs a management command that enqueues tasks; the worker processes them in parallel.
 
 ```python
-# myapp/management/commands/process_items.py
+# my_app/management/commands/process_items.py
 from django.core.management import BaseCommand
-from myapp import tasks
+from my_app import tasks
 
 class Command(BaseCommand):
     help = "Enqueue pending items for processing"

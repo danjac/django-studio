@@ -60,7 +60,7 @@ just terraform backups apply
 Note the outputs — you will need them in Step 2:
 
 ```bash
-just terraform-value backups bucket_name    # e.g. myapp-db-backups
+just terraform-value backups bucket_name    # e.g. my_project-db-backups
 just terraform-value backups endpoint_url   # e.g. https://fsn1.your-objectstorage.com
 ```
 
@@ -205,7 +205,7 @@ export AWS_ACCESS_KEY_ID="<backupAccessKey>"
 export AWS_SECRET_ACCESS_KEY="<backupSecretKey>"
 export AWS_DEFAULT_REGION="fsn1"
 export BACKUP_ENDPOINT="https://fsn1.your-objectstorage.com"
-export BACKUP_BUCKET="myapp-db-backups"
+export BACKUP_BUCKET="my_project-db-backups"
 export PGPASSWORD="<postgresPassword>"
 ```
 

@@ -88,7 +88,7 @@ The `config/` directory contains Django project configuration:
 The `my_package/` directory contains the main application package. Each sub-app should be self-contained:
 
 ```
-my_package/subapp/
+my_package/my_app/
 ├── models.py         # Core business logic
 ├── views.py          # Request handlers (function-based)
 ├── urls.py           # URL routes for this app
@@ -122,7 +122,7 @@ templates/
 Tests are colocated with modules:
 
 ```
-my_package/subapp/
+my_package/my_app/
 ├── models.py
 └── tests/
     ├── __init__.py

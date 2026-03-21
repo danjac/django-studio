@@ -118,13 +118,13 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             sql="""
-CREATE TRIGGER myapp_update_search_trigger
-BEFORE INSERT OR UPDATE OF title, description ON myapp_item
+CREATE TRIGGER my_app_update_search_trigger
+BEFORE INSERT OR UPDATE OF title, description ON my_app_item
 FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(
     search_vector, 'pg_catalog.simple', title, description);
-UPDATE myapp_item SET search_vector = NULL;""",
+UPDATE my_app_item SET search_vector = NULL;""",
             reverse_sql=(
-                "DROP TRIGGER IF EXISTS myapp_update_search_trigger ON myapp_item;"
+                "DROP TRIGGER IF EXISTS my_app_update_search_trigger ON my_app_item;"
             ),
         ),
     ]

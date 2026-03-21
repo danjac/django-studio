@@ -42,16 +42,16 @@ uvx copier copy --trust gh:danjac/django-studio my-project
 
 Then follow the prompts:
 
-| Prompt              | Example                 | Notes                                                                                                  |
-| ------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------ |
-| `project_name`      | `My Project`            | Human-readable name                                                                                    |
-| `project_slug`      | `my_project`            | Python package directory name                                                                          |
-| `package_name`      | `my_project`            | Python package name (snake_case)                                                                       |
-| `description`       | `A project that does X` | One-sentence description                                                                               |
-| `author`            | `Your Name`             |                                                                                                        |
-| `author_email`      | `you@example.com`       |                                                                                                        |
-| `domain`            | `example.com`           | Production domain                                                                                      |
-| `license`           | `MIT`                   | MIT, Apache-2.0, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0, BSD-2-Clause, BSD-3-Clause, ISC, EUPL-1.2, None |
+| Prompt         | Example                 | Notes                                                                                                  |
+| -------------- | ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| `project_name` | `My Project`            | Human-readable name                                                                                    |
+| `project_slug` | `my_project`            | Python package directory name                                                                          |
+| `package_name` | `my_project`            | Python package name (snake_case)                                                                       |
+| `description`  | `A project that does X` | One-sentence description                                                                               |
+| `author`       | `Your Name`             |                                                                                                        |
+| `author_email` | `you@example.com`       |                                                                                                        |
+| `domain`       | `example.com`           | Production domain                                                                                      |
+| `license`      | `MIT`                   | MIT, Apache-2.0, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0, BSD-2-Clause, BSD-3-Clause, ISC, EUPL-1.2, None |
 
 ### Updating a generated project
 
@@ -65,12 +65,6 @@ uvx copier update --trust
 [Copier](https://pypi.org/project/copier/) performs a 3-way merge so your local changes are preserved. Resolve any conflicts, then commit.
 
 The generated `README.md` will include instructions to get started with development, testing, and deployment.
-
-## Philosophy
-
-- **Low friction**: Minimal setup steps; generate a project with a single command.
-- **High velocity**: Opinionated defaults so you can focus on business logic and end-user needs.
-- **Best practices**: Uses proven tools and patterns for security, performance, and observability.
 
 ## Features
 
@@ -117,11 +111,11 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **General**
 
-| Subcommand        | Summary                                                                           |
-| ----------------- | --------------------------------------------------------------------------------- |
-| `help`            | Print documentation for a subcommand                                              |
-| `sync`            | Pull latest template changes via Copier and resolve merge conflicts interactively |
-| `feedback`        | Report a bug or improvement against the django-studio template                    |
+| Subcommand | Summary                                                                           |
+| ---------- | --------------------------------------------------------------------------------- |
+| `help`     | Print documentation for a subcommand                                              |
+| `sync`     | Pull latest template changes via Copier and resolve merge conflicts interactively |
+| `feedback` | Report a bug or improvement against the django-studio template                    |
 
 **Generators**
 
@@ -140,10 +134,10 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **Documentation**
 
-| Subcommand | Summary                                                     |
-| ---------- | ----------------------------------------------------------- |
-| `docs`     | Look up or create project documentation                     |
-| `daisyui`  | Fetch DaisyUI component docs with project conventions       |
+| Subcommand | Summary                                               |
+| ---------- | ----------------------------------------------------- |
+| `docs`     | Look up or create project documentation               |
+| `daisyui`  | Fetch DaisyUI component docs with project conventions |
 
 **Localisation**
 
@@ -153,19 +147,19 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 
 **Audits**
 
-| Subcommand | Summary                                                                      |
-| ---------- | ---------------------------------------------------------------------------- |
-| `perf`     | Performance audit: N+1 queries, missing indexes, caching, async              |
-| `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
-| `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging              |
-| `a11y`     | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
+| Subcommand      | Summary                                                                      |
+| --------------- | ---------------------------------------------------------------------------- |
+| `perf`          | Performance audit: N+1 queries, missing indexes, caching, async              |
+| `secure`        | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
+| `gdpr`          | GDPR compliance audit: PII in models, erasure, consent, logging              |
+| `a11y`          | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
 | `deadcode`      | Remove unused Python code and static assets                                  |
 | `full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
 
 **Deployment**
 
-| Subcommand          | Summary                                                                        |
-| ------------------- | ------------------------------------------------------------------------------ |
+| Subcommand             | Summary                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------ |
 | `launch`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
 | `launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
 | `rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |

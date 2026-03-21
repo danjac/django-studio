@@ -193,15 +193,16 @@ def _settings_overrides(settings):
 
 Mock at system boundaries only — never mock private methods.
 
-**Rule: do not mock private methods** (names starting with `_`). They are implementation
+**Rule: do not mock private functions or methods** (names starting with `_`). They are implementation
 details. If you need to control behaviour inside a private method, either:
-- Intercept the external call the private method makes (HTTP, filesystem, DB), or
-- Refactor the private method into a public one if it genuinely needs independent testing.
 
-| Boundary type | Tool |
-|---------------|------|
-| Async HTTP (`aiohttp`) | `aioresponses` |
-| Any callable/module | `pytest-mock` (`mocker.patch`) |
+- Intercept the external call the private method makes (HTTP, filesystem, DB), or
+- Refactor the private method/function into a public one if it genuinely needs independent testing.
+
+| Boundary type          | Tool                           |
+| ---------------------- | ------------------------------ |
+| Async HTTP (`aiohttp`) | `aioresponses`                 |
+| Any callable/module    | `pytest-mock` (`mocker.patch`) |
 
 ```python
 # BAD: mocks a private implementation detail
@@ -297,12 +298,14 @@ Then retry `uv run playwright install` if browser binaries were also cleared.
 ## When to Use E2E vs Unit Tests
 
 **Use E2E (Playwright) for:**
+
 - JavaScript interactivity (Alpine.js)
 - HTMX swapping behavior
 - Multi-page flows
 - Browser-specific behavior
 
 **Use Unit Tests for:**
+
 - Django view logic
 - Model methods
 - Form validation

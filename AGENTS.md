@@ -85,7 +85,7 @@ These docs describe the patterns, types, and conventions the generated project u
 After any change to `template/`, regenerate the project and verify all checks pass before committing:
 
 ```bash
-cd /tmp && trash my_app
+cd /tmp && trash my_app && find /tmp/.Trash-1000 -mindepth 1 -delete
 uvx copier copy --trust --defaults --data project_name="My App" . /tmp/my_app
 cd /tmp/my_app
 git init && git add -A
@@ -93,6 +93,11 @@ uv run pre-commit run --all-files   # run twice if hooks auto-fix files
 uv run pre-commit run --all-files
 just typecheck
 ```
+
+**Always trash and delete the old project before regenerating.** Stale generated
+projects cause `just check` to pass locally while CI fails — the repo-level tests in
+`tests/test_project.py` regenerate from scratch every run and catch mismatches that
+a cached `/tmp/my_app` hides.
 
 **Do not commit until all checks are clean.**
 

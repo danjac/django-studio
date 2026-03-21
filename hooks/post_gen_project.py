@@ -156,13 +156,15 @@ def install_claude_hooks() -> None:
 
 
 def install_skills() -> None:
-    """Copy skills from the template's skills/ directory to .claude/commands/."""
-    skills_src = _TEMPLATE_ROOT / "skills"
-    if not skills_src.is_dir():
+    """Copy .agents/ from the template to the project, then write a .claude/commands stub."""
+    agents_src = _TEMPLATE_ROOT / ".agents"
+    if not agents_src.is_dir():
         return
+    agents_dst = BASE_DIR / ".agents"
+    shutil.copytree(agents_src, agents_dst, dirs_exist_ok=True)
     commands_dst = BASE_DIR / ".claude" / "commands"
     commands_dst.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(skills_src, commands_dst, dirs_exist_ok=True)
+    (commands_dst / "djstudio.md").write_text("@.agents/skills/djstudio/SKILL.md\n")
 
 
 # ── main ─────────────────────────────────────────────────────────────────────

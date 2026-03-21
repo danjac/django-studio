@@ -369,18 +369,24 @@ class TestAlwaysIncludedFeatures:
 
 
 class TestClaudeSkillsInstallation:
-    """Verify that skills/ are copied to .claude/commands/ by the post-gen hook."""
+    """Verify that .agents/ is copied and .claude/commands stub is written by the post-gen hook."""
+
+    def test_agents_dir_installed(self, project):
+        assert (project / ".agents" / "skills" / "djstudio").is_dir()
 
     def test_dispatcher_installed(self, project):
-        assert (project / ".claude" / "commands" / "djstudio.md").exists()
+        assert (project / ".agents" / "skills" / "djstudio" / "SKILL.md").exists()
 
-    def test_subcommands_dir_installed(self, project):
-        assert (project / ".claude" / "commands" / "djstudio").is_dir()
+    def test_dispatcher_stub_installed(self, project):
+        stub = project / ".claude" / "commands" / "djstudio.md"
+        assert stub.exists()
+        assert stub.read_text().strip() == "@.agents/skills/djstudio/SKILL.md"
 
     def test_subcommand_files_installed(self, project):
-        subcommands_dir = project / ".claude" / "commands" / "djstudio"
+        subcommands_dir = project / ".agents" / "skills" / "djstudio"
         installed = {f.name for f in subcommands_dir.iterdir() if f.suffix == ".md"}
         expected = {
+            "SKILL.md",
             "create-app.md",
             "create-view.md",
             "create-task.md",

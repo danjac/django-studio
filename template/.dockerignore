@@ -6,6 +6,7 @@
 !.pre-commit-config.yaml
 **/__pycache__
 **/tests
+.agents
 .claude
 .claudeignore
 .copier-answers.yml

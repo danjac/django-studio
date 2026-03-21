@@ -109,15 +109,15 @@ The template uses [DaisyUI](https://daisyui.com/components/) for component styli
 
 ## djstudio Commands
 
-The `/djstudio` skill uses a thin dispatcher (`skills/djstudio.md`) that routes each subcommand to its own instructions file under `skills/djstudio/`. The post-gen hook copies the entire `skills/` tree to `.claude/commands/` in the generated project.
+The `/djstudio` skill uses a thin dispatcher (`.agents/skills/djstudio/SKILL.md`) that routes each subcommand to its own instructions file under `.agents/skills/djstudio/`. The post-gen hook copies the entire `.agents/` tree to the generated project verbatim and writes a one-line stub at `.claude/commands/djstudio.md` that references it via `@.agents/skills/djstudio/SKILL.md`.
 
 **Adding or changing a subcommand:**
 
-1. Create or edit the file at `skills/djstudio/<subcommand>.md`.
+1. Create or edit the file at `.agents/skills/djstudio/<subcommand>.md`.
 2. Every skill file **must** end with a `## Help` section — user-facing documentation
    printed verbatim by `/djstudio help <command>`. Include: usage line, arguments,
    what the command does, and at least one example invocation.
-3. Add or update the row in the dispatcher table in `skills/djstudio.md`. Place the row
+3. Add or update the row in the dispatcher table in `.agents/skills/djstudio/SKILL.md`. Place the row
    in the correct section (General, Generators, Localisation, Audits, or Deployment).
 4. Update the subcommand table in `template/AGENTS.md.jinja`.
 5. Always update relevant docs when adding, removing, or changing a command — at minimum:
@@ -132,11 +132,11 @@ The `/djstudio` skill uses a thin dispatcher (`skills/djstudio.md`) that routes 
 
 **Tracking in version control:**
 
-Command files live in `skills/` at the repo root and are copied to `.claude/commands/` in the generated project by the post-gen hook (`install_skills()`). They are always tracked in git — no `git add -f` needed.
+Command files live in `.agents/` at the repo root and are copied to `.agents/` in the generated project by the post-gen hook (`install_skills()`). They are always tracked in git in both repos — no `git add -f` needed.
 
 **Adding new subcommand files:**
 
-Create the file under `skills/djstudio/<subcommand>.md`. No `cookiecutter.json` change is needed — the post-gen hook copies the entire `skills/` tree verbatim.
+Create the file under `.agents/skills/djstudio/<subcommand>.md`. No `copier.yml` change is needed — the post-gen hook copies the entire `.agents/` tree verbatim.
 
 ## Bugs and Improvements
 

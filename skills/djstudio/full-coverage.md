@@ -14,6 +14,9 @@ confirmation:
 > to write. It is best applied once the project is at or close to feature
 > complete.
 >
+> **Tip:** Run `/djstudio deadcode` first to remove any unused code you
+> don't need. There is no point writing tests for dead code.
+>
 > Do you want to proceed?
 
 Stop if the user does not confirm.

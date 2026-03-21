@@ -133,6 +133,36 @@ Default keyword arguments (override as needed):
 | `partial` | `"pagination"` | Named partial to render on HTMX requests |
 | `per_page` | `settings.DEFAULT_PAGE_SIZE` | Items per page |
 
+## Middleware
+
+Three custom middleware classes in `myapp/middleware.py` handle HTMX-specific behaviour. They must be placed **after** `django_htmx.middleware.HtmxMiddleware` in `MIDDLEWARE`.
+
+### `HtmxCacheMiddleware`
+
+Sets `Vary: HX-Request` on HTMX responses so caches serve the correct variant to HTMX vs normal requests. See [HTMX caching docs](https://htmx.org/docs/#caching).
+
+### `HtmxMessagesMiddleware`
+
+Appends pending Django messages to HTMX HTML responses as an [out-of-band swap](https://htmx.org/attributes/hx-swap-oob/) (`hx-swap-oob="true"`) targeting the `#messages` container in `base.html`. This means any view that calls `messages.success(...)` before a partial response will automatically display the toast — no extra template code required.
+
+The middleware skips responses that already carry an HTMX redirect header (`HX-Location`, `HX-Redirect`, `HX-Refresh`) because the browser is about to navigate away.
+
+### `HtmxRedirectMiddleware`
+
+Converts standard HTTP 3xx redirects into `HX-Location` responses when the request came from HTMX. Without this, HTMX would follow the redirect internally and swap the redirected page's HTML into the current target — usually not what you want.
+
+With this middleware, a normal `return redirect(...)` in a view does the right thing for both full-page and HTMX requests:
+
+```python
+def my_form_view(request):
+    form = MyForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Saved.")
+        return redirect("index")  # becomes HX-Location for HTMX, full redirect otherwise
+    ...
+```
+
 ## Common Patterns
 
 ### Search with Debounce

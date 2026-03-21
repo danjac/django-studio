@@ -132,6 +132,30 @@ class DownloadOptions:
 
 See `docs/Django.md` for internationalisation conventions (`gettext`, `gettext_lazy`, templates).
 
+## Class Attributes
+
+For class-level constants that are fixed sequences, prefer plain tuples over annotated
+`ClassVar` lists. This applies everywhere — Django model `Meta`, form `Meta`, admin classes, and any
+other class that declares sequence attributes:
+
+```python
+# Bad — annotation adds noise, list is mutable
+class Meta:
+    ordering: ClassVar[list[str]] = ["-created"]
+
+class MyAdmin(ModelAdmin):
+    list_display: ClassVar[list[str]] = ["name", "created"]
+
+# Good — tuple is immutable and needs no annotation
+class Meta:
+    ordering = ("-created",)
+
+class MyAdmin(ModelAdmin):
+    list_display = ("name", "created")
+```
+
+Use a tuple unless the framework explicitly requires a mutable list.
+
 ## Type Annotations
 
 - Type checking is done by `basedpyright` (`just typecheck`). Configuration is in `pyproject.toml` under `[tool.pyright]`.

@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import json
+import re
 from io import StringIO
 
+import aiohttp
 import pytest
+from aioresponses import aioresponses
 from django.contrib.sites.models import Site
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -184,3 +187,63 @@ class TestSyncVendors:
         )
         with pytest.raises(CommandError, match="Failed to download"):
             call_command("sync_vendors", "--no-input")
+
+    def test_non_github_url_warns_version_unknown(self, tmp_path, settings, capsys):
+        """Non-GitHub URL with no repo: _latest_github_version returns None → warning."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps({
+                "mylib": {
+                    "version": "1.0.0",
+                    "source": "https://cdn.example.com/mylib.js",
+                    "dest": "static/vendor/mylib.js",
+                }
+            })
+        )
+        settings.VENDORS_FILE = path
+        call_command("sync_vendors", "--check")
+        assert "could not determine latest version" in capsys.readouterr().out
+
+    def test_github_version_resolved_from_url(self, tmp_path, settings, capsys):
+        """GitHub URL with no explicit repo: version resolved via regex + API call."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps({
+                "mylib": {
+                    "version": "1.0.0",
+                    "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
+                    "dest": "static/vendor/mylib.js",
+                }
+            })
+        )
+        settings.VENDORS_FILE = path
+        with aioresponses() as m:
+            m.get(
+                "https://api.github.com/repos/owner/mylib/releases/latest",
+                payload={"tag_name": "v2.0.0"},
+            )
+            call_command("sync_vendors", "--check")
+        assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
+
+    def test_download_file_writes_content(self, vendors_path, tmp_path):
+        """_download_file success path: HTTP response body written to dest file."""
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+        (tmp_path / "tailwind").mkdir(parents=True)
+        with aioresponses() as m:
+            m.get(re.compile(r"https://api\.github\.com/.*"), payload={"tag_name": "v2.0.8"}, repeat=True)
+            m.get(re.compile(r"https://github\.com/.*"), body=b"fake content", repeat=True)
+            call_command("sync_vendors", "--no-input")
+        assert (tmp_path / "static" / "vendor" / "htmx.js").read_bytes() == b"fake content"
+        assert (tmp_path / "tailwind" / "daisyui.mjs").read_bytes() == b"fake content"
+
+    def test_download_http_error_raises_command_error(self, vendors_path):
+        """_download_file ClientError path: raises CommandError."""
+        with aioresponses() as m:
+            m.get(re.compile(r"https://api\.github\.com/.*"), payload={"tag_name": "v2.0.8"}, repeat=True)
+            m.get(
+                re.compile(r"https://github\.com/.*"),
+                exception=aiohttp.ClientError("connection refused"),
+                repeat=True,
+            )
+            with pytest.raises(CommandError, match="Failed to download"):
+                call_command("sync_vendors", "--no-input")

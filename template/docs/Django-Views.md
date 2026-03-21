@@ -149,6 +149,9 @@ def item_list(request: HttpRequest) -> TemplateResponse:
     )
 ```
 
+For numbered pagination, infinite scroll, and `PaginationConfig` options see
+`docs/Pagination.md`.
+
 ## Async Views
 
 **Prefer synchronous views. Use async only for I/O-bound work** (third-party

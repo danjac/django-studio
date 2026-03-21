@@ -327,8 +327,9 @@ Reach for `simple_block_tag` before a custom `Node` subclass — the built-in
 
 ### Tags that produce HTML
 
-Always use `format_html` or `mark_safe` — never build HTML with f-strings or
-string concatenation on user-supplied data:
+Always use `format_html` — it escapes every interpolated value and returns a
+`SafeString`. Never build HTML with f-strings or string concatenation on
+user-supplied data:
 
 ```python
 from django.utils.html import format_html
@@ -337,6 +338,23 @@ from django.utils.html import format_html
 def icon(name: str) -> "SafeString":
     return format_html('<svg class="icon icon-{}"></svg>', name)
 ```
+
+For lists of HTML fragments, use `format_html_join` — it calls `format_html` on each
+item and joins the results:
+
+```python
+from django.utils.html import format_html_join
+
+@register.simple_tag
+def badge_list(items: list[str]) -> "SafeString":
+    return format_html_join("", '<span class="badge">{}</span>', ((i,) for i in items))
+```
+
+`mark_safe` bypasses escaping entirely — `format_html` already calls it internally,
+so never wrap `format_html` output in `mark_safe`. The only valid use for `mark_safe`
+in your own code is when you have pre-sanitized a string externally (e.g. with a
+library like `nh3`) or via `conditional_escape` in a `needs_autoescape` filter.
+Never pass user-supplied data directly to `mark_safe`.
 
 ### Testing
 

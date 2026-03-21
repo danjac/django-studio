@@ -350,12 +350,12 @@ def badge_list(items: list[str]) -> "SafeString":
     return format_html_join("", '<span class="badge">{}</span>', ((i,) for i in items))
 ```
 
-`mark_safe` (Python) and `{{ value|safe }}` (template filter) both bypass escaping
-entirely — they are equivalent and equally dangerous on user-supplied data. Neither
-is needed on the output of `format_html`, which already calls `mark_safe` internally.
-The only valid use is when you have pre-sanitized a string externally (e.g. with a
-library like `nh3`) or via `conditional_escape` in a `needs_autoescape` filter.
-Never pass user-supplied data to `mark_safe` or `|safe`.
+**IMPORTANT — XSS risk:** `mark_safe` (Python) and `{{ value|safe }}` (template
+filter) both disable autoescaping entirely. They are equivalent and equally dangerous
+on user-supplied data. Neither is needed on the output of `format_html`, which already
+calls `mark_safe` internally. The only valid use is when you have pre-sanitized a
+string externally (e.g. with a library like `nh3`) or via `conditional_escape` in a
+`needs_autoescape` filter. **Never pass user-supplied data to `mark_safe` or `|safe`.**
 
 ### Testing
 

@@ -77,8 +77,9 @@ is ambiguous, clarify:
    user-supplied data. `format_html` already calls `mark_safe` internally — never wrap
    its output in `mark_safe`. Only call `mark_safe` directly on strings you have
    pre-sanitized externally (e.g. with `nh3`) or via `conditional_escape` (as in the
-   `needs_autoescape` pattern above). Never pass user-supplied data to `mark_safe` or
-   the `|safe` template filter — they are equivalent and equally dangerous.
+   `needs_autoescape` pattern above). **IMPORTANT — XSS risk: never pass user-supplied
+   data to `mark_safe` or the `|safe` template filter — they are equivalent and equally
+   dangerous.**
 
 3. **Write tests** in:
    - App-level: `<package_name>/<app_name>/tests/test_template_tags.py`

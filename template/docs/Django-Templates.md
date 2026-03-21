@@ -283,3 +283,71 @@ Override the container constraint with negative margins:
 ## Cookie Banner
 
 `{% cookie_banner %}` is a template tag rendered in `base.html`. It uses HTMX to dismiss itself. Remove the tag from `base.html` to disable it.
+
+---
+
+## Custom Template Tags and Filters
+
+Use `/djstudio create-tag` and `/djstudio create-filter` to add new tags and filters.
+
+### Where they live
+
+| Scope | File |
+|-------|------|
+| Project-wide | `<package_name>/templatetags.py` (ships with every project) |
+| App-specific | `<package_name>/<app_name>/templatetags/<app_name>.py` |
+
+Always append to an existing file — never recreate it. App-level files need a
+`templatetags/__init__.py` alongside them.
+
+### Shipped tags
+
+| Tag | Type | Purpose |
+|-----|------|---------|
+| `{% active_app 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.app_name` matches |
+| `{% active_url 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.url_name` matches |
+| `{% fragment "t.html" %}...{% endfragment %}` | `simple_block_tag` | Include a template with `{{ content }}` slot |
+| `{% cookie_banner %}` | `inclusion_tag` | GDPR cookie consent banner |
+| `{% title_tag %}` | `simple_tag` | Composable `<title>` tag |
+
+### Choosing a tag type
+
+Pick the simplest type that fits:
+
+| Type | Use when |
+|------|----------|
+| `@register.simple_tag` | Returns a value; no template rendering needed |
+| `@register.simple_tag(takes_context=True)` | Needs `request` or context variables |
+| `@register.simple_block_tag` | Wraps or transforms a block of template content (Django 6+) |
+| `@register.inclusion_tag("t.html")` | Renders a sub-template and returns its output |
+| `@register.filter` | Transforms a single value in a template expression |
+
+Reach for `simple_block_tag` before a custom `Node` subclass — the built-in
+`fragment` tag is a working example of `simple_block_tag`.
+
+### Tags that produce HTML
+
+Always use `format_html` or `mark_safe` — never build HTML with f-strings or
+string concatenation on user-supplied data:
+
+```python
+from django.utils.html import format_html
+
+@register.simple_tag
+def icon(name: str) -> "SafeString":
+    return format_html('<svg class="icon icon-{}"></svg>', name)
+```
+
+### Testing
+
+Test the function directly — do not instantiate `Template`/`Context` unless full
+rendering is genuinely required:
+
+```python
+from my_package.templatetags import my_filter
+
+def test_my_filter():
+    assert my_filter("hello") == "HELLO"
+```
+
+For `inclusion_tag`, assert the returned context dict, not the rendered HTML.

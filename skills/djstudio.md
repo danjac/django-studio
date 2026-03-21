@@ -55,7 +55,8 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 | `secure`   | `.claude/commands/djstudio/secure.md`    | Security audit: settings, views, XSS, CSRF, IDOR, SQLi   |
 | `gdpr`     | `.claude/commands/djstudio/gdpr.md`      | GDPR compliance audit: PII, erasure, consent, logging    |
 | `a11y`     | `.claude/commands/djstudio/a11y.md`      | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `deadcode` | `.claude/commands/djstudio/deadcode.md`  | Remove unused Python code and static assets              |
+| `deadcode`       | `.claude/commands/djstudio/deadcode.md`       | Remove unused Python code and static assets              |
+| `full-coverage`  | `.claude/commands/djstudio/full-coverage.md`  | Enable 100% coverage gate and write tests for all gaps   |
 
 **Deployment**
 

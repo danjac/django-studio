@@ -92,8 +92,13 @@ approach with the user before writing any code.
    Create the companion template at `templates/<template_path>.html`.
 
    Use `TYPE_CHECKING` guards for type-only imports (`RequestContext`, `SafeString`, etc.).
-   Tags that produce HTML must use `format_html` or `mark_safe` — never return raw
-   f-strings or string concatenations containing user-supplied data.
+   Tags that produce HTML must use `format_html` (single fragment) or `format_html_join`
+   (list of fragments) — both escape every interpolated value and return a `SafeString`.
+   Never return raw f-strings or string concatenations containing user-supplied data.
+   `format_html` already calls `mark_safe` internally — never wrap its output in
+   `mark_safe`. Only call `mark_safe` directly on strings you have pre-sanitized
+   externally (e.g. with `nh3`) or via `conditional_escape`. Never pass user-supplied
+   data directly to `mark_safe`.
 
 3. **Write tests** in:
    - App-level: `<package_name>/<app_name>/tests/test_template_tags.py`

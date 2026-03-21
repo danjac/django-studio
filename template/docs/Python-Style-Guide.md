@@ -48,19 +48,19 @@ Avoid generic module or package names like `utils.py`, `helpers.py`, or `service
 
 ```
 # Bad
-my_app/utils.py
-my_app/helpers.py
-my_app/services.py
+my_package/utils.py
+my_package/helpers.py
+my_package/services.py
 
 # Good — modules
-my_app/geocoding.py
-my_app/notifications.py
-my_app/pdf_export.py
+my_package/geocoding.py
+my_package/notifications.py
+my_package/pdf_export.py
 
 # Good — packages (when functionality is large enough to split)
-my_app/geocoding/
-my_app/notifications/
-my_app/payments/
+my_package/geocoding/
+my_package/notifications/
+my_package/payments/
 ```
 
 ## Caching

@@ -166,7 +166,7 @@ MIDDLEWARE = [
 ## Context Processors
 
 ```python
-# my_app/context_processors.py
+# my_package/context_processors.py
 def csrf_header(_) -> dict[str, str | None]:
     return {"csrf_header": _csrf_header_name()}
 
@@ -191,14 +191,14 @@ All tags in `templatetags.py` are registered as builtins — no `{% load %}` req
 
 New tags which are not specific to a single app should be added here.
 
-App-specific tags should be added to `<app_name>/templatetags/<app_name>.py` unless the user specifies otherwise.
+App-specific tags should be added to `my_app/templatetags/my_app.py` unless the user specifies otherwise.
 
 See `docs/Django-Templates.md` for `active_app` / `active_url` usage.
 
 ## Admin
 
 ```python
-# my_app/<app_name>/admin.py
+# my_package/my_app/admin.py
 from django.contrib import admin
 
 @admin.register(MyModel)

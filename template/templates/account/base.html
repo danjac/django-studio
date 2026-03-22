@@ -3,7 +3,7 @@
 
 {% partialdef menu_item %}
   <li>
-    <a href="{{ match.url }}" class="{{ extra_class }}{{ match.css_class }}">
+    <a href="{{ match.url }}" class="{{ match.css_class }}{% if class %} {{ class }}{% endif %}">
       {% heroicon_mini icon class="size-4 shrink-0" aria_hidden="true" %}
       {{ label }}
     </a>

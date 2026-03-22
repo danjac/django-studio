@@ -103,8 +103,8 @@ class ActiveUrl:
 
     url: str
     is_active: bool
-    active_class: str
-    inactive_class: str
+    active_class: str = ""
+    inactive_class: str = ""
 
     @property
     def css_class(self) -> str:

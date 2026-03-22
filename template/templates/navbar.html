@@ -40,10 +40,6 @@
           x-transition.scale.origin.top
           role="menu"
         >
-          <li class="menu-title text-xs">
-            {% translate "Signed in as" %}
-            <strong>{{ user.username }}</strong>
-          </li>
           <li role="menuitem">
             <a href="{% url 'account_email' %}">
               {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}

@@ -66,7 +66,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. `MoneyWidget` renders an amount input and a
   currency select side-by-side; add a `{% partialdef moneywidget %}` block to
-  `templates/form/fields.html` to style it:
+  `templates/form/partials.html` to style it:
 
   ```html
   {# django-money MoneyWidget (amount + currency select) #}

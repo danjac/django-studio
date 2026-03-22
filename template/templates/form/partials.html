@@ -1,8 +1,8 @@
 {% load heroicons i18n widget_tweaks %}
 
-{% fragment "form/fields.html#fieldset" %}
+{% fragment "form/partials.html#fieldset" %}
   {% with widget_type=field|widget_type %}
-    {% try_include "form/fields.html#"|add:widget_type "form/fields.html#input" %}
+    {% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}
   {% endwith %}
 {% endfragment %}
 

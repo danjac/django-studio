@@ -148,7 +148,7 @@ def active_url(
 ) -> ActiveUrl:
     """Resolve a URL and return an ActiveUrl indicating whether it is current.
 
-    Takes the same positional and keyword arguments as ``{% url %}``. Compares
+    Takes the same positional and keyword arguments as the ``url`` tag. Compares
     the resolved URL against ``request.path`` to determine active state.
     Use ``obj.url`` for the href and ``obj.css_class`` for the nav class.
     With ``as``, access ``.is_active`` for conditional logic.

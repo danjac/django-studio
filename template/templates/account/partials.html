@@ -10,20 +10,15 @@
 {% endpartialdef %}
 
 {% partialdef menu_items %}
-  {% url 'index' as back_url %}
-  {% url 'account_email' as email_url %}
-  {% url 'account_change_password' as pw_url %}
-  {% url 'socialaccount_connections' as connections_url %}
-  {% url 'users:delete_account' as delete_url %}
-  {% with active="menu-active" inactive="" %}
-    {% active_url 'account_email' active=active inactive=inactive as email_class %}
-    {% active_url 'account_change_password' 'account_set_password' active=active inactive=inactive as pw_class %}
-    {% active_url 'socialaccount_connections' active=active inactive=inactive as connections_class %}
-    {% active_url 'delete_account' active=active inactive=inactive as delete_class %}
-    {% partial "account/partials.html#menu_item" with url=back_url icon="arrow-left" label=_("Back to site") class="" %}
-    {% partial "account/partials.html#menu_item" with url=email_url icon="envelope" label=_("Email") class=email_class %}
-    {% partial "account/partials.html#menu_item" with url=pw_url icon="lock-closed" label=_("Password") class=pw_class %}
-    {% partial "account/partials.html#menu_item" with url=connections_url icon="link" label=_("Connections") class=connections_class %}
-    {% partial "account/partials.html#menu_item" with url=delete_url icon="trash" label=_("Delete Account") class="text-error "|add:delete_class %}
-  {% endwith %}
+  {% active_url 'index' as back %}
+  {% active_url 'account_email' as email %}
+  {% active_url 'account_change_password' as pw %}
+  {% re_active_url 'password/(change|set)' pw.url as pw %}
+  {% active_url 'socialaccount_connections' as connections %}
+  {% active_url 'delete_account' as delete %}
+  {% partial "account/partials.html#menu_item" with url=back.url icon="arrow-left" label=_("Back to site") class="" %}
+  {% partial "account/partials.html#menu_item" with url=email.url icon="envelope" label=_("Email") class=email.css_class %}
+  {% partial "account/partials.html#menu_item" with url=pw.url icon="lock-closed" label=_("Password") class=pw.css_class %}
+  {% partial "account/partials.html#menu_item" with url=connections.url icon="link" label=_("Connections") class=connections.css_class %}
+  {% partial "account/partials.html#menu_item" with url=delete.url icon="trash" label=_("Delete Account") class="text-error "|add:delete.css_class %}
 {% endpartialdef %}

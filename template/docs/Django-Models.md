@@ -132,7 +132,7 @@ CREATE TRIGGER my_app_update_search_trigger
 BEFORE INSERT OR UPDATE OF title, description ON my_app_item
 FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(
     search_vector, 'pg_catalog.simple', title, description);
-UPDATE my_app_item SET search_vector = NULL;""",
+UPDATE my_app_item SET title = title;""",
             reverse_sql=(
                 "DROP TRIGGER IF EXISTS my_app_update_search_trigger ON my_app_item;"
             ),

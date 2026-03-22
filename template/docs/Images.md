@@ -22,14 +22,18 @@ and an Alpine.js-powered preview of the newly selected file:
         <img
           src="{{ image.url }}"
           :src="previewUrl ?? '{{ image.url }}'"
-          alt=""
+          alt="{% translate "Preview" %}"
+          width="320"
+          height="160"
           class="mb-2 rounded-lg max-w-xs max-h-40 object-contain"
         />
       {% else %}
         <template x-if="previewUrl">
           <img
             :src="previewUrl"
-            alt=""
+            alt="{% translate "Preview" %}"
+            width="320"
+            height="160"
             class="mb-2 rounded-lg max-w-xs max-h-40 object-contain"
           />
         </template>

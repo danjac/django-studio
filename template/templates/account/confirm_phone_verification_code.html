@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Phone Verification") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
+{% block settings_content %}
     {% include "header.html" with title=_("Enter Phone Verification Code") %}
     <div class="mt-6">
       {% if phone %}
@@ -49,5 +48,4 @@
         </div>
       {% endif %}
     </div>
-  </div>
-{% endblock content %}
+{% endblock settings_content %}

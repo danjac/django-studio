@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Verify Your Email Address") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
+{% block settings_content %}
     {% include "header.html" with title=_("Verify Your Email Address") %}
     <div class="mt-6">
       {% url 'account_email' as email_url %}
@@ -18,5 +17,4 @@
         {% blocktranslate %}<strong>Note:</strong> you can still <a class="underline" href="{{ email_url }}">change your email address</a>.{% endblocktranslate %}
       </p>
     </div>
-  </div>
-{% endblock content %}
+{% endblock settings_content %}

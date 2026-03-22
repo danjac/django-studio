@@ -44,7 +44,7 @@ Form fields rendered via `{{ field.as_field_group }}` or
 - Error states use `text-error` for visual indication
 
 Do not bypass this rendering — `{% render_field %}` without a label wrapper
-breaks the label association. Always use `as_field_group`. See `docs/Django-Templates.md`.
+breaks the label association. Always use `as_field_group`. See `docs/Django-Forms.md`.
 
 For groups of related inputs (radio buttons, checkboxes), use `<fieldset>` and
 `<legend>` rather than a plain `<label>`.

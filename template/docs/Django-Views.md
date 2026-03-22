@@ -240,7 +240,7 @@ async def search_items(request: HttpRequest) -> TemplateResponse:
 - Template rendering
 - Most typical Django views
 
-For the HTTP client factory, error handling, and testing patterns, see `docs/API-Integration.md`.
+For the HTTP client, error handling, and testing patterns, see `docs/API-Integration.md`.
 
 ## Internationalisation in Views
 

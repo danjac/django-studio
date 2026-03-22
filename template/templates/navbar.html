@@ -62,12 +62,6 @@
               </a>
             </li>
           {% endif %}
-          <li role="menuitem">
-            <a href="{% url 'users:delete_account' %}" class="text-error">
-              {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}
-              {% translate "Delete my account" %}
-            </a>
-          </li>
           <form id="logout-form" method="post" action="{% url 'account_logout' %}" hx-disable="true" hidden>
             {% csrf_token %}
           </form>

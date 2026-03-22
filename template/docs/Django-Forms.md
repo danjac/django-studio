@@ -225,19 +225,14 @@ class ThumbnailWidget(FileInput):
     """File input widget that renders a sorl thumbnail preview in forms/partials.html."""
 ```
 
-Attach it to an `ImageField` in your form's `__init__`:
+Use it via `Meta.widgets`:
 
 ```python
-class ProfileForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["image"].widget = ThumbnailWidget(
-            image=self.instance.image if self.instance.pk else None
-        )
-
+class PhotoForm(forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ["image"]
+        model = Photo
+        fields = ("title", "description", "image")
+        widgets: ClassVar[dict] = {"image": ThumbnailWidget}
 ```
 
 Add the `thumbnailwidget` partialdef to `forms/partials.html`:

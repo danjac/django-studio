@@ -4,6 +4,18 @@ Code style is enforced automatically by pre-commit (ruff, pyupgrade, django-upgr
 absolufy-imports). See `docs/Precommit-Linting.md` for toolchain configuration.
 This doc covers conventions and gotchas that tools cannot enforce.
 
+## Contents
+
+- [PEP 758 — `except` Without Parentheses](#pep-758--except-without-parentheses)
+- [Function and Method Ordering](#function-and-method-ordering)
+- [Module Naming](#module-naming)
+- [Caching](#caching)
+- [Function Arguments](#function-arguments)
+- [Imports](#imports)
+- [Internationalisation](#internationalisation)
+- [Class Attributes](#class-attributes)
+- [Type Annotations](#type-annotations)
+
 ## PEP 758 — `except` Without Parentheses
 
 `pyupgrade --py314` rewrites multi-exception handlers to the Python 3.14 syntax:

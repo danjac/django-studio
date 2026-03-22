@@ -1,5 +1,15 @@
 # Models
 
+## Contents
+
+- [Custom QuerySet](#custom-queryset)
+- [`__str__` convention](#__str__-convention)
+- [Linting bypass comments](#linting-bypass-comments)
+- [Full-Text Search](#full-text-search)
+- [Choices](#choices)
+- [Relationships](#relationships)
+- [Migrations](#migrations)
+
 ## Custom QuerySet
 
 Define a custom `QuerySet` for every model that needs filtering or annotation

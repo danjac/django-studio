@@ -15,6 +15,17 @@ implementation patterns, see the focused docs:
 | Background tasks                                            | `docs/Django-Tasks.md` |
 | Scheduled cron jobs                                         | `docs/CronJobs.md`     |
 
+## Contents
+
+- [Django Version](#django-version)
+- [Settings](#settings)
+- [Installed Apps](#installed-apps)
+- [Middleware Order](#middleware-order)
+- [Context Processors](#context-processors)
+- [Template Tags](#template-tags)
+- [Admin](#admin)
+- [Internationalisation](#internationalisation)
+
 ## Django Version
 
 Django 6.0+ with Python 3.14.

@@ -13,6 +13,13 @@ case:
 
 ---
 
+## Contents
+
+- [Previous/Next (default)](#previousnext-default)
+- [Numbered Pagination](#numbered-pagination)
+- [Infinite Scroll](#infinite-scroll)
+- [Django Admin: FastCountAdminMixin](#django-admin-fastcountadminmixin)
+
 ## Previous/Next (default)
 
 Use `render_paginated_response`. No `COUNT(*)` query — scales well on large tables.

@@ -2,6 +2,17 @@
 
 This project follows a Django project layout with a clear separation of concerns.
 
+## Contents
+
+- [Directory Structure](#directory-structure)
+- [Config Directory](#config-directory)
+- [Apps Directory](#apps-directory)
+- [Templates](#templates)
+- [Static Files](#static-files)
+- [Tests](#tests)
+- [Key Files](#key-files)
+- [Best Practices](#best-practices)
+
 ## Directory Structure
 
 ```

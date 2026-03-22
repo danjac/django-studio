@@ -353,7 +353,7 @@ it via a `<script src="...">` tag in `{% block scripts %}`. Do **not** add
 
 See: https://alpinejs.dev/globals/alpine-data
 
-For full `Alpine.data` recipe examples (photo lightbox, drag-and-drop), see `docs/UI-Recipes.md`.
+For common recipes using Alpine (e.g. photo lightbox, drag-and-drop), see `docs/UI-Recipes.md`.
 
 ## Script Loading Order
 

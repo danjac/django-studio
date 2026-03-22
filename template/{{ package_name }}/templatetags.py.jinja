@@ -97,7 +97,7 @@ class ActiveUrl:
     """Result of ``active_url`` and ``re_active_url`` template tags.
 
     Provides the resolved URL, active state, and CSS classes. Use
-    ``{{ obj.css_class }}`` in templates for the resolved class string, or
+    ``obj.css_class`` in templates for the resolved class string, or
     access ``obj.url`` and ``obj.is_active`` independently.
     """
 
@@ -150,12 +150,11 @@ def active_url(
 
     Takes the same positional and keyword arguments as ``{% url %}``. Compares
     the resolved URL against ``request.path`` to determine active state.
-    Use ``{{ obj.url }}`` for the href and ``{{ obj.css_class }}`` for the
-    nav class. With ``as``, access ``.is_active`` for conditional logic.
+    Use ``obj.url`` for the href and ``obj.css_class`` for the nav class.
+    With ``as``, access ``.is_active`` for conditional logic.
 
     Example:
         {% raw %}{% active_url 'account_email' as email %}{% endraw %}
-        {% raw %}<a href="{{ email.url }}" class="{{ email.css_class }}">Email</a>{% endraw %}
         {% raw %}{% active_url 'post_detail' post.pk as post_link %}{% endraw %}
     """
     try:

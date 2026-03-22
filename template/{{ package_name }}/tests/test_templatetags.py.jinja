@@ -144,22 +144,22 @@ class TestActiveUrl:
 
 class TestReActiveUrl:
     def test_active_when_pattern_matches(self):
-        result = re_active_url(_nav_context(path="/accounts/password/change/"), r"password/(change|set)")
+        result = re_active_url(_nav_context(path="/account/password/change/"), "password/(change|set)")
         assert result.is_active is True
         assert result.css_class == _NAV_ACTIVE_CLASSES
 
     def test_active_on_second_pattern_match(self):
-        result = re_active_url(_nav_context(path="/accounts/password/set/"), r"password/(change|set)")
+        result = re_active_url(_nav_context(path="/account/password/set/"), "password/(change|set)")
         assert result.is_active is True
 
     def test_inactive_when_no_match(self):
-        result = re_active_url(_nav_context(path="/account/email/"), r"password/(change|set)")
+        result = re_active_url(_nav_context(path="/account/email/"), "password/(change|set)")
         assert result.is_active is False
         assert result.css_class == _NAV_INACTIVE_CLASSES
 
     def test_passes_through_url(self):
-        result = re_active_url(_nav_context(path="/"), r"password", url="/accounts/password/change/")
-        assert result.url == "/accounts/password/change/"
+        result = re_active_url(_nav_context(path="/"), "password/(change|set)", url="/account/password/change/")
+        assert result.url == "/account/password/change/"
 
 
 class TestFragment:

@@ -198,7 +198,7 @@ dataclass with `.url`, `.is_active`, and `.css_class` (resolved active/inactive 
 <a href="{{ sub.url }}" class="{{ sub.css_class }}">Subscriptions</a>
 ```
 
-**`re_active_url`** — matches the current path against a regex, with an explicit `url` for the href.
+**`re_active_url`** — matches the current path against a pattern, with an explicit `url` for the href.
 Use when one nav item should be active across multiple URL patterns:
 
 ```html

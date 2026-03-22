@@ -15,32 +15,12 @@ For raw request parameter validation in views, see `docs/Django-Views.md`.
 Use `aiohttp` for async HTTP calls to third-party APIs. Never use it in synchronous
 views — only in `async def` views or background tasks.
 
-### Settings
-
 Define a shared `USER_AGENT` string in `config/settings.py`:
 
 ```python
 # config/settings.py
 USER_AGENT = "my-project/1.0"
 ```
-
-### Client factory
-
-Create a thin factory function that applies the project user agent. Place it in
-the app module that needs it (e.g. `my_app/client.py`):
-
-```python
-import aiohttp
-from django.conf import settings
-
-
-def get_http_client() -> aiohttp.ClientSession:
-    return aiohttp.ClientSession(
-        headers={"User-Agent": settings.USER_AGENT},
-    )
-```
-
-### Making requests
 
 Always use the session as a context manager so it is closed on exit:
 
@@ -50,7 +30,7 @@ from django.conf import settings
 
 
 async def fetch_weather(city: str) -> dict:
-    async with get_http_client() as client:
+    async with aiohttp.ClientSession(headers={"User-Agent": settings.USER_AGENT}) as client:
         async with client.get(f"https://api.example.com/weather/{city}") as resp:
             resp.raise_for_status()
             return await resp.json()
@@ -58,17 +38,16 @@ async def fetch_weather(city: str) -> dict:
 
 `raise_for_status()` raises `aiohttp.ClientResponseError` on 4xx/5xx — always call
 it before reading the response body. Wrap the call site in `try/except` if you need
-to handle specific status codes gracefully.
-
-### Error handling
+to handle specific status codes gracefully:
 
 ```python
 import aiohttp
+from django.conf import settings
 
 
 async def fetch_data(url: str) -> dict | None:
     try:
-        async with get_http_client() as client:
+        async with aiohttp.ClientSession(headers={"User-Agent": settings.USER_AGENT}) as client:
             async with client.get(url) as resp:
                 resp.raise_for_status()
                 return await resp.json()
@@ -87,6 +66,8 @@ responses, internal service payloads, webhook bodies, or any schema too complex 
 manual parsing.
 
 ```python
+import aiohttp
+from django.conf import settings
 from pydantic import BaseModel, ValidationError
 
 
@@ -97,7 +78,7 @@ class WeatherResponse(BaseModel):
 
 
 async def fetch_weather(city: str) -> WeatherResponse:
-    async with get_http_client() as client:
+    async with aiohttp.ClientSession(headers={"User-Agent": settings.USER_AGENT}) as client:
         async with client.get(f"https://api.example.com/weather/{city}") as resp:
             resp.raise_for_status()
             try:

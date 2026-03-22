@@ -1,11 +1,14 @@
 import functools
 import json
+import re
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from django import template
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.template.exceptions import TemplateDoesNotExist
+from django.urls import NoReverseMatch, reverse
 from django.utils.html import format_html, format_html_join
 
 if TYPE_CHECKING:
@@ -89,6 +92,29 @@ _NAV_INACTIVE_CLASSES = (
 )
 
 
+@dataclass
+class ActiveUrl:
+    """Result of ``active_url`` and ``re_active_url`` template tags.
+
+    Provides the resolved URL, active state, and CSS classes. Use
+    ``{{ obj.css_class }}`` in templates for the resolved class string, or
+    access ``obj.url`` and ``obj.is_active`` independently.
+    """
+
+    url: str
+    is_active: bool
+    active_class: str
+    inactive_class: str
+
+    @property
+    def css_class(self) -> str:
+        """Return active_class or inactive_class based on is_active."""
+        return self.active_class if self.is_active else self.inactive_class
+
+    def __str__(self) -> str:
+        return self.css_class
+
+
 @register.simple_tag(takes_context=True)
 def active_app(
     context: "RequestContext",
@@ -114,23 +140,53 @@ def active_app(
 @register.simple_tag(takes_context=True)
 def active_url(
     context: "RequestContext",
-    *url_names: str,
+    viewname: str,
+    *args: object,
     active: str = _NAV_ACTIVE_CLASSES,
     inactive: str = _NAV_INACTIVE_CLASSES,
-) -> str:
-    """Return active nav link CSS classes if the current URL name matches.
+    **url_kwargs: object,
+) -> ActiveUrl:
+    """Resolve a URL and return an ActiveUrl indicating whether it is current.
 
-    Compares against ``request.resolver_match.url_name``. Pass multiple names
-    to match any of several views within a section. Override ``active`` or
-    ``inactive`` to use different CSS classes for a specific nav item.
+    Takes the same positional and keyword arguments as ``{% url %}``. Compares
+    the resolved URL against ``request.path`` to determine active state.
+    Use ``{{ obj.url }}`` for the href and ``{{ obj.css_class }}`` for the
+    nav class. With ``as``, access ``.is_active`` for conditional logic.
 
     Example:
-        {% raw %}{% active_url 'account_email' %}{% endraw %}
-        {% raw %}{% active_url 'account_email' 'account_change_password' %}{% endraw %}
-        {% raw %}{% active_url 'account_email' inactive='text-secondary-700' %}{% endraw %}
+        {% raw %}{% active_url 'account_email' as email %}{% endraw %}
+        {% raw %}<a href="{{ email.url }}" class="{{ email.css_class }}">Email</a>{% endraw %}
+        {% raw %}{% active_url 'post_detail' post.pk as post_link %}{% endraw %}
     """
-    match = context.request.resolver_match
-    return active if match is not None and match.url_name in url_names else inactive
+    try:
+        url = reverse(viewname, args=args, kwargs=url_kwargs)
+    except NoReverseMatch:
+        url = ""
+    is_active = bool(url) and context.request.path == url
+    return ActiveUrl(url=url, is_active=is_active, active_class=active, inactive_class=inactive)
+
+
+@register.simple_tag(takes_context=True)
+def re_active_url(
+    context: "RequestContext",
+    pattern: str,
+    url: str = "",
+    *,
+    active: str = _NAV_ACTIVE_CLASSES,
+    inactive: str = _NAV_INACTIVE_CLASSES,
+) -> ActiveUrl:
+    """Match current path against a regex and return an ActiveUrl.
+
+    Use when a nav item should be active across multiple URL patterns. Pass
+    ``url`` explicitly for the href since a regex does not define a single URL.
+
+    Example:
+        {% raw %}{% active_url 'account_change_password' as pw %}{% endraw %}
+        {% raw %}{% re_active_url '/accounts/password/' pw.url as pw %}{% endraw %}
+        {% raw %}<a href="{{ pw.url }}" class="{{ pw.css_class }}">Password</a>{% endraw %}
+    """
+    is_active = bool(re.search(pattern, context.request.path))
+    return ActiveUrl(url=url, is_active=is_active, active_class=active, inactive_class=inactive)
 
 
 @register.simple_block_tag(takes_context=True)

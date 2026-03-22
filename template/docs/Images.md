@@ -19,22 +19,25 @@ and an Alpine.js-powered preview of the newly selected file:
       @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
     >
       {% if image %}
-        <img
-          src="{{ image.url }}"
-          :src="previewUrl ?? '{{ image.url }}'"
-          alt="{% translate "Preview" %}"
-          width="320"
-          height="160"
-          class="mb-2 rounded-lg max-w-xs max-h-40 object-contain"
-        />
+        {% thumbnail image "340x240" crop="center" as im %}
+          <img
+            src="{{ im.url }}"
+            :src="previewUrl ?? '{{ im.url }}'"
+            alt="{% translate "Preview" %}"
+            width="{{ im.width }}"
+            height="{{ im.height }}"
+            class="mb-2 rounded-lg"
+          />
+        {% empty %}
+        {% endthumbnail %}
       {% else %}
         <template x-if="previewUrl">
           <img
             :src="previewUrl"
             alt="{% translate "Preview" %}"
-            width="320"
-            height="160"
-            class="mb-2 rounded-lg max-w-xs max-h-40 object-contain"
+            width="340"
+            height="240"
+            class="mb-2 rounded-lg"
           />
         </template>
       {% endif %}

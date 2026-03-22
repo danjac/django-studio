@@ -116,12 +116,12 @@ class TestActiveApp:
 
 class TestActiveUrl:
     def test_active_when_path_matches(self, rf):
-        req = rf.get("/accounts/email/")
+        req = rf.get("/account/email/")
         ctx = Mock()
         ctx.request = req
         result = active_url(ctx, "account_email")
         assert result.is_active is True
-        assert result.url == "/accounts/email/"
+        assert result.url == "/account/email/"
         assert result.css_class == _NAV_ACTIVE_CLASSES
 
     def test_inactive_when_path_differs(self, rf):
@@ -130,7 +130,7 @@ class TestActiveUrl:
         ctx.request = req
         result = active_url(ctx, "account_email")
         assert result.is_active is False
-        assert result.url == "/accounts/email/"
+        assert result.url == "/account/email/"
         assert result.css_class == _NAV_INACTIVE_CLASSES
 
     def test_invalid_viewname_returns_empty_url(self, rf):
@@ -153,7 +153,7 @@ class TestReActiveUrl:
         assert result.is_active is True
 
     def test_inactive_when_no_match(self):
-        result = re_active_url(_nav_context(path="/accounts/email/"), r"password/(change|set)")
+        result = re_active_url(_nav_context(path="/account/email/"), r"password/(change|set)")
         assert result.is_active is False
         assert result.css_class == _NAV_INACTIVE_CLASSES
 

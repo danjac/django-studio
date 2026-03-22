@@ -1,6 +1,6 @@
 # Templates
 
-This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments. Components use DaisyUI classes — see `docs/Tailwind.md` for the class reference.
+This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments. Components use DaisyUI classes — see `docs/Design.md` for the class reference.
 
 ## Contents
 

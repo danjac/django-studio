@@ -105,7 +105,7 @@ a cached `/tmp/my_app` hides.
 
 ## UI Components
 
-The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/Django-Templates.md`. Tailwind and DaisyUI configuration is in `template/docs/Tailwind.md`.
+The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/Django-Templates.md`. Component classes, icons, dark mode, and Tailwind configuration are in `template/docs/Design.md`.
 
 ## djstudio Commands
 

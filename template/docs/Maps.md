@@ -1,5 +1,8 @@
 # Maps
 
+Free map embedding via [OpenStreetMap](https://www.openstreetmap.org/) and geocoding
+via [geopy](https://geopy.readthedocs.io/) (Nominatim). No API key required for either.
+
 ## Contents
 
 - [CSP](#csp)
@@ -8,12 +11,7 @@
 - [Triggering geocoding on save](#triggering-geocoding-on-save)
 - [Template embed](#template-embed)
 
-## Maps (OpenStreetMap)
-
-Free map embedding via [OpenStreetMap](https://www.openstreetmap.org/) and geocoding
-via [geopy](https://geopy.readthedocs.io/) (Nominatim). No API key required for either.
-
-### CSP
+## CSP
 
 Define a maps CSP variant in `config/settings.py` that extends the base policy
 with `frame-src` for the OSM iframe:
@@ -35,7 +33,7 @@ def venue_detail(request, pk):
     ...
 ```
 
-### Model fields
+## Model fields
 
 Store coordinates as `DecimalField` — `FloatField` loses precision at scale:
 
@@ -58,7 +56,7 @@ class Venue(models.Model):
         return None
 ```
 
-### Geocoding task
+## Geocoding task
 
 Run geocoding in the background with `django-tasks` so it never blocks a request.
 Use `filter().update()` rather than `instance.save()` to avoid re-triggering signals.
@@ -110,7 +108,7 @@ def geocode_venue(*, venue_pk: int) -> None:
     )
 ```
 
-### Triggering geocoding on save
+## Triggering geocoding on save
 
 Use a `post_save` signal to enqueue the task whenever the address changes. Check
 for coordinate presence to avoid re-geocoding on every save:
@@ -142,7 +140,7 @@ class VenuesConfig(AppConfig):
         import venues.signals  # noqa: F401
 ```
 
-### Template embed
+## Template embed
 
 ```html+django
 {% with osm_embed_url=object.get_osm_embed_url %}

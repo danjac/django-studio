@@ -222,12 +222,7 @@ from django.forms.widgets import FileInput
 
 
 class ThumbnailWidget(FileInput):
-    """File input widget that renders a sorl thumbnail preview in forms/partials.html."""
-
-    def __init__(self, *args, **kwargs):
-        self.image = kwargs.pop("image", None)
-        super().__init__(*args, **kwargs)
-        self.attrs.setdefault("class", "file-input")
+    """File input widget that renders a sorl thumbnail preview in form/field.html."""
 ```
 
 Attach it to an `ImageField` in your form's `__init__`:

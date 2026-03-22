@@ -12,7 +12,13 @@
           {% translate "The following email addresses are associated with your account:" %}
         </p>
         {% fragment "form.html" action=form_action %}
-          <div class="space-y-2">
+          <div
+            class="space-y-2"
+            x-data="{
+              selected: '{% for radio in emailaddress_radios %}{% if radio.checked %}{{ radio.emailaddress.email }}{% endif %}{% endfor %}',
+              primaryEmail: '{% for radio in emailaddress_radios %}{% if radio.emailaddress.primary %}{{ radio.emailaddress.email }}{% endif %}{% endfor %}'
+            }"
+          >
             {% for radio in emailaddress_radios %}
               {% with emailaddress=radio.emailaddress %}
                 <div class="flex items-center space-x-3">
@@ -23,6 +29,7 @@
                     id="{{ radio.id }}"
                     {% if radio.checked %}checked{% endif %}
                     class="w-4 h-4 accent-primary"
+                    @change="selected = $event.target.value"
                   />
                   <label for="{{ radio.id }}" class="text-sm text-base-content/70">
                     {{ emailaddress.email }}
@@ -53,7 +60,12 @@
               {% translate "Re-send Verification" %}
             </button>
             {% if emailaddresses|length > 1 %}
-              <button type="submit" name="action_remove" class="btn btn-error">
+              <button
+                type="submit"
+                name="action_remove"
+                class="btn btn-error"
+                :disabled="selected === primaryEmail"
+              >
                 {% translate "Remove" %}
               </button>
             {% endif %}

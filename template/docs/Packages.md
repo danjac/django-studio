@@ -64,8 +64,19 @@ State your findings explicitly when suggesting a package — don't just name it.
   (`daphne config.asgi:application`). Add `"channels"` to `INSTALLED_APPS`
   and configure `ASGI_APPLICATION`.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
-  arithmetic respects currency. Add a `{% partialdef moneywidget %}` block to
-  `templates/form/field.html` — see `docs/Django-Templates.md`.
+  arithmetic respects currency. `MoneyWidget` renders an amount input and a
+  currency select side-by-side; add a `{% partialdef moneywidget %}` block to
+  `templates/form/fields.html` to style it:
+
+  ```html
+  {# django-money MoneyWidget (amount + currency select) #}
+  {% partialdef moneywidget %}
+    {% partial label %}
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+      {% render_field field %}
+    </div>
+  {% endpartialdef moneywidget %}
+  ```
 - **pydantic**: use for parsing and validating external API responses, complex
   form payloads, and structured config. Add to `pyproject.toml` to prevent
   ruff from moving base class imports into `TYPE_CHECKING` blocks:

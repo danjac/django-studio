@@ -48,6 +48,18 @@
   {% render_field field class="input" %}
 {% endpartialdef input %}
 
+{# File input (explicit widget=FileInput) #}
+{% partialdef fileinput %}
+  {% partial label %}
+  {% render_field field class="file-input" %}
+{% endpartialdef fileinput %}
+
+{# Clearable file input - FileField / ImageField default widget #}
+{% partialdef clearablefileinput %}
+  {% partial label %}
+  {% render_field field class="file-input" %}
+{% endpartialdef clearablefileinput %}
+
 {# Date #}
 {% partialdef dateinput %}
   {% partial label %}

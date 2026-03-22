@@ -94,7 +94,7 @@ SECURE_CSP = {
     "style-src": [CSP.SELF, CSP.UNSAFE_INLINE],
     "script-src": SCRIPT_SRC,
     "script-src-elem": SCRIPT_SRC,
-    "img-src": [CSP.SELF, CSP_DATA],
+    "img-src": [CSP.SELF, CSP_DATA],  # add "blob:" for instant-preview file upload widgets
     "media-src": ["*"],
 }
 

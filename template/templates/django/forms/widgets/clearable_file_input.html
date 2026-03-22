@@ -1,0 +1,21 @@
+{% if widget.is_initial %}
+  <p class="label">
+    {{ widget.initial_text }}:
+    <a href="{{ widget.value.url }}" class="link">{{ widget.value }}</a>
+  </p>
+  {% if not widget.required %}
+    <label class="label cursor-pointer gap-2 justify-start">
+      <input
+        type="checkbox"
+        name="{{ widget.checkbox_name }}"
+        id="{{ widget.checkbox_id }}"
+        class="checkbox checkbox-sm"
+        {% if widget.attrs.disabled %}disabled{% endif %}
+        {% if widget.attrs.checked %}checked{% endif %}
+      >
+      <span class="label-text">{{ widget.clear_checkbox_label }}</span>
+    </label>
+  {% endif %}
+  <p class="label">{{ widget.input_text }}:</p>
+{% endif %}
+<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>

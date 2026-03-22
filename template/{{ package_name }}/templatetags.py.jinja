@@ -92,7 +92,7 @@ _NAV_INACTIVE_CLASSES = (
 )
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class ActiveUrl:
     """Result of ``active_url`` and ``re_active_url`` template tags.
 
@@ -110,9 +110,6 @@ class ActiveUrl:
     def css_class(self) -> str:
         """Return active_class or inactive_class based on is_active."""
         return self.active_class if self.is_active else self.inactive_class
-
-    def __str__(self) -> str:
-        return self.css_class
 
 
 @register.simple_tag(takes_context=True)

@@ -14,7 +14,6 @@ Invoked by copier as:
 
 import datetime
 import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -153,16 +152,7 @@ def install_claude_hooks() -> None:
     with (claude_dir / "settings.json").open("w") as f:
         json.dump(settings, f, indent=2)
         f.write("\n")
-
-
-def install_skills() -> None:
-    """Copy .agents/ from the template to the project, then write a .claude/commands stub."""
-    agents_src = _TEMPLATE_ROOT / ".agents"
-    if not agents_src.is_dir():
-        return
-    agents_dst = BASE_DIR / ".agents"
-    shutil.copytree(agents_src, agents_dst, dirs_exist_ok=True)
-    commands_dst = BASE_DIR / ".claude" / "commands"
+    commands_dst = claude_dir / "commands"
     commands_dst.mkdir(parents=True, exist_ok=True)
     (commands_dst / "djstudio.md").write_text("@.agents/skills/djstudio/SKILL.md\n")
 
@@ -178,8 +168,7 @@ for path in PLAIN_SLUG_FILES:
     if path.exists():
         path.write_text(path.read_text().replace("PROJECT_SLUG", PROJECT_SLUG))
 
-# 4. Install skills, Claude hooks, and generate lock file
-install_skills()
+# 4. Install Claude hooks and generate lock file
 install_claude_hooks()
 
 # Generate uv.lock so CI's `uv sync --frozen` works without a manual step

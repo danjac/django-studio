@@ -109,7 +109,7 @@ The template uses [DaisyUI](https://daisyui.com/components/) for component styli
 
 ## djstudio Commands
 
-The `/djstudio` skill uses a thin dispatcher (`.agents/skills/djstudio/SKILL.md`) that routes each subcommand to its own instructions file under `.agents/skills/djstudio/`. The post-gen hook copies the entire `.agents/` tree to the generated project verbatim and writes a one-line stub at `.claude/commands/djstudio.md` that references it via `@.agents/skills/djstudio/SKILL.md`.
+The `/djstudio` skill uses a thin dispatcher (`.agents/skills/djstudio/SKILL.md`) that routes each subcommand to its own instructions file under `.agents/skills/djstudio/`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook writes a one-line stub at `.claude/commands/djstudio.md` that references it via `@.agents/skills/djstudio/SKILL.md`.
 
 **Adding or changing a subcommand:**
 
@@ -132,11 +132,11 @@ The `/djstudio` skill uses a thin dispatcher (`.agents/skills/djstudio/SKILL.md`
 
 **Tracking in version control:**
 
-Command files live in `.agents/` at the repo root and are copied to `.agents/` in the generated project by the post-gen hook (`install_skills()`). They are always tracked in git in both repos — no `git add -f` needed.
+Command files live in `template/.agents/` and are copied verbatim by Copier into the generated project's `.agents/`. They are tracked in git — no `git add -f` needed.
 
 **Adding new subcommand files:**
 
-Create the file under `.agents/skills/djstudio/commands/<subcommand>.md`. No `copier.yml` change is needed — the post-gen hook copies the entire `.agents/` tree verbatim.
+Create the file under `template/.agents/skills/djstudio/commands/<subcommand>.md`. No `copier.yml` change is needed — Copier copies the entire `template/.agents/` tree verbatim.
 
 ## Bugs and Improvements
 

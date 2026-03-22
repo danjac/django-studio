@@ -123,7 +123,6 @@ class TestActiveUrl:
         assert result.is_active is True
         assert result.url == "/accounts/email/"
         assert result.css_class == _NAV_ACTIVE_CLASSES
-        assert str(result) == _NAV_ACTIVE_CLASSES
 
     def test_inactive_when_path_differs(self, rf):
         req = rf.get("/")

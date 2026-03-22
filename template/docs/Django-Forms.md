@@ -240,8 +240,7 @@ Then render normally — no manual partial required:
 {{ form.image.as_field_group }}
 ```
 
-The widget template (`django/forms/widgets/thumbnail_file_input.html`) handles the
-thumbnail display and Alpine preview automatically.
+The widget renders thumbnail and Alpine preview directly via `render()` — no template file needed.
 
 **CSP note:** `URL.createObjectURL` generates a `blob:` URL. Views that serve upload
 forms must use `@csp_override(settings.SECURE_CSP_UPLOAD)`. Define the upload CSP

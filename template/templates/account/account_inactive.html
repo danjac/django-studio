@@ -1,15 +1,13 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Account Inactive") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
+{% block settings_content %}
     {% include "header.html" with title=_("Account Inactive") %}
     <div class="mt-6">
       <p class="text-sm text-base-content/60">
         {% translate "This account is inactive." %}
       </p>
     </div>
-  </div>
-{% endblock content %}
+{% endblock settings_content %}

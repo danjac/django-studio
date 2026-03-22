@@ -1,15 +1,13 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Sign Up Closed") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
+{% block settings_content %}
     {% include "header.html" with title=_("Sign Up Closed") %}
     <div class="mt-6">
       <p class="text-sm text-base-content/60">
         {% translate "We are sorry, but the sign up is currently closed." %}
       </p>
     </div>
-  </div>
-{% endblock content %}
+{% endblock settings_content %}

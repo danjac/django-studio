@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "socialaccount/base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Login Cancelled") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
+{% block settings_content %}
     {% include "header.html" with title=_("Login Cancelled") %}
     <div class="mt-6">
       <p class="text-sm text-base-content/60">
@@ -12,5 +11,4 @@
         {% blocktranslate %}You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a class="underline" href="{{ login_url }}">sign in</a>.{% endblocktranslate %}
       </p>
     </div>
-  </div>
-{% endblock content %}
+{% endblock settings_content %}

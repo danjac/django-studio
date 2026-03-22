@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag "Sign In" %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
+{% block settings_content %}
     {% include "header.html" with title=_("Sign In") %}
     <div class="mt-6">
       <p class="mb-4 text-sm text-base-content/60">
@@ -20,5 +19,4 @@
         {% endfragment %}
       {% endfragment %}
     </div>
-  </div>
-{% endblock content %}
+{% endblock settings_content %}

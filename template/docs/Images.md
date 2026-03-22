@@ -51,19 +51,29 @@ Replace `field.form.instance.image` with the actual field accessor for your mode
 Use `widget_type` to dispatch to this partial automatically, or call `{% partial thumbnailwidget %}` directly.
 
 **CSP note:** `URL.createObjectURL` generates a `blob:` URL. The default strict CSP
-does not include it. Only add it to views that serve upload forms — use `@csp_override`
-to apply it per-view rather than globally. Note that `csp_override` **replaces** the
-full CSP for that view, so include all directives your project requires:
+does not include it. In `config/settings.py`, define an upload variant of your base CSP
+policy and pass it to `@csp_override` on views that serve upload forms:
 
 ```python
+# config/settings.py
 from django.utils.csp import CSP
+
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "img-src": [CSP.SELF, "data:"],
+    # ... your full policy
+}
+
+# Extends SECURE_CSP to allow blob: URLs for file upload previews.
+SECURE_CSP_UPLOAD = {**SECURE_CSP, "img-src": [CSP.SELF, "data:", "blob:"]}
+```
+
+```python
+# views.py
+from django.conf import settings
 from django.views.decorators.csp import csp_override
 
-@csp_override({
-    "default-src": [CSP.SELF],
-    "img-src": [CSP.SELF, "data:", "blob:"],
-    # ... add other directives from your project's CSP config
-})
+@csp_override(settings.SECURE_CSP_UPLOAD)
 def my_upload_view(request):
     ...
 ```

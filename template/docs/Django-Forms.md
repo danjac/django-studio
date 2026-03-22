@@ -73,23 +73,44 @@ Key rules:
 
 ## Rendering Fields
 
-Use `{{ field.as_field_group }}` to render a form field with its label, errors, and
-help text. The project ships `templates/form/partials.html` which dispatches to a
-per-widget `partialdef` based on the field's widget type.
+`templates/form/partials.html` dispatches each field to a per-widget `partialdef`
+based on the field's widget type, rendering label, input, errors, and help text.
 
-Use the first option that fits:
+Use the first level that fits:
 
-1. **`{{ form }}`** — all fields in default order via the configured renderer.
-2. **`{{ form.title.as_field_group }}`** — explicit field order or subset.
+**Level 1 — default rendering, default order:**
 
 ```html
-{# All fields, default order #}
 {{ form }}
+```
 
-{# Explicit order #}
+**Level 2 — custom field order or subset:**
+
+```html
 {{ form.title.as_field_group }}
 {{ form.body.as_field_group }}
 ```
+
+**Level 3 — custom attribute or markup for one field, default rendering for the rest:**
+
+Use `django-widget-tweaks` to override attributes on a single field without
+replacing the rest of the rendering:
+
+```html
+{% load widget_tweaks %}
+{{ form.title.as_field_group }}
+<fieldset class="fieldset">
+  <legend class="fieldset-legend">{{ form.body.label }}</legend>
+  {% render_field form.body class="textarea w-full" rows="8" %}
+  {{ form.body.errors }}
+</fieldset>
+```
+
+For anything beyond attribute tweaks — custom layout, composite inputs, or
+reusable widget behaviour — add a `{% partialdef %}` block to
+`templates/form/partials.html` or write a custom Django widget class.
+See [Custom Widget Partials](#custom-widget-partials) and
+[Common Custom Widgets](#common-custom-widgets).
 
 ## HTMX Form Wrapper
 

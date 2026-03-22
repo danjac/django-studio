@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "account/settings_base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Change Email") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
-    {% include "header.html" with title=_("Change Email") %}
-    <div class="mt-6">
+{% block settings_content %}
+  {% include "header.html" with title=_("Change Email") %}
+  <div class="mt-6">
       {% if current_emailaddress %}
         <p class="mb-4 text-sm text-base-content/60">
           {% blocktranslate with email=current_emailaddress.email %}
@@ -44,6 +43,5 @@
           </button>
         {% endfragment %}
       {% endfragment %}
-    </div>
   </div>
-{% endblock content %}
+{% endblock settings_content %}

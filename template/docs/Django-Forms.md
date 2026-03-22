@@ -213,51 +213,35 @@ Use `django-widget-tweaks` to add classes or attributes from the template:
 
 ### Thumbnail Widget
 
-For `ImageField` forms, use a `thumbnailwidget` partial that shows the current image
-and an Alpine.js-powered preview of the newly selected file:
+`ThumbnailWidget` is a `FileInput` subclass that renders a sorl thumbnail preview
+of the current image and an Alpine.js-powered preview of a newly selected file.
+It lives in `<package>/widgets.py`.
 
-```html
-{# forms/partials.html #}
+Attach it to an `ImageField` in your form's `__init__`:
 
-{% partialdef thumbnailwidget %}
-  {% partial label %}
-  {% with image=field.form.instance.image %}
-    <div
-      x-data="{ previewUrl: null }"
-      @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
-    >
-      {% if image %}
-        {% thumbnail image "340x240" crop="center" as im %}
-          <img
-            src="{{ im.url }}"
-            :src="previewUrl ?? '{{ im.url }}'"
-            alt="{% translate "Preview" %}"
-            width="{{ im.width }}"
-            height="{{ im.height }}"
-            class="mb-2 rounded-lg"
-          />
-        {% empty %}
-        {% endthumbnail %}
-      {% else %}
-        <template x-if="previewUrl">
-          <img
-            :src="previewUrl"
-            alt="{% translate "Preview" %}"
-            width="340"
-            height="240"
-            class="mb-2 rounded-lg"
-          />
-        </template>
-      {% endif %}
-      {% render_field field class="file-input" %}
-    </div>
-  {% endwith %}
-{% endpartialdef thumbnailwidget %}
+```python
+from <package>.widgets import ThumbnailWidget
+
+class ProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["image"].widget = ThumbnailWidget(
+            image=self.instance.image if self.instance.pk else None
+        )
+
+    class Meta:
+        model = Profile
+        fields = ["image"]
 ```
 
-Replace `field.form.instance.image` with the actual field accessor for your model.
-Use `widget_type` to dispatch to this partial automatically, or call
-`{% partial thumbnailwidget %}` directly.
+Then render normally — no manual partial required:
+
+```html
+{{ form.image.as_field_group }}
+```
+
+The widget template (`django/forms/widgets/thumbnail_file_input.html`) handles the
+thumbnail display and Alpine preview automatically.
 
 **CSP note:** `URL.createObjectURL` generates a `blob:` URL. Views that serve upload
 forms must use `@csp_override(settings.SECURE_CSP_UPLOAD)`. Define the upload CSP

@@ -1,0 +1,30 @@
+{% load i18n sorl_thumbnail %}
+<div
+  x-data="{ previewUrl: null }"
+  @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+>
+  {% if widget.image %}
+    {% thumbnail widget.image "340x240" crop="center" as im %}
+      <img
+        src="{{ im.url }}"
+        :src="previewUrl ?? '{{ im.url }}'"
+        alt="{% translate "Preview" %}"
+        width="{{ im.width }}"
+        height="{{ im.height }}"
+        class="mb-2 rounded-lg"
+      />
+    {% empty %}
+    {% endthumbnail %}
+  {% else %}
+    <template x-if="previewUrl">
+      <img
+        :src="previewUrl"
+        alt="{% translate "Preview" %}"
+        width="340"
+        height="240"
+        class="mb-2 rounded-lg"
+      />
+    </template>
+  {% endif %}
+  {% include "django/forms/widgets/file.html" %}
+</div>

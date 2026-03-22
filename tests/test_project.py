@@ -368,58 +368,16 @@ class TestAlwaysIncludedFeatures:
         assert (project / "locale").is_dir()
 
 
-class TestClaudeSkillsInstallation:
-    """Verify that .agents/ is copied and .claude/commands stub is written by the post-gen hook."""
+class TestClaudeHooksInstallation:
+    """Verify that .claude/ hooks are written by the post-gen hook."""
 
-    def test_agents_dir_installed(self, project):
-        assert (project / ".agents" / "skills" / "djstudio").is_dir()
-
-    def test_dispatcher_installed(self, project):
-        assert (project / ".agents" / "skills" / "djstudio" / "SKILL.md").exists()
+    def test_settings_json_installed(self, project):
+        assert (project / ".claude" / "settings.json").exists()
 
     def test_dispatcher_stub_installed(self, project):
         stub = project / ".claude" / "commands" / "djstudio.md"
         assert stub.exists()
         assert stub.read_text().strip() == "@.agents/skills/djstudio/SKILL.md"
-
-    def test_subcommand_files_installed(self, project):
-        commands_dir = project / ".agents" / "skills" / "djstudio" / "commands"
-        installed = {f.name for f in commands_dir.iterdir() if f.suffix == ".md"}
-        expected = {
-            "create-app.md",
-            "create-view.md",
-            "create-task.md",
-            "create-command.md",
-            "create-cron.md",
-            "create-model.md",
-            "help.md",
-            "create-crud.md",
-            "create-e2e.md",
-            "create-tag.md",
-            "create-filter.md",
-            "perf.md",
-            "secure.md",
-            "gdpr.md",
-            "a11y.md",
-            "deadcode.md",
-            "full-coverage.md",
-            "translate.md",
-            "docs.md",
-            "daisyui.md",
-            "launch.md",
-            "launch-observability.md",
-            "rotate-secrets.md",
-            "enable-db-backups.md",
-            "sync.md",
-            "feedback.md",
-        }
-        assert expected == installed
-
-    def test_settings_json_installed(self, project):
-        assert (project / ".claude" / "settings.json").exists()
-
-    def test_skills_dir_not_in_project_root(self, project):
-        assert not (project / "skills").exists()
 
 
 class TestRenderedPythonLinting:

@@ -34,18 +34,12 @@
                   <label for="{{ radio.id }}" class="text-sm text-base-content/70">
                     {{ emailaddress.email }}
                     {% if emailaddress.verified %}
-                      <span class="ml-2 text-xs font-medium text-success-600 dark:text-success-400">
-                        {% translate "Verified" %}
-                      </span>
+                      <span class="badge badge-success badge-sm">{% translate "Verified" %}</span>
                     {% else %}
-                      <span class="ml-2 text-xs font-medium text-error">
-                        {% translate "Unverified" %}
-                      </span>
+                      <span class="badge badge-error badge-sm">{% translate "Unverified" %}</span>
                     {% endif %}
                     {% if emailaddress.primary %}
-                      <span class="ml-2 text-xs font-medium text-primary">
-                        {% translate "Primary" %}
-                      </span>
+                      <span class="badge badge-primary badge-sm">{% translate "Primary" %}</span>
                     {% endif %}
                   </label>
                 </div>

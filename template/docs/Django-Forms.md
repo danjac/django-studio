@@ -75,17 +75,18 @@ Key rules:
 
 Use `{{ field.as_field_group }}` to render a form field with its label, errors, and
 help text. The project ships `templates/form/partials.html` which dispatches to a
-per-widget `partialdef` based on the field's widget type:
+per-widget `partialdef` based on the field's widget type.
+
+Use the first option that fits:
+
+1. **`{{ form }}`** — all fields in default order via the configured renderer.
+2. **`{{ form.title.as_field_group }}`** — explicit field order or subset.
 
 ```html
-{% for field in form %}
-  {{ field.as_field_group }}
-{% endfor %}
-```
+{# All fields, default order #}
+{{ form }}
 
-For explicit field order:
-
-```html
+{# Explicit order #}
 {{ form.title.as_field_group }}
 {{ form.body.as_field_group }}
 ```

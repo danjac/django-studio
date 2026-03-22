@@ -228,8 +228,10 @@ from django.views.decorators.http import require_safe
 
 @require_safe
 async def search_items(request: HttpRequest) -> TemplateResponse:
-    client = get_client()
-    results = await client.search(request.GET.get("q", ""))
+    async with aiohttp.ClientSession(headers={"User-Agent": settings.USER_AGENT}) as client:
+        async with client.get(f"https://api.example.com/search?q={request.GET.get('q', '')}") as resp:
+            resp.raise_for_status()
+            results = await resp.json()
     return TemplateResponse(request, "search_results.html", {"results": results})
 ```
 

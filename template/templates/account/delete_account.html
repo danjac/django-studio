@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "account/settings_base.html" %}
 {% load heroicons i18n %}
 
 {% block title %}{% title_tag _("Delete Account") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
-    {% include "header.html" with title=_("Delete your account") %}
-    <div class="mt-6">
+{% block settings_content %}
+  {% include "header.html" with title=_("Delete your account") %}
+  <div class="mt-6">
       <p class="mb-2 text-sm text-base-content/60">
         {% translate "This will permanently delete your account and all associated data. This action cannot be undone." %}
       </p>
@@ -29,6 +28,5 @@
           {% translate "Cancel" %}
         </a>
       </div>
-    </div>
   </div>
-{% endblock content %}
+{% endblock settings_content %}

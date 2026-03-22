@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "account/settings_base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Email Addresses") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-lg">
-    {% include "header.html" with title=_("Email Addresses") %}
-    <div class="mt-6">
+{% block settings_content %}
+  {% include "header.html" with title=_("Email Addresses") %}
+  <div class="mt-6">
       {% url 'account_email' as form_action %}
       {% if emailaddresses %}
         <p class="mb-4 text-sm text-base-content/60">
@@ -76,6 +75,5 @@
           {% endfragment %}
         {% endfragment %}
       {% endif %}
-    </div>
   </div>
-{% endblock content %}
+{% endblock settings_content %}

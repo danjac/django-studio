@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "account/settings_base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Account Connections") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-lg">
-    {% include "header.html" with title=_("Account Connections") %}
-    <div class="mt-6">
+{% block settings_content %}
+  {% include "header.html" with title=_("Account Connections") %}
+  <div class="mt-6">
       {% if form.accounts %}
         <p class="mb-4 text-sm text-base-content/60">
           {% translate "You can sign in to your account using any of the following third-party accounts:" %}
@@ -46,6 +45,5 @@
       </h2>
       {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
       {% include "socialaccount/snippets/login_extra.html" %}
-    </div>
   </div>
-{% endblock content %}
+{% endblock settings_content %}

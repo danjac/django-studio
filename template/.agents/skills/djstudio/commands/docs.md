@@ -38,11 +38,11 @@ script. Typical areas to probe (use only what applies):
 - Are there third-party packages involved? Which ones?
 
 Once you have enough information, write the doc following the style and conventions of existing
-docs (see `docs/UI-Recipes.md`, `docs/Django.md` as style references). Use the actual project-specific
+docs (see `docs/Maps.md`, `docs/Django.md` as style references). Use the actual project-specific
 details — this doc should reflect how this project uses the feature, not a generic how-to.
 
 **Filename convention:** Capital-Kebab-Case.md — capitalise each word, separate with hyphens.
-Examples: `docs/UI-Recipes.md`, `docs/RSS-Parsing.md`, `docs/Google-UI-Recipes.md`, `docs/Stripe-Payments.md`.
+Examples: `docs/Maps.md`, `docs/RSS-Parsing.md`, `docs/Stripe-Payments.md`, `docs/Sendgrid.md`.
 
 After writing, remind the user: if this doc would be useful as a built-in template doc for all
 projects, use `/djstudio feedback` to propose it.

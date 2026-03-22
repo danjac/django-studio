@@ -65,18 +65,8 @@ State your findings explicitly when suggesting a package — don't just name it.
   and configure `ASGI_APPLICATION`.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. `MoneyWidget` renders an amount input and a
-  currency select side-by-side; add a `{% partialdef moneywidget %}` block to
-  `templates/form/partials.html` to style it:
-
-  ```html
-  {# django-money MoneyWidget (amount + currency select) #}
-  {% partialdef moneywidget %}
-    {% partial label %}
-    <div class="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-      {% render_field field %}
-    </div>
-  {% endpartialdef moneywidget %}
-  ```
+  currency select side-by-side. See `docs/Django-Forms.md#moneywidget` for the
+  `{% partialdef moneywidget %}` partial.
 - **pydantic**: use for parsing and validating external API responses, complex
   form payloads, and structured config. Add to `pyproject.toml` to prevent
   ruff from moving base class imports into `TYPE_CHECKING` blocks:
@@ -100,7 +90,7 @@ State your findings explicitly when suggesting a package — don't just name it.
   backend. No DB overhead. Best fit when authorization logic is expressed in
   code (ownership checks, role membership, state-based rules).
 - **geopy**: use the `Nominatim` geocoder (no API key required). Run geocoding in
-  a background task — never in a request handler. See `docs/UI-Recipes.md` for the full
+  a background task — never in a request handler. See `docs/Maps.md` for the full
   pattern including the django-tasks integration and OSM embed.
 - **django-guardian**: per-object permissions stored in the database. Best fit
   when permissions must be assigned at runtime by users or admins (e.g. "grant

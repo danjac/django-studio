@@ -13,10 +13,11 @@ This project uses Django forms for HTML form submissions, with
 - [Widget Type Dispatch](#widget-type-dispatch)
 - [Custom Widget Partials](#custom-widget-partials)
 - [Adding Widget Attributes](#adding-widget-attributes)
-- [Thumbnail Widget](#thumbnail-widget)
-- [Multiple File Upload](#multiple-file-upload)
-- [MoneyWidget](#moneywidget)
-- [django-countries LazySelect](#django-countries-lazyselect)
+- [Common Custom Widgets](#common-custom-widgets)
+  - [Thumbnail Widget](#thumbnail-widget)
+  - [Multiple File Upload](#multiple-file-upload)
+  - [MoneyWidget](#moneywidget)
+  - [django-countries LazySelect](#django-countries-lazyselect)
 
 ## Form View Pattern
 
@@ -176,7 +177,9 @@ Use `django-widget-tweaks` to add classes or attributes from the template:
 {% render_field form.bio class="textarea w-full" rows="4" %}
 ```
 
-## Thumbnail Widget
+## Common Custom Widgets
+
+### Thumbnail Widget
 
 For `ImageField` forms, use a `thumbnailwidget` partial that shows the current image
 and an Alpine.js-powered preview of the newly selected file:
@@ -252,7 +255,7 @@ def my_upload_view(request):
     ...
 ```
 
-## Multiple File Upload
+### Multiple File Upload
 
 For forms that accept multiple files, use Alpine.js to manage a local file list with
 drag-and-drop, previews, and individual removal. The `DataTransfer` API syncs Alpine's
@@ -345,7 +348,7 @@ Use `multipart=True` on the form wrapper (see [HTMX Form Wrapper](#htmx-form-wra
 - The upload/delete workflow for existing server-side files is project-specific —
   implement via HTMX partial swaps.
 
-## MoneyWidget
+### MoneyWidget
 
 [django-money](https://github.com/django-money/django-money) pairs `MoneyField` with
 `py-moneyed`. `MoneyWidget` renders an amount input and a currency select side-by-side.
@@ -361,7 +364,7 @@ Add a `{% partialdef moneywidget %}` block to `templates/form/partials.html`:
 {% endpartialdef moneywidget %}
 ```
 
-## django-countries LazySelect
+### django-countries LazySelect
 
 [django-countries](https://github.com/SmileyChris/django-countries) provides a
 `CountryField` with a lazy-loading select widget (`LazySelect`). The widget renders

@@ -32,10 +32,6 @@
     {% partial menu_item %}
   {% endwith %}
 
-  {% with icon="trash" label=_("Delete Account") extra_class="text-error " %}
-    {% active_url 'delete_account' as match %}
-    {% partial menu_item %}
-  {% endwith %}
 {% endpartialdef %}
 
 {% block content %}

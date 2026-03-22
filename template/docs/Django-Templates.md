@@ -188,46 +188,39 @@ The component uses Alpine for the mobile menu and dropdown — DaisyUI provides 
 
 ### Active item highlighting
 
-Use `active_url` or `active_app` template tags for active state. Both return an `ActiveUrl`
-dataclass with `.url`, `.is_active`, and `.css_class` (resolved active/inactive CSS string).
+Use `active_url` and `re_active_url` template tags for active state. Both return an `ActiveUrl`
+dataclass with `.url`, `.is_active`, and `.css_class` (resolved `active_class` or `inactive_class`).
+
+Set `active_class` once via `{% with %}` and pass it to each call:
+
+```html
+{% with active_class="menu-active" %}
+  {% with icon="envelope" label=_("Email") %}
+    {% active_url 'account_email' active_class=active_class as match %}
+    {% partial menu_item %}
+  {% endwith %}
+{% endwith %}
+```
 
 **`active_url`** — resolves a named URL and checks `request.path`:
 
 ```html
-{% active_url 'podcasts:subscriptions' as sub %}
+{% active_url 'podcasts:subscriptions' active_class=active_class as sub %}
 <a href="{{ sub.url }}" class="{{ sub.css_class }}">Subscriptions</a>
 ```
 
-**`re_active_url`** — matches the current path against a pattern, with an explicit `url` for the href.
+**`re_active_url`** — matches the current path against a pattern; resolves the viewname for the href.
 Use when one nav item should be active across multiple URL patterns:
 
 ```html
-{% active_url 'account_change_password' as pw %}
-{% re_active_url 'password/(change|set)' pw.url as pw %}
+{% re_active_url 'password/(change|set)' 'account_change_password' active_class=active_class as pw %}
 <a href="{{ pw.url }}" class="{{ pw.css_class }}">Password</a>
-```
-
-**`active_app`** — returns a CSS class string based on `request.resolver_match.app_name`:
-
-```html
-<a href="{% url 'podcasts:subscriptions' %}"
-   class="flex items-center gap-3 {% active_app 'podcasts' %}">
-```
-
-Combined with `{% partial %}` and `{% with %}` for reusable nav items:
-
-```html
-{% with icon="envelope" label=_("Email") %}
-  {% active_url 'account_email' as match %}
-  {% partial menu_item %}
-{% endwith %}
 ```
 
 | Tag | Matches against | Returns |
 |-----|----------------|---------|
-| `{% active_url 'name' *args **kwargs %}` | `request.path == reverse(name)` | `ActiveUrl` |
-| `{% re_active_url 'pattern' url='' %}` | `re.search(pattern, request.path)` | `ActiveUrl` |
-| `{% active_app 'app' %}` | `request.resolver_match.app_name` | CSS class string |
+| `{% active_url 'name' *args active_class='' **kwargs %}` | `request.path == reverse(name)` | `ActiveUrl` |
+| `{% re_active_url 'pattern' 'viewname' active_class='' %}` | `re.search(pattern, request.path)` | `ActiveUrl` |
 
 ### Adding a sidebar layout
 
@@ -293,9 +286,8 @@ Always append to an existing file — never recreate it. App-level files need a
 
 | Tag | Type | Purpose |
 |-----|------|---------|
-| `{% active_app 'name' %}` | `simple_tag` | CSS class string when `request.resolver_match.app_name` matches |
-| `{% active_url 'name' *args **kwargs %}` | `simple_tag` | `ActiveUrl` dataclass; `.url`, `.is_active`, `.css_class` |
-| `{% re_active_url 'pattern' url='' %}` | `simple_tag` | `ActiveUrl` dataclass matched by regex against `request.path` |
+| `{% active_url 'name' *args active_class='' **kwargs %}` | `simple_tag` | `ActiveUrl` dataclass; `.url`, `.is_active`, `.css_class` |
+| `{% re_active_url 'pattern' 'viewname' active_class='' %}` | `simple_tag` | `ActiveUrl` matched by regex; resolves viewname for href |
 | `{% fragment "t.html" %}...{% endfragment %}` | `simple_block_tag` | Include a template with `{{ content }}` slot |
 | `{% try_include "t.html" "fallback.html" key=val %}` | `simple_tag` | Include a template, falling back if not found; optional extra context |
 | `{% cookie_banner %}` | `inclusion_tag` | GDPR cookie consent banner |

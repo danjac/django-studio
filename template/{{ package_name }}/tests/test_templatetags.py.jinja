@@ -6,10 +6,7 @@ from django.template.exceptions import TemplateDoesNotExist
 
 from {{ package_name }}.http.request import RequestContext
 from {{ package_name }}.templatetags import (
-    _NAV_ACTIVE_CLASSES,
-    _NAV_INACTIVE_CLASSES,
     absolute_uri,
-    active_app,
     active_url,
     cookie_banner,
     fragment,
@@ -100,29 +97,15 @@ def _nav_context(app_name: str = "", url_name: str = "", path: str = "/") -> Moc
     return ctx
 
 
-class TestActiveApp:
-    def test_active_when_app_matches(self):
-        assert active_app(_nav_context(app_name="podcasts"), "podcasts") == _NAV_ACTIVE_CLASSES
-
-    def test_active_when_any_app_matches(self):
-        assert active_app(_nav_context(app_name="episodes"), "podcasts", "episodes") == _NAV_ACTIVE_CLASSES
-
-    def test_inactive_when_no_match(self):
-        assert active_app(_nav_context(app_name="other"), "podcasts") == _NAV_INACTIVE_CLASSES
-
-    def test_inactive_for_empty_app_name(self):
-        assert active_app(_nav_context(), "podcasts") == _NAV_INACTIVE_CLASSES
-
-
 class TestActiveUrl:
     def test_active_when_path_matches(self, rf):
         req = rf.get("/account/email/")
         ctx = Mock()
         ctx.request = req
-        result = active_url(ctx, "account_email")
+        result = active_url(ctx, "account_email", active_class="menu-active")
         assert result.is_active is True
         assert result.url == "/account/email/"
-        assert result.css_class == _NAV_ACTIVE_CLASSES
+        assert result.css_class == "menu-active"
 
     def test_inactive_when_path_differs(self, rf):
         req = rf.get("/")
@@ -131,7 +114,7 @@ class TestActiveUrl:
         result = active_url(ctx, "account_email")
         assert result.is_active is False
         assert result.url == "/account/email/"
-        assert result.css_class == _NAV_INACTIVE_CLASSES
+        assert result.css_class == ""
 
     def test_invalid_viewname_returns_empty_url(self, rf):
         req = rf.get("/")
@@ -144,9 +127,13 @@ class TestActiveUrl:
 
 class TestReActiveUrl:
     def test_active_when_pattern_matches(self):
-        result = re_active_url(_nav_context(path="/account/password/change/"), "password/(change|set)")
+        result = re_active_url(
+            _nav_context(path="/account/password/change/"),
+            "password/(change|set)",
+            active_class="menu-active",
+        )
         assert result.is_active is True
-        assert result.css_class == _NAV_ACTIVE_CLASSES
+        assert result.css_class == "menu-active"
 
     def test_active_on_second_pattern_match(self):
         result = re_active_url(_nav_context(path="/account/password/set/"), "password/(change|set)")
@@ -155,10 +142,13 @@ class TestReActiveUrl:
     def test_inactive_when_no_match(self):
         result = re_active_url(_nav_context(path="/account/email/"), "password/(change|set)")
         assert result.is_active is False
-        assert result.css_class == _NAV_INACTIVE_CLASSES
+        assert result.css_class == ""
 
-    def test_passes_through_url(self):
-        result = re_active_url(_nav_context(path="/"), "password/(change|set)", url="/account/password/change/")
+    def test_resolves_viewname(self, rf):
+        req = rf.get("/")
+        ctx = Mock()
+        ctx.request = req
+        result = re_active_url(ctx, "password/(change|set)", "account_change_password")
         assert result.url == "/account/password/change/"
 
 

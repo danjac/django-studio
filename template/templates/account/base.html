@@ -3,7 +3,7 @@
 
 {% partialdef menu_item %}
   <li>
-    <a href="{{ match.url }}" class="{{ match.css_class }}{% if class %} {{ class }}{% endif %}">
+    <a href="{{ match.url }}"{% if match.css_class or class %} class="{{ match.css_class }}{% if class %} {{ class }}{% endif %}"{% endif %}>
       {% heroicon_mini icon class="size-4 shrink-0" aria_hidden="true" %}
       {{ label }}
     </a>
@@ -11,27 +11,27 @@
 {% endpartialdef %}
 
 {% partialdef menu_items %}
-  {% with icon="arrow-left" label=_("Back to site") %}
-    {% active_url 'index' as match %}
-    {% partial menu_item %}
-  {% endwith %}
+  {% with active_class="menu-active" %}
+    {% with icon="arrow-left" label=_("Back to site") %}
+      {% active_url 'index' active_class=active_class as match %}
+      {% partial menu_item %}
+    {% endwith %}
 
-  {% with icon="envelope" label=_("Email") %}
-    {% active_url 'account_email' as match %}
-    {% partial menu_item %}
-  {% endwith %}
+    {% with icon="envelope" label=_("Email") %}
+      {% active_url 'account_email' active_class=active_class as match %}
+      {% partial menu_item %}
+    {% endwith %}
 
-  {% with icon="lock-closed" label=_("Password") %}
-    {% active_url 'account_change_password' as match %}
-    {% re_active_url 'password/(change|set)' match.url as match %}
-    {% partial menu_item %}
-  {% endwith %}
+    {% with icon="lock-closed" label=_("Password") %}
+      {% re_active_url 'password/(change|set)' 'account_change_password' active_class=active_class as match %}
+      {% partial menu_item %}
+    {% endwith %}
 
-  {% with icon="link" label=_("Connections") %}
-    {% active_url 'socialaccount_connections' as match %}
-    {% partial menu_item %}
+    {% with icon="link" label=_("Connections") %}
+      {% active_url 'socialaccount_connections' active_class=active_class as match %}
+      {% partial menu_item %}
+    {% endwith %}
   {% endwith %}
-
 {% endpartialdef %}
 
 {% block content %}

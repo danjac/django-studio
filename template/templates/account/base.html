@@ -3,49 +3,37 @@
 
 {% block content %}
   {% if user.is_authenticated %}
-    {% url 'index' as back_url %}
-    {% url 'account_email' as email_url %}
-    {% url 'account_change_password' as pw_url %}
-    {% url 'socialaccount_connections' as connections_url %}
-    {% url 'users:delete_account' as delete_url %}
+    {# Mobile: dropdown #}
+    <div class="mb-6 lg:hidden" x-data="{ open: false }">
+      <button
+        type="button"
+        class="btn btn-ghost w-full justify-between"
+        @click="open = !open"
+        :aria-expanded="open"
+      >
+        {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
+        {% translate "Account Settings" %}
+        {% heroicon_mini "chevron-down" class="ml-auto size-4 shrink-0" aria_hidden="true" %}
+      </button>
+      <ul
+        class="menu mt-1 w-full rounded-lg border border-base-200 bg-base-100"
+        x-show="open"
+        x-cloak
+        x-transition
+        @click.outside="open = false"
+      >
+        {% partial "account/partials.html#menu_items" %}
+      </ul>
+    </div>
 
-    {% with active="menu-active" inactive="" %}
-      {% active_url 'account_email' active=active inactive=inactive as email_class %}
-      {% active_url 'account_change_password' 'account_set_password' active=active inactive=inactive as pw_class %}
-      {% active_url 'socialaccount_connections' active=active inactive=inactive as connections_class %}
-      {% active_url 'delete_account' active=active inactive=inactive as delete_class %}
-
-      {# Mobile: dropdown #}
-      <div class="mb-6 lg:hidden" x-data="{ open: false }">
-        <button
-          type="button"
-          class="btn btn-ghost w-full justify-between"
-          @click="open = !open"
-          :aria-expanded="open"
-        >
-          {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
-          {% translate "Account Settings" %}
-          {% heroicon_mini "chevron-down" class="ml-auto size-4 shrink-0" aria_hidden="true" %}
-        </button>
-        <ul
-          class="menu mt-1 w-full rounded-lg border border-base-200 bg-base-100"
-          x-show="open"
-          x-cloak
-          x-transition
-          @click.outside="open = false"
-        >
+    {# Desktop: sidebar + content #}
+    <div class="lg:flex lg:gap-8">
+      <aside class="hidden lg:block lg:w-56 shrink-0">
+        <ul class="menu">
           {% partial "account/partials.html#menu_items" %}
         </ul>
-      </div>
-
-      {# Desktop: sidebar + content #}
-      <div class="lg:flex lg:gap-8">
-        <aside class="hidden lg:block lg:w-56 shrink-0">
-          <ul class="menu">
-            {% partial "account/partials.html#menu_items" %}
-          </ul>
-        </aside>
-        <div class="flex-1 min-w-0">
+      </aside>
+      <div class="flex-1 min-w-0">
   {% else %}
     <div class="py-12 mx-auto max-w-md">
   {% endif %}
@@ -54,10 +42,8 @@
   {% endblock settings_content %}
 
   {% if user.is_authenticated %}
-        </div>
       </div>
-
-    {% endwith %}
+    </div>
   {% else %}
     </div>
   {% endif %}

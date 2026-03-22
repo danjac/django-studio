@@ -2,6 +2,20 @@
 
 This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudflare for DNS and CDN.
 
+## Contents
+
+- [Why This Stack](#why-this-stack)
+- [Architecture](#architecture)
+- [Components](#components)
+- [Deployment](#deployment)
+- [Services](#services)
+- [CronJobs](#cronjobs)
+- [Security](#security)
+- [Monitoring and Observability](#monitoring-and-observability)
+- [Scaling](#scaling)
+- [Backup](#backup)
+- [Cost](#cost)
+
 ## Why This Stack
 
 ### Cost predictability

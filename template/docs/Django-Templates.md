@@ -2,6 +2,20 @@
 
 This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments. Components use DaisyUI classes — see `docs/Tailwind.md` for the class reference.
 
+## Contents
+
+- [Base Templates](#base-templates)
+- [partialdef / partial](#partialdef--partial)
+- [fragment Tag](#fragment-tag)
+- [Forms](#forms)
+- [Pagination](#pagination)
+- [Browse List](#browse-list)
+- [Messages](#messages)
+- [Navigation](#navigation)
+- [Layout Patterns](#layout-patterns)
+- [Cookie Banner](#cookie-banner)
+- [Custom Template Tags and Filters](#custom-template-tags-and-filters)
+
 ## Base Templates
 
 `base.html` uses Django `{% block %}` tags. It renders the full page: `<head>`, HTMX indicator, messages, cookie banner, navbar, and a centred `<main>` wrapper. Page templates extend it:

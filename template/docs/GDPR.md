@@ -13,6 +13,19 @@ decisions.
 
 ---
 
+## Contents
+
+- [What counts as personal data](#what-counts-as-personal-data)
+- [Data minimisation](#data-minimisation)
+- [User deletion — right to erasure](#user-deletion--right-to-erasure)
+- [Data export — right of access](#data-export--right-of-access)
+- [Consent](#consent)
+- [Data retention](#data-retention)
+- [Personal data in logs](#personal-data-in-logs)
+- [Cookies](#cookies)
+- [Third-party services](#third-party-services)
+- [Checklist for new features](#checklist-for-new-features)
+
 ## What counts as personal data
 
 Any information that can identify a natural person, directly or indirectly:

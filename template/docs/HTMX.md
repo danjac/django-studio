@@ -4,6 +4,18 @@ HTMX provides dynamic page behavior without writing JavaScript. This project use
 
 HTMX is vendored into `static/vendor/`. To update it or add new JS dependencies, see `docs/Frontend-Dependencies.md`.
 
+## Contents
+
+- [Configuration](#configuration)
+- [CSRF](#csrf)
+- [Bootstrap hx-boost (opt-in)](#bootstrap-hx-boost-opt-in)
+- [View Utilities](#view-utilities)
+- [Middleware](#middleware)
+- [Common Patterns](#common-patterns)
+- [Loading Indicator CSS](#loading-indicator-css)
+- [Best Practices](#best-practices)
+- [References](#references)
+
 ## Configuration
 
 HTMX is configured via `HTMX_CONFIG` in settings, rendered as a `<meta>` tag by `{% meta_tags %}` in the base template:

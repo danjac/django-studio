@@ -2,6 +2,25 @@
 
 This project uses pytest with pytest-django for unit tests and Playwright for E2E tests.
 
+## Contents
+
+- [Test Configuration](#test-configuration)
+- [Running Tests](#running-tests)
+- [Test Structure](#test-structure)
+- [Root conftest.py](#root-conftestpy)
+- [Unit Test Fixtures](#unit-test-fixtures)
+- [E2E Fixtures](#e2e-fixtures)
+- [Factories](#factories)
+- [Unit Tests](#unit-tests)
+- [View Tests with HTMX](#view-tests-with-htmx)
+- [E2E Tests](#e2e-tests)
+- [Test Settings](#test-settings)
+- [Mocking](#mocking)
+- [Coverage](#coverage)
+- [E2E Selector Rules](#e2e-selector-rules)
+- [Troubleshooting](#troubleshooting)
+- [When to Use E2E vs Unit Tests](#when-to-use-e2e-vs-unit-tests)
+
 ## Test Configuration
 
 ```ini

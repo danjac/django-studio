@@ -4,6 +4,17 @@ Scheduled tasks run as Kubernetes `CronJob` objects, defined in `helm/site/value
 The Helm chart (`helm/site/templates/cronjobs.yaml`) iterates over the `cronjobs:` map
 and creates one `CronJob` per entry.
 
+## Contents
+
+- [Adding a Cron Job](#adding-a-cron-job)
+- [Writing the Management Command](#writing-the-management-command)
+- [Long-Running or Parallel Work: Use django-tasks](#long-running-or-parallel-work-use-django-tasks)
+- [Built-in Cron Jobs](#built-in-cron-jobs)
+- [Resource Limits](#resource-limits)
+- [Concurrency Policy](#concurrency-policy)
+- [Node Scheduling](#node-scheduling)
+- [Observing Jobs](#observing-jobs)
+
 ## Adding a Cron Job
 
 Add an entry under `cronjobs:` in `helm/site/values.yaml`:

@@ -6,7 +6,7 @@ Look up project documentation by topic, or create it interactively if it doesn't
 
 Normalize the topic: lowercase, replace spaces with hyphens. List all `.md` files directly under
 `docs/` (not subdirectories). Match filenames case-insensitively against the basename without
-extension (e.g. `maps` matches `Maps.md`, `rss-parsing` matches `RSS-Parsing.md`).
+extension (e.g. `maps` matches `UI-Recipes.md`, `rss-parsing` matches `RSS-Parsing.md`).
 
 - **Exact match** → proceed to Step 2
 - **Multiple matches** → list them and ask the user which one they mean, then proceed to Step 2
@@ -38,11 +38,11 @@ script. Typical areas to probe (use only what applies):
 - Are there third-party packages involved? Which ones?
 
 Once you have enough information, write the doc following the style and conventions of existing
-docs (see `docs/Maps.md`, `docs/Django.md` as style references). Use the actual project-specific
+docs (see `docs/UI-Recipes.md`, `docs/Django.md` as style references). Use the actual project-specific
 details — this doc should reflect how this project uses the feature, not a generic how-to.
 
 **Filename convention:** Capital-Kebab-Case.md — capitalise each word, separate with hyphens.
-Examples: `docs/Maps.md`, `docs/RSS-Parsing.md`, `docs/Google-Maps.md`, `docs/Stripe-Payments.md`.
+Examples: `docs/UI-Recipes.md`, `docs/RSS-Parsing.md`, `docs/Google-UI-Recipes.md`, `docs/Stripe-Payments.md`.
 
 After writing, remind the user: if this doc would be useful as a built-in template doc for all
 projects, use `/djstudio feedback` to propose it.

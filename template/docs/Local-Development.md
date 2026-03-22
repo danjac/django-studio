@@ -2,6 +2,17 @@
 
 This project uses Docker Compose for local services and `just` for command automation.
 
+## Contents
+
+- [Quick Start](#quick-start)
+- [Docker Compose Services](#docker-compose-services)
+- [Just Commands](#just-commands)
+- [Environment Configuration](#environment-configuration)
+- [Running Migrations](#running-migrations)
+- [Creating a Superuser](#creating-a-superuser)
+- [Dependencies](#dependencies)
+- [Accessing Services](#accessing-services)
+
 ## Quick Start
 
 ```bash

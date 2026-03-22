@@ -100,7 +100,7 @@ State your findings explicitly when suggesting a package — don't just name it.
   backend. No DB overhead. Best fit when authorization logic is expressed in
   code (ownership checks, role membership, state-based rules).
 - **geopy**: use the `Nominatim` geocoder (no API key required). Run geocoding in
-  a background task — never in a request handler. See `docs/Maps.md` for the full
+  a background task — never in a request handler. See `docs/UI-Recipes.md` for the full
   pattern including the django-tasks integration and OSM embed.
 - **django-guardian**: per-object permissions stored in the database. Best fit
   when permissions must be assigned at runtime by users or admins (e.g. "grant

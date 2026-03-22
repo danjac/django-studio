@@ -2,6 +2,18 @@
 
 This project uses pre-commit hooks and multiple linters for code quality.
 
+## Contents
+
+- [Installation](#installation)
+- [Running Linters](#running-linters)
+- [Pre-commit Configuration](#pre-commit-configuration)
+- [Python: Ruff](#python-ruff)
+- [Templates: djlint](#templates-djlint)
+- [Templates: djade](#templates-djade)
+- [Templates: rustywind](#templates-rustywind)
+- [Type Checking: basedpyright](#type-checking-basedpyright)
+- [Updating Hooks](#updating-hooks)
+
 ## Installation
 
 ```bash

@@ -7,6 +7,16 @@ any time without risk of data corruption.
 Backups are **optional** and disabled by default. Follow this guide to set them up when
 you are ready.
 
+## Contents
+
+- [Overview](#overview)
+- [How It Works](#how-it-works)
+- [Setting Up Backups](#setting-up-backups)
+- [Configuration](#configuration)
+- [Restoring a Backup](#restoring-a-backup)
+- [Troubleshooting](#troubleshooting)
+- [What pg_dump Captures](#what-pg_dump-captures)
+
 ## Overview
 
 | What | Detail |

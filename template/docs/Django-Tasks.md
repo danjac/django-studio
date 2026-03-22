@@ -8,6 +8,18 @@ References:
 - [Django background tasks documentation](https://docs.djangoproject.com/en/6.0/topics/db/background-tasks/)
 - [django-tasks-db on PyPI](https://pypi.org/project/django-tasks-db/)
 
+## Contents
+
+- [Installation](#installation)
+- [Defining Tasks](#defining-tasks)
+- [Enqueuing Tasks](#enqueuing-tasks)
+- [Running the Task Worker](#running-the-task-worker)
+- [Task Scheduling](#task-scheduling)
+- [Testing](#testing)
+- [Benefits over Celery](#benefits-over-celery)
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+
 ## Installation
 
 ```bash

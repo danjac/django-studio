@@ -4,6 +4,15 @@
 >
 > allauth is fully set up by the project template. The tasks below describe what is already working and how to extend it safely.
 
+## Contents
+
+- [What is already in place](#what-is-already-in-place)
+- [Adding a social provider](#adding-a-social-provider)
+- [Customising the signup form](#customising-the-signup-form)
+- [Login by default](#login-by-default)
+- [Invite-only signup](#invite-only-signup)
+- [Testing](#testing)
+
 ## What is already in place
 
 - `allauth`, `allauth.account`, `allauth.socialaccount` in `INSTALLED_APPS` (`config/settings.py`)

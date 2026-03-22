@@ -8,6 +8,18 @@ References:
 
 ---
 
+## Contents
+
+- [Caching Strategy](#caching-strategy)
+- [Configuration](#configuration)
+- [In-Process Caching](#in-process-caching)
+- [Low-Level Cache API](#low-level-cache-api)
+- [Per-View Caching](#per-view-caching)
+- [Template Fragment Caching](#template-fragment-caching)
+- [Cache Invalidation](#cache-invalidation)
+- [Sessions](#sessions)
+- [Testing](#testing)
+
 ## Caching Strategy
 
 ### When to cache

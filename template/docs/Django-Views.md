@@ -2,6 +2,19 @@
 
 This project uses **function-based views only** — no class-based views.
 
+## Contents
+
+- [View Decorators](#view-decorators)
+- [Custom Response Classes](#custom-response-classes)
+- [Extended HttpRequest](#extended-httprequest)
+- [Basic View Pattern](#basic-view-pattern)
+- [Redirects](#redirects)
+- [HTMX View Pattern](#htmx-view-pattern)
+- [Paginated Views](#paginated-views)
+- [Async Views](#async-views)
+- [Internationalisation in Views](#internationalisation-in-views)
+- [URL Configuration](#url-configuration)
+
 ## View Decorators
 
 **Always restrict HTTP methods explicitly** — every view must be decorated with

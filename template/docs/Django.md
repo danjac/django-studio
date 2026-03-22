@@ -9,7 +9,8 @@ implementation patterns, see the focused docs:
 | Views, decorators, response classes, async, URL config      | `docs/Django-Views.md`        |
 | Models, querysets, full-text search, choices, relationships | `docs/Django-Models.md`       |
 | Templates, partials, fragments, pagination                  | `docs/Django-Templates.md`    |
-| Forms and validation                                        | `docs/Validation.md`   |
+| Forms, widgets, form rendering                              | `docs/Django-Forms.md` |
+| External API validation (pydantic)                          | `docs/API-Integration.md` |
 | Adding a new package                                        | `docs/Packages.md`     |
 | Migrations and linear-migrations                            | `docs/Django-Models.md`       |
 | Background tasks                                            | `docs/Django-Tasks.md` |

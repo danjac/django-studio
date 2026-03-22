@@ -9,6 +9,7 @@ This project uses **function-based views only** — no class-based views.
 - [Extended HttpRequest](#extended-httprequest)
 - [Basic View Pattern](#basic-view-pattern)
 - [Redirects](#redirects)
+- [Request Parameter Validation](#request-parameter-validation)
 - [HTMX View Pattern](#htmx-view-pattern)
 - [Paginated Views](#paginated-views)
 - [Async Views](#async-views)
@@ -124,6 +125,57 @@ def redirect_to_item(request: HttpRequest, item_id: int) -> HttpResponseRedirect
     return redirect(item)  # Assumes Item has get_absolute_url defined
 
 ```
+
+## Request Parameter Validation
+
+When reading individual parameters directly from `request.GET` or `request.POST`
+outside a Django form, always validate explicitly. Never assume a value is present
+or the correct type.
+
+**Bad:**
+```python
+page = int(request.GET["page"])    # KeyError if missing, ValueError if not an int
+obj_id = request.POST["object_id"] # KeyError if missing
+```
+
+**Good:**
+```python
+from django.core.exceptions import SuspiciousOperation
+from django.http import HttpResponseBadRequest
+
+
+def my_view(request: HttpRequest) -> HttpResponse:
+    # Optional param — fall back to a safe default
+    try:
+        page = int(request.GET.get("page", 1))
+    except (ValueError, TypeError):
+        page = 1
+
+    # Required param — two valid approaches depending on circumstances:
+
+    # Option A: return 400 directly
+    try:
+        obj_id = int(request.POST["object_id"])
+    except (KeyError, ValueError, TypeError):
+        return HttpResponseBadRequest("Invalid object_id")
+
+    # Option B: raise SuspiciousOperation (also 400, but logs a security WARNING)
+    try:
+        obj_id = int(request.POST["object_id"])
+    except (KeyError, ValueError, TypeError) as exc:
+        raise SuspiciousOperation("Invalid object_id") from exc
+```
+
+Rules:
+
+- Use `.get()` with a default for optional parameters; use `[]` only for required ones.
+- Wrap type conversions (`int()`, `uuid.UUID()`, etc.) in `try/except`.
+- For optional params, use a safe default silently.
+- For required params, both `HttpResponseBadRequest` (returns 400) and
+  `SuspiciousOperation` (also 400, additionally logs a security WARNING) are valid.
+  Use `SuspiciousOperation` when the malformed input warrants a security audit trail;
+  use `HttpResponseBadRequest` for routine bad input.
+- Use `Http404` only when the param identifies a resource that doesn't exist.
 
 ## HTMX View Pattern
 

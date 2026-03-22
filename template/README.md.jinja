@@ -77,13 +77,6 @@ Claude Code slash commands are available via `/djstudio <subcommand>`:
 | `create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
 | `create-filter`  | Add a template filter with correct escaping flags                      |
 
-**Documentation**
-
-| Subcommand | Summary                                                     |
-| ---------- | ----------------------------------------------------------- |
-| `docs`     | Look up or create project documentation                     |
-| `daisyui`  | Fetch DaisyUI component docs with project conventions       |
-
 **Localisation**
 
 | Subcommand  | Summary                                                        |

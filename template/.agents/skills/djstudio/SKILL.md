@@ -34,13 +34,6 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 | `create-tag [<app_name>] [<module>]`    | `.agents/skills/djstudio/commands/create-tag.md`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, or Node) |
 | `create-filter [<app_name>] [<module>]` | `.agents/skills/djstudio/commands/create-filter.md`  | Add a template filter with correct escaping flags |
 
-**Documentation**
-
-| Subcommand                | File                                        | Purpose                                              |
-|---------------------------|---------------------------------------------|------------------------------------------------------|
-| `docs <topic>`            | `.agents/skills/djstudio/commands/docs.md`         | Look up or create project documentation              |
-| `daisyui <component>`     | `.agents/skills/djstudio/commands/daisyui.md`      | Fetch DaisyUI component docs with project conventions |
-
 **Localisation**
 
 | Subcommand           | File                                        | Purpose                                       |

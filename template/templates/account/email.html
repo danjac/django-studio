@@ -52,11 +52,9 @@
             <button type="submit" name="action_send" class="btn btn-secondary">
               {% translate "Re-send Verification" %}
             </button>
-            {% if emailaddresses|length > 1 %}
-              <button type="submit" name="action_remove" class="btn btn-error">
-                {% translate "Remove" %}
-              </button>
-            {% endif %}
+            <button type="submit" name="action_remove" class="btn btn-error">
+              {% translate "Remove" %}
+            </button>
           </div>
         {% endfragment %}
       {% else %}

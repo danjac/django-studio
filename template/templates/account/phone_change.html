@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 {% load i18n %}
 
 {% block title %}{% title_tag _("Change Phone") %}{% endblock %}
 
-{% block content %}
-  <div class="py-12 mx-auto max-w-md">
-    {% include "header.html" with title=_("Change Phone Number") %}
-    <div class="mt-6">
+{% block settings_content %}
+  {% include "header.html" with title=_("Change Phone Number") %}
+  <div class="mt-6">
       {% if phone %}
         <p class="mb-4 text-sm text-base-content/60">
           {% blocktranslate %}
@@ -41,5 +40,4 @@
         {% endfragment %}
       {% endfragment %}
     </div>
-  </div>
-{% endblock content %}
+{% endblock settings_content %}

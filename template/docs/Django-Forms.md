@@ -91,19 +91,18 @@ Use the first level that fits:
 {{ form.body.as_field_group }}
 ```
 
-**Level 3 — custom attribute or markup for one field, default rendering for the rest:**
+**Level 3 — custom attributes on one field, default rendering for the rest:**
 
-Use `django-widget-tweaks` to override attributes on a single field without
-replacing the rest of the rendering:
+Use `django-widget-tweaks` to override attributes on a single field. Wrap it in
+the `fieldset` fragment to keep the DaisyUI structure, errors, and help text:
 
 ```html
 {% load widget_tweaks %}
 {{ form.title.as_field_group }}
-<fieldset class="fieldset">
-  <legend class="fieldset-legend">{{ form.body.label }}</legend>
+{% fragment "form/partials.html#fieldset" with field=form.body %}
+  {% partial label %}
   {% render_field form.body class="textarea w-full" rows="8" %}
-  {{ form.body.errors }}
-</fieldset>
+{% endfragment %}
 ```
 
 For anything beyond attribute tweaks — custom layout, composite inputs, or
@@ -148,7 +147,18 @@ For file upload forms, pass `multipart=True`:
 
 ## Field Template Structure
 
-`form/partials.html` renders each field inside a DaisyUI `fieldset`:
+`form/partials.html` renders each field inside a DaisyUI `fieldset`. The
+following sub-partials are available for use in custom widget partials or
+level-3 rendering (see [Rendering Fields](#rendering-fields)):
+
+| Partial | Renders |
+|---------|---------|
+| `{% partial label %}` | `<legend>` with label text, optional marker, error colour |
+| `{% partial errors %}` | `<ul>` of validation errors |
+| `{% partial help_text %}` | `<p>` of help text |
+| `{% fragment "form/partials.html#fieldset" with field=... %}` | Full `<fieldset>` wrapper — `{{ content }}` + errors + help text |
+
+The rendered output for a standard field:
 
 ```html
 <fieldset class="fieldset">

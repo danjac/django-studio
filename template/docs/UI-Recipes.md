@@ -6,6 +6,7 @@ Composite patterns combining Alpine.js, HTMX, Tailwind, and Django templates.
 
 - [Photo Lightbox](#photo-lightbox)
 - [Drag and Drop](#drag-and-drop)
+- [Multiple File Upload](#multiple-file-upload)
 
 ## Photo Lightbox
 
@@ -255,3 +256,118 @@ Pass CSRF credentials and the resolved URL as constructor arguments. Use
 
 The HTMX response should re-render only the `#drop-area` div contents (use the
 `drop-area` partial as the view's response template).
+
+---
+
+## Multiple File Upload
+
+A multi-file picker with drag-and-drop, instant previews, and per-file removal.
+Alpine.js manages the file list; the `DataTransfer` API syncs it back to the
+native `<input>` so the Django form submission works normally.
+
+For the Django form side (CSP, `multipart=True`, HTMX integration), see
+`docs/Django-Forms.md#multiple-file-upload`.
+
+### JS component
+
+Place in `{% block scripts %}` (no `defer`), or extract to `static/` if reused
+across pages:
+
+```html
+{% block scripts %}
+  {{ block.super }}
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('fileUpload', () => ({
+        files: [],
+        previews: {},
+
+        addFiles(event) {
+          const incoming = Array.from(event.target?.files ?? event.dataTransfer?.files ?? []);
+          this.files = [...this.files, ...incoming];
+          incoming.forEach(f => { this.previews = {...this.previews, [f.name]: URL.createObjectURL(f)}; });
+          this.syncInput();
+        },
+
+        removeFile(file) {
+          URL.revokeObjectURL(this.previews[file.name]);
+          const p = {...this.previews};
+          delete p[file.name];
+          this.previews = p;
+          this.files = this.files.filter(f => f !== file);
+          this.syncInput();
+        },
+
+        syncInput() {
+          const dt = new DataTransfer();
+          this.files.forEach(f => dt.items.add(f));
+          this.$refs.fileInput.files = dt.files;
+        },
+      }));
+    });
+  </script>
+{% endblock scripts %}
+```
+
+### Template
+
+```html
+<div
+  id="file-upload-zone"
+  x-data="fileUpload()"
+  @dragover.prevent
+  @drop.prevent="addFiles($event)"
+>
+  <label
+    class="block p-8 text-center rounded-lg border-2 border-dashed cursor-pointer border-zinc-300 hover:border-primary-400"
+    for="file-input"
+  >
+    {% heroicon_outline "arrow-up-tray" class="mx-auto size-8 text-zinc-400" aria_hidden="true" %}
+    <span class="block mt-2 text-sm text-zinc-500">
+      {% translate "Drag files here or click to browse" %}
+    </span>
+    <input
+      id="file-input"
+      name="files"
+      type="file"
+      multiple
+      accept="image/*"
+      class="sr-only"
+      x-ref="fileInput"
+      @change="addFiles($event)"
+    >
+  </label>
+
+  <ul x-show="files.length" class="grid grid-cols-3 gap-3 mt-4">
+    <template x-for="(file, index) in files" :key="file.name">
+      <li class="overflow-hidden relative rounded-lg border border-zinc-200 dark:border-zinc-700">
+        {# djlint:off H006 #}
+        <img
+          :src="previews[file.name]"
+          :alt="'{% translate "Selected file" %} ' + (index + 1)"
+          width="300"
+          height="200"
+          class="object-cover w-full aspect-video"
+        >
+        {# djlint:on #}
+        <button
+          type="button"
+          class="absolute top-1 right-1 p-1 text-white rounded-full bg-black/50"
+          aria-label="{% translate "Remove" %}"
+          @click="removeFile(file)"
+        >
+          {% heroicon_mini "x-mark" class="size-4" aria_hidden="true" %}
+        </button>
+      </li>
+    </template>
+  </ul>
+</div>
+```
+
+**Key points:**
+
+- `syncInput()` uses `DataTransfer` to keep the native `<input>` in sync — without
+  this, the form submits an empty file list.
+- Call `URL.revokeObjectURL` on remove to prevent memory leaks.
+- The upload/delete workflow for existing server-side files is project-specific —
+  implement via HTMX partial swaps.

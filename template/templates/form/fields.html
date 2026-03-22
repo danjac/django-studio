@@ -1,8 +1,8 @@
 {% load heroicons i18n widget_tweaks %}
 
-{% fragment "form/field.html#fieldset" %}
+{% fragment "form/fields.html#fieldset" %}
   {% with widget_type=field|widget_type %}
-    {% include "form/field.html#"|add:widget_type %}
+    {% try_include "form/fields.html#"|add:widget_type "form/fields.html#input" %}
   {% endwith %}
 {% endfragment %}
 
@@ -47,13 +47,6 @@
   {% partial label %}
   {% render_field field class="input" %}
 {% endpartialdef input %}
-
-{# Simple text and file inputs - same as default #}
-{% partialdef textinput %}{% partial input %}{% endpartialdef %}
-{% partialdef emailinput %}{% partial input %}{% endpartialdef %}
-{% partialdef fileinput %}{% partial input %}{% endpartialdef %}
-{% partialdef clearablefileinput %}{% partial input %}{% endpartialdef %}
-{% partialdef urlinput %}{% partial input %}{% endpartialdef %}
 
 {# Date #}
 {% partialdef dateinput %}
@@ -121,11 +114,3 @@
   {% partial label %}
   {% render_field field class="select" %}
 {% endpartialdef selectmultiple %}
-
-{# django-money MoneyWidget (amount + currency select) #}
-{% partialdef moneywidget %}
-  {% partial label %}
-  <div class="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-    {% render_field field %}
-  </div>
-{% endpartialdef moneywidget %}

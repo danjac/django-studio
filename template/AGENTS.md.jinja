@@ -72,7 +72,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order
 3. `{{ form }}` — all fields via configured renderer
 
-Never use `{{ form.as_div }}` or `{% include "form/field.html" %}`.{% endraw %}
+Never use `{{ form.as_div }}` or `{% include "form/fields.html" %}`.{% endraw %}
 See `docs/Django-Templates.md`.
 
 **Internationalisation**: All user-visible text must be wrapped in translation functions. See `docs/Django.md` for usage.

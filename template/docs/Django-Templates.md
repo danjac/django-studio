@@ -56,9 +56,22 @@ On an HTMX request targeting `#item-list`, `render_partial_response` returns onl
 
 Component templates such as `browse.html`, `paginate.html`, and `sidebar.html` define partials without `inline` because they are always rendered via `{% fragment %}` or `{% partial %}` — never directly. The caller controls what gets rendered.
 
+### Extracting shared partials into partials.html
+
+When several templates share the same `{% partialdef %}` blocks (e.g. a card layout, a status badge, a shared action menu), extract them into a dedicated `partials.html` file. Callers include the partial via `{% fragment "partials.html#block-name" %}`.
+
+Conventional locations:
+
+| Scope | File |
+|-------|------|
+| Project-wide | `templates/partials.html` |
+| Domain-specific | `templates/form/partials.html`, `templates/my_app/partials.html` |
+
+`form/partials.html` follows this pattern — it holds all form-field widget partials and is included indirectly by Django's field renderer.
+
 ## fragment Tag
 
-`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `form/fields.html` and `paginate.html`:
+`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `form/partials.html` and `paginate.html`:
 
 ```html
 {% fragment "form.html" htmx=True target="my-form" %}
@@ -70,7 +83,7 @@ Component templates such as `browse.html`, `paginate.html`, and `sidebar.html` d
 
 ### Rendering fields
 
-Use `{{ field.as_field_group }}` to render a form field with its label, errors, and help text. The project ships `templates/form/fields.html` which dispatches to a per-widget `partialdef` based on the field's widget type:
+Use `{{ field.as_field_group }}` to render a form field with its label, errors, and help text. The project ships `templates/form/partials.html` which dispatches to a per-widget `partialdef` based on the field's widget type:
 
 ```html
 {% for field in form %}
@@ -112,7 +125,7 @@ Key variables:
 
 ### Field template structure
 
-`form/fields.html` renders each field inside a DaisyUI `fieldset`:
+`form/partials.html` renders each field inside a DaisyUI `fieldset`:
 
 ```html
 <fieldset class="fieldset">
@@ -125,7 +138,7 @@ Key variables:
 
 ### Widget type dispatch
 
-`form/fields.html` dispatches to a `{% partialdef %}` block by lowercasing the widget's class name via `{% try_include "form/fields.html#"|add:widget_type "form/fields.html#input" %}`. If no matching partial exists, it falls back to the `input` partial. Built-in widgets with explicit partials:
+`form/partials.html` dispatches to a `{% partialdef %}` block by lowercasing the widget's class name via `{% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}`. If no matching partial exists, it falls back to the `input` partial. Built-in widgets with explicit partials:
 
 | Widget | Partial | DaisyUI class |
 |--------|---------|---------------|
@@ -142,7 +155,7 @@ All other widgets (e.g. `TextInput`, `EmailInput`, `FileInput`, `URLInput`) fall
 
 ### Custom widget partials
 
-If you add a custom widget with non-default rendering, add a matching `{% partialdef %}` block to `templates/form/fields.html`. The partial name is the widget's class name, lowercased. Use `{% partial label %}`, `{% partial errors %}`, and `{% partial help_text %}` to keep rendering consistent. Widgets that render identically to a plain `<input>` need no partial — the fallback handles them.
+If you add a custom widget with non-default rendering, add a matching `{% partialdef %}` block to `templates/form/partials.html`. The partial name is the widget's class name, lowercased. Use `{% partial label %}`, `{% partial errors %}`, and `{% partial help_text %}` to keep rendering consistent. Widgets that render identically to a plain `<input>` need no partial — the fallback handles them.
 
 ### Adding widget attributes
 
@@ -310,7 +323,7 @@ Always append to an existing file — never recreate it. App-level files need a
 | `{% active_app 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.app_name` matches |
 | `{% active_url 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.url_name` matches |
 | `{% fragment "t.html" %}...{% endfragment %}` | `simple_block_tag` | Include a template with `{{ content }}` slot |
-| `{% try_include "t.html" "fallback.html" %}` | `simple_tag` | Include a template, falling back if not found |
+| `{% try_include "t.html" "fallback.html" key=val %}` | `simple_tag` | Include a template, falling back if not found; optional extra context |
 | `{% cookie_banner %}` | `inclusion_tag` | GDPR cookie consent banner |
 | `{% title_tag %}` | `simple_tag` | Composable `<title>` tag |
 

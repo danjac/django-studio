@@ -170,14 +170,18 @@ def fragment(
 
 
 @register.simple_tag(takes_context=True)
-def try_include(context: "Context", template_name: str, fallback: str) -> str:
+def try_include(
+    context: "Context", template_name: str, fallback: str, **extra_context
+) -> str:
     """Include a template, falling back to ``fallback`` if not found.
 
     Useful for optional per-widget overrides where a sensible default exists.
+    Extra keyword arguments are pushed onto the context for the render.
 
     Example:
 
-        {% raw %}{% try_include "form/fields.html#"|add:widget_type "form/fields.html#input" %}{% endraw %}
+        {% raw %}{% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}{% endraw %}
+        {% raw %}{% try_include "tmpl_a.html" "tmpl_b.html" foo=bar %}{% endraw %}
     """
     if context.template is None:
         raise template.TemplateSyntaxError(
@@ -189,4 +193,5 @@ def try_include(context: "Context", template_name: str, fallback: str) -> str:
         tmpl = engine.get_template(template_name)
     except TemplateDoesNotExist:
         tmpl = engine.get_template(fallback)
-    return tmpl.render(context)
+    with context.push(**extra_context):
+        return tmpl.render(context)

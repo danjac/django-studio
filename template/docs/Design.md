@@ -35,7 +35,7 @@ opacity-50" aria_hidden="true" %}
 
 ## Forms
 
-Form rendering uses `{{ field.as_field_group }}` (dispatches through `templates/form/fields.html`
+Form rendering uses `{{ field.as_field_group }}` (dispatches through `templates/form/partials.html`
 to widget-specific `{% partialdef %}` blocks), `django-widget-tweaks` for per-field attribute
 overrides, and `{% fragment "form.html" %}` as the HTMX-aware `<form>` wrapper.
 

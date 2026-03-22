@@ -142,7 +142,7 @@ class TestTryInclude:
             try_include(context, "primary.html", "fallback.html")
 
     def test_renders_primary_when_found(self, mocker):
-        context = mocker.Mock()
+        context = mocker.MagicMock()
         tmpl = mocker.Mock()
         tmpl.render.return_value = "primary content"
         context.template.engine.get_template.return_value = tmpl
@@ -151,7 +151,7 @@ class TestTryInclude:
         assert result == "primary content"
 
     def test_falls_back_when_primary_not_found(self, mocker):
-        context = mocker.Mock()
+        context = mocker.MagicMock()
         fallback_tmpl = mocker.Mock()
         fallback_tmpl.render.return_value = "fallback content"
         context.template.engine.get_template.side_effect = [
@@ -160,3 +160,11 @@ class TestTryInclude:
         ]
         result = try_include(context, "primary.html", "fallback.html")
         assert result == "fallback content"
+
+    def test_extra_context_pushed(self, mocker):
+        context = mocker.MagicMock()
+        tmpl = mocker.Mock()
+        tmpl.render.return_value = "content"
+        context.template.engine.get_template.return_value = tmpl
+        try_include(context, "primary.html", "fallback.html", foo="bar")
+        context.push.assert_called_once_with(foo="bar")

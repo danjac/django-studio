@@ -59,7 +59,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **sorl-thumbnail**: add `"sorl.thumbnail"` to `INSTALLED_APPS`. Uses the
   Redis cache backend (already configured).
 - **aiohttp**: use for async HTTP calls to third-party APIs. See
-  `docs/API-Integration.md` for the client factory, error handling, and testing patterns.
+  `docs/API-Integration.md` for the `USER_AGENT` setting, error handling, and testing patterns.
 - **channels + daphne**: replace the Uvicorn ASGI server with Daphne
   (`daphne config.asgi:application`). Add `"channels"` to `INSTALLED_APPS`
   and configure `ASGI_APPLICATION`.

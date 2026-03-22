@@ -79,13 +79,13 @@ Conventional locations:
 | Scope | File |
 |-------|------|
 | Project-wide | `templates/partials.html` |
-| Domain-specific | `templates/form/partials.html`, `templates/my_app/partials.html` |
+| Domain-specific | `templates/forms/partials.html`, `templates/my_app/partials.html` |
 
-`form/partials.html` follows this pattern — it holds all form-field widget partials and is included indirectly by Django's field renderer.
+`forms/partials.html` follows this pattern — it holds all form-field widget partials and is included indirectly by Django's field renderer.
 
 ## fragment Tag
 
-`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `form/partials.html` and `paginate.html`:
+`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `forms/partials.html` and `paginate.html`:
 
 ```html
 {% fragment "form.html" htmx=True target="my-form" %}

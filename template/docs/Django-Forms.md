@@ -1,7 +1,7 @@
 # Forms
 
 This project uses Django forms for HTML form submissions, with
-`form/partials.html` dispatching rendering per widget type and
+`forms/partials.html` dispatching rendering per widget type and
 `django-widget-tweaks` for attribute overrides.
 
 ## Contents
@@ -73,7 +73,7 @@ Key rules:
 
 ## Rendering Fields
 
-`templates/form/partials.html` dispatches each field to a per-widget `partialdef`
+`templates/forms/partials.html` dispatches each field to a per-widget `partialdef`
 based on the field's widget type, rendering label, input, errors, and help text.
 
 Use the first level that fits:
@@ -99,7 +99,7 @@ the `fieldset` fragment to keep the DaisyUI structure, errors, and help text:
 ```html
 {% load widget_tweaks %}
 {{ form.title.as_field_group }}
-{% fragment "form/partials.html#fieldset" with field=form.body %}
+{% fragment "forms/partials.html#fieldset" with field=form.body %}
   {% partial label %}
   {% render_field form.body class="textarea w-full" rows="8" %}
 {% endfragment %}
@@ -107,7 +107,7 @@ the `fieldset` fragment to keep the DaisyUI structure, errors, and help text:
 
 For anything beyond attribute tweaks — custom layout, composite inputs, or
 reusable widget behaviour — add a `{% partialdef %}` block to
-`templates/form/partials.html` or write a custom Django widget class.
+`templates/forms/partials.html` or write a custom Django widget class.
 See [Custom Widget Partials](#custom-widget-partials) and
 [Common Custom Widgets](#common-custom-widgets).
 
@@ -147,7 +147,7 @@ For file upload forms, pass `multipart=True`:
 
 ## Field Template Structure
 
-`form/partials.html` renders each field inside a DaisyUI `fieldset`. The
+`forms/partials.html` renders each field inside a DaisyUI `fieldset`. The
 following sub-partials are available for use in custom widget partials or
 level-3 rendering (see [Rendering Fields](#rendering-fields)):
 
@@ -156,7 +156,7 @@ level-3 rendering (see [Rendering Fields](#rendering-fields)):
 | `{% partial label %}` | `<legend>` with label text, optional marker, error colour |
 | `{% partial errors %}` | `<ul>` of validation errors |
 | `{% partial help_text %}` | `<p>` of help text |
-| `{% fragment "form/partials.html#fieldset" with field=... %}` | Full `<fieldset>` wrapper — `{{ content }}` + errors + help text |
+| `{% fragment "forms/partials.html#fieldset" with field=... %}` | Full `<fieldset>` wrapper — `{{ content }}` + errors + help text |
 
 The rendered output for a standard field:
 
@@ -171,9 +171,9 @@ The rendered output for a standard field:
 
 ## Widget Type Dispatch
 
-`form/partials.html` dispatches to a `{% partialdef %}` block by lowercasing the
+`forms/partials.html` dispatches to a `{% partialdef %}` block by lowercasing the
 widget's class name via
-`{% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}`.
+`{% try_include "forms/partials.html#"|add:widget_type "forms/partials.html#input" %}`.
 If no matching partial exists, it falls back to the `input` partial. Built-in widgets
 with explicit partials:
 
@@ -194,7 +194,7 @@ to the `input` partial automatically.
 ## Custom Widget Partials
 
 If you add a custom widget with non-default rendering, add a matching `{% partialdef %}`
-block to `templates/form/partials.html`. The partial name is the widget's class name,
+block to `templates/forms/partials.html`. The partial name is the widget's class name,
 lowercased. Use `{% partial label %}`, `{% partial errors %}`, and
 `{% partial help_text %}` to keep rendering consistent. Widgets that render identically
 to a plain `<input>` need no partial — the fallback handles them.
@@ -217,7 +217,7 @@ For `ImageField` forms, use a `thumbnailwidget` partial that shows the current i
 and an Alpine.js-powered preview of the newly selected file:
 
 ```html
-{# form/partials.html #}
+{# forms/partials.html #}
 
 {% partialdef thumbnailwidget %}
   {% partial label %}
@@ -304,7 +304,7 @@ Django form submission works normally.
 
 [django-money](https://github.com/django-money/django-money) pairs `MoneyField` with
 `py-moneyed`. `MoneyWidget` renders an amount input and a currency select side-by-side.
-Add a `{% partialdef moneywidget %}` block to `templates/form/partials.html`:
+Add a `{% partialdef moneywidget %}` block to `templates/forms/partials.html`:
 
 ```html
 {# django-money MoneyWidget (amount + currency select) #}

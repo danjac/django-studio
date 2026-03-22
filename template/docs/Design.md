@@ -71,7 +71,7 @@ Use [`heroicons`](https://heroicons.com/) via `heroicons[django]` for all icons:
 ## Forms
 
 Form rendering uses `{{ form }}` / `{{ field.as_field_group }}` (dispatches through
-`templates/form/partials.html` to widget-specific `{% partialdef %}` blocks),
+`templates/forms/partials.html` to widget-specific `{% partialdef %}` blocks),
 `django-widget-tweaks` for per-field attribute overrides, and `{% fragment "form.html" %}`
 as the HTMX-aware `<form>` wrapper.
 

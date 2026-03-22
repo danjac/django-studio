@@ -180,7 +180,7 @@ def try_include(
 
     Example:
 
-        {% raw %}{% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}{% endraw %}
+        {% raw %}{% try_include "forms/partials.html#"|add:widget_type "forms/partials.html#input" %}{% endraw %}
         {% raw %}{% try_include "tmpl_a.html" "tmpl_b.html" foo=bar %}{% endraw %}
     """
     if context.template is None:

@@ -5,7 +5,7 @@ resizing and thumbnail generation. See `docs/Packages.md` for installation notes
 
 ## Thumbnail widget with instant preview
 
-For upload form widgets with inline preview, see `docs/UI-Recipes.md#image-upload-preview`.
+For upload form widgets with inline preview, see `docs/Django-Forms.md#thumbnail-widget`.
 
 ## sorl-thumbnail and S3
 

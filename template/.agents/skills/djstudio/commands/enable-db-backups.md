@@ -210,7 +210,7 @@ Tell the user:
 >
 > Retention: the 7 most recent backups are kept; older ones are pruned automatically.
 >
-> To restore from a backup, follow `docs/Backups.md` — it has step-by-step instructions
+> To restore from a backup, follow `docs/Database-Backups.md` — it has step-by-step instructions
 > including a "3 AM emergency" restore guide.
 >
 > To adjust the schedule or retention, edit the `backup:` section in
@@ -229,7 +229,7 @@ to confirm everything works.
 
 By default, backups run daily at 03:00 UTC and the 7 most recent dumps are
 retained. You will be prompted to change these before deploying.
-Restore instructions are in `docs/Backups.md`.
+Restore instructions are in `docs/Database-Backups.md`.
 
 Requires: `terraform`, `just`, and `kubectl` installed and authenticated.
 

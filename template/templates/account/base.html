@@ -1,23 +1,6 @@
 {% extends "base.html" %}
 {% load heroicons i18n %}
 
-{% partialdef menu_item %}
-  <li>
-    <a href="{{ url }}" class="{{ class }}">
-      {% heroicon_mini icon class="size-4 shrink-0" aria_hidden="true" %}
-      {{ label }}
-    </a>
-  </li>
-{% endpartialdef %}
-
-{% partialdef menu_items %}
-  {% partial menu_item with url=back_url icon="arrow-left" label=_("Back to site") class="" %}
-  {% partial menu_item with url=email_url icon="envelope" label=_("Email") class=email_class %}
-  {% partial menu_item with url=pw_url icon="lock-closed" label=_("Password") class=pw_class %}
-  {% partial menu_item with url=connections_url icon="link" label=_("Connections") class=connections_class %}
-  {% partial menu_item with url=delete_url icon="trash" label=_("Delete Account") class="text-error "|add:delete_class %}
-{% endpartialdef %}
-
 {% block content %}
   {% if user.is_authenticated %}
     {% url 'index' as back_url %}
@@ -51,7 +34,7 @@
           x-transition
           @click.outside="open = false"
         >
-          {% partial menu_items %}
+          {% partial "account/partials.html#menu_items" %}
         </ul>
       </div>
 
@@ -59,7 +42,7 @@
       <div class="lg:flex lg:gap-8">
         <aside class="hidden lg:block lg:w-56 shrink-0">
           <ul class="menu">
-            {% partial menu_items %}
+            {% partial "account/partials.html#menu_items" %}
           </ul>
         </aside>
         <div class="flex-1 min-w-0">

@@ -171,14 +171,14 @@ def re_active_url(
     active: str = _NAV_ACTIVE_CLASSES,
     inactive: str = _NAV_INACTIVE_CLASSES,
 ) -> ActiveUrl:
-    """Match current path against a regex and return an ActiveUrl.
+    """Match current path against a pattern and return an ActiveUrl.
 
     Use when a nav item should be active across multiple URL patterns. Pass
-    ``url`` explicitly for the href since a regex does not define a single URL.
+    ``url`` explicitly for the href since a pattern does not define a single URL.
 
     Example:
         {% raw %}{% active_url 'account_change_password' as pw %}{% endraw %}
-        {% raw %}{% re_active_url '/accounts/password/' pw.url as pw %}{% endraw %}
+        {% raw %}{% re_active_url 'password/(change|set)' pw.url as pw %}{% endraw %}
         {% raw %}<a href="{{ pw.url }}" class="{{ pw.css_class }}">Password</a>{% endraw %}
     """
     is_active = bool(re.search(pattern, context.request.path))

@@ -33,7 +33,7 @@
     {% endwith %}
 
     {% with icon="trash" label=_("Delete account") active_class=active_class|add:" text-error" inactive_class="text-error" %}
-      {% active_url 'users:delete_account' active_class=active_class as match %}
+      {% active_url 'users:delete_account' active_class=active_class inactive_class=inactive_class as match %}
       {% partial menu_item %}
     {% endwith %}
   {% endwith %}

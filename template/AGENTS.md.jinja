@@ -68,12 +68,11 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 **Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/Frontend-Dependencies.md` for the full format and workflow.
 
 **Form rendering** — use the first option that fits:
-{% raw %}1. `{{ form.field.as_field_group }}` — explicit field order
-2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order
-3. `{{ form }}` — all fields via configured renderer
+{% raw %}1. `{{ form }}` — all fields, default order
+2. `{{ form.field.as_field_group }}` — explicit field order or subset
 
 Never use `{{ form.as_div }}` or `{% include "form/partials.html" %}`.{% endraw %}
-See `docs/Django-Templates.md`.
+See `docs/Django-Forms.md`.
 
 **Internationalisation**: All user-visible text must be wrapped in translation functions. See `docs/Django.md` for usage.
 

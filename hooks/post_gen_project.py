@@ -94,6 +94,19 @@ def install_claude_hooks() -> None:
         "hooks": {
             "PreToolUse": [
                 {
+                    "matcher": "mcp__playwright__browser_navigate",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": (
+                                "if ! pgrep -f 'manage.py runserver' > /dev/null 2>&1;"
+                                f" then just serve > /tmp/{PROJECT_SLUG}-serve.log 2>&1 & sleep 3; fi"
+                            ),
+                            "statusMessage": "Ensuring dev server is running...",
+                        }
+                    ],
+                },
+                {
                     "matcher": "Bash",
                     "hooks": [
                         {

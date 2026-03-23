@@ -1,6 +1,6 @@
 # Pagination
 
-This project ships a custom `Paginator` that avoids `COUNT(*)` queries by fetching one
+This project ships a custom `ZeroCountPaginator` that avoids `COUNT(*)` queries by fetching one
 extra row to detect whether a next page exists. Choose the right approach for your use
 case:
 
@@ -57,10 +57,10 @@ In the template, include `paginate.html` via `{% fragment %}` inside a
 `paginate.html` renders Previous/Next navigation around `{{ content }}`.
 On an HTMX page request only the `pagination` partial is returned.
 
-To override the page size, pass a `Paginator` instance directly:
+To override the page size, pass a `ZeroCountPaginator` instance directly:
 
 ```python
-from my_package.paginator import Paginator, PaginationConfig, render_paginated_response
+from my_package.paginator import ZeroCountPaginator, PaginationConfig, render_paginated_response
 
 def item_list(request: HttpRequest) -> TemplateResponse:
     qs = Item.objects.order_by("-created_at")
@@ -68,7 +68,7 @@ def item_list(request: HttpRequest) -> TemplateResponse:
         request,
         "my_app/items_list.html",
         qs,
-        config=PaginationConfig(paginator=Paginator(qs, 50)),
+        config=PaginationConfig(paginator=ZeroCountPaginator(qs, 50)),
     )
 ```
 

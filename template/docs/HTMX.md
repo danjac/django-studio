@@ -121,7 +121,7 @@ The template defines a `{% partialdef form inline %}` block containing the form 
 
 ### `render_paginated_response` - paginated list with no COUNT query
 
-`my_package.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `Paginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
+`my_package.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `ZeroCountPaginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
 
 ```python
 from my_package.paginator import render_paginated_response

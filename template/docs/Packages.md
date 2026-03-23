@@ -31,29 +31,29 @@ State your findings explicitly when suggesting a package — don't just name it.
 
 | Need                                                      | Package(s)            | Install                   |
 | --------------------------------------------------------- | --------------------- | ------------------------- |
-| Image thumbnails                                          | `sorl-thumbnail`      | `uv add sorl-thumbnail`   |
-| Multi-tenancy                                             | `django-tenants`      | `uv add django-tenants`   |
-| HTTP API client                                           | `aiohttp`             | `uv add aiohttp`          |
-| WebSockets / real-time                                    | `channels` + `daphne` | `uv add channels daphne`  |
-| Querystring filtering                                     | `django-filter`       | `uv add django-filter`    |
-| Audit logging                                             | `django-auditlog`     | `uv add django-auditlog`  |
-| Payments                                                  | `stripe`              | `uv add stripe`           |
-| Excel export                                              | `openpyxl`            | `uv add openpyxl`         |
-| Money / currency                                          | `django-money`        | `uv add django-money`     |
-| Data validation / serialization                           | `pydantic`            | `uv add pydantic`         |
-| Data analysis / dataframes                                | `polars`              | `uv add polars`           |
-| Natural language processing                               | `nltk`                | `uv add nltk`             |
-| Markdown parsing / rendering                              | `markdown-it-py`      | `uv add markdown-it-py`   |
-| Translatable model content (i18n)                         | `django-modeltranslation` | `uv add django-modeltranslation` |
-| Country names & codes                                     | `django-countries`    | `uv add django-countries` |
-| Geocoding (address → lat/lng)                             | `geopy`               | `uv add geopy`            |
-| XML / HTML parsing                                        | `lxml`                | `uv add lxml`             |
-| Date parsing & relative deltas                            | `python-dateutil`     | `uv add python-dateutil`  |
-| Scientific computing                                      | `scipy` + `numpy`     | `uv add scipy numpy`      |
-| Machine learning                                          | `scikit-learn`        | `uv add scikit-learn`     |
-| HTML sanitization                                         | `nh3`                 | `uv add nh3`              |
-| Complex authorization (code-defined rules)                | `django-rules`        | `uv add django-rules`     |
-| Complex authorization (runtime per-object DB permissions) | `django-guardian`     | `uv add django-guardian`  |
+| Image thumbnails                                          | [`sorl-thumbnail`](https://sorl-thumbnail.readthedocs.io/) | `uv add sorl-thumbnail`   |
+| Multi-tenancy                                             | [`django-tenants`](https://django-tenants.readthedocs.io/) | `uv add django-tenants`   |
+| HTTP API client                                           | [`aiohttp`](https://docs.aiohttp.org/) | `uv add aiohttp`          |
+| WebSockets / real-time                                    | [`channels`](https://channels.readthedocs.io/) + [`daphne`](https://pypi.org/project/daphne/) | `uv add channels daphne`  |
+| Querystring filtering                                     | [`django-filter`](https://django-filter.readthedocs.io/) | `uv add django-filter`    |
+| Audit logging                                             | [`django-auditlog`](https://django-auditlog.readthedocs.io/) | `uv add django-auditlog`  |
+| Payments                                                  | [`stripe`](https://docs.stripe.com/api?lang=python) | `uv add stripe`           |
+| Excel export                                              | [`openpyxl`](https://openpyxl.readthedocs.io/) | `uv add openpyxl`         |
+| Money / currency                                          | [`django-money`](https://pypi.org/project/django-money/) | `uv add django-money`     |
+| Data validation / serialization                           | [`pydantic`](https://docs.pydantic.dev/) | `uv add pydantic`         |
+| Data analysis / dataframes                                | [`polars`](https://docs.pola.rs/) | `uv add polars`           |
+| Natural language processing                               | [`nltk`](https://www.nltk.org/) | `uv add nltk`             |
+| Markdown parsing / rendering                              | [`markdown-it-py`](https://markdown-it-py.readthedocs.io/) | `uv add markdown-it-py`   |
+| Translatable model content (i18n)                         | [`django-modeltranslation`](https://django-modeltranslation.readthedocs.io/) | `uv add django-modeltranslation` |
+| Country names & codes                                     | [`django-countries`](https://pypi.org/project/django-countries/) | `uv add django-countries` |
+| Geocoding (address → lat/lng)                             | [`geopy`](https://geopy.readthedocs.io/) | `uv add geopy`            |
+| XML / HTML parsing                                        | [`lxml`](https://lxml.de/) | `uv add lxml`             |
+| Date parsing & relative deltas                            | [`python-dateutil`](https://dateutil.readthedocs.io/) | `uv add python-dateutil`  |
+| Scientific computing                                      | [`scipy`](https://scipy.org/) + [`numpy`](https://numpy.org/) | `uv add scipy numpy`      |
+| Machine learning                                          | [`scikit-learn`](https://scikit-learn.org/) | `uv add scikit-learn`     |
+| HTML sanitization                                         | [`nh3`](https://pypi.org/project/nh3/) | `uv add nh3`              |
+| Complex authorization (code-defined rules)                | [`django-rules`](https://pypi.org/project/django-rules/) | `uv add django-rules`     |
+| Complex authorization (runtime per-object DB permissions) | [`django-guardian`](https://django-guardian.readthedocs.io/) | `uv add django-guardian`  |
 
 ## Notes
 

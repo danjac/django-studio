@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, TypeAlias, runtime_checkable
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger
@@ -12,9 +12,12 @@ from {{ package_name }}.partials import render_partial_response
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from django.db.models import QuerySet
     from django.template.response import TemplateResponse
 
     from {{ package_name }}.http.request import HttpRequest
+
+    ObjectList: TypeAlias = Sequence | QuerySet
 
 
 @runtime_checkable
@@ -135,7 +138,7 @@ class ZeroCountPage:
 class ZeroCountPaginator:
     """Paginator that avoids COUNT(*) queries."""
 
-    def __init__(self, object_list: Sequence, per_page: int) -> None:
+    def __init__(self, object_list: ObjectList, per_page: int) -> None:
         self.object_list = object_list
         self.per_page = per_page
 
@@ -152,7 +155,7 @@ class ZeroCountPaginator:
 def render_paginated_response(
     request: HttpRequest,
     template_name: str,
-    object_list: Sequence,
+    object_list: ObjectList,
     extra_context: dict | None = None,
     config: PaginationConfig | None = None,
 ) -> TemplateResponse:

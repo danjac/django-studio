@@ -46,6 +46,7 @@ class Page(Protocol):
     def previous_page_number(self) -> int: ...  # noqa: D102
 
 
+@runtime_checkable
 class Paginator(Protocol):
     """Protocol for paginator classes compatible with render_paginated_response."""
 

@@ -34,7 +34,8 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Image thumbnails                                          | [`sorl-thumbnail`](https://sorl-thumbnail.readthedocs.io/) | `uv add sorl-thumbnail`   |
 | Multi-tenancy                                             | [`django-tenants`](https://django-tenants.readthedocs.io/) | `uv add django-tenants`   |
 | HTTP API client                                           | [`aiohttp`](https://docs.aiohttp.org/) | `uv add aiohttp`          |
-| WebSockets / real-time                                    | [`channels`](https://channels.readthedocs.io/) + [`daphne`](https://pypi.org/project/daphne/) | `uv add channels daphne`  |
+| Server-push / event streaming (notifications, live feed)  | `psycopg` LISTEN/NOTIFY (built-in)    | no extra package          |
+| WebSockets / real-time (bidirectional)                    | [`channels`](https://channels.readthedocs.io/) + [`channels-redis`](https://pypi.org/project/channels-redis/) | `uv add channels channels-redis` |
 | Querystring filtering                                     | [`django-filter`](https://django-filter.readthedocs.io/) | `uv add django-filter`    |
 | Audit logging                                             | [`django-auditlog`](https://django-auditlog.readthedocs.io/) | `uv add django-auditlog`  |
 | Payments                                                  | [`stripe`](https://docs.stripe.com/api?lang=python) | `uv add stripe`           |
@@ -61,9 +62,17 @@ State your findings explicitly when suggesting a package — don't just name it.
   Redis cache backend (already configured).
 - **aiohttp**: use for async HTTP calls to third-party APIs. See
   `docs/API-Integration.md` for the `USER_AGENT` setting, error handling, and testing patterns.
-- **channels + daphne**: replace the Uvicorn ASGI server with Daphne
-  (`daphne config.asgi:application`). Add `"channels"` to `INSTALLED_APPS`
-  and configure `ASGI_APPLICATION`.
+- **psycopg LISTEN/NOTIFY**: for server-push scenarios (user notifications, live
+  feed updates, progress events) — no extra package needed. `psycopg` is already
+  installed. Use `async with conn.notifies() as notifies:` in an async view or
+  background task. Sends a notification from Python with
+  `await conn.execute("NOTIFY channel, 'payload'")` or from SQL with
+  `NOTIFY channel`. Pair with Server-Sent Events (SSE) for a lightweight
+  push-to-browser pattern without WebSockets.
+- **channels**: for genuine bidirectional WebSocket needs. Add `"channels"` to
+  `INSTALLED_APPS` and set `ASGI_APPLICATION`. Uvicorn already supports
+  WebSockets — no need to switch to Daphne. Use `channels-redis` as the channel
+  layer (`uv add channels-redis`); Redis is already in the stack.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. `MoneyWidget` renders an amount input and a
   currency select side-by-side. See `docs/Django-Forms.md#moneywidget` for the

@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import dataclasses
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Protocol, TypeAlias, TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger
-from django.db.models import Model, QuerySet
 from django.utils.functional import cached_property
 
 from {{ package_name }}.partials import render_partial_response
@@ -15,11 +14,6 @@ if TYPE_CHECKING:
     from django.template.response import TemplateResponse
 
     from {{ package_name }}.http.request import HttpRequest
-
-T = TypeVar("T")
-T_Model = TypeVar("T_Model", bound=Model)
-
-ObjectList: TypeAlias = Sequence[T | T_Model] | QuerySet[T_Model]
 
 
 @runtime_checkable
@@ -33,7 +27,7 @@ class Page(Protocol):
     def number(self) -> int: ...  # noqa: D102
 
     @property
-    def object_list(self) -> list: ...  # noqa: D102
+    def object_list(self) -> Sequence: ...  # noqa: D102
 
     def has_next(self) -> bool: ...  # noqa: D102
 
@@ -85,7 +79,7 @@ class ZeroCountPage:
         """Return total number of items on this page."""
         return len(self.object_list)
 
-    def __getitem__(self, index: int | slice) -> ObjectList:
+    def __getitem__(self, index: int | slice) -> Any:
         """Return item or slice from the object list."""
         return self.object_list[index]
 
@@ -140,7 +134,7 @@ class ZeroCountPage:
 class ZeroCountPaginator:
     """Paginator that avoids COUNT(*) queries."""
 
-    def __init__(self, object_list: ObjectList, per_page: int) -> None:
+    def __init__(self, object_list: Sequence, per_page: int) -> None:
         self.object_list = object_list
         self.per_page = per_page
 
@@ -157,7 +151,7 @@ class ZeroCountPaginator:
 def render_paginated_response(
     request: HttpRequest,
     template_name: str,
-    object_list: ObjectList,
+    object_list: Sequence,
     extra_context: dict | None = None,
     config: PaginationConfig | None = None,
 ) -> TemplateResponse:

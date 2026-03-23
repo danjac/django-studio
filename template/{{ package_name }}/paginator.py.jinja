@@ -112,7 +112,7 @@ class ZeroCountPage:
         raise EmptyPage("Previous page does not exist")
 
     @cached_property
-    def object_list(self) -> list:
+    def object_list(self) -> ObjectList:
         """Return the items for this page (without the lookahead item)."""
         return self._object_list_with_next_item[: self.page_size]
 

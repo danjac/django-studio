@@ -36,28 +36,6 @@ Launches a browser that Claude Code can control directly.
 - Capturing screenshots of UI bugs
 - Reproducing flaky test sequences step-by-step
 
-**Changing the browser**
-
-By default `@playwright/mcp` launches Chromium. To use a different browser or a custom
-executable, edit `.mcp.json` and add `--browser` and/or `--executable-path` to the `args`
-array:
-
-```json
-"playwright": {
-  "command": "npx",
-  "args": [
-    "@playwright/mcp",
-    "--browser", "chrome",
-    "--executable-path", "/usr/bin/vivaldi"
-  ]
-}
-```
-
-Supported `--browser` values: `chromium` (default), `chrome`, `firefox`, `webkit`.
-`--executable-path` overrides the binary location when the browser is installed in a
-non-standard path (e.g. Vivaldi, Brave, or a system Chrome). Restart Claude Code after
-editing `.mcp.json`.
-
 ### Django shell
 
 **Package:** `mcp-django` (`uv run python -m mcp_django`)

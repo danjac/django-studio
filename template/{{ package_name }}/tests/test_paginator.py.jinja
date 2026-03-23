@@ -5,11 +5,20 @@ from django.core.paginator import Paginator as DjangoPaginator
 from django_htmx.middleware import HtmxDetails
 
 from {{ package_name }}.paginator import (
+    Page,
     PaginationConfig,
     ZeroCountPaginator,
     render_paginated_response,
     validate_page_number,
 )
+
+
+class TestPageProtocol:
+    def test_zero_count_page_satisfies_protocol(self):
+        assert isinstance(ZeroCountPaginator([1, 2], 10).get_page(1), Page)
+
+    def test_django_page_satisfies_protocol(self):
+        assert isinstance(DjangoPaginator([1, 2], 10).get_page(1), Page)
 
 
 class TestPage:

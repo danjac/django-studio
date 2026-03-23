@@ -44,6 +44,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Data analysis / dataframes                                | `polars`              | `uv add polars`           |
 | Natural language processing                               | `nltk`                | `uv add nltk`             |
 | Markdown parsing / rendering                              | `markdown-it-py`      | `uv add markdown-it-py`   |
+| Translatable model content (i18n)                         | `django-modeltranslation` | `uv add django-modeltranslation` |
 | Country names & codes                                     | `django-countries`    | `uv add django-countries` |
 | Geocoding (address → lat/lng)                             | `geopy`               | `uv add geopy`            |
 | XML / HTML parsing                                        | `lxml`                | `uv add lxml`             |
@@ -92,6 +93,27 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **geopy**: use the `Nominatim` geocoder (no API key required). Run geocoding in
   a background task — never in a request handler. See `docs/Maps.md` for the full
   pattern including the django-tasks integration and OSM embed.
+- **django-modeltranslation**: adds language-specific columns for selected model
+  fields using a `translation.py` registration file — no schema changes to
+  existing fields. Add `"modeltranslation"` to `INSTALLED_APPS` **before**
+  `"django.contrib.admin"`. Define `LANGUAGES` in settings (the project already
+  sets `LANGUAGE_CODE`; add the full `LANGUAGES` tuple for each locale you
+  support). Create `<app>/translation.py`:
+
+  ```python
+  from modeltranslation.translator import TranslationOptions, register
+  from myapp.models import Article
+
+  @register(Article)
+  class ArticleTranslationOptions(TranslationOptions):
+      fields = ("title", "body")
+  ```
+
+  Run `makemigrations` after registering — it adds `title_en`, `title_fr`, etc.
+  columns automatically. The original field (`title`) proxies to the active
+  language at runtime. Use `modeltranslation.admin.TranslationAdmin` (or
+  `TabbedTranslationAdmin` for a tabbed UI) instead of `ModelAdmin`.
+
 - **django-guardian**: per-object permissions stored in the database. Best fit
   when permissions must be assigned at runtime by users or admins (e.g. "grant
   user A edit access to document B"). Has admin integration and queryset

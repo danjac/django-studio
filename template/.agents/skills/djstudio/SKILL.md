@@ -48,7 +48,7 @@ instructions exactly. If no subcommand is given, print the table below and stop.
 | `secure`   | `.agents/skills/djstudio/commands/secure.md`    | Security audit: settings, views, XSS, CSRF, IDOR, SQLi   |
 | `gdpr`     | `.agents/skills/djstudio/commands/gdpr.md`      | GDPR compliance audit: PII, erasure, consent, logging    |
 | `a11y`     | `.agents/skills/djstudio/commands/a11y.md`      | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `deadcode`       | `.agents/skills/djstudio/commands/deadcode.md`       | Remove unused Python code and static assets              |
+| `deadcode`       | `.agents/skills/djstudio/commands/deadcode.md`       | Remove unused Python code, Django templates and static assets |
 | `full-coverage`  | `.agents/skills/djstudio/commands/full-coverage.md`  | Enable 100% coverage gate and write tests for all gaps   |
 
 **Deployment**

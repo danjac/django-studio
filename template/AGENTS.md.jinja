@@ -175,7 +175,7 @@ Invoke with `/djstudio <subcommand>` in Claude Code.
 | `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
 | `gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
 | `a11y` | Accessibility audit: WCAG 2.1 AA |
-| `deadcode` | Remove unused Python code and static assets |
+| `deadcode` | Remove unused Python code, Django templates and static assets |
 | `full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines |
 
 **Deployment**

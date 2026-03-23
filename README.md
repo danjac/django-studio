@@ -158,6 +158,19 @@ Generated projects include a `/djstudio` Claude Code slash command with subcomma
 | `rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
 | `enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
 
+## MCP Servers
+
+Generated projects include project-local [MCP servers](https://modelcontextprotocol.io) configured in `.mcp.json` (gitignored, generated at project creation). These give AI assistants direct access to your local development environment.
+
+| Server | Purpose |
+| ------ | ------- |
+| `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection |
+| `@playwright/mcp` | Browser automation and E2E test debugging |
+| `mcp-django` | Django shell — ORM queries, model introspection, arbitrary Python |
+| `mcp-server-kubernetes` | Cluster management and log access (added post-launch by `/djstudio launch`) |
+
+See `docs/MCP.md` in the generated project for usage and security notes.
+
 ## Hosting
 
 [Hetzner Cloud](https://hetzner.com) is a very cost-effective, EU-based hosting provider. Cloudflare is currently the cheapest and most secure option for DNS, CDN, SSL, and DDoS protection. These solutions will be reviewed on a regular basis - if better options become available, they will be offered instead of or addition to these choices.

@@ -157,6 +157,37 @@ def install_claude_hooks() -> None:
     (commands_dst / "djstudio.md").write_text("@.agents/skills/djstudio/SKILL.md\n")
 
 
+# ── MCP config ───────────────────────────────────────────────────────────────
+
+
+def install_mcp_config() -> None:
+    """Write .mcp.json with project-local MCP servers (gitignored)."""
+    config = {
+        "mcpServers": {
+            "postgres": {
+                "command": "sh",
+                "args": [
+                    "-c",
+                    "set -a; . ./.env; set +a;"
+                    ' npx -y @modelcontextprotocol/server-postgres "$DATABASE_URL"',
+                ],
+            },
+            "playwright": {
+                "command": "npx",
+                "args": ["@playwright/mcp"],
+            },
+            "django": {
+                "command": "uv",
+                "args": ["run", "python", "-m", "mcp_django"],
+                "env": {"DJANGO_SETTINGS_MODULE": "config.settings"},
+            },
+        }
+    }
+    with (BASE_DIR / ".mcp.json").open("w") as f:
+        json.dump(config, f, indent=2)
+        f.write("\n")
+
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 # 1. Install license file
@@ -168,8 +199,9 @@ for path in PLAIN_SLUG_FILES:
     if path.exists():
         path.write_text(path.read_text().replace("PROJECT_SLUG", PROJECT_SLUG))
 
-# 4. Install Claude hooks and generate lock file
+# 4. Install Claude hooks, MCP config, and generate lock file
 install_claude_hooks()
+install_mcp_config()
 
 # Generate uv.lock so CI's `uv sync --frozen` works without a manual step
 subprocess.run(["uv", "lock"], check=True)

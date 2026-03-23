@@ -151,6 +151,30 @@ class TestReActiveUrl:
         result = re_active_url(ctx, "password/(change|set)", "account_change_password")
         assert result.url == "/account/password/change/"
 
+    def test_resolves_viewname_with_url_args(self, rf, mocker):
+        mocker.patch(
+            "{{ package_name }}.templatetags.reverse",
+            return_value="/posts/42/",
+        )
+        req = rf.get("/posts/42/")
+        ctx = Mock()
+        ctx.request = req
+        result = re_active_url(ctx, r"posts/\d+", "post_detail", 42)
+        assert result.url == "/posts/42/"
+        assert result.is_active is True
+
+    def test_resolves_viewname_with_url_kwargs(self, rf, mocker):
+        mocker.patch(
+            "{{ package_name }}.templatetags.reverse",
+            return_value="/posts/42/",
+        )
+        req = rf.get("/posts/42/")
+        ctx = Mock()
+        ctx.request = req
+        result = re_active_url(ctx, r"posts/\d+", "post_detail", pk=42)
+        assert result.url == "/posts/42/"
+        assert result.is_active is True
+
 
 class TestFragment:
     def test_raises_when_no_template_in_context(self, mocker):

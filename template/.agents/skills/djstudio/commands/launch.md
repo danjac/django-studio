@@ -583,6 +583,41 @@ Diagnose and help the user fix the issue before declaring success.
 
 ---
 
+## Step 6d — Kubernetes MCP
+
+Now that the cluster is live, offer to add the Kubernetes MCP server to `.mcp.json`
+so AI assistants can inspect pods, logs, and deployments directly.
+
+Tell the user:
+
+> Would you like to add the Kubernetes MCP server to `.mcp.json`?
+> This lets AI assistants (Claude Code) inspect pods, view logs, and manage
+> deployments using your current kubectl context.
+>
+> Add Kubernetes MCP? (y/n)
+
+If **y**, patch `.mcp.json`:
+
+```bash
+python3 -c "
+import json, pathlib
+p = pathlib.Path('.mcp.json')
+config = json.loads(p.read_text())
+config['mcpServers']['kubernetes'] = {
+    'command': 'npx',
+    'args': ['-y', 'mcp-server-kubernetes']
+}
+p.write_text(json.dumps(config, indent=2) + '\n')
+"
+```
+
+Tell the user:
+> Kubernetes MCP added to `.mcp.json`. Restart Claude Code to activate it.
+
+If **n**, skip silently.
+
+---
+
 ## Step 7 — Observability
 
 Check whether `helm/observability/values.secret.yaml` exists.
@@ -603,8 +638,9 @@ configuring secrets, and deploying the application end-to-end.
 
 Covers: Hetzner infrastructure (Terraform), Cloudflare DNS and SSL, object
 storage (if enabled), Helm secrets, GitHub Actions secrets, the three-step
-first production deploy (build image → deploy infra → deploy app), and
-configuring the default Django site (`set_default_site`). Idempotent —
+first production deploy (build image → deploy infra → deploy app),
+configuring the default Django site (`set_default_site`), and optionally
+adding the Kubernetes MCP server to `.mcp.json`. Idempotent —
 safe to re-run if interrupted; existing values are never overwritten.
 
 Requires: `gh`, `terraform`, `helm`, `kubectl`, and `just` installed and

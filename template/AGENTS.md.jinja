@@ -119,6 +119,7 @@ actively, not as background reading.
 | Sending email (transactional / dev) | `docs/Sending-Emails.md` |
 | Testing patterns                | `docs/Testing.md` |
 | Any of the above                | `docs/Project-Structure.md` |
+| MCP servers (postgres, django shell, Playwright, k8s) | `docs/MCP.md` |
 
 If a doc contradicts what you see in existing code, flag it — do not silently pick one.
 
@@ -186,6 +187,21 @@ Invoke with `/djstudio <subcommand>` in Claude Code.
 | `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
 | `enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
 
+
+## MCP Servers
+
+The following MCP servers are configured in `.mcp.json` (gitignored, generated at project creation). They are available to Claude Code when the project is open.
+
+| Server | When available | Capability |
+| ------ | -------------- | ---------- |
+| `postgres` | Always | Execute SQL, inspect schema, check migrations |
+| `playwright` | Always | Browser automation, E2E test debugging |
+| `django` | Always | Django shell: ORM queries, model introspection, arbitrary Python in Django context |
+| `kubernetes` | After `/djstudio launch` | Inspect pods, view logs, manage deployments |
+
+Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively. Use `kubernetes` to diagnose production pod failures without leaving the editor.
+
+See `docs/MCP.md` for details.
 
 ## Template Feedback
 

@@ -16,6 +16,7 @@ memory/
 
 # Claude Code (personal settings — not for version control)
 /.claude/
+/.mcp.json
 
 # Testing
 .pytest_cache/

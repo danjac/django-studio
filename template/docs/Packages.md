@@ -52,6 +52,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Date parsing & relative deltas                            | [`python-dateutil`](https://dateutil.readthedocs.io/) | `uv add python-dateutil`  |
 | Scientific computing                                      | [`scipy`](https://scipy.org/) + [`numpy`](https://numpy.org/) | `uv add scipy numpy`      |
 | Machine learning                                          | [`scikit-learn`](https://scikit-learn.org/) | `uv add scikit-learn`     |
+| Rich text editor (admin + forms)                          | [`django-prose-editor`](https://django-prose-editor.readthedocs.io/) | `uv add "django-prose-editor[sanitize]"` |
 | HTML sanitization                                         | [`nh3`](https://pypi.org/project/nh3/) | `uv add nh3`              |
 | Complex authorization (code-defined rules)                | [`django-rules`](https://pypi.org/project/django-rules/) | `uv add django-rules`     |
 | Complex authorization (runtime per-object DB permissions) | [`django-guardian`](https://django-guardian.readthedocs.io/) | `uv add django-guardian`  |
@@ -89,6 +90,13 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **markdown-it-py**: preferred Markdown renderer. Use the `mdit-py-plugins`
   extras for footnotes, tasklists, etc. Pair with `nh3` to sanitize the
   rendered HTML before serving.
+- **django-prose-editor**: ProseMirror/Tiptap-based rich text editor. Add
+  `"django_prose_editor"` to `INSTALLED_APPS`. Use `ProseEditorField` instead
+  of `TextField` for rich text model fields; it renders the editor automatically
+  in admin and forms. The `[sanitize]` extra uses `nh3` to sanitize HTML on
+  save — always install with this extra. Configure allowed extensions
+  (`Bold`, `Italic`, `BulletList`, `Link`, etc.) per field via the `extensions`
+  argument.
 - **nh3**: Rust-backed HTML sanitizer (successor to `bleach`). Use to strip
   unsafe tags/attributes from user-supplied or rendered Markdown content before
   inserting into templates.

@@ -31,13 +31,19 @@ From Python (e.g. inside a django-tasks background task or a signal handler):
 
 ```python
 import psycopg
+from psycopg import sql
 
 from django.conf import settings
 
 
 def send_notification(channel: str, payload: str) -> None:
     with psycopg.connect(settings.DATABASE_URL) as conn:
-        conn.execute("NOTIFY %s, %s", [channel, payload])
+        conn.execute(
+            sql.SQL("NOTIFY {}, {}").format(
+                sql.Identifier(channel),
+                sql.Literal(payload),
+            )
+        )
 ```
 
 Or from raw SQL (e.g. in a trigger):
@@ -54,8 +60,10 @@ import psycopg
 
 from django.conf import settings
 from django.http import StreamingHttpResponse
+from django.views.decorators.cache import never_cache
 
 
+@never_cache
 async def sse_notifications(request):
     async def event_stream():
         conn = await psycopg.AsyncConnection.connect(
@@ -76,7 +84,6 @@ async def sse_notifications(request):
     return StreamingHttpResponse(
         event_stream(),
         content_type="text/event-stream",
-        headers={"Cache-Control": "no-cache"},
     )
 ```
 

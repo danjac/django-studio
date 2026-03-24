@@ -55,7 +55,7 @@ runbooks that reference the current admin path:
 If **yes**, generate a new random human-readable slug:
 
 ```bash
-new_admin_url="$(python .agents/skills/resources/humanized-random.py)/"
+new_admin_url="$(python .agents/skills/resources/random-slug.py)/"
 ```
 
 Present the pending changes before touching anything:

@@ -437,7 +437,7 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 **Admin URL** — generate a random human-readable slug if the user skips:
 
 ```bash
-slug=$(python .agents/skills/resources/humanized-random.py)
+slug=$(python .agents/skills/resources/random-slug.py)
 default_admin_url="${slug}/"
 ```
 

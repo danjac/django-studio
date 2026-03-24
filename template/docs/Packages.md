@@ -34,7 +34,6 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Image thumbnails                                          | [`sorl-thumbnail`](https://sorl-thumbnail.readthedocs.io/) | `uv add sorl-thumbnail`   |
 | Multi-tenancy                                             | [`django-tenants`](https://django-tenants.readthedocs.io/) | `uv add django-tenants`   |
 | HTTP API client                                           | [`aiohttp`](https://docs.aiohttp.org/) | `uv add aiohttp`          |
-| Server-push / event streaming (notifications, live feed)  | `psycopg` LISTEN/NOTIFY (built-in)    | no extra package          |
 | WebSockets / real-time (bidirectional)                    | [`channels`](https://channels.readthedocs.io/) + [`channels-redis`](https://pypi.org/project/channels-redis/) | `uv add channels channels-redis` |
 | Querystring filtering                                     | [`django-filter`](https://django-filter.readthedocs.io/) | `uv add django-filter`    |
 | Audit logging                                             | [`django-auditlog`](https://django-auditlog.readthedocs.io/) | `uv add django-auditlog`  |
@@ -63,11 +62,8 @@ State your findings explicitly when suggesting a package — don't just name it.
   Redis cache backend (already configured).
 - **aiohttp**: use for async HTTP calls to third-party APIs. See
   `docs/API-Integration.md` for the `USER_AGENT` setting, error handling, and testing patterns.
-- **psycopg LISTEN/NOTIFY**: for server-push scenarios (notifications, live
-  feeds, progress events) — no extra package needed. See `docs/Channels.md` for
-  setup and HTMX SSE integration.
-- **channels**: for bidirectional WebSocket needs. See `docs/Channels.md` for
-  setup, consumers, and HTMX WebSocket integration.
+- **channels**: for real-time (SSE and WebSockets). See `docs/Channels.md` for
+  setup, consumers, and HTMX integration.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. `MoneyWidget` renders an amount input and a
   currency select side-by-side. See `docs/Django-Forms.md#moneywidget` for the

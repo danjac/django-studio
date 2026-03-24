@@ -435,7 +435,7 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 > Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or press Enter to skip:
 
 **Admin URL** — generate a random human-readable slug if the user skips.
-Use the word list and Python snippet in `resources/wordlist.md`:
+Use the word list and Python snippet in `.agents/skills/resources/wordlist.py`:
 
 ```python
 slug = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}"

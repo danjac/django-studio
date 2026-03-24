@@ -53,7 +53,7 @@ runbooks that reference the current admin path:
 > bookmarks or scripts that use the current path. (y/n)
 
 If **yes**, generate a new random human-readable slug using the word list in
-`resources/wordlist.md`:
+`.agents/skills/resources/wordlist.py`:
 
 ```python
 new_admin_url = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}/"

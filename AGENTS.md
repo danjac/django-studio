@@ -113,6 +113,8 @@ Each slash command is a standalone skill at `template/.agents/skills/dj-<command
 
 Supporting files (checklists, prompt templates, report templates, etc.) live in a `resources/` subdirectory: `template/.agents/skills/dj-<command>/resources/`.
 
+Files shared across multiple skills live in `template/.agents/skills/resources/` and are referenced as `.agents/skills/resources/<file>` from SKILL.md prose.
+
 ### Writing a new skill
 
 **SKILL.md structure** — every skill file must follow this layout:

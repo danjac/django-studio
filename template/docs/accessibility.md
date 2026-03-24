@@ -16,6 +16,7 @@ component.
 - [Focus styles](#focus-styles)
 - [Images](#images)
 - [Testing](#testing)
+- [Common pitfalls](#common-pitfalls)
 
 ## Key references
 
@@ -255,3 +256,55 @@ needed beyond what the project already has.
 - Screen reader: test with NVDA (Windows), VoiceOver (macOS/iOS), or TalkBack
   (Android)
 - Zoom to 200%: ensure no content is lost or overlapping
+
+---
+
+## Common pitfalls
+
+### Heading hierarchy in card grids and lists
+
+Do not skip heading levels. A common mistake is jumping from `<h1>` (page title) to
+`<h3>` (card title) inside a grid or list, leaving no `<h2>` in between.
+
+Card titles inside a list or grid should use `<h2>` if the section has no existing
+`<h2>` heading, or `<h3>` if there is already a `<h2>` section heading above them.
+
+```html
+<!-- BAD: skips from h1 to h3 -->
+<h1>Photos</h1>
+<ul>
+  <li>
+    <h3>Sunset at the beach</h3>
+  </li>
+</ul>
+
+<!-- GOOD: sequential hierarchy -->
+<h1>Photos</h1>
+<ul>
+  <li>
+    <h2>Sunset at the beach</h2>
+  </li>
+</ul>
+```
+
+### Screen-reader labels on icon-only inputs
+
+A DaisyUI `<label class="input">` that contains only an `aria-hidden` icon and an
+`<input>` has no accessible text — the label is empty to a screen reader.
+
+Fix: add a visually-hidden `<span class="sr-only">` inside the label.
+
+```html
+<!-- BAD: label has no accessible text -->
+<label class="input">
+  {% heroicon_mini "magnifying-glass" class="opacity-50 size-4 shrink-0" aria_hidden="true" %}
+  <input type="search" name="q" placeholder="{% translate "Search..." %}">
+</label>
+
+<!-- GOOD: sr-only span provides an accessible label -->
+<label class="input">
+  {% heroicon_mini "magnifying-glass" class="opacity-50 size-4 shrink-0" aria_hidden="true" %}
+  <span class="sr-only">{% translate "Search photos" %}</span>
+  <input type="search" name="q" placeholder="{% translate "Search..." %}">
+</label>
+```

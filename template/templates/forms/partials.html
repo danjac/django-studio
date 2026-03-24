@@ -22,7 +22,7 @@
 {% partialdef label %}
   <legend class="fieldset-legend{% if field.errors %} text-error{% endif %}">
     {{ field.label }}
-    {% if not field.field.required %}(optional){% endif %}
+    {% if not field.field.required %}{% translate "(optional)" %}{% endif %}
   </legend>
 {% endpartialdef label %}
 
@@ -84,7 +84,7 @@
     {% render_field field class="checkbox" %}
     <span class="label-text{% if field.errors %} text-error{% endif %}">
       {{ field.label }}
-      {% if not field.field.required %}(optional){% endif %}
+      {% if not field.field.required %}{% translate "(optional)" %}{% endif %}
     </span>
   </label>
 {% endpartialdef checkboxinput %}

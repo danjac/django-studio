@@ -223,37 +223,8 @@ class MyModelAdmin(admin.ModelAdmin):
 
 ## Internationalisation
 
-All user-visible strings must be wrapped in translation functions.
-
-**In Python:**
-
-```python
-from django.utils.translation import gettext as _, gettext_lazy as _l, ngettext
-
-# Module-level: use gettext_lazy (evaluated lazily)
-class MyForm(forms.Form):
-    title = forms.CharField(label=_l("Title"))
-
-# Function/method body: use gettext
-def my_view(request):
-    messages.success(request, _("Changes saved."))
-
-# Plurals
-msg = ngettext("%(n)s item", "%(n)s items", count) % {"n": count}
-```
-
-**In templates** — use `{% translate %}` (Django 4.0+), not the legacy `{% trans %}`:
-
-```html
-{% load i18n %}
-<h1>{% translate "Welcome" %}</h1>
-{% blocktranslate with name=user.name %}Hello, {{ name }}.{% endblocktranslate %}
-```
-
-You can use `_("string")` directly in tag arguments:
-
-```html
-{% include "header.html" with title=_("Dashboard") %}
-```
+See `docs/localization.md` for the full i18n reference — marking strings in Python and
+templates, the `makemessages`/`compilemessages` workflow, the language switcher
+component, and model/form translation conventions.
 
 Use `/dj-translate <locale>` to extract, translate, and compile catalogues.

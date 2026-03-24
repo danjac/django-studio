@@ -5,6 +5,9 @@ description: Extract strings, translate via Claude, compile .mo catalogue
 Extract all translatable strings, translate them using Claude, and compile the
 message catalogue for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
 
+Read `docs/localization.md` for background on the full i18n workflow, language
+switcher conventions, and model/form translation requirements before starting.
+
 **Prerequisites:**
 
 `gettext` binaries (`xgettext`, `msgfmt`) must be installed.

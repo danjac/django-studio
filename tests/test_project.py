@@ -375,16 +375,15 @@ class TestClaudeHooksInstallation:
         assert (project / ".claude" / "settings.json").exists()
 
     def test_command_stubs_installed(self, project):
+        # Every skill with a SKILL.md should have a corresponding stub
+        skills = list((project / ".agents" / "skills").glob("*/SKILL.md"))
+        assert skills, "No SKILL.md files found in .agents/skills/"
         commands_dir = project / ".claude" / "commands"
-        stubs = list(commands_dir.glob("*.md"))
-        assert stubs, "No command stubs found in .claude/commands/"
-        # Verify each stub points to the correct skill file
-        for stub in stubs:
-            name = stub.stem  # e.g. "dj-create-app"
-            expected = f"@.agents/skills/{name}/SKILL.md"
-            assert stub.read_text().strip() == expected, (
-                f"{stub.name} should contain '{expected}'"
-            )
+        for skill_md in skills:
+            name = skill_md.parent.name  # e.g. "dj-create-app"
+            stub = commands_dir / f"{name}.md"
+            assert stub.exists(), f"Missing stub for skill '{name}'"
+            assert stub.read_text().strip() == f"@.agents/skills/{name}/SKILL.md"
 
 
 class TestRenderedPythonLinting:

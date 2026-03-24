@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
+# ruff: noqa: T201
 """Look up help for dj-* skills."""
 
 from __future__ import annotations
 
 import sys
 from pathlib import Path
+
+_MIN_FRONTMATTER_PARTS = 3
+_MIN_ARGS = 2
 
 
 def _skills_dir() -> Path:
@@ -14,12 +18,13 @@ def _skills_dir() -> Path:
 
 
 def _parse_description(skill_dir: Path) -> str:
+    """Extract the description field from a SKILL.md frontmatter block."""
     skill_file = skill_dir / "SKILL.md"
     if not skill_file.exists():
         return ""
     content = skill_file.read_text()
-    parts = content.split("---", 2)
-    if len(parts) < 3:
+    parts = content.split("---", _MIN_FRONTMATTER_PARTS - 1)
+    if len(parts) < _MIN_FRONTMATTER_PARTS:
         return ""
     for line in parts[1].splitlines():
         if line.startswith("description:"):
@@ -28,6 +33,7 @@ def _parse_description(skill_dir: Path) -> str:
 
 
 def list_commands() -> None:
+    """Print all available dj-* commands with their one-line descriptions."""
     skills_dir = _skills_dir()
     commands = sorted(
         d for d in skills_dir.iterdir()
@@ -43,6 +49,7 @@ def list_commands() -> None:
 
 
 def show_help(command: str) -> None:
+    """Print the help file for a specific dj-* command."""
     if not command.startswith("dj-"):
         command = f"dj-{command}"
     skills_dir = _skills_dir()
@@ -60,7 +67,7 @@ def show_help(command: str) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    if len(sys.argv) < _MIN_ARGS:
         list_commands()
     else:
         show_help(sys.argv[1])

@@ -1,8 +1,7 @@
 # Pagination
 
-This project ships a custom `ZeroCountPaginator` that avoids `COUNT(*)` queries by fetching one
-extra row to detect whether a next page exists. Choose the right approach for your use
-case:
+Use `render_paginated_response` for all paginated views. Choose the right approach for
+your use case:
 
 | Use case | Approach |
 |---|---|
@@ -10,6 +9,7 @@ case:
 | User needs to jump to a specific page | Numbered pages |
 | Feed-style content | Infinite scroll |
 | Django admin on large tables | `FastCountAdminMixin` |
+| Large tables where COUNT(*) is too slow | [Performance Optimizations](#performance-optimizations) |
 
 ---
 
@@ -18,11 +18,13 @@ case:
 - [Previous/Next (default)](#previousnext-default)
 - [Numbered Pagination](#numbered-pagination)
 - [Infinite Scroll](#infinite-scroll)
+- [Performance Optimizations](#performance-optimizations)
 - [Django Admin: FastCountAdminMixin](#django-admin-fastcountadminmixin)
 
 ## Previous/Next (default)
 
-Use `render_paginated_response`. No `COUNT(*)` query — scales well on large tables.
+Use `render_paginated_response` with no custom paginator — Django's built-in `Paginator`
+is used by default.
 
 ```python
 from my_package.paginator import render_paginated_response
@@ -57,10 +59,13 @@ In the template, include `paginate.html` via `{% fragment %}` inside a
 `paginate.html` renders Previous/Next navigation around `{{ content }}`.
 On an HTMX page request only the `pagination` partial is returned.
 
-To override the page size, pass a `ZeroCountPaginator` instance directly:
+To override the page size, pass a `Paginator` instance directly:
 
 ```python
-from my_package.paginator import ZeroCountPaginator, PaginationConfig, render_paginated_response
+from django.core.paginator import Paginator
+
+from my_package.paginator import PaginationConfig, render_paginated_response
+
 
 def item_list(request: HttpRequest) -> TemplateResponse:
     qs = Item.objects.order_by("-created_at")
@@ -68,7 +73,7 @@ def item_list(request: HttpRequest) -> TemplateResponse:
         request,
         "my_app/items_list.html",
         qs,
-        config=PaginationConfig(paginator=ZeroCountPaginator(qs, 50)),
+        config=PaginationConfig(paginator=Paginator(qs, 50)),
     )
 ```
 
@@ -180,14 +185,169 @@ Use it in the page template the same way as `paginate.html`:
 The ±3 window in `paginate_numbered.html` keeps the page range short on large datasets.
 Adjust `add:"-3"` / `add:"3"` to taste.
 
-### FastCountPaginator (large unfiltered tables)
+For very large unfiltered tables where `COUNT(*)` is slow, see
+[FastCountPaginator](#fastcountpaginator--estimated-counts-for-numbered-pagination).
 
-For tables with millions of rows where `COUNT(*)` is too slow, use
-`FastCountPaginator` instead. It reads PostgreSQL's `pg_class.reltuples` statistic —
-essentially free — for unfiltered querysets, falling back to `COUNT(*)` when filters
-are applied.
+---
 
-Add to `my_package/paginator.py`:
+## Infinite Scroll
+
+Feed-style content that loads automatically as the user scrolls. Uses HTMX's
+`revealed` trigger on a sentinel element at the end of each page.
+
+```python
+from my_package.paginator import PaginationConfig, render_paginated_response
+
+
+def item_list(request: HttpRequest) -> TemplateResponse:
+    return render_paginated_response(
+        request,
+        "my_app/items_list.html",
+        Item.objects.order_by("-created_at"),
+        config=PaginationConfig(target="scroll-sentinel", partial="items"),
+    )
+```
+
+```html
+<!-- my_app/items_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <div id="item-feed">
+    {% partialdef items inline %}
+      {% for item in page.object_list %}
+        <p>{{ item.name }}</p>
+      {% endfor %}
+
+      {% if page.has_next %}
+        <div id="scroll-sentinel"
+             hx-get="{{ request.path }}{% querystring page=page.next_page_number %}"
+             hx-trigger="revealed"
+             hx-swap="outerHTML"
+             aria-hidden="true"></div>
+      {% endif %}
+    {% endpartialdef %}
+  </div>
+{% endblock content %}
+```
+
+On the first load the full page renders. When the sentinel scrolls into view, HTMX
+sends `HX-Target: scroll-sentinel`. `render_paginated_response` matches on `target` and
+returns only the `items` partial — new items plus a fresh sentinel (or nothing on the
+last page). `hx-swap="outerHTML"` replaces the sentinel with the new content, appending
+items in place.
+
+See the [HTMX infinite scroll example](https://htmx.org/examples/infinite-scroll/).
+
+---
+
+## Performance Optimizations
+
+For large tables, add one of these custom paginators to `my_package/paginator.py` and
+pass via `PaginationConfig`.
+
+### ZeroCountPaginator — skip COUNT(*) for previous/next pagination
+
+Avoids `COUNT(*)` entirely by fetching one extra row to detect whether a next page
+exists. Best for large tables used with previous/next or infinite scroll.
+
+```python
+from django.core.paginator import EmptyPage, PageNotAnInteger
+from django.utils.functional import cached_property
+
+
+class ZeroCountPage:
+    """Pagination page without COUNT(*) queries."""
+
+    def __init__(self, *, paginator: "ZeroCountPaginator", number: int) -> None:
+        self.paginator = paginator
+        self.page_size = paginator.per_page
+        self.number = number
+
+    def __len__(self) -> int:
+        return len(self.object_list)
+
+    def __getitem__(self, index):
+        return self.object_list[index]
+
+    def has_next(self) -> bool:
+        return self._has_next
+
+    def has_previous(self) -> bool:
+        return self._has_previous
+
+    def has_other_pages(self) -> bool:
+        return self._has_previous or self._has_next
+
+    def next_page_number(self) -> int:
+        if self._has_next:
+            return self.number + 1
+        raise EmptyPage("Next page does not exist")
+
+    def previous_page_number(self) -> int:
+        if self._has_previous:
+            return self.number - 1
+        raise EmptyPage("Previous page does not exist")
+
+    @cached_property
+    def object_list(self):
+        return self._object_list_with_next_item[: self.page_size]
+
+    @cached_property
+    def _has_next(self) -> bool:
+        return len(self._object_list_with_next_item) > self.page_size
+
+    @cached_property
+    def _has_previous(self) -> bool:
+        return self.number > 1
+
+    @cached_property
+    def _object_list_with_next_item(self) -> list:
+        start = (self.number - 1) * self.page_size
+        end = start + self.page_size + 1
+        return list(self.paginator.object_list[start:end])
+
+
+class ZeroCountPaginator:
+    """Paginator that avoids COUNT(*) queries."""
+
+    def __init__(self, object_list, per_page: int) -> None:
+        self.object_list = object_list
+        self.per_page = per_page
+
+    def get_page(self, number) -> ZeroCountPage:
+        try:
+            number = int(number)
+            if number < 1:
+                raise EmptyPage
+        except TypeError, ValueError:
+            number = 1
+        except EmptyPage:
+            number = 1
+        return ZeroCountPage(paginator=self, number=number)
+```
+
+Use it via `PaginationConfig`:
+
+```python
+from my_package.paginator import PaginationConfig, render_paginated_response
+
+
+def item_list(request: HttpRequest) -> TemplateResponse:
+    qs = Item.objects.order_by("-created_at")
+    return render_paginated_response(
+        request,
+        "my_app/items_list.html",
+        qs,
+        config=PaginationConfig(paginator=ZeroCountPaginator(qs, 50)),
+    )
+```
+
+### FastCountPaginator — estimated counts for numbered pagination
+
+Reads PostgreSQL's `pg_class.reltuples` statistic — essentially free — for unfiltered
+querysets, falling back to `COUNT(*)` when filters are applied. Use with numbered
+pagination on tables with millions of rows.
 
 ```python
 from django.core.paginator import Paginator as DjangoPaginator
@@ -245,65 +405,14 @@ return render_paginated_response(
 
 ---
 
-## Infinite Scroll
-
-Feed-style content that loads automatically as the user scrolls. Uses HTMX's
-`revealed` trigger on a sentinel element at the end of each page.
-
-```python
-from my_package.paginator import PaginationConfig, render_paginated_response
-
-
-def item_list(request: HttpRequest) -> TemplateResponse:
-    return render_paginated_response(
-        request,
-        "my_app/items_list.html",
-        Item.objects.order_by("-created_at"),
-        config=PaginationConfig(target="scroll-sentinel", partial="items"),
-    )
-```
-
-```html
-<!-- my_app/items_list.html -->
-{% extends "base.html" %}
-
-{% block content %}
-  <div id="item-feed">
-    {% partialdef items inline %}
-      {% for item in page.object_list %}
-        <p>{{ item.name }}</p>
-      {% endfor %}
-
-      {% if page.has_next %}
-        <div id="scroll-sentinel"
-             hx-get="{{ request.path }}{% querystring page=page.next_page_number %}"
-             hx-trigger="revealed"
-             hx-swap="outerHTML"
-             aria-hidden="true"></div>
-      {% endif %}
-    {% endpartialdef %}
-  </div>
-{% endblock content %}
-```
-
-On the first load the full page renders. When the sentinel scrolls into view, HTMX
-sends `HX-Target: scroll-sentinel`. `render_paginated_response` matches on `target` and
-returns only the `items` partial — new items plus a fresh sentinel (or nothing on the
-last page). `hx-swap="outerHTML"` replaces the sentinel with the new content, appending
-items in place.
-
-See the [HTMX infinite scroll example](https://htmx.org/examples/infinite-scroll/).
-
----
-
 ## Django Admin: FastCountAdminMixin
 
 Django's admin list view runs `COUNT(*)` on every page load. `FastCountAdminMixin`
 swaps in `FastCountPaginator` and suppresses the second count query used for the
 "X results (Y total)" display.
 
-First add `FastCountPaginator` to `my_package/paginator.py` (see above), then add
-to the app's `admin.py`:
+First add `FastCountPaginator` to `my_package/paginator.py` (see
+[Performance Optimizations](#performance-optimizations)), then add to the app's `admin.py`:
 
 ```python
 from django.contrib import admin

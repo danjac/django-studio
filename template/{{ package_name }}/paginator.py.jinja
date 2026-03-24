@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import TYPE_CHECKING, Any, Protocol, TypeAlias, runtime_checkable
+from typing import TYPE_CHECKING, TypeAlias
 
 from django.conf import settings
-from django.core.paginator import EmptyPage, PageNotAnInteger
-from django.utils.functional import cached_property
+from django.core.paginator import Paginator
 
 from {{ package_name }}.partials import render_partial_response
 
@@ -20,37 +19,6 @@ if TYPE_CHECKING:
     ObjectList: TypeAlias = Sequence | QuerySet
 
 
-@runtime_checkable
-class Page(Protocol):
-    """Protocol for page objects returned by Paginator.get_page().
-
-    Compatible with both ``django.core.paginator.Page`` and ``ZeroCountPage``.
-    """
-
-    @property
-    def number(self) -> int: ...  # noqa: D102
-
-    @property
-    def object_list(self) -> ObjectList: ...  # noqa: D102
-
-    def has_next(self) -> bool: ...  # noqa: D102
-
-    def has_previous(self) -> bool: ...  # noqa: D102
-
-    def has_other_pages(self) -> bool: ...  # noqa: D102
-
-    def next_page_number(self) -> int: ...  # noqa: D102
-
-    def previous_page_number(self) -> int: ...  # noqa: D102
-
-
-@runtime_checkable
-class Paginator(Protocol):
-    """Protocol for paginator classes compatible with render_paginated_response."""
-
-    def get_page(self, number: int | str) -> Page: ...  # noqa: D102
-
-
 @dataclasses.dataclass(kw_only=True)
 class PaginationConfig:
     """Configuration for render_paginated_response."""
@@ -59,97 +27,6 @@ class PaginationConfig:
     target: str = "pagination"
     partial: str = "pagination"
     paginator: Paginator | None = None
-
-
-class ZeroCountPage:
-    """Pagination page without COUNT(*) queries.
-
-    See: https://testdriven.io/blog/django-avoid-counting/
-
-    Object list access is lazy - no database query runs until the list is
-    iterated or accessed.
-    """
-
-    def __init__(self, *, paginator: ZeroCountPaginator, number: int) -> None:
-        self.paginator = paginator
-        self.page_size = paginator.per_page
-        self.number = number
-
-    def __repr__(self) -> str:
-        """Return object representation."""
-        return f"<ZeroCountPage {self.number}>"
-
-    def __len__(self) -> int:
-        """Return total number of items on this page."""
-        return len(self.object_list)
-
-    def __getitem__(self, index: int | slice) -> Any:
-        """Return item or slice from the object list."""
-        return self.object_list[index]
-
-    def has_next(self) -> bool:
-        """Return True if a next page exists."""
-        return self._has_next
-
-    def has_previous(self) -> bool:
-        """Return True if a previous page exists."""
-        return self._has_previous
-
-    def has_other_pages(self) -> bool:
-        """Return True if any other pages exist."""
-        return self._has_previous or self._has_next
-
-    def next_page_number(self) -> int:
-        """Return the next page number, raising EmptyPage if none exists."""
-        if self._has_next:
-            return self.number + 1
-        raise EmptyPage("Next page does not exist")
-
-    def previous_page_number(self) -> int:
-        """Return the previous page number, raising EmptyPage if none exists."""
-        if self._has_previous:
-            return self.number - 1
-        raise EmptyPage("Previous page does not exist")
-
-    @cached_property
-    def object_list(self) -> ObjectList:
-        """Return the items for this page (without the lookahead item)."""
-        return self._object_list_with_next_item[: self.page_size]
-
-    @cached_property
-    def _has_next(self) -> bool:
-        return len(self._object_list_with_next_item) > self.page_size
-
-    @cached_property
-    def _has_previous(self) -> bool:
-        return self.number > 1
-
-    @cached_property
-    def _object_list_with_next_item(self) -> list:
-        """Return page items plus one extra to determine if a next page exists.
-
-        Fetches ``per_page + 1`` items with LIMIT/OFFSET - no COUNT query.
-        """
-        start = (self.number - 1) * self.page_size
-        end = start + self.page_size + 1
-        return list(self.paginator.object_list[start:end])
-
-
-class ZeroCountPaginator:
-    """Paginator that avoids COUNT(*) queries."""
-
-    def __init__(self, object_list: ObjectList, per_page: int) -> None:
-        self.object_list = object_list
-        self.per_page = per_page
-
-    def get_page(self, number: int | str) -> ZeroCountPage:
-        """Return a ZeroCountPage for the given number, defaulting to page 1 on error."""
-        try:
-            number = validate_page_number(number)
-        except (PageNotAnInteger, EmptyPage):
-            number = 1
-
-        return ZeroCountPage(paginator=self, number=number)
 
 
 def render_paginated_response(
@@ -174,7 +51,7 @@ def render_paginated_response(
     """
     config = config or PaginationConfig()
 
-    paginator = config.paginator or ZeroCountPaginator(object_list, settings.DEFAULT_PAGE_SIZE)
+    paginator = config.paginator or Paginator(object_list, settings.DEFAULT_PAGE_SIZE)
 
     page = paginator.get_page(request.GET.get(config.param, 1))
 
@@ -190,22 +67,3 @@ def render_paginated_response(
         target=config.target,
         partial=config.partial,
     )
-
-
-def validate_page_number(number: int | str) -> int:
-    """Validate and return the page number as a positive integer.
-
-    Args:
-        number: Raw page number (int or string from query params).
-
-    Raises:
-        PageNotAnInteger: If ``number`` cannot be coerced to an integer.
-        EmptyPage: If ``number`` is less than 1.
-    """
-    try:
-        number = int(number)
-    except (TypeError, ValueError) as exc:
-        raise PageNotAnInteger("Page number is not an integer") from exc
-    if number < 1:
-        raise EmptyPage("Page number is less than 1")
-    return number

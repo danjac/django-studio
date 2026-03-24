@@ -58,7 +58,7 @@ Starts a Django shell session with the full application context loaded
 **Package:** `mcp-server-kubernetes`
 
 Uses your current `kubectl` context (configured by `just get-kubeconfig` during
-`/djstudio launch`). Added to `.mcp.json` at the end of the launch wizard — not present
+`/dj-launch`). Added to `.mcp.json` at the end of the launch wizard — not present
 in fresh projects.
 
 **Use for:**

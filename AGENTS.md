@@ -107,36 +107,37 @@ a cached `/tmp/my_app` hides.
 
 The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/Django-Templates.md`. Component classes, icons, dark mode, and Tailwind configuration are in `template/docs/Design.md`.
 
-## djstudio Commands
+## dj-* Commands
 
-The `/djstudio` skill uses a thin dispatcher (`.agents/skills/djstudio/SKILL.md`) that routes each subcommand to its own instructions file under `.agents/skills/djstudio/`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook writes a one-line stub at `.claude/commands/djstudio.md` that references it via `@.agents/skills/djstudio/SKILL.md`.
+Each slash command is a standalone skill at `template/.agents/skills/dj-<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook writes one stub per command at `.claude/commands/dj-<command>.md` pointing to `@.agents/skills/dj-<command>/SKILL.md`.
 
-**Adding or changing a subcommand:**
+**Adding or changing a command:**
 
-1. Create or edit the file at `.agents/skills/djstudio/commands/<subcommand>.md`.
+1. Create or edit `template/.agents/skills/dj-<command>/SKILL.md`.
 2. Every skill file **must** end with a `## Help` section — user-facing documentation
-   printed verbatim by `/djstudio help <command>`. Include: usage line, arguments,
+   printed verbatim by `/dj-help <command>`. Include: usage line, arguments,
    what the command does, and at least one example invocation.
-3. Add or update the row in the dispatcher table in `.agents/skills/djstudio/SKILL.md`. Place the row
-   in the correct section (General, Generators, Localisation, Audits, or Deployment).
-4. Update the subcommand table in `template/AGENTS.md.jinja`.
+3. Add the command name to the `dj_commands` list in `hooks/post_gen_project.py`
+   so the hook writes the `.claude/commands/dj-<command>.md` stub.
+4. Add or update the entry in `template/opencode.json`.
 5. Always update relevant docs when adding, removing, or changing a command — at minimum:
-   - `template/AGENTS.md.jinja` — subcommand table
+   - `template/AGENTS.md.jinja` — command table
    - `template/README.md.jinja` — slash command table in the generated project
    - `README.md` — slash command table in this repo root
-   - Any `docs/` page the subcommand references or produces output for
+   - Any `docs/` page the command references or produces output for
+   - `template/.agents/skills/dj-help/SKILL.md` — the commands table
 
    **The `## Skills` section in `README.md` and the `## Slash Commands` section in
    `template/README.md.jinja` must stay in sync**: same sections (General, Generators,
-   Localisation, Audits, Deployment), same subcommand list, same summaries.
+   Localisation, Audits, Deployment), same command list, same summaries.
 
 **Tracking in version control:**
 
-Command files live in `template/.agents/` and are copied verbatim by Copier into the generated project's `.agents/`. They are tracked in git — no `git add -f` needed.
+Skill files live in `template/.agents/` and are copied verbatim by Copier into the generated project's `.agents/`. They are tracked in git — no `git add -f` needed.
 
-**Adding new subcommand files:**
+**Adding new command files:**
 
-Create the file under `template/.agents/skills/djstudio/commands/<subcommand>.md`. No `copier.yml` change is needed — Copier copies the entire `template/.agents/` tree verbatim.
+Create the directory and file at `template/.agents/skills/dj-<command>/SKILL.md`. No `copier.yml` change is needed — Copier copies the entire `template/.agents/` tree verbatim.
 
 ## Python 3.14 — `except` Without Parentheses (PEP 758)
 
@@ -157,4 +158,4 @@ See [pyright#10546](https://github.com/microsoft/pyright/issues/10546) for upstr
 
 ## Bugs and Improvements
 
-Use the `/djstudio feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
+Use the `/dj-feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.

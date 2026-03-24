@@ -1,3 +1,7 @@
+---
+description: Enable automated daily PostgreSQL backups to a private Object Storage bucket
+---
+
 Interactive wizard to enable automated daily PostgreSQL backups to a private Hetzner
 Object Storage bucket.
 

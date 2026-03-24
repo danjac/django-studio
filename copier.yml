@@ -84,7 +84,7 @@ _message_after_copy: |2
     {{ '\x1b[1m' }}6. Create a superuser{{ '\x1b[0m' }}
        just dj createsuperuser
 
-  Using an agent, such as Claude Code? Run {{ '\x1b[1m' }}/djstudio help{{ '\x1b[0m' }} to see available AI skills for this project.
+  Using an agent, such as Claude Code? Run {{ '\x1b[1m' }}/dj-feedback{{ '\x1b[0m' }} to report issues or {{ '\x1b[1m' }}/dj-sync{{ '\x1b[0m' }} to pull template updates.
 
 _subdirectory: template
 _templates_suffix: .jinja

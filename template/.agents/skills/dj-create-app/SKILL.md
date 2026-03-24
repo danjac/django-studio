@@ -1,3 +1,7 @@
+---
+description: Scaffold a complete Django app
+---
+
 Create a basic Django app with the standard file structure for this project.
 
 **Steps:**

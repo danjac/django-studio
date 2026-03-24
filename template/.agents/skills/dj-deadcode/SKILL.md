@@ -1,3 +1,7 @@
+---
+description: Remove unused Python code, Django templates and static assets
+---
+
 Scan the project for unused code and assets. **Always present a summary of
 everything to be removed for explicit user approval before making any changes.**
 

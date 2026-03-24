@@ -113,7 +113,6 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 | Command              | Summary                                                                           |
 | -------------------- | --------------------------------------------------------------------------------- |
-| `/dj-help [command]` | List all commands, or show docs for a command                                     |
 | `/dj-sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
 | `/dj-feedback`       | Report a bug or improvement against the django-studio template                    |
 

@@ -1,3 +1,7 @@
+---
+description: Rotate auto-generated and third-party Helm secrets and redeploy
+---
+
 Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 
 ## Required reading
@@ -48,18 +52,11 @@ runbooks that reference the current admin path:
 > Do you want to rotate the Django admin URL? Changing it will invalidate any
 > bookmarks or scripts that use the current path. (y/n)
 
-If **yes**, generate a new random human-readable slug using the same word
-list as the launch wizard:
+If **yes**, generate a new random human-readable slug using the word list in
+`resources/WORDLIST.md`:
 
 ```python
-import random
-adjectives = ["amber","azure","brave","calm","cold","dark","deep","fast",
-              "gold","iron","jade","keen","lime","mist","navy","oak","pale",
-              "pine","sage","salt","sand","silk","snow","soft","teal","warm"]
-nouns = ["arch","bay","cliff","cove","creek","dale","dell","dune","fall",
-         "fen","ford","glen","hill","isle","lake","mead","moor","peak",
-         "pool","rill","rock","shore","vale","weald","well","wood"]
-new_admin_url = f"{random.choice(adjectives)}-{random.choice(nouns)}/"
+new_admin_url = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}/"
 ```
 
 Present the pending changes before touching anything:

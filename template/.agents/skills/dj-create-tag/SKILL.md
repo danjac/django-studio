@@ -1,3 +1,7 @@
+---
+description: Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node)
+---
+
 Add a template tag to an existing app or the root `templatetags.py` module.
 See `docs/Django-Templates.md` for the tag type reference and testing conventions.
 

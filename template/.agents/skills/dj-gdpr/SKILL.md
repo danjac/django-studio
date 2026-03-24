@@ -1,3 +1,7 @@
+---
+description: GDPR compliance audit: PII in models, erasure, consent, logging
+---
+
 Audit the project for GDPR compliance issues.
 
 ## Required reading

@@ -1,3 +1,7 @@
+---
+description: File a GitHub issue against the django-studio repo
+---
+
 File a GitHub issue against the django-studio template repo. Use this when the
 bug or improvement belongs in the template, not this project.
 
@@ -20,6 +24,8 @@ bug or improvement belongs in the template, not this project.
    ```bash
    gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
    ```
+
+   See `resources/ISSUE_TEMPLATE.md` for the expected body structure.
 
 5. Print the new issue URL.
 

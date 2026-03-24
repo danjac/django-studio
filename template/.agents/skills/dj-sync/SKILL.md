@@ -1,3 +1,7 @@
+---
+description: Pull latest template changes via Copier and resolve merge conflicts
+---
+
 Pull the latest django-studio template changes into this project and resolve
 any merge conflicts interactively.
 

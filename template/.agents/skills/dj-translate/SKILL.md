@@ -1,3 +1,7 @@
+---
+description: Extract strings, translate via Claude, compile .mo catalogue
+---
+
 Extract all translatable strings, translate them using Claude, and compile the
 message catalogue for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
 
@@ -71,16 +75,8 @@ Read `locale/<locale>/LC_MESSAGES/django.po`.
 
 **Check the `Plural-Forms` header.** If it is still the default
 `nplurals=INTEGER; plural=EXPRESSION;` placeholder, replace it with the
-correct rule for `<locale>`:
-
-| Locale | Plural-Forms |
-|--------|-------------|
-| fr, fr_CA, es, pt, it | `nplurals=2; plural=(n > 1);` |
-| de, nl, sv, da, fi, nb | `nplurals=2; plural=(n != 1);` |
-| pl | `nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);` |
-| ru, uk | `nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);` |
-
-For any locale not listed, use the correct rule from the GNU gettext manual.
+correct rule for `<locale>`. See `resources/PLURAL_FORMS.md` for the full
+reference table. For any locale not listed there, use the GNU gettext manual.
 
 **Translate every entry where `msgstr` is empty** (and any marked `#, fuzzy`).
 Use the project name and description (from `cookiecutter.json` or README) as

@@ -1,3 +1,7 @@
+---
+description: Add a view, template, and URL
+---
+
 Add a view, template, and URL following HTMX conventions.
 
 **Parsing arguments:**

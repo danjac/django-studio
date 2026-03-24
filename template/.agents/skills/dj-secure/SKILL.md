@@ -1,3 +1,7 @@
+---
+description: Security audit: settings, views, XSS, CSRF, IDOR, SQL injection
+---
+
 Audit the codebase for security issues. Report findings in three groups:
 
 - **CRITICAL** — likely exploitable: missing auth, XSS sinks, CSRF bypass, IDOR

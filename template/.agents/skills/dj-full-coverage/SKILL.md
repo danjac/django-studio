@@ -1,3 +1,7 @@
+---
+description: Enable 100% coverage gate and write tests for all uncovered lines
+---
+
 Enforce 100% test coverage by enabling the coverage gate and writing tests
 for every uncovered line.
 

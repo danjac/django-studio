@@ -63,6 +63,20 @@ def install_license() -> None:
 # ── skills ───────────────────────────────────────────────────────────────────
 
 
+def _parse_skill_description(skill_file: Path) -> str:
+    """Return the description from YAML frontmatter in a SKILL.md file."""
+    content = skill_file.read_text()
+    if not content.startswith("---\n"):
+        return ""
+    parts = content.split("---\n", 2)
+    if len(parts) < 3:
+        return ""
+    for line in parts[1].splitlines():
+        if line.startswith("description:"):
+            return line.split(":", 1)[1].strip().strip('"')
+    return ""
+
+
 def install_claude_hooks() -> None:
     """Write .claude/settings.json with permissions and agentic hooks."""
     settings = {
@@ -167,13 +181,27 @@ def install_claude_hooks() -> None:
         f.write("\n")
     commands_dst = claude_dir / "commands"
     commands_dst.mkdir(parents=True, exist_ok=True)
-    skills_root = _TEMPLATE_ROOT / "template" / ".agents" / "skills"
+    skills_root = BASE_DIR / ".agents" / "skills"
+    opencode_commands: dict[str, dict[str, str]] = {}
     for skill_dir in sorted(skills_root.iterdir()):
-        if skill_dir.is_dir() and (skill_dir / "SKILL.md").exists():
-            name = skill_dir.name  # e.g. "dj-create-app"
-            (commands_dst / f"{name}.md").write_text(
-                f"@.agents/skills/{name}/SKILL.md\n"
-            )
+        if not skill_dir.is_dir():
+            continue
+        skill_file = skill_dir / "SKILL.md"
+        if not skill_file.exists():
+            continue
+        name = skill_dir.name
+        (commands_dst / f"{name}.md").write_text(
+            f"@.agents/skills/{name}/SKILL.md\n"
+        )
+        description = _parse_skill_description(skill_file)
+        opencode_commands[name] = {
+            "template": f".agents/skills/{name}/SKILL.md",
+            "description": description,
+        }
+    opencode = {"$schema": "https://opencode.ai/config.json", "command": opencode_commands}
+    with (BASE_DIR / "opencode.json").open("w") as f:
+        json.dump(opencode, f, indent=2)
+        f.write("\n")
 
 
 # ── MCP config ───────────────────────────────────────────────────────────────

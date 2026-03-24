@@ -1,3 +1,7 @@
+---
+description: Deploy the observability stack (Grafana + Prometheus + Loki)
+---
+
 Deploy the observability stack (Grafana + Prometheus + Loki) to a running cluster.
 
 ## Required reading

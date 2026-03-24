@@ -1,69 +1,69 @@
-#!/usr/bin/env python3
-# ruff: noqa: T201
-"""Look up help for dj-* skills."""
+# ruff: noqa: T201, INP001
+"""Look up help for skills in .agents/skills/."""
 
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-_MIN_FRONTMATTER_PARTS = 3
 _MIN_ARGS = 2
 
 
 def _skills_dir() -> Path:
-    # Script lives at .agents/skills/dj-help/resources/lookup.py
-    # Go up: resources/ -> dj-help/ -> skills/
+    # Script lives at .agents/skills/<name>/resources/lookup.py
+    # Go up: resources/ -> <name>/ -> skills/
     return Path(__file__).parent.parent.parent
 
 
-def _parse_description(skill_dir: Path) -> str:
-    """Extract the description field from a SKILL.md frontmatter block."""
-    skill_file = skill_dir / "SKILL.md"
-    if not skill_file.exists():
-        return ""
-    content = skill_file.read_text()
-    parts = content.split("---", _MIN_FRONTMATTER_PARTS - 1)
-    if len(parts) < _MIN_FRONTMATTER_PARTS:
-        return ""
-    for line in parts[1].splitlines():
-        if line.startswith("description:"):
-            return line.split(":", 1)[1].strip().strip("\"'")
-    return ""
+def _is_skill(path: Path) -> bool:
+    """Return True if the path is a skill directory (contains SKILL.md)."""
+    return path.is_dir() and (path / "SKILL.md").exists()
+
+
+def _has_help(skill_dir: Path) -> bool:
+    """Return True if the skill has a resources/help.md file."""
+    return (skill_dir / "resources" / "help.md").exists()
+
+
+def _print_help(skill_dir: Path) -> None:
+    """Print the resources/help.md for a skill."""
+    print((skill_dir / "resources" / "help.md").read_text().rstrip())
 
 
 def list_commands() -> None:
-    """Print all available dj-* commands with their one-line descriptions."""
+    """Print all available skills."""
     skills_dir = _skills_dir()
-    commands = sorted(
-        d for d in skills_dir.iterdir()
-        if d.is_dir() and d.name.startswith("dj-")
-    )
-    if not commands:
-        print("No dj-* commands found.")
+    skills = sorted(d.name for d in skills_dir.iterdir() if _is_skill(d))
+    if not skills:
+        print("No skills found.")
         return
     print("Available commands:\n")
-    for cmd_dir in commands:
-        desc = _parse_description(cmd_dir)
-        print(f"  /{cmd_dir.name:<28} {desc}")
+    for name in skills:
+        print(f"  /{name}")
 
 
-def show_help(command: str) -> None:
-    """Print the help file for a specific dj-* command."""
-    if not command.startswith("dj-"):
-        command = f"dj-{command}"
+def show_help(name: str) -> None:
+    """Print help for a skill, matched by exact name or unique suffix."""
     skills_dir = _skills_dir()
-    help_file = skills_dir / command / "resources" / "help.md"
-    if not help_file.exists():
-        print(f"No help found for /{command}.")
-        available = sorted(
-            d.name for d in skills_dir.iterdir()
-            if d.is_dir() and d.name.startswith("dj-")
-        )
-        if available:
-            print(f"\nAvailable commands: {', '.join(available)}")
-        sys.exit(1)
-    print(help_file.read_text().rstrip())
+    # Exact match
+    exact = skills_dir / name
+    if _is_skill(exact) and _has_help(exact):
+        _print_help(exact)
+        return
+    # Suffix match: e.g. "a11y" finds "dj-a11y"
+    matches = [d for d in skills_dir.iterdir() if _is_skill(d) and d.name.endswith(name)]
+    if len(matches) == 1 and _has_help(matches[0]):
+        _print_help(matches[0])
+        return
+    if not matches:
+        print(f"No skill found matching '{name}'.")
+    else:
+        names = ", ".join(d.name for d in sorted(matches))
+        print(f"Ambiguous: '{name}' matches multiple skills: {names}")
+    available = sorted(d.name for d in skills_dir.iterdir() if _is_skill(d))
+    if available:
+        print(f"\nAvailable: {', '.join(available)}")
+    sys.exit(1)
 
 
 if __name__ == "__main__":

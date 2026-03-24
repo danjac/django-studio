@@ -374,10 +374,17 @@ class TestClaudeHooksInstallation:
     def test_settings_json_installed(self, project):
         assert (project / ".claude" / "settings.json").exists()
 
-    def test_dispatcher_stub_installed(self, project):
-        stub = project / ".claude" / "commands" / "djstudio.md"
-        assert stub.exists()
-        assert stub.read_text().strip() == "@.agents/skills/djstudio/SKILL.md"
+    def test_command_stubs_installed(self, project):
+        commands_dir = project / ".claude" / "commands"
+        stubs = list(commands_dir.glob("*.md"))
+        assert stubs, "No command stubs found in .claude/commands/"
+        # Verify each stub points to the correct skill file
+        for stub in stubs:
+            name = stub.stem  # e.g. "dj-create-app"
+            expected = f"@.agents/skills/{name}/SKILL.md"
+            assert stub.read_text().strip() == expected, (
+                f"{stub.name} should contain '{expected}'"
+            )
 
 
 class TestRenderedPythonLinting:

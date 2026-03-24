@@ -4,51 +4,31 @@ This project uses a multi-stage Dockerfile for production deployment.
 
 ## Dockerfile Overview
 
+The build uses four stages:
+
+| Stage | Base | Purpose |
+|-------|------|---------|
+| `python-base` | `python:3.14-slim-bookworm` | Install Python deps via uv |
+| `messages` | `python-base` | Install `gettext`, run `compilemessages` |
+| `staticfiles` | `python-base` | Build Tailwind CSS, run `collectstatic` |
+| `webapp` | `python:3.14-slim-bookworm` | Final minimal image |
+
+The final image copies compiled artefacts from all three build stages:
+
 ```dockerfile
-# Stage 1: Python base
-FROM python:3.14.2-slim-bookworm AS python-base
-
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.9.8 /uv /usr/local/bin/uv
-
-# Install production dependencies
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-group dev --no-install-project
-
-# Stage 2: Build static assets
-FROM python-base AS staticfiles
-COPY . .
-RUN uv run python manage.py tailwind build && \
-    uv run python manage.py tailwind remove_cli && \
-    uv run python manage.py collectstatic --no-input
-
-# Stage 3: Final production image
-FROM python:3.14.2-slim-bookworm AS webapp
-
-# Create non-root user FIRST
-RUN useradd -m -u 1000 django
-
-WORKDIR /app
-
-# Copy with correct ownership
-COPY --from=python-base --chown=django:django /app/.venv /app/.venv
-COPY --from=staticfiles --chown=django:django /app/staticfiles /app/staticfiles
-
-# Copy application code
-COPY --chown=django:django . .
-
-USER django
-
-CMD ["./gunicorn.sh"]
+COPY --from=python-base  --chown=django:django /app/.venv      /app/.venv
+COPY --from=staticfiles  --chown=django:django /app/staticfiles /app/staticfiles
+COPY --from=messages     --chown=django:django /app/locale      /app/locale
 ```
 
 ## Key Techniques
 
 ### Multi-stage Build
 
-- **python-base**: Installs Python dependencies
+- **python-base**: Installs Python dependencies with uv (no dev group, bytecode compiled)
+- **messages**: Installs `gettext`, compiles translation catalogues (`compilemessages`)
 - **staticfiles**: Builds Tailwind CSS and collects static files
-- **webapp**: Final minimal image
+- **webapp**: Final image — no build tools, only the compiled artefacts above
 
 ### UV for Dependencies
 
@@ -56,22 +36,17 @@ CMD ["./gunicorn.sh"]
 COPY --from=ghcr.io/astral-sh/uv:0.9.8 /uv /usr/local/bin/uv
 ```
 
-Using `uv` for fast, reliable dependency installation.
+All dep installs use `--mount=type=cache,target=/root/.cache/uv` for layer caching.
 
-### Caching
+### PostgreSQL Client
 
-```dockerfile
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-group dev --no-install-project
-```
-
-Uses Docker layer caching for dependencies.
+The `webapp` stage installs `postgresql-client-${POSTGRES_MAJOR}` from the official PGDG apt repo, version-matched to the production database (default: 18). This enables `manage.py dbshell` inside the container.
 
 ### Security
 
-- Create non-root user before copying files
-- Use `--chown=django:django` for correct ownership
-- Run as non-root user with `USER django`
+- Non-root user (`django`, uid 1000) created before any file copies
+- All copies use `--chown=django:django`
+- `curl` and `gnupg` purged after the apt key is imported
 
 ### Environment Variables
 
@@ -80,6 +55,10 @@ ENV LC_CTYPE=C.utf8 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
     PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONFAULTHANDLER=1 \
+    UV_PROJECT_ENVIRONMENT="/app/.venv" \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
     PATH="/app/.venv/bin:$PATH"
 ```
 
@@ -97,17 +76,35 @@ docker run -p 8000:8000 my_project
 
 ## Gunicorn
 
-Production uses Gunicorn with Uvicorn worker:
+Production uses Gunicorn with Uvicorn worker, configured via two files:
+
+**`gunicorn.sh`** — entrypoint script:
 
 ```bash
 #!/bin/bash
-exec gunicorn \
-    --bind 0.0.0.0:8000 \
-    --workers 4 \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --access-logfile - \
-    --error-logfile - \
-    config.asgi:application
+set -euo pipefail
+exec gunicorn --config gunicorn.conf.py config.asgi:application
+```
+
+**`gunicorn.conf.py`** — configuration (binding, workers, logging, timeouts, memory-aware `max_requests`):
+
+```python
+import multiprocessing
+import psutil
+
+bind = "0.0.0.0:8000"
+worker_class = "uvicorn.workers.UvicornWorker"
+workers = multiprocessing.cpu_count() + 1
+
+accesslog = "-"
+errorlog = "-"
+
+timeout = 30
+graceful_timeout = timeout + 10
+
+memory = int(psutil.virtual_memory().total * 0.7 // (2**20))
+max_requests = max(200, memory * 50 // 1024)
+max_requests_jitter = max_requests // 20
 ```
 
 ## Best Practices

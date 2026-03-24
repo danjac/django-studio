@@ -145,5 +145,5 @@ dependency. No manual `uv add` is needed.
 
 ## sorl-thumbnail
 
-For image resizing, thumbnail generation, and upload form widgets, see `docs/Images.md`.
+For image resizing, thumbnail generation, and upload form widgets, see `docs/images.md`.
 That doc also covers S3-specific caveats (management command limitations, cleanup signals).

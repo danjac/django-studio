@@ -6,7 +6,7 @@ Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 
 ## Required reading
 
-- `docs/Deployment.md`
+- `docs/deployment.md`
 
 ---
 

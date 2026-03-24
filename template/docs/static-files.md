@@ -7,7 +7,7 @@ References:
 - [WhiteNoise documentation](https://whitenoise.readthedocs.io/en/latest/)
 - [Cloudflare CDN reference architecture](https://developers.cloudflare.com/reference-architecture/architectures/cdn/)
 
-User-uploaded files (media) are separate — see `docs/File-Storage.md`.
+User-uploaded files (media) are separate — see `docs/file-storage.md`.
 
 ---
 

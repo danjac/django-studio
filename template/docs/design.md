@@ -1,6 +1,6 @@
 # Design
 
-This project uses DaisyUI (on Tailwind CSS v4) for component styling, AlpineJS for client-side interactivity, and HTMX for server-driven updates. All JS/CSS dependencies are vendored — no CDN, no npm. See `docs/Frontend-Dependencies.md` to add or update them.
+This project uses DaisyUI (on Tailwind CSS v4) for component styling, AlpineJS for client-side interactivity, and HTMX for server-driven updates. All JS/CSS dependencies are vendored — no CDN, no npm. See `docs/frontend-dependencies.md` to add or update them.
 
 ## Contents
 
@@ -75,7 +75,7 @@ Form rendering uses `{{ form }}` / `{{ field.as_field_group }}` (dispatches thro
 `django-widget-tweaks` for per-field attribute overrides, and `{% fragment "form.html" %}`
 as the HTMX-aware `<form>` wrapper.
 
-See `docs/Django-Forms.md` for the full reference: field rendering levels, widget type
+See `docs/django-forms.md` for the full reference: field rendering levels, widget type
 dispatch, custom widget partials, the `form.html` wrapper variables, and the
 `{% partialdef %}` HTMX swap pattern.
 
@@ -85,7 +85,7 @@ Mobile-first. Use `sm:` (640 px), `md:` (768 px), `lg:` (1024 px), `xl:` (1280 p
 
 ## Accessibility
 
-Target WCAG 2.1 AA. See `docs/Accessibility.md` for guidance on semantic HTML, focus styles,
+Target WCAG 2.1 AA. See `docs/accessibility.md` for guidance on semantic HTML, focus styles,
 ARIA, screen reader text, HTMX live regions, AlpineJS keyboard patterns, and colour contrast.
 
 ## Tailwind Configuration
@@ -134,7 +134,7 @@ TAILWIND_CLI_DIST_CSS = "app.css"
 | `tweaks.css` | Minimal global resets: scrollbar width and Alpine `[x-cloak]` rule |
 | `htmx.css` | HTMX utilities: progress indicator bar and `htmx-added` custom variant |
 
-DaisyUI is vendored as `.mjs` files in `tailwind/` — no npm needed. To update or add frontend dependencies, see `docs/Frontend-Dependencies.md`.
+DaisyUI is vendored as `.mjs` files in `tailwind/` — no npm needed. To update or add frontend dependencies, see `docs/frontend-dependencies.md`.
 
 To rebrand, edit the oklch values in `tailwind/theme.css`. All DaisyUI components update automatically.
 

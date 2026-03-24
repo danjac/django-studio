@@ -1,8 +1,8 @@
 # API Integration
 
 Patterns for validating data from external HTTP APIs and third-party services.
-For HTML form input validation, see `docs/Django-Forms.md`.
-For raw request parameter validation in views, see `docs/Django-Views.md`.
+For HTML form input validation, see `docs/django-forms.md`.
+For raw request parameter validation in views, see `docs/django-views.md`.
 
 ## Contents
 
@@ -94,7 +94,7 @@ Rules:
 - Always wrap `.model_validate()` in `try/except ValidationError` and re-raise with
   context so callers know what operation failed.
 - Do not use Pydantic for HTML form input — that is Django forms' job.
-- See `docs/Packages.md` for the install command and basedpyright configuration.
+- See `docs/packages.md` for the install command and basedpyright configuration.
 
 ## Testing
 

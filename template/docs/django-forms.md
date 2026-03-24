@@ -305,7 +305,7 @@ def my_upload_view(request):
 
 ### Multiple File Upload
 
-Use the `fileUpload` Alpine.js component from `docs/UI-Recipes.md#multiple-file-upload`
+Use the `fileUpload` Alpine.js component from `docs/ui-recipes.md#multiple-file-upload`
 for multi-file pickers with drag-and-drop, instant previews, and per-file removal.
 The `DataTransfer` API syncs Alpine's file list back to the native `<input>` so the
 Django form submission works normally.

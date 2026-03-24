@@ -7,7 +7,7 @@ to confirm everything works.
 
 By default, backups run daily at 03:00 UTC and the 7 most recent dumps are
 retained. You will be prompted to change these before deploying.
-Restore instructions are in `docs/Database-Backups.md`.
+Restore instructions are in `docs/database-backups.md`.
 
 Requires: `terraform`, `just`, and `kubectl` installed and authenticated.
 

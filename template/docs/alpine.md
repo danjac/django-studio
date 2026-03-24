@@ -19,7 +19,7 @@ Alpine.js provides reactive JavaScript behavior without writing JavaScript files
 
 ## Installation
 
-Alpine.js is bundled locally in `static/vendor/`. To update it or add new JS dependencies, see `docs/Frontend-Dependencies.md`.
+Alpine.js is bundled locally in `static/vendor/`. To update it or add new JS dependencies, see `docs/frontend-dependencies.md`.
 
 ```html
 <script src="{% static 'vendor/alpine.js' %}" defer></script>
@@ -353,7 +353,7 @@ it via a `<script src="...">` tag in `{% block scripts %}`. Do **not** add
 
 See: https://alpinejs.dev/globals/alpine-data
 
-For common recipes using Alpine (e.g. photo lightbox, drag-and-drop), see `docs/UI-Recipes.md`.
+For common recipes using Alpine (e.g. photo lightbox, drag-and-drop), see `docs/ui-recipes.md`.
 
 ## Script Loading Order
 

@@ -53,7 +53,7 @@ class <model_name>Form(forms.ModelForm):
 ### 2. Views
 
 For numbered pagination, infinite scroll, or custom `PaginationConfig` options see
-`docs/Pagination.md`.
+`docs/pagination.md`.
 
 Add to `<package_name>/<app_name>/views.py`:
 

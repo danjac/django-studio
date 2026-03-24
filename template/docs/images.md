@@ -1,15 +1,15 @@
 # Images
 
 This project uses [sorl-thumbnail](https://sorl-thumbnail.readthedocs.io/) for image
-resizing and thumbnail generation. See `docs/Packages.md` for installation notes.
+resizing and thumbnail generation. See `docs/packages.md` for installation notes.
 
 ## Thumbnail widget with instant preview
 
-For upload form widgets with inline preview, see `docs/Django-Forms.md#thumbnail-widget`.
+For upload form widgets with inline preview, see `docs/django-forms.md#thumbnail-widget`.
 
 ## sorl-thumbnail and S3
 
-If you use sorl-thumbnail with S3 storage (see `docs/File-Storage.md`), there are
+If you use sorl-thumbnail with S3 storage (see `docs/file-storage.md`), there are
 several important behaviours to be aware of:
 
 ### Management commands are unreliable with S3

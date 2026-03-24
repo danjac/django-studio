@@ -6,15 +6,15 @@ implementation patterns, see the focused docs:
 
 | Topic                                                       | Doc                    |
 | ----------------------------------------------------------- | ---------------------- |
-| Views, decorators, response classes, async, URL config      | `docs/Django-Views.md`        |
-| Models, querysets, full-text search, choices, relationships | `docs/Django-Models.md`       |
-| Templates, partials, fragments, pagination                  | `docs/Django-Templates.md`    |
-| Forms, widgets, form rendering                              | `docs/Django-Forms.md` |
-| External API validation (pydantic)                          | `docs/API-Integration.md` |
-| Adding a new package                                        | `docs/Packages.md`     |
-| Migrations and linear-migrations                            | `docs/Django-Models.md`       |
-| Background tasks                                            | `docs/Django-Tasks.md` |
-| Scheduled cron jobs                                         | `docs/CronJobs.md`     |
+| Views, decorators, response classes, async, URL config      | `docs/django-views.md`        |
+| Models, querysets, full-text search, choices, relationships | `docs/django-models.md`       |
+| Templates, partials, fragments, pagination                  | `docs/django-templates.md`    |
+| Forms, widgets, form rendering                              | `docs/django-forms.md` |
+| External API validation (pydantic)                          | `docs/api-integration.md` |
+| Adding a new package                                        | `docs/packages.md`     |
+| Migrations and linear-migrations                            | `docs/django-models.md`       |
+| Background tasks                                            | `docs/django-tasks.md` |
+| Scheduled cron jobs                                         | `docs/cron-jobs.md`     |
 
 ## Contents
 
@@ -158,7 +158,7 @@ INSTALLED_APPS = [
 ```python
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # serves static files — see docs/Static-Files.md
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # serves static files — see docs/static-files.md
     "django_permissions_policy.PermissionsPolicyMiddleware",
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -205,7 +205,7 @@ New tags which are not specific to a single app should be added here.
 
 App-specific tags should be added to `my_app/templatetags/my_app.py` unless the user specifies otherwise.
 
-See `docs/Django-Templates.md` for `active_app` / `active_url` usage.
+See `docs/django-templates.md` for `active_app` / `active_url` usage.
 
 ## Admin
 

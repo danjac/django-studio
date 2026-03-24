@@ -85,7 +85,7 @@ async def process_item(*, item_id: int) -> None:
     await item.process()
 ```
 
-See `docs/Django-Tasks.md` for full task documentation.
+See `docs/django-tasks.md` for full task documentation.
 
 **When to do work inline** (directly in `handle`): short, low-risk operations that finish
 in seconds and don't need retry — e.g. `clearsessions`, `prune_db_task_results`.

@@ -59,22 +59,22 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 
 ## Code Style
 
-**Python style**: See `docs/Python-Style-Guide.md`. Critical gotcha: `pyupgrade --py314` rewrites `except (E1, E2):` to `except E1, E2:` (PEP 758) — **do not revert this**; it is correct Python 3.14 syntax.
+**Python style**: See `docs/python-style-guide.md`. Critical gotcha: `pyupgrade --py314` rewrites `except (E1, E2):` to `except E1, E2:` (PEP 758) — **do not revert this**; it is correct Python 3.14 syntax.
 
-**UI components**: Use [DaisyUI](https://daisyui.com/components/) for all component styling. Check daisyui.com/components before writing new markup — the component you need likely already exists. See `docs/Design.md` and `docs/Django-Templates.md`.
+**UI components**: Use [DaisyUI](https://daisyui.com/components/) for all component styling. Check daisyui.com/components before writing new markup — the component you need likely already exists. See `docs/design.md` and `docs/django-templates.md`.
 
-**Icons**: Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Never use character entities or emoji as icons. See `docs/Design.md`.
+**Icons**: Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Never use character entities or emoji as icons. See `docs/design.md`.
 
-**Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/Frontend-Dependencies.md` for the full format and workflow.
+**Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/frontend-dependencies.md` for the full format and workflow.
 
 **Form rendering** — use the first option that fits:
 {% raw %}1. `{{ form }}` — all fields, default order
 2. `{{ form.field.as_field_group }}` — explicit field order or subset
 
 Never use `{{ form.as_div }}` or `{% include "forms/partials.html" %}`.{% endraw %}
-See `docs/Django-Forms.md`.
+See `docs/django-forms.md`.
 
-**Internationalisation**: All user-visible text must be wrapped in translation functions. See `docs/Django.md` for usage.
+**Internationalisation**: All user-visible text must be wrapped in translation functions. See `docs/django.md` for usage.
 
 **Documentation**: When updating a `docs/` file, keep its `## Contents` table of contents in sync. If a doc lacks a ToC and has 8+ `##` sections or 250+ lines, add one below the intro paragraph.
 
@@ -82,7 +82,7 @@ See `docs/Django-Forms.md`.
 
 ### Required reading before implementation
 
-**Read `docs/Django.md` before starting any implementation.** It documents
+**Read `docs/django.md` before starting any implementation.** It documents
 installed apps, middleware order, settings conventions, admin patterns, and
 migrations. It also indexes the focused docs below.
 
@@ -92,35 +92,35 @@ actively, not as background reading.
 
 | What you are about to implement | Read first |
 | ------------------------------- | ---------- |
-| Python conventions and gotchas  | `docs/Python-Style-Guide.md` |
-| Django views                    | `docs/Django-Views.md` |
-| Django models / querysets       | `docs/Django-Models.md` |
-| Django templates (partials, fragments, pagination) | `docs/Django-Templates.md` |
-| Django forms, widgets, form rendering       | `docs/Django-Forms.md` |
-| Validating request params in views          | `docs/Django-Views.md` |
-| Validating external API responses (pydantic) | `docs/API-Integration.md` |
-| Django admin                    | `docs/Django.md` |
-| UI components (buttons, modals, layout)         | `docs/Design.md` |
-| Accessibility                   | `docs/Accessibility.md` |
-| Internationalisation / i18n     | `docs/Django.md` |
-| Adding a Python dependency      | `docs/Packages.md` |
-| Adding a JS/CSS dependency      | `docs/Frontend-Dependencies.md` |
-| Any feature handling user data, accounts, or PII | `docs/GDPR.md` |
-| Background task                 | `docs/Django-Tasks.md` |
-| Channels, SSE, WebSockets       | `docs/Channels.md` |
-| HTMX interaction                | `docs/HTMX.md` |
-| AlpineJS component              | `docs/Alpine.md` |
-| Lightbox, drag-drop, upload preview       | `docs/UI-Recipes.md` |
-| Maps / geocoding (OpenStreetMap + geopy)  | `docs/Maps.md` |
-| Authentication / allauth        | `docs/Authentication.md` |
-| File uploads / media storage    | `docs/File-Storage.md` |
-| Static files / CDN caching      | `docs/Static-Files.md` |
-| Caching (Redis, per-view, low-level) | `docs/Caching.md` |
-| Custom template tag or filter   | `docs/Django-Templates.md` |
-| Sending email (transactional / dev) | `docs/Sending-Emails.md` |
-| Testing patterns                | `docs/Testing.md` |
-| Any of the above                | `docs/Project-Structure.md` |
-| MCP servers (postgres, django shell, Playwright, k8s) | `docs/MCP.md` |
+| Python conventions and gotchas  | `docs/python-style-guide.md` |
+| Django views                    | `docs/django-views.md` |
+| Django models / querysets       | `docs/django-models.md` |
+| Django templates (partials, fragments, pagination) | `docs/django-templates.md` |
+| Django forms, widgets, form rendering       | `docs/django-forms.md` |
+| Validating request params in views          | `docs/django-views.md` |
+| Validating external API responses (pydantic) | `docs/api-integration.md` |
+| Django admin                    | `docs/django.md` |
+| UI components (buttons, modals, layout)         | `docs/design.md` |
+| Accessibility                   | `docs/accessibility.md` |
+| Internationalisation / i18n     | `docs/django.md` |
+| Adding a Python dependency      | `docs/packages.md` |
+| Adding a JS/CSS dependency      | `docs/frontend-dependencies.md` |
+| Any feature handling user data, accounts, or PII | `docs/gdpr.md` |
+| Background task                 | `docs/django-tasks.md` |
+| Channels, SSE, WebSockets       | `docs/channels.md` |
+| HTMX interaction                | `docs/htmx.md` |
+| AlpineJS component              | `docs/alpine.md` |
+| Lightbox, drag-drop, upload preview       | `docs/ui-recipes.md` |
+| Maps / geocoding (OpenStreetMap + geopy)  | `docs/maps.md` |
+| Authentication / allauth        | `docs/authentication.md` |
+| File uploads / media storage    | `docs/file-storage.md` |
+| Static files / CDN caching      | `docs/static-files.md` |
+| Caching (Redis, per-view, low-level) | `docs/caching.md` |
+| Custom template tag or filter   | `docs/django-templates.md` |
+| Sending email (transactional / dev) | `docs/sending-emails.md` |
+| Testing patterns                | `docs/testing.md` |
+| Any of the above                | `docs/project-structure.md` |
+| MCP servers (postgres, django shell, Playwright, k8s) | `docs/mcp.md` |
 
 If a doc contradicts what you see in existing code, flag it — do not silently pick one.
 
@@ -202,7 +202,7 @@ The following MCP servers are configured in `.mcp.json` (gitignored, generated a
 
 Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively. Use `kubernetes` to diagnose production pod failures without leaving the editor.
 
-See `docs/MCP.md` for details.
+See `docs/mcp.md` for details.
 
 ## Template Feedback
 

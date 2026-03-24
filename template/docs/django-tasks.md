@@ -110,7 +110,7 @@ cronjobs:
     command: "./manage.sh process_items"
 ```
 
-See `docs/CronJobs.md` for the full cron job reference.
+See `docs/cron-jobs.md` for the full cron job reference.
 
 ## Testing
 

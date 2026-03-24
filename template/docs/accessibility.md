@@ -44,7 +44,7 @@ Form fields rendered via `{{ field.as_field_group }}` or
 - Error states use `text-error` for visual indication
 
 Do not bypass this rendering — `{% render_field %}` without a label wrapper
-breaks the label association. Always use `as_field_group`. See `docs/Django-Forms.md`.
+breaks the label association. Always use `as_field_group`. See `docs/django-forms.md`.
 
 For groups of related inputs (radio buttons, checkboxes), use `<fieldset>` and
 `<legend>` rather than a plain `<label>`.
@@ -227,7 +227,7 @@ floor, not a ceiling.
 
 `axe-playwright-python` integrates axe-core with the `page` fixture from
 `pytest-playwright`. Check [PyPI](https://pypi.org/project/axe-playwright-python/)
-and the repo for current maintenance status before adding (see `docs/Packages.md`).
+and the repo for current maintenance status before adding (see `docs/packages.md`).
 
 ```bash
 uv add --dev axe-playwright-python

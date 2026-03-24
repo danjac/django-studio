@@ -221,7 +221,7 @@ details. If you need to control behaviour inside a private method, either:
 | Boundary type          | Tool                           |
 | ---------------------- | ------------------------------ |
 | Async HTTP (`aiohttp`) | `aioresponses`                 |
-| WebSocket consumers    | `channels.testing.WebsocketCommunicator` — see `docs/Channels.md` |
+| WebSocket consumers    | `channels.testing.WebsocketCommunicator` — see `docs/channels.md` |
 | Any callable/module    | `pytest-mock` (`mocker.patch`) |
 
 ```python
@@ -268,7 +268,7 @@ than the one you intend. This makes tests fragile and hard to debug.
 **Rules:**
 
 1. **Scope to the component root.** Always start the locator chain from the
-   component's stable `id` or `data-component` attribute (see `docs/Alpine.md`).
+   component's stable `id` or `data-component` attribute (see `docs/alpine.md`).
 
 2. **Prefer semantic selectors.** Use `get_by_role` with a `name`, `get_by_label`,
    or `get_by_text` rather than CSS class paths.

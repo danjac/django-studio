@@ -10,7 +10,7 @@ waits for confirmation before making any changes. Once confirmed:
    to identify uncovered lines.
 3. Adds or extends tests to cover every gap, following project conventions
    (behaviour-focused, no private-method mocking, existing fixtures first).
-   See `docs/Testing.md` for mocking rules.
+   See `docs/testing.md` for mocking rules.
 4. Iterates with `just test` until coverage is 100%, then runs `just check-all` to verify.
 
 Example:

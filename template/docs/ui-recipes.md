@@ -214,7 +214,7 @@ action URL are passed as constructor arguments so the component stays reusable.
 ### Template
 
 Pass CSRF credentials and the resolved URL as constructor arguments. Use
-`{% url %}` in the template — never resolve URLs in JavaScript (see `docs/Alpine.md`):
+`{% url %}` in the template — never resolve URLs in JavaScript (see `docs/alpine.md`):
 
 ```html
 <div
@@ -266,7 +266,7 @@ Alpine.js manages the file list; the `DataTransfer` API syncs it back to the
 native `<input>` so the Django form submission works normally.
 
 For the Django form side (CSP, `multipart=True`, HTMX integration), see
-`docs/Django-Forms.md#multiple-file-upload`.
+`docs/django-forms.md#multiple-file-upload`.
 
 ### JS component
 

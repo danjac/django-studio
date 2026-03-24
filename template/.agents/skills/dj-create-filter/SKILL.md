@@ -3,7 +3,7 @@ description: Add a template filter with correct escaping flags
 ---
 
 Add a template filter to an existing app or the root `templatetags.py` module.
-See `docs/Django-Templates.md` for filter conventions and testing patterns.
+See `docs/django-templates.md` for filter conventions and testing patterns.
 
 **Parsing arguments:**
 

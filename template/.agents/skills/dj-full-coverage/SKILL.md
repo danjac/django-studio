@@ -65,12 +65,12 @@ Work through each uncovered file. For each gap:
 2. Find or create the appropriate test file (`<package_name>/<app_name>/tests/test_*.py`).
 3. Add the minimum test(s) needed to exercise the uncovered lines.
 
-**Rules** (see `docs/Testing.md` for full conventions):
+**Rules** (see `docs/testing.md` for full conventions):
 - Test behaviour, not implementation. A test that only exists to tick a
   coverage box and asserts nothing meaningful is worse than no test.
 - Do not mock private methods. Mock at system boundaries (HTTP, filesystem,
   external APIs) using `aioresponses`, `pytest-mock`, or `unittest.mock`.
-  See `docs/Testing.md` — Mocking section.
+  See `docs/testing.md` — Mocking section.
 - One logical scenario per test function.
 - Use existing factories and fixtures from `conftest.py` and
   `tests/fixtures.py` before creating new ones.

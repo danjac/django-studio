@@ -1,9 +1,12 @@
-# ruff: noqa: INP001
-"""Word lists for generating human-readable admin URL slugs.
+# ruff: noqa: INP001, T201
+"""Print a random human-readable slug in the form <adjective>-<noun>.
 
 Usage:
-    slug = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}/"
+    python .agents/skills/resources/humanized-random.py
+    # → calm-peak
 """
+
+import random
 
 ADJECTIVES = [
     "amber", "azure", "brave", "calm", "cold", "dark", "deep", "fast",
@@ -16,3 +19,6 @@ NOUNS = [
     "fen", "ford", "glen", "hill", "isle", "lake", "mead", "moor", "peak",
     "pool", "rill", "rock", "shore", "vale", "weald", "well", "wood",
 ]
+
+if __name__ == "__main__":
+    print(f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}")

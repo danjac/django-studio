@@ -52,11 +52,10 @@ runbooks that reference the current admin path:
 > Do you want to rotate the Django admin URL? Changing it will invalidate any
 > bookmarks or scripts that use the current path. (y/n)
 
-If **yes**, generate a new random human-readable slug using the word list in
-`.agents/skills/resources/wordlist.py`:
+If **yes**, generate a new random human-readable slug:
 
-```python
-new_admin_url = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}/"
+```bash
+new_admin_url="$(python .agents/skills/resources/humanized-random.py)/"
 ```
 
 Present the pending changes before touching anything:

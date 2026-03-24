@@ -358,7 +358,7 @@ class TestAlwaysIncludedFeatures:
         assert "backupEndpoint" in content
 
     def test_backup_docs_exist(self, project):
-        assert (project / "docs" / "Database-Backups.md").exists()
+        assert (project / "docs" / "database-backups.md").exists()
 
     def test_i18n_and_storage_coexist(self, project):
         settings_content = (project / "config" / "settings.py").read_text()

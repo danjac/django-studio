@@ -73,7 +73,7 @@ def _parse_skill_description(skill_file: Path) -> str:
         return ""
     for line in parts[1].splitlines():
         if line.startswith("description:"):
-            return line.split(":", 1)[1].strip().strip('"')
+            return line.split(":", 1)[1].strip(' "')
     return ""
 
 

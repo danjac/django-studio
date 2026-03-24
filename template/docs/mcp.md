@@ -99,3 +99,20 @@ Check that `config/settings.py` loads without errors: `uv run python -m django c
 **`kubernetes` context is wrong**
 Run `just get-kubeconfig` to refresh the kubeconfig from the Hetzner cluster, then
 restart Claude Code.
+
+**Playwright: browser not available / MCP server fails to launch**
+By default, `@playwright/mcp` tries to use Google Chrome. If Chrome is not installed,
+the server will fail to launch — and the error message is not obvious. Fix this by
+explicitly specifying Chromium (which ships bundled with Playwright) in `.mcp.json`:
+
+```json
+"playwright": {
+  "command": "npx",
+  "args": [
+    "@playwright/mcp",
+    "--browser=chromium"
+  ]
+}
+```
+
+After editing `.mcp.json`, restart the MCP server (`/mcp` in Claude Code).

@@ -138,6 +138,23 @@ Command files live in `template/.agents/` and are copied verbatim by Copier into
 
 Create the file under `template/.agents/skills/djstudio/commands/<subcommand>.md`. No `copier.yml` change is needed — Copier copies the entire `template/.agents/` tree verbatim.
 
+## Python 3.14 — `except` Without Parentheses (PEP 758)
+
+`pyupgrade --py314` rewrites multi-exception handlers to the Python 3.14 syntax:
+
+```python
+# Before (pyupgrade rewrites this automatically)
+except (ValueError, TypeError):
+
+# After — correct Python 3.14 syntax (PEP 758)
+except ValueError, TypeError:
+```
+
+**Do not revert this.** AI assistants commonly flag it as invalid syntax and revert
+it to the parenthesised form — that is wrong. The parenthesised form is the
+pre-3.14 style; the unparenthesised form is now correct.
+See [pyright#10546](https://github.com/microsoft/pyright/issues/10546) for upstream tracking.
+
 ## Bugs and Improvements
 
 Use the `/djstudio feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.

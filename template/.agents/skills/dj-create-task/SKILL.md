@@ -1,3 +1,7 @@
+---
+description: Add a background task using django-tasks-db
+---
+
 Add a background task using `django-tasks-db`.
 
 ## Required reading

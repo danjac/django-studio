@@ -109,23 +109,44 @@ The template uses [DaisyUI](https://daisyui.com/components/) for component styli
 
 ## dj-* Commands
 
-Each slash command is a standalone skill at `template/.agents/skills/dj-<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook writes one stub per command at `.claude/commands/dj-<command>.md` pointing to `@.agents/skills/dj-<command>/SKILL.md`.
+Each slash command is a standalone skill at `template/.agents/skills/dj-<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook scans `.agents/skills/*/SKILL.md` and writes one stub per skill at `.claude/commands/<name>.md` — no list to maintain.
 
-**Adding or changing a command:**
+Supporting files (checklists, prompt templates, report templates, etc.) live in a `resources/` subdirectory: `template/.agents/skills/dj-<command>/resources/`.
 
-1. Create or edit `template/.agents/skills/dj-<command>/SKILL.md`.
-2. Every skill file **must** end with a `## Help` section — user-facing documentation
-   printed verbatim by `/dj-help <command>`. Include: usage line, arguments,
-   what the command does, and at least one example invocation.
-3. Add the command name to the `dj_commands` list in `hooks/post_gen_project.py`
-   so the hook writes the `.claude/commands/dj-<command>.md` stub.
-4. Add or update the entry in `template/opencode.json`.
-5. Always update relevant docs when adding, removing, or changing a command — at minimum:
+### Writing a new skill
+
+**SKILL.md structure** — every skill file must follow this layout:
+
+```markdown
+---
+description: One-sentence summary shown in opencode.json and the UI (≤80 chars)
+---
+
+<workflow prose — steps, code blocks, decisions>
+
+---
+
+## Help
+
+**/dj-<command> [args]**
+
+<user-facing docs for the command>
+Include: usage line, arguments, what it does, at least one example.
+```
+
+**Checklist when adding a command:**
+
+1. Create `template/.agents/skills/dj-<command>/SKILL.md` with frontmatter + `## Help`.
+2. Add supporting files in `resources/` if the skill has reference data or fill-in
+   templates (e.g. `resources/PLURAL_FORMS.md`, `resources/ISSUE_TEMPLATE.md`).
+   Reference them from `SKILL.md` as `resources/<FILE>`.
+3. The post-gen hook auto-discovers the skill (no list to update) and generates
+   `opencode.json` from the frontmatter `description` field.
+4. Update relevant docs:
    - `template/AGENTS.md.jinja` — command table
    - `template/README.md.jinja` — slash command table in the generated project
    - `README.md` — slash command table in this repo root
    - Any `docs/` page the command references or produces output for
-   - `template/.agents/skills/dj-help/SKILL.md` — the commands table
 
    **The `## Skills` section in `README.md` and the `## Slash Commands` section in
    `template/README.md.jinja` must stay in sync**: same sections (General, Generators,
@@ -134,10 +155,6 @@ Each slash command is a standalone skill at `template/.agents/skills/dj-<command
 **Tracking in version control:**
 
 Skill files live in `template/.agents/` and are copied verbatim by Copier into the generated project's `.agents/`. They are tracked in git — no `git add -f` needed.
-
-**Adding new command files:**
-
-Create the directory and file at `template/.agents/skills/dj-<command>/SKILL.md`. No `copier.yml` change is needed — Copier copies the entire `template/.agents/` tree verbatim.
 
 ## Python 3.14 — `except` Without Parentheses (PEP 758)
 

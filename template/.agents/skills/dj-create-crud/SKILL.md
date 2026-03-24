@@ -1,3 +1,7 @@
+---
+description: Generate full CRUD views, templates, URLs, and tests for a model
+---
+
 Generate a complete set of CRUD views for a model.
 
 **Definitions:**

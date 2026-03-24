@@ -1,3 +1,7 @@
+---
+description: Performance audit: N+1 queries, missing indexes, caching, async
+---
+
 Audit the codebase for Django, Python, and database performance issues. Report
 findings in three groups: **CRITICAL** (production-impacting), **WARNING** (likely
 slow under real load), and **ADVISORY** (best-practice gap, lower urgency).

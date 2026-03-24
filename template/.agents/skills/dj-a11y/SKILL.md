@@ -1,3 +1,7 @@
+---
+description: Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML
+---
+
 Audit the codebase for accessibility violations.
 
 Report findings in three groups: **VIOLATION** (clear WCAG 2.1 AA failure),

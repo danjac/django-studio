@@ -1,3 +1,7 @@
+---
+description: Write Playwright E2E test(s) for a described user interaction
+---
+
 Write one or more Playwright E2E tests that cover a described user interaction.
 
 **Step 1 — Gather requirements**

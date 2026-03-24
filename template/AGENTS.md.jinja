@@ -143,6 +143,7 @@ Available in Claude Code and OpenCode as `/dj-<command>`.
 
 | Command | Purpose |
 | ------- | ------- |
+| `/dj-help` | List all dj-* commands or show help for a specific command |
 | `/dj-sync` | Pull latest template changes via Copier and resolve merge conflicts |
 | `/dj-feedback` | File a GitHub issue against the django-studio repo |
 

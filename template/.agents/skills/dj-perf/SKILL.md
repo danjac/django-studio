@@ -270,18 +270,3 @@ X critical · Y warnings · Z advisory
 If there are CRITICAL findings, recommend addressing them before any public
 deployment and offer to fix each one. Wait for the user to confirm before making
 any changes.
-
----
-
-## Help
-
-**/dj-perf**
-
-Audits the codebase for Django, Python, and database performance issues.
-
-Scans views, models, tasks, templates, and settings. Reports findings as CRITICAL
-(production-impacting), WARNING (likely slow under load), or ADVISORY (best-practice
-gap). Offers to fix critical issues after presenting the report.
-
-Example:
-  /dj-perf

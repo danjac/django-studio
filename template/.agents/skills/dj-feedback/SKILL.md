@@ -25,21 +25,6 @@ bug or improvement belongs in the template, not this project.
    gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
    ```
 
-   See `resources/ISSUE_TEMPLATE.md` for the expected body structure.
+   See `resources/issue-template.md` for the expected body structure.
 
 5. Print the new issue URL.
-
----
-
-## Help
-
-**/dj-feedback [description]**
-
-Files a GitHub issue against the `danjac/django-studio` template repository.
-
-Use this when you find a bug or want to suggest an improvement to the template
-itself — not for issues specific to your project. Requires `gh` CLI authenticated
-with GitHub.
-
-Example:
-  /dj-feedback "create-view doesn't wire URL for top-level views correctly"

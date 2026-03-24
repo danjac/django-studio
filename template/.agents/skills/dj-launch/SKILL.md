@@ -435,7 +435,7 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 > Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or press Enter to skip:
 
 **Admin URL** — generate a random human-readable slug if the user skips.
-Use the word list and Python snippet in `resources/WORDLIST.md`:
+Use the word list and Python snippet in `resources/wordlist.md`:
 
 ```python
 slug = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}"
@@ -623,25 +623,3 @@ If it does **not** exist, tell the user:
 
 > The observability stack (Grafana + Prometheus + Loki) is not yet deployed.
 > Run `/dj-launch-observability` when you are ready to set it up.
-
----
-
-## Help
-
-**/dj-launch**
-
-Interactive first-deploy wizard. Guides you through provisioning infrastructure,
-configuring secrets, and deploying the application end-to-end.
-
-Covers: Hetzner infrastructure (Terraform), Cloudflare DNS and SSL, object
-storage (if enabled), Helm secrets, GitHub Actions secrets, the three-step
-first production deploy (build image → deploy infra → deploy app),
-configuring the default Django site (`set_default_site`), and optionally
-adding the Kubernetes MCP server to `.mcp.json`. Idempotent —
-safe to re-run if interrupted; existing values are never overwritten.
-
-Requires: `gh`, `terraform`, `helm`, `kubectl`, and `just` installed and
-authenticated.
-
-Example:
-  /dj-launch

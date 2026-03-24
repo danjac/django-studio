@@ -126,7 +126,7 @@ empty lists rather than guessing.
 ### Step 5 — Update the factory
 
 Edit `<package_name>/<app_name>/tests/factories.py`. Use `factory.Faker` matched
-to the field type — see `resources/FACTORY_REFERENCE.md` for the full mapping
+to the field type — see `resources/factory-reference.md` for the full mapping
 table and M2M pattern.
 
 Full factory example:
@@ -207,19 +207,3 @@ Once tests pass, ask:
 > (`/dj-create-crud <app_name> <model_name>`)
 
 Wait for the user's answer. Do not run `dj-create-crud` automatically.
-
----
-
-## Help
-
-**/dj-create-model <app_name> <model_name>**
-
-Designs and writes a Django model with factory, fixture, and tests.
-
-Interactive: asks for field definitions (name, type, options), timestamps, and
-whether to register in the admin. Prints a model sketch and waits for
-confirmation before writing any code. Offers to generate CRUD views once
-tests pass.
-
-Example:
-  /dj-create-model store Product

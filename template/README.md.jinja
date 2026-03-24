@@ -56,8 +56,9 @@ Available in Claude Code and OpenCode as `/dj-<command>`:
 
 **General**
 
-| Command          | Summary                                                                           |
-| ---------------- | --------------------------------------------------------------------------------- |
+| Command              | Summary                                                                           |
+| -------------------- | --------------------------------------------------------------------------------- |
+| `/dj-help`           | List all dj-* commands or show help for a specific command                        |
 | `/dj-sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
 | `/dj-feedback`       | Report a bug or improvement against the django-studio template                    |
 

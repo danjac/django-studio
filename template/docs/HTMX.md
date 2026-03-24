@@ -13,6 +13,7 @@ HTMX is vendored into `static/vendor/`. To update it or add new JS dependencies,
 - [Middleware](#middleware)
 - [Common Patterns](#common-patterns)
 - [Loading Indicator CSS](#loading-indicator-css)
+- [Extensions](#extensions)
 - [Best Practices](#best-practices)
 - [References](#references)
 
@@ -262,6 +263,59 @@ Modifiers appended to the swap strategy control scroll or viewport position afte
 .htmx-request .htmx-indicator { display: inline; }
 .htmx-request.htmx-indicator { display: inline; }
 ```
+
+## Extensions
+
+HTMX extensions add optional capabilities (SSE, WebSockets, etc.) without
+bloating the core library. Vendor them like any other frontend dependency.
+
+### Adding an extension
+
+1. Add an entry to `vendors.json` (see `docs/Frontend-Dependencies.md`):
+
+   ```json
+   "htmx-ext-sse": {
+       "version": "2.2.4",
+       "source": "https://cdn.jsdelivr.net/npm/htmx-ext-sse@{version}/sse.min.js",
+       "dest": "static/vendor/htmx-ext-sse.js"
+   }
+   ```
+
+2. Download it:
+
+   ```bash
+   just dj sync_vendors --no-input
+   ```
+
+3. Load it on the pages that need it via the `scripts` block. The extension
+   must execute **after** `htmx.js` — placing it in `scripts` (bottom of
+   `<body>`) guarantees this since `htmx.js` loads in `<head>` with `defer`:
+
+   ```html
+   {% block scripts %}
+     {{ block.super }}
+     <script src="{% static 'vendor/htmx-ext-sse.js' %}" defer></script>
+   {% endblock scripts %}
+   ```
+
+4. Activate the extension on the elements that use it with `hx-ext`:
+
+   ```html
+   <div hx-ext="sse" sse-connect="/events/">
+       ...
+   </div>
+   ```
+
+Do not load extensions globally in `base.html` unless every page needs them.
+
+### Available extensions
+
+| Extension | Package | Use case | Docs |
+| --------- | ------- | -------- | ---- |
+| SSE | `htmx-ext-sse` | Server-Sent Events | `docs/Channels.md` |
+| WebSocket | `htmx-ext-ws` | Bidirectional WebSockets | `docs/Channels.md` |
+
+See [htmx.org/extensions](https://htmx.org/extensions/) for the full list.
 
 ## Best Practices
 

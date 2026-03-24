@@ -256,4 +256,4 @@ You can use `_("string")` directly in tag arguments:
 {% include "header.html" with title=_("Dashboard") %}
 ```
 
-Use `/djstudio translate <locale>` to extract, translate, and compile catalogues.
+Use `/dj-translate <locale>` to extract, translate, and compile catalogues.

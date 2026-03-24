@@ -270,7 +270,7 @@ Override the container constraint with negative margins:
 
 ## Custom Template Tags and Filters
 
-Use `/djstudio create-tag` and `/djstudio create-filter` to add new tags and filters.
+Use `/dj-create-tag` and `/dj-create-filter` to add new tags and filters.
 
 ### Where they live
 

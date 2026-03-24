@@ -52,56 +52,56 @@ Run `just` with no arguments to list all available commands.
 
 ## Slash Commands
 
-Claude Code slash commands are available via `/djstudio <subcommand>`:
+Available in Claude Code and OpenCode as `/dj-<command>`:
 
 **General**
 
-| Subcommand       | Summary                                                                           |
+| Command          | Summary                                                                           |
 | ---------------- | --------------------------------------------------------------------------------- |
-| `help [command]` | Print documentation for a subcommand                                              |
-| `sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
-| `feedback`       | Report a bug or improvement against the django-studio template                    |
+| `/dj-help [command]` | List all commands, or show docs for a command                                 |
+| `/dj-sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
+| `/dj-feedback`       | Report a bug or improvement against the django-studio template                    |
 
 **Generators**
 
-| Subcommand       | Summary                                                                |
-| ---------------- | ---------------------------------------------------------------------- |
-| `create-app`     | Create a Django app (apps.py, models, views, urls, admin, tests)       |
-| `create-view`    | Add a view, template, and URL                                          |
-| `create-task`    | Add a `django-tasks-db` background task with correct async patterns    |
-| `create-command` | Add a management command with tests                                    |
-| `create-cron`    | Schedule a management command as a Kubernetes cron job                 |
-| `create-model`   | Design and write a Django model with factory, fixture, and model tests |
-| `create-crud`    | Generate full CRUD views, templates, URLs, and tests                   |
-| `create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
-| `create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
-| `create-filter`  | Add a template filter with correct escaping flags                      |
+| Command              | Summary                                                                |
+| -------------------- | ---------------------------------------------------------------------- |
+| `/dj-create-app`     | Create a Django app (apps.py, models, views, urls, admin, tests)       |
+| `/dj-create-view`    | Add a view, template, and URL                                          |
+| `/dj-create-task`    | Add a `django-tasks-db` background task with correct async patterns    |
+| `/dj-create-command` | Add a management command with tests                                    |
+| `/dj-create-cron`    | Schedule a management command as a Kubernetes cron job                 |
+| `/dj-create-model`   | Design and write a Django model with factory, fixture, and model tests |
+| `/dj-create-crud`    | Generate full CRUD views, templates, URLs, and tests                   |
+| `/dj-create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
+| `/dj-create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
+| `/dj-create-filter`  | Add a template filter with correct escaping flags                      |
 
 **Localisation**
 
-| Subcommand  | Summary                                                        |
-| ----------- | -------------------------------------------------------------- |
-| `translate` | Extract strings, translate via Claude, compile `.mo` catalogue |
+| Command         | Summary                                                        |
+| --------------- | -------------------------------------------------------------- |
+| `/dj-translate` | Extract strings, translate via Claude, compile `.mo` catalogue |
 
 **Audits**
 
-| Subcommand | Summary                                                                      |
-| ---------- | ---------------------------------------------------------------------------- |
-| `perf`     | Performance audit: N+1 queries, missing indexes, caching, async              |
-| `secure`   | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
-| `gdpr`     | GDPR compliance audit: PII in models, erasure, consent, logging              |
-| `a11y`     | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `deadcode`      | Remove unused Python code, Django templates and static assets                |
-| `full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
+| Command              | Summary                                                                      |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `/dj-perf`           | Performance audit: N+1 queries, missing indexes, caching, async              |
+| `/dj-secure`         | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
+| `/dj-gdpr`           | GDPR compliance audit: PII in models, erasure, consent, logging              |
+| `/dj-a11y`           | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
+| `/dj-deadcode`       | Remove unused Python code, Django templates and static assets                |
+| `/dj-full-coverage`  | Enable 100% coverage gate and write tests for all uncovered lines            |
 
 **Deployment**
 
-| Subcommand       | Summary                                                                        |
-| ---------------- | ------------------------------------------------------------------------------ |
-| `launch`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
-| `launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
-| `rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
-| `enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
+| Command                    | Summary                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------ |
+| `/dj-launch`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `/dj-launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
+| `/dj-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
 
 ## MCP Servers
 
@@ -112,7 +112,7 @@ Project-local [MCP servers](https://modelcontextprotocol.io) are configured in `
 | `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection |
 | `@playwright/mcp` | Browser automation and E2E test debugging |
 | `mcp-django` | Django shell — ORM queries, model introspection, arbitrary Python |
-| `mcp-server-kubernetes` | Cluster management and log access (added by `/djstudio launch`) |
+| `mcp-server-kubernetes` | Cluster management and log access (added by `/dj-launch`) |
 
 > **Security:** `mcp-django` gives full shell access to your Django project. Use in development only; never point it at a database containing production data.
 

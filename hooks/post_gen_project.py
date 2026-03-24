@@ -167,7 +167,19 @@ def install_claude_hooks() -> None:
         f.write("\n")
     commands_dst = claude_dir / "commands"
     commands_dst.mkdir(parents=True, exist_ok=True)
-    (commands_dst / "djstudio.md").write_text("@.agents/skills/djstudio/SKILL.md\n")
+    dj_commands = [
+        "help", "sync", "feedback",
+        "create-app", "create-view", "create-task", "create-command",
+        "create-cron", "create-model", "create-crud", "create-e2e",
+        "create-tag", "create-filter",
+        "translate",
+        "perf", "secure", "gdpr", "a11y", "deadcode", "full-coverage",
+        "launch", "launch-observability", "rotate-secrets", "enable-db-backups",
+    ]
+    for cmd in dj_commands:
+        (commands_dst / f"dj-{cmd}.md").write_text(
+            f"@.agents/skills/dj-{cmd}/SKILL.md\n"
+        )
 
 
 # ── MCP config ───────────────────────────────────────────────────────────────

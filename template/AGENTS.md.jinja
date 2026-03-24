@@ -16,7 +16,7 @@ This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for
 
 ## Project Layout
 
-> **Documentation convention:** code examples in `docs/` and `.agents/skills/djstudio/` use these placeholders — substitute with your actual values:
+> **Documentation convention:** code examples in `docs/` and `.agents/skills/` use these placeholders — substitute with your actual values:
 > - `my_package` → `{{ package_name }}` (root Python package, used in imports and file paths)
 > - `my_app` → an arbitrary Django sub-app within `my_package` (e.g. `users`, `posts`, `comments`)
 > - `my_project` → `{{ project_slug }}` (project root directory, Docker image name, service name)
@@ -137,56 +137,56 @@ If a doc contradicts what you see in existing code, flag it — do not silently 
 
 ## Slash Commands
 
-Invoke with `/djstudio <subcommand>` in Claude Code.
+Available in Claude Code and OpenCode as `/dj-<command>`.
 
 **General**
 
-| Subcommand | Purpose |
-| ---------- | ------- |
-| `help [command]` | Print documentation for a subcommand |
-| `sync` | Pull latest template changes via Copier and resolve merge conflicts |
-| `feedback` | File a GitHub issue against the django-studio repo |
+| Command | Purpose |
+| ------- | ------- |
+| `/dj-help [command]` | List all commands, or show docs for a command |
+| `/dj-sync` | Pull latest template changes via Copier and resolve merge conflicts |
+| `/dj-feedback` | File a GitHub issue against the django-studio repo |
 
 **Generators**
 
-| Subcommand | Purpose |
-| ---------- | ------- |
-| `create-app <app_name>` | Scaffold a complete Django app |
-| `create-view [<app_name>] <view>` | Add a view + template + URL |
-| `create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
-| `create-command <app_name> [desc]` | Add a management command with tests |
-| `create-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
-| `create-model <app_name> <model>` | Design a model with factory, fixture, and tests |
-| `create-crud <app_name> <model>` | Full CRUD views, templates, URLs, forms, and tests |
-| `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
-| `create-tag [<app_name>] [<module>]` | Add a template tag |
-| `create-filter [<app_name>] [<module>]` | Add a template filter |
+| Command | Purpose |
+| ------- | ------- |
+| `/dj-create-app <app_name>` | Scaffold a complete Django app |
+| `/dj-create-view [<app_name>] <view>` | Add a view + template + URL |
+| `/dj-create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
+| `/dj-create-command <app_name> [desc]` | Add a management command with tests |
+| `/dj-create-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
+| `/dj-create-model <app_name> <model>` | Design a model with factory, fixture, and tests |
+| `/dj-create-crud <app_name> <model>` | Full CRUD views, templates, URLs, forms, and tests |
+| `/dj-create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
+| `/dj-create-tag [<app_name>] [<module>]` | Add a template tag |
+| `/dj-create-filter [<app_name>] [<module>]` | Add a template filter |
 
 **Localisation**
 
-| Subcommand | Purpose |
-| ---------- | ------- |
-| `translate <locale>` | Extract, translate, and compile message catalogue |
+| Command | Purpose |
+| ------- | ------- |
+| `/dj-translate <locale>` | Extract, translate, and compile message catalogue |
 
 **Audits**
 
-| Subcommand | Purpose |
-| ---------- | ------- |
-| `perf` | Performance audit: N+1 queries, indexes, caching, async |
-| `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
-| `gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
-| `a11y` | Accessibility audit: WCAG 2.1 AA |
-| `deadcode` | Remove unused Python code, Django templates and static assets |
-| `full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines |
+| Command | Purpose |
+| ------- | ------- |
+| `/dj-perf` | Performance audit: N+1 queries, indexes, caching, async |
+| `/dj-secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
+| `/dj-gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
+| `/dj-a11y` | Accessibility audit: WCAG 2.1 AA |
+| `/dj-deadcode` | Remove unused Python code, Django templates and static assets |
+| `/dj-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines |
 
 **Deployment**
 
-| Subcommand | Purpose |
-| ---------- | ------- |
-| `launch` | Interactive first-deploy wizard (infra → secrets → deploy) |
-| `launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki) |
-| `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
-| `enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
+| Command | Purpose |
+| ------- | ------- |
+| `/dj-launch` | Interactive first-deploy wizard (infra → secrets → deploy) |
+| `/dj-launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki) |
+| `/dj-rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
+| `/dj-enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
 
 
 ## MCP Servers
@@ -198,7 +198,7 @@ The following MCP servers are configured in `.mcp.json` (gitignored, generated a
 | `postgres` | Always | Execute SQL, inspect schema, check migrations |
 | `playwright` | Always | Browser automation, E2E test debugging |
 | `django` | Always | Django shell: ORM queries, model introspection, arbitrary Python in Django context |
-| `kubernetes` | After `/djstudio launch` | Inspect pods, view logs, manage deployments |
+| `kubernetes` | After `/dj-launch` | Inspect pods, view logs, manage deployments |
 
 Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively. Use `kubernetes` to diagnose production pod failures without leaving the editor.
 
@@ -206,4 +206,4 @@ See `docs/MCP.md` for details.
 
 ## Template Feedback
 
-Generated from [django-studio](https://github.com/danjac/djstudio). To report a bug or improvement: `/djstudio feedback`
+Generated from [django-studio](https://github.com/danjac/djstudio). To report a bug or improvement: `/dj-feedback`

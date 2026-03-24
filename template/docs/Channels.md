@@ -7,6 +7,7 @@ Real-time patterns for pushing data from the server to the browser.
 - [Choosing a Pattern](#choosing-a-pattern)
 - [Server-Sent Events with LISTEN/NOTIFY](#server-sent-events-with-listennotify)
 - [WebSockets with Django Channels](#websockets-with-django-channels)
+- [Testing](#testing)
 - [HTMX Integration](#htmx-integration)
 
 ## Choosing a Pattern
@@ -235,6 +236,88 @@ def broadcast_to_room(room_name: str, message: str) -> None:
         {"type": "chat.message", "message": message},
     )
 ```
+
+## Testing
+
+### SSE views
+
+Test the SSE view like any async Django view. Use `AsyncClient` and iterate
+over the streaming response:
+
+```python
+import pytest
+
+from django.test import AsyncClient
+
+
+@pytest.mark.django_db
+async def test_sse_notifications(mocker):
+    mock_notifies = mocker.patch(
+        "my_app.views.psycopg.AsyncConnection.connect"
+    )
+    # ... set up mock to yield test notifications
+
+    client = AsyncClient()
+    response = await client.get("/sse/notifications/")
+    assert response["Content-Type"] == "text/event-stream"
+```
+
+For integration tests, publish a real NOTIFY in the test database and verify
+the view yields the expected SSE event.
+
+### WebSocket consumers
+
+Django Channels provides `WebsocketCommunicator` for testing consumers
+without a real server. Use the in-memory channel layer in tests:
+
+Add the channel layer override to the existing `_settings_overrides` fixture
+in `my_package/tests/fixtures.py` (see `docs/Testing.md`):
+
+```python
+@pytest.fixture(autouse=True)
+def _settings_overrides(settings):
+    settings.CACHES = {
+        "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}
+    }
+    settings.CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
+    }
+```
+
+```python
+import pytest
+from channels.testing import WebsocketCommunicator
+
+from my_app.consumers import ChatConsumer
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+async def test_chat_consumer_sends_message():
+    communicator = WebsocketCommunicator(
+        ChatConsumer.as_asgi(),
+        "/ws/chat/lobby/",
+    )
+    connected, _ = await communicator.connect()
+    assert connected
+
+    await communicator.send_json_to({"message": "hello"})
+    response = await communicator.receive_json_from()
+    assert response["message"] == "hello"
+
+    await communicator.disconnect()
+```
+
+Key points:
+
+- Use `InMemoryChannelLayer` in tests — no Redis dependency needed.
+- Always call `communicator.disconnect()` to avoid leaked connections.
+- `WebsocketCommunicator` does not run routing — pass the consumer class
+  directly. To test routing, use `channels.testing.ChannelsLiveServerTestCase`.
+- For authenticated WebSocket tests, set `communicator.scope["user"]` before
+  calling `connect()`.
 
 ## HTMX Integration
 

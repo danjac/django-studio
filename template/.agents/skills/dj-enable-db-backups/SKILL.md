@@ -219,23 +219,3 @@ Tell the user:
 >
 > To adjust the schedule or retention, edit the `backup:` section in
 > `helm/site/values.yaml` and run `just helm site`.
-
----
-
-## Help
-
-**/dj-enable-db-backups**
-
-Interactive wizard to enable automated daily PostgreSQL backups to a private
-Hetzner Object Storage bucket. Provisions the backup bucket via Terraform,
-configures Helm secrets, deploys the backup CronJob, and runs a test backup
-to confirm everything works.
-
-By default, backups run daily at 03:00 UTC and the 7 most recent dumps are
-retained. You will be prompted to change these before deploying.
-Restore instructions are in `docs/Database-Backups.md`.
-
-Requires: `terraform`, `just`, and `kubectl` installed and authenticated.
-
-Example:
-  /dj-enable-db-backups

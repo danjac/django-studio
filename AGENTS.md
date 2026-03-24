@@ -123,23 +123,26 @@ description: One-sentence summary shown in opencode.json and the UI (≤80 chars
 ---
 
 <workflow prose — steps, code blocks, decisions>
+```
 
----
+**resources/help.md** — every skill must have one. Content:
 
-## Help
-
+```markdown
 **/dj-<command> [args]**
 
 <user-facing docs for the command>
 Include: usage line, arguments, what it does, at least one example.
 ```
 
+All resource files use lower-kebab-case (e.g. `help.md`, `factory-reference.md`).
+
 **Checklist when adding a command:**
 
-1. Create `template/.agents/skills/dj-<command>/SKILL.md` with frontmatter + `## Help`.
-2. Add supporting files in `resources/` if the skill has reference data or fill-in
-   templates (e.g. `resources/PLURAL_FORMS.md`, `resources/ISSUE_TEMPLATE.md`).
-   Reference them from `SKILL.md` as `resources/<FILE>`.
+1. Create `template/.agents/skills/dj-<command>/SKILL.md` with frontmatter.
+2. Create `template/.agents/skills/dj-<command>/resources/help.md` with usage docs.
+3. Add other supporting files in `resources/` if the skill has reference data or
+   fill-in templates (e.g. `resources/plural-forms.md`, `resources/issue-template.md`).
+   Reference them from `SKILL.md` as `resources/<file>`.
 3. The post-gen hook auto-discovers the skill (no list to update) and generates
    `opencode.json` from the frontmatter `description` field.
 4. Update relevant docs:

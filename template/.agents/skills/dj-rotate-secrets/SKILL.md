@@ -53,7 +53,7 @@ runbooks that reference the current admin path:
 > bookmarks or scripts that use the current path. (y/n)
 
 If **yes**, generate a new random human-readable slug using the word list in
-`resources/WORDLIST.md`:
+`resources/wordlist.md`:
 
 ```python
 new_admin_url = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}/"
@@ -170,19 +170,3 @@ Tell the user:
 > `djangoSecretKeyFallbacks` by running `/dj-rotate-secrets` again
 > and choosing not to rotate the Django key — or remove the fallback
 > manually when all active sessions have expired.
-
----
-
-## Help
-
-**/dj-rotate-secrets**
-
-Rotates auto-generated and third-party secrets in `helm/site/values.secret.yaml`
-and redeploys the Helm chart to apply them.
-
-Requires an existing deployment (`values.secret.yaml` must exist). Always shows
-exactly which secrets will change and waits for confirmation before writing
-anything.
-
-Example:
-  /dj-rotate-secrets

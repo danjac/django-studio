@@ -3,7 +3,7 @@
 # Runs entirely in-cluster — no local aws CLI or psql installation required.
 # Usage: called via 'just rdb-restore <filename>' — do not invoke directly.
 #   filename: e.g. backup-20240103-030000.sql.gz
-# See docs/Database-Backups.md for the full restore guide including how to list available backups.
+# See docs/database-backups.md for the full restore guide including how to list available backups.
 set -euo pipefail
 
 export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/{{ project_slug }}.yaml}"

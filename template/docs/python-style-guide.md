@@ -1,7 +1,7 @@
 # Python Style Guide
 
 Code style is enforced automatically by pre-commit (ruff, pyupgrade, django-upgrade,
-absolufy-imports). See `docs/Precommit-Linting.md` for toolchain configuration.
+absolufy-imports). See `docs/precommit-linting.md` for toolchain configuration.
 This doc covers conventions and gotchas that tools cannot enforce.
 
 ## Contents
@@ -142,7 +142,7 @@ class DownloadOptions:
 
 ## Internationalisation
 
-See `docs/Django.md` for internationalisation conventions (`gettext`, `gettext_lazy`, templates).
+See `docs/django.md` for internationalisation conventions (`gettext`, `gettext_lazy`, templates).
 
 ## Class Attributes
 
@@ -171,5 +171,5 @@ Use a tuple unless the framework explicitly requires a mutable list.
 ## Type Annotations
 
 - Type checking is done by `basedpyright` (`just typecheck`). Configuration is in `pyproject.toml` under `[tool.pyright]`.
-- Use typed request/response classes from `http/` — see `docs/Django-Views.md`.
+- Use typed request/response classes from `http/` — see `docs/django-views.md`.
 - Migrations and test files are excluded from type checking.

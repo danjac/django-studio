@@ -80,7 +80,10 @@ Before adding or modifying any code under `template/`, read the generated projec
 
 - `template/AGENTS.md.jinja` — agent workflow, conventions, and command reference
 - `template/docs/` — all reference docs (Django config, views, models, packages, HTMX, etc.)
+
 These docs describe the patterns, types, and conventions the generated project uses. Code that ignores them will be wrong.
+
+**Naming convention:** all files under `template/docs/` and `template/.agents/skills/*/resources/` use lower-kebab-case (e.g. `django-views.md`, `help.md`). New docs and resource files must follow the same pattern.
 
 After any change to `template/`, regenerate the project and verify all checks pass before committing:
 
@@ -105,7 +108,7 @@ a cached `/tmp/my_app` hides.
 
 ## UI Components
 
-The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/Django-Templates.md`. Component classes, icons, dark mode, and Tailwind configuration are in `template/docs/Design.md`.
+The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/django-templates.md`. Component classes, icons, dark mode, and Tailwind configuration are in `template/docs/design.md`.
 
 ## dj-* Commands
 

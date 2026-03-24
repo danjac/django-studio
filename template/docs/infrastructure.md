@@ -92,7 +92,7 @@ Full Kubernetes (kubeadm, EKS, GKE) is operationally heavy for a single develope
 
 ## Deployment
 
-See `docs/Deployment.md` for all deployment commands (Terraform, Helm, CI/CD pipeline).
+See `docs/deployment.md` for all deployment commands (Terraform, Helm, CI/CD pipeline).
 
 ## Services
 
@@ -370,7 +370,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ## Backup
 
 Automated daily backups are optional and set up separately after initial deployment.
-See `docs/Database-Backups.md` for the full setup and restore guide, or run `/dj-enable-db-backups`
+See `docs/database-backups.md` for the full setup and restore guide, or run `/dj-enable-db-backups`
 to be guided through the process interactively.
 
 In brief: a Kubernetes CronJob runs `pg_dump` nightly and uploads compressed dumps to a

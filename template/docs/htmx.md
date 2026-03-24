@@ -2,7 +2,7 @@
 
 HTMX provides dynamic page behavior without writing JavaScript. This project uses `django-htmx` for seamless integration.
 
-HTMX is vendored into `static/vendor/`. To update it or add new JS dependencies, see `docs/Frontend-Dependencies.md`.
+HTMX is vendored into `static/vendor/`. To update it or add new JS dependencies, see `docs/frontend-dependencies.md`.
 
 ## Contents
 
@@ -139,7 +139,7 @@ The view always renders `my_app/items_list.html` on the first load. When HTMX re
 
 Pass a `PaginationConfig` to customise behaviour (target, partial name, page size, or
 paginator class). For numbered pagination and infinite scroll patterns see
-`docs/Pagination.md`.
+`docs/pagination.md`.
 
 ## Middleware
 
@@ -271,7 +271,7 @@ bloating the core library. Vendor them like any other frontend dependency.
 
 ### Adding an extension
 
-1. Add an entry to `vendors.json` (see `docs/Frontend-Dependencies.md`):
+1. Add an entry to `vendors.json` (see `docs/frontend-dependencies.md`):
 
    ```json
    "htmx-ext-sse": {
@@ -312,8 +312,8 @@ Do not load extensions globally in `base.html` unless every page needs them.
 
 | Extension | Package | Use case | Docs |
 | --------- | ------- | -------- | ---- |
-| SSE | `htmx-ext-sse` | Server-Sent Events | `docs/Channels.md` |
-| WebSocket | `htmx-ext-ws` | Bidirectional WebSockets | `docs/Channels.md` |
+| SSE | `htmx-ext-sse` | Server-Sent Events | `docs/channels.md` |
+| WebSocket | `htmx-ext-ws` | Bidirectional WebSockets | `docs/channels.md` |
 
 See [htmx.org/extensions](https://htmx.org/extensions/) for the full list.
 

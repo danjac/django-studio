@@ -24,7 +24,7 @@ Python 3.14 is managed automatically by `uv` - no separate install needed.
 | [kubectl](https://kubernetes.io/docs/tasks/tools/)             | Kubernetes CLI                                      | See install docs |
 | [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                   | See install docs |
 
-See `docs/Deployment.md` for full deployment instructions.
+See `docs/deployment.md` for full deployment instructions.
 
 ## Setup
 
@@ -116,7 +116,7 @@ Project-local [MCP servers](https://modelcontextprotocol.io) are configured in `
 
 > **Security:** `mcp-django` gives full shell access to your Django project. Use in development only; never point it at a database containing production data.
 
-See `docs/MCP.md` for details and usage examples.
+See `docs/mcp.md` for details and usage examples.
 
 ## Stack
 

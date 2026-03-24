@@ -64,7 +64,7 @@ Then redeploy:
 just helm site
 ```
 
-See `docs/Database-Backups.md` for the full workflow including restore instructions.
+See `docs/database-backups.md` for the full workflow including restore instructions.
 
 ## Troubleshooting
 

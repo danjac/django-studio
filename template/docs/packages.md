@@ -1,6 +1,6 @@
 # Additional Packages
 
-> **Frontend JS/CSS dependencies** (HTMX, Alpine.js, DaisyUI) are vendored, not installed via pip. See `docs/Frontend-Dependencies.md` to add or update them.
+> **Frontend JS/CSS dependencies** (HTMX, Alpine.js, DaisyUI) are vendored, not installed via pip. See `docs/frontend-dependencies.md` to add or update them.
 
 These packages are not in the default stack but are the preferred choices when
 the need arises. **Only add them when actually needed — do not install
@@ -61,12 +61,12 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **sorl-thumbnail**: add `"sorl.thumbnail"` to `INSTALLED_APPS`. Uses the
   Redis cache backend (already configured).
 - **aiohttp**: use for async HTTP calls to third-party APIs. See
-  `docs/API-Integration.md` for the `USER_AGENT` setting, error handling, and testing patterns.
-- **channels**: for real-time (SSE and WebSockets). See `docs/Channels.md` for
+  `docs/api-integration.md` for the `USER_AGENT` setting, error handling, and testing patterns.
+- **channels**: for real-time (SSE and WebSockets). See `docs/channels.md` for
   setup, consumers, and HTMX integration.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. `MoneyWidget` renders an amount input and a
-  currency select side-by-side. See `docs/Django-Forms.md#moneywidget` for the
+  currency select side-by-side. See `docs/django-forms.md#moneywidget` for the
   `{% partialdef moneywidget %}` partial.
 - **pydantic**: use for parsing and validating external API responses, complex
   form payloads, and structured config. Add to `pyproject.toml` to prevent
@@ -98,7 +98,7 @@ State your findings explicitly when suggesting a package — don't just name it.
   backend. No DB overhead. Best fit when authorization logic is expressed in
   code (ownership checks, role membership, state-based rules).
 - **geopy**: use the `Nominatim` geocoder (no API key required). Run geocoding in
-  a background task — never in a request handler. See `docs/Maps.md` for the full
+  a background task — never in a request handler. See `docs/maps.md` for the full
   pattern including the django-tasks integration and OSM embed.
 - **django-modeltranslation**: adds language-specific columns for selected model
   fields using a `translation.py` registration file — no schema changes to

@@ -197,7 +197,7 @@ def item_list(request: HttpRequest) -> TemplateResponse:
     )
 ```
 
-See `docs/HTMX.md` for full HTMX conventions and `docs/Django-Templates.md` for
+See `docs/htmx.md` for full HTMX conventions and `docs/django-templates.md` for
 template authoring conventions.
 
 ## Paginated Views
@@ -215,7 +215,7 @@ def item_list(request: HttpRequest) -> TemplateResponse:
 ```
 
 For numbered pagination, infinite scroll, and `PaginationConfig` options see
-`docs/Pagination.md`.
+`docs/pagination.md`.
 
 ## Async Views
 
@@ -242,7 +242,7 @@ async def search_items(request: HttpRequest) -> TemplateResponse:
 - Template rendering
 - Most typical Django views
 
-For the HTTP client, error handling, and testing patterns, see `docs/API-Integration.md`.
+For the HTTP client, error handling, and testing patterns, see `docs/api-integration.md`.
 
 ## Internationalisation in Views
 

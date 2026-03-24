@@ -6,7 +6,7 @@ Deploy the observability stack (Grafana + Prometheus + Loki) to a running cluste
 
 ## Required reading
 
-- `docs/Deployment.md`
+- `docs/deployment.md`
 
 ---
 

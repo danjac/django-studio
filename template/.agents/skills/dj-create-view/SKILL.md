@@ -25,7 +25,7 @@ where the template goes, and where the URL is wired.
 
 1. **Choose the response pattern:**
 
-   Always add an explicit HTTP method decorator (see `docs/Django-Views.md`).
+   Always add an explicit HTTP method decorator (see `docs/django-views.md`).
 
    Full page (read-only):
    ```python

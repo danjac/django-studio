@@ -7,7 +7,7 @@ Object Storage bucket.
 
 ## Required reading
 
-- `docs/Deployment.md`
+- `docs/deployment.md`
 
 ---
 
@@ -214,7 +214,7 @@ Tell the user:
 >
 > Retention: the 7 most recent backups are kept; older ones are pruned automatically.
 >
-> To restore from a backup, follow `docs/Database-Backups.md` — it has step-by-step instructions
+> To restore from a backup, follow `docs/database-backups.md` — it has step-by-step instructions
 > including a "3 AM emergency" restore guide.
 >
 > To adjust the schedule or retention, edit the `backup:` section in

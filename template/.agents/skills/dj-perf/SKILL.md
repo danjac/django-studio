@@ -85,7 +85,7 @@ are necessary and note what they do.
 
 ### 2a. Caching
 
-See `docs/Caching.md` for the full caching strategy — when to cache, when not to,
+See `docs/caching.md` for the full caching strategy — when to cache, when not to,
 and which mechanism to reach for first.
 
 Flag as **ADVISORY** any view that:
@@ -163,7 +163,7 @@ class Article(models.Model):
 
 Reach for `@cached_property` or `functools.cache` before Redis — they have no
 network overhead and no invalidation complexity. Use Redis only when the value
-must be shared across processes or server instances. See `docs/Caching.md`.
+must be shared across processes or server instances. See `docs/caching.md`.
 
 ### 3e. Unnecessary imports
 

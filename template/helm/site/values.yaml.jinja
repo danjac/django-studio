@@ -104,7 +104,7 @@ cronjobs:
     schedule: "25 9 * * *"
     command: "./manage.sh prune_db_task_results --min-age-days=1"
 
-# Database backups - disabled by default, see docs/Database-Backups.md to enable
+# Database backups - disabled by default, see docs/database-backups.md to enable
 backup:
   enabled: false
   schedule: "0 3 * * *"
@@ -136,7 +136,7 @@ secrets:
   hetznerStorageBucket: ""
   hetznerStorageEndpoint: ""
   hetznerStorageRegion: "fsn1"
-  # Database backups (backup.enabled: true) - see docs/Database-Backups.md
+  # Database backups (backup.enabled: true) - see docs/database-backups.md
   backupAccessKey: ""
   backupSecretKey: ""
   backupBucket: ""

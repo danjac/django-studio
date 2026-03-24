@@ -6,7 +6,7 @@ Add a background task using `django-tasks-db`.
 
 ## Required reading
 
-- `docs/Django-Tasks.md`
+- `docs/django-tasks.md`
 
 **Steps:**
 

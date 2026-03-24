@@ -7,8 +7,8 @@ configuring secrets, and deploying the application end-to-end.
 
 ## Required reading
 
-- `docs/Infrastructure.md`
-- `docs/Deployment.md`
+- `docs/infrastructure.md`
+- `docs/deployment.md`
 
 ---
 

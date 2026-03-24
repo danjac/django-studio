@@ -271,7 +271,7 @@ Django Channels provides `WebsocketCommunicator` for testing consumers
 without a real server. Use the in-memory channel layer in tests:
 
 Add the channel layer override to the existing `_settings_overrides` fixture
-in `my_package/tests/fixtures.py` (see `docs/Testing.md`):
+in `my_package/tests/fixtures.py` (see `docs/testing.md`):
 
 ```python
 @pytest.fixture(autouse=True)
@@ -322,7 +322,7 @@ Key points:
 ## HTMX Integration
 
 Both SSE and WebSockets integrate with HTMX via dedicated extensions. See
-`docs/HTMX.md` → [Extensions](HTMX.md#extensions) for how to vendor and load
+`docs/htmx.md` → [Extensions](htmx.md#extensions) for how to vendor and load
 them.
 
 | Pattern | Extension | `vendors.json` key |

@@ -1,6 +1,6 @@
 # Templates
 
-This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments. Components use DaisyUI classes — see `docs/Design.md` for the class reference.
+This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments. Components use DaisyUI classes — see `docs/design.md` for the class reference.
 
 ## Contents
 
@@ -78,7 +78,7 @@ Use `inline` when the partial IS the content — i.e. the block should render in
 {% endblock content %}
 ```
 
-On an HTMX request targeting `#item-list`, `render_partial_response` returns only the `item-list` partial. On a full-page load `inline` renders the block in place. See `docs/HTMX.md` for the view-side pattern.
+On an HTMX request targeting `#item-list`, `render_partial_response` returns only the `item-list` partial. On a full-page load `inline` renders the block in place. See `docs/htmx.md` for the view-side pattern.
 
 **Component template (no `inline`):**
 
@@ -109,7 +109,7 @@ Conventional locations:
 
 ## Forms
 
-For form rendering patterns, widget dispatch, and custom widgets, see `docs/Django-Forms.md`.
+For form rendering patterns, widget dispatch, and custom widgets, see `docs/django-forms.md`.
 
 ## Pagination
 
@@ -123,7 +123,7 @@ For form rendering patterns, widget dispatch, and custom widgets, see `docs/Djan
 {% endfragment %}
 ```
 
-The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_config.target }}`. The view uses `render_paginated_response` which sets `page`, `paginator`, and `pagination_config` in context automatically — see `docs/Pagination.md`.
+The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_config.target }}`. The view uses `render_paginated_response` which sets `page`, `paginator`, and `pagination_config` in context automatically — see `docs/pagination.md`.
 
 ## Browse List
 

@@ -10,6 +10,7 @@ via [geopy](https://geopy.readthedocs.io/) (Nominatim). No API key required for 
 - [Geocoding task](#geocoding-task)
 - [Triggering geocoding on save](#triggering-geocoding-on-save)
 - [Template embed](#template-embed)
+- [PostGIS and GeoDjango](#postgis-and-geodjango)
 
 ## CSP
 
@@ -171,3 +172,139 @@ class VenuesConfig(AppConfig):
   {% endif %}
 {% endwith %}
 ```
+
+## PostGIS and GeoDjango
+
+The `DecimalField` approach above works for simple "store a point and show it
+on a map" use cases. For spatial queries (distance lookups, bounding-box
+filters, polygon containment) use PostGIS and Django's built-in
+[GeoDjango](https://docs.djangoproject.com/en/stable/ref/contrib/gis/) framework.
+
+### When to upgrade
+
+- Radius searches ("venues within 10 km")
+- Ordering by distance from a point
+- Storing polygons, lines, or multi-points (delivery zones, routes)
+- Spatial joins or intersections between geometries
+
+If you only need to store and display a single lat/lng, `DecimalField` is
+simpler — no PostGIS extension required.
+
+### Setup
+
+1. Enable PostGIS via a migration (create an empty migration in your app):
+
+   ```python
+   from django.contrib.postgres.operations import CreateExtension
+   from django.db import migrations
+
+
+   class Migration(migrations.Migration):
+       dependencies = [...]
+
+       operations = [
+           CreateExtension("postgis"),
+       ]
+   ```
+
+2. Switch the database engine in `config/settings.py`:
+
+   ```python
+   DATABASES = {
+       "default": {
+           ...
+           "ENGINE": "django.contrib.gis.db.backends.postgis",
+       },
+   }
+   ```
+
+3. Add `django.contrib.gis` to `INSTALLED_APPS`.
+
+4. Install system libraries (already in the project Dockerfile if using the
+   `postgis` image tag):
+
+   ```bash
+   # Debian/Ubuntu
+   sudo apt-get install gdal-bin libgdal-dev
+   ```
+
+### Model fields
+
+Replace `DecimalField` lat/lng pairs with a single `PointField`:
+
+```python
+from django.contrib.gis.db import models
+
+
+class Venue(models.Model):
+    ...
+    location = models.PointField(null=True, blank=True, geography=True)
+```
+
+`geography=True` stores coordinates as WGS 84 (SRID 4326) and makes distance
+calculations use great-circle math (metres on a sphere) rather than Cartesian.
+
+### Creating points
+
+```python
+from django.contrib.gis.geos import Point
+
+venue.location = Point(longitude, latitude, srid=4326)  # note: x=lng, y=lat
+venue.save()
+```
+
+### Spatial queries
+
+```python
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+
+
+user_location = Point(-6.2603, 53.3498, srid=4326)  # Dublin
+
+# Venues within 10 km
+nearby = Venue.objects.filter(
+    location__distance_lte=(user_location, D(km=10)),
+)
+
+# Order by distance, annotate with distance value
+nearby_sorted = (
+    Venue.objects.filter(location__isnull=False)
+    .annotate(distance=Distance("location", user_location))
+    .order_by("distance")
+)
+```
+
+### Geocoding with GeoDjango
+
+The geocoding task from above works unchanged — just store the result as a
+`Point` instead of separate decimal fields:
+
+```python
+from django.contrib.gis.geos import Point
+
+
+Venue.objects.filter(pk=venue_pk).update(
+    location=Point(location.longitude, location.latitude, srid=4326),
+)
+```
+
+### Admin integration
+
+Use `GISModelAdmin` (or `GeoModelAdmin` on older Django) for an interactive
+map widget in the admin:
+
+```python
+from django.contrib.gis import admin
+
+@admin.register(Venue)
+class VenueAdmin(admin.GISModelAdmin):
+    ...
+```
+
+### References
+
+- [GeoDjango documentation](https://docs.djangoproject.com/en/stable/ref/contrib/gis/)
+- [PostGIS documentation](https://postgis.net/documentation/)
+- [Spatial lookups reference](https://docs.djangoproject.com/en/stable/ref/contrib/gis/geoquerysets/)

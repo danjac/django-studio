@@ -1,4 +1,4 @@
-# ruff: noqa: INP001, T201
+# ruff: noqa: INP001, T201, S311
 """Print a random human-readable slug in the form <adjective>-<noun>.
 
 Usage:

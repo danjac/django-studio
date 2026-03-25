@@ -71,6 +71,38 @@ Common native names: `fr` → Français, `fr_CA` → Français (Canada),
 
 ---
 
+### 2b — Create locale format file *(new locale only — skip if re-running)*
+
+Check whether `config/formats/<locale>/` exists.
+
+If it does not, create it:
+
+```bash
+mkdir -p config/formats/<locale>
+touch config/formats/<locale>/__init__.py
+```
+
+Then create `config/formats/<locale>/formats.py`. Use Django's built-in locale
+formats for `<locale>` (found at `django/conf/locale/<locale>/formats.py` inside
+the installed Django package) as a reference, and write only the overrides that
+differ from Django's defaults or that should be project-specific. At minimum,
+include `DATE_FORMAT` matching the style used in `config/formats/en/formats.py`.
+
+Example for `fr`:
+
+```python
+DATE_FORMAT = "j F Y"
+SHORT_DATE_FORMAT = "d/m/Y"
+DECIMAL_SEPARATOR = ","
+THOUSAND_SEPARATOR = "\xa0"
+NUMBER_GROUPING = 3
+```
+
+See `docs/localization.md#dates-numbers-and-locale-aware-formatting` for the
+full list of available variables.
+
+---
+
 ### 3 — Translate the `.po` file
 
 Read `locale/<locale>/LC_MESSAGES/django.po`.

@@ -17,6 +17,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 _, PROJECT_SLUG, *_args = sys.argv
@@ -79,9 +80,11 @@ def _parse_skill_description(skill_file: Path) -> str:
 
 
 def _backup(src: Path) -> None:
-    """Copy src to /tmp/<name>.bak if it exists, so dj-sync can diff it."""
+    """Copy src to <tmpdir>/<project_slug>/<name>.bak if it exists, so dj-sync can diff it."""
     if src.exists():
-        shutil.copy2(src, Path("/tmp") / f"{src.name.lstrip('.')}.bak")
+        backup_dir = Path(tempfile.gettempdir()) / PROJECT_SLUG
+        backup_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, backup_dir / f"{src.name.lstrip('.')}.bak")
 
 
 def install_claude_hooks() -> None:

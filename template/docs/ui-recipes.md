@@ -23,6 +23,16 @@ Register it once in your base template's `{% block scripts %}` block:
     document.addEventListener('alpine:init', () => {
       Alpine.data('dropdown', () => ({
         open: false,
+        init() {
+          this._onDropdownOpen = (e) => { if (e.target !== this.$el) this.close(); };
+          this._onHtmxRequest = () => this.close();
+          window.addEventListener('dropdown-open', this._onDropdownOpen);
+          window.addEventListener('htmx:beforeRequest', this._onHtmxRequest);
+        },
+        destroy() {
+          window.removeEventListener('dropdown-open', this._onDropdownOpen);
+          window.removeEventListener('htmx:beforeRequest', this._onHtmxRequest);
+        },
         toggle() {
           this.open = !this.open;
           if (this.open) this.$dispatch('dropdown-open');
@@ -34,6 +44,8 @@ Register it once in your base template's `{% block scripts %}` block:
 {% endblock scripts %}
 ```
 
+`init()` wires up two window listeners: one closes this dropdown when any other opens, one closes on HTMX navigation. `destroy()` removes them to prevent leaks when the element is removed from the DOM.
+
 ### Basic usage
 
 ```html
@@ -42,8 +54,6 @@ Register it once in your base template's `{% block scripts %}` block:
   x-data="dropdown()"
   @click.outside="close()"
   @keyup.escape.window="close()"
-  @dropdown-open.window="if ($event.target !== $el) close()"
-  @htmx:before-request.window="close()"
 >
   <button
     type="button"
@@ -65,8 +75,6 @@ Register it once in your base template's `{% block scripts %}` block:
   </ul>
 </div>
 ```
-
-`@dropdown-open.window` closes this dropdown when any other opens (`$event.target !== $el`). `@htmx:before-request.window` closes it on any HTMX navigation.
 
 ### Form actions inside a dropdown
 

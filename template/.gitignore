@@ -41,6 +41,9 @@ locale/**/*.mo
 htmlcov/
 .pytest_cache/
 
+# Temp / backup
+*.bak
+
 # IDEs
 .idea/
 .vscode/

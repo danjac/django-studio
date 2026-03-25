@@ -136,6 +136,83 @@ needed.
 
 ---
 
+## Dates, numbers, and locale-aware formatting
+
+Django's formatting system renders dates, times, and numbers according to the
+active locale when `USE_L10N = True`. This is enabled by default.
+
+`FORMAT_MODULE_PATH = ["config.formats"]` (already set in `config/settings.py`)
+tells Django to look for locale-specific overrides in `config/formats/<locale>/formats.py`
+before falling back to Django's built-in locale formats.
+
+### Format file
+
+Each locale can have a `config/formats/<locale>/formats.py` that overrides the
+built-in defaults. The `en` locale already ships one:
+
+```
+config/formats/
+    en/
+        __init__.py
+        formats.py        # DATE_FORMAT = "j M Y"
+```
+
+To add a new locale (e.g. `fr`):
+
+```bash
+mkdir -p config/formats/fr
+touch config/formats/fr/__init__.py
+```
+
+Then create `config/formats/fr/formats.py` with any overrides:
+
+```python
+# Override Django's built-in French formats as needed.
+# Available variables (see django/conf/locale/<locale>/formats.py for defaults):
+
+DATE_FORMAT = "j F Y"          # 25 mars 2026
+DATETIME_FORMAT = "j F Y H:i"
+TIME_FORMAT = "H:i"
+SHORT_DATE_FORMAT = "d/m/Y"
+
+DECIMAL_SEPARATOR = ","
+THOUSAND_SEPARATOR = "\xa0"    # non-breaking space
+NUMBER_GROUPING = 3
+```
+
+Leave out any variable you want Django's built-in locale default to apply.
+
+### Templates
+
+Use `{{ value|localize }}` to format a value using the active locale:
+
+```html
+{% load l10n %}
+<p>{{ article.published_at|localize }}</p>
+<p>{{ price|localize }}</p>
+```
+
+Wrap a block to force locale-aware output on/off:
+
+```html
+{% load l10n %}
+{% localize on %}
+  {{ price }}
+{% endlocalize %}
+```
+
+### Python
+
+```python
+from django.utils import formats
+
+formats.date_format(value, "DATE_FORMAT")       # uses active locale's DATE_FORMAT
+formats.number_format(value, decimal_pos=2)     # locale-aware decimal/grouping
+formats.localize(value)                         # auto-detects type
+```
+
+---
+
 ## dj-translate skill
 
 Use `/dj-translate <locale>` to extract, translate, and compile a message catalogue in

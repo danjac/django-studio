@@ -84,11 +84,25 @@ Now that the observability stack is deployed, configure the app to send telemetr
 
 Read `secrets.openTelemetryUrl` from `helm/site/values.secret.yaml`.
 
-If it is empty, write the cluster-internal OTLP endpoint:
+If it is empty, discover the OTLP collector service name dynamically:
+
+```bash
+just kube get svc -A | grep otel
+```
+
+Use the discovered service name and namespace to build the endpoint URL. The
+typical result is:
 
 ```
-http://opentelemetry-collector.monitoring.svc.cluster.local:4318
+http://otel-gateway.default.svc.cluster.local:4318
 ```
+
+If no otel service is found, tell the user:
+
+> No OTLP collector service found in the cluster. Verify the observability
+> chart deployed correctly with `just kube get pods -n monitoring`.
+
+Write the discovered endpoint to `secrets.openTelemetryUrl`.
 
 Then push the updated config and redeploy:
 

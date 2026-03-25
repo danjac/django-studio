@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+from pathlib import Path
 
 import pytest
 
@@ -182,3 +183,49 @@ class TestLicensePrompt:
         project = render(output_dir, {**DEFAULT_CONTEXT, "license": "MIT"})
         content = (project / "LICENSE").read_text()
         assert str(datetime.date.today().year) in content
+
+
+class TestPostGenBackup:
+    """Test that the hook backs up generated files before overwriting on re-render."""
+
+    def test_settings_json_backed_up_on_re_render(self, output_dir):
+        project = render(output_dir, DEFAULT_CONTEXT)
+        original = (project / ".claude" / "settings.json").read_text()
+        bak = Path("/tmp/settings.json.bak")
+        bak.unlink(missing_ok=True)
+
+        render(output_dir, DEFAULT_CONTEXT)
+
+        assert bak.exists()
+        assert bak.read_text() == original
+
+    def test_mcp_json_backed_up_on_re_render(self, output_dir):
+        project = render(output_dir, DEFAULT_CONTEXT)
+        original = (project / ".mcp.json").read_text()
+        bak = Path("/tmp/mcp.json.bak")
+        bak.unlink(missing_ok=True)
+
+        render(output_dir, DEFAULT_CONTEXT)
+
+        assert bak.exists()
+        assert bak.read_text() == original
+
+    def test_opencode_json_backed_up_on_re_render(self, output_dir):
+        project = render(output_dir, DEFAULT_CONTEXT)
+        original = (project / "opencode.json").read_text()
+        bak = Path("/tmp/opencode.json.bak")
+        bak.unlink(missing_ok=True)
+
+        render(output_dir, DEFAULT_CONTEXT)
+
+        assert bak.exists()
+        assert bak.read_text() == original
+
+    def test_no_backup_if_file_absent(self, output_dir):
+        bak = Path("/tmp/settings.json.bak")
+        bak.unlink(missing_ok=True)
+        # Render into a fresh directory — settings.json doesn't exist yet
+        project = render(output_dir, DEFAULT_CONTEXT)
+        assert (project / ".claude" / "settings.json").exists()
+        # The hook should not have created a backup (nothing to back up)
+        assert not bak.exists()

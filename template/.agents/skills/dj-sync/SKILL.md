@@ -13,10 +13,13 @@ any merge conflicts interactively.
 uvx copier update --trust
 ```
 
-This pulls the latest template into the project and stages the merged files.
-If there are no conflicts, skip to Step 4.
+The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,
+and `opencode.json` to `/tmp/*.bak` before regenerating them.
 
-### 2. Detect conflicts
+This pulls the latest template into the project and stages the merged files.
+If there are no conflicts, skip to Step 3.
+
+### 2. Detect and resolve conflicts
 
 Check for merge conflicts introduced by the update:
 
@@ -30,8 +33,6 @@ List any files with conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`):
 grep -rn "<<<<<<" . --include="*.py" --include="*.html" --include="*.jinja" \
     --include="*.yml" --include="*.toml" --include="*.md" 2>/dev/null
 ```
-
-### 3. Resolve each conflict interactively
 
 For every conflicted file:
 
@@ -49,6 +50,26 @@ For every conflicted file:
 4. Apply the user's decision and remove the conflict markers.
 
 Repeat until no conflict markers remain.
+
+### 3. Restore local overrides in generated files
+
+Diff the auto-generated backups against the freshly regenerated files:
+
+```bash
+diff /tmp/settings.json.bak .claude/settings.json
+diff /tmp/mcp.json.bak .mcp.json
+diff /tmp/opencode.json.bak opencode.json
+```
+
+For each file with a non-empty diff:
+
+1. Show the diff to the user.
+2. Identify which lines are new template additions vs. local customizations
+   the user had made (e.g. extra `permissions.allow` entries, extra MCP
+   servers such as `kubernetes`).
+3. Ask the user which local customizations to restore, then apply them.
+
+If the backup files don't exist (first sync on a fresh project), skip this step.
 
 ### 4. Verify
 

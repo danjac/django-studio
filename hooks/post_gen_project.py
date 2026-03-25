@@ -14,6 +14,7 @@ Invoked by copier as:
 
 import datetime
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -75,6 +76,12 @@ def _parse_skill_description(skill_file: Path) -> str:
         if line.startswith("description:"):
             return line.split(":", 1)[1].strip(' "')
     return ""
+
+
+def _backup(src: Path) -> None:
+    """Copy src to /tmp/<name>.bak if it exists, so dj-sync can diff it."""
+    if src.exists():
+        shutil.copy2(src, Path("/tmp") / f"{src.name.lstrip('.')}.bak")
 
 
 def install_claude_hooks() -> None:
@@ -176,6 +183,7 @@ def install_claude_hooks() -> None:
     }
     claude_dir = BASE_DIR / ".claude"
     claude_dir.mkdir(parents=True, exist_ok=True)
+    _backup(claude_dir / "settings.json")
     with (claude_dir / "settings.json").open("w") as f:
         json.dump(settings, f, indent=2)
         f.write("\n")
@@ -199,6 +207,7 @@ def install_claude_hooks() -> None:
             "description": description,
         }
     opencode = {"$schema": "https://opencode.ai/config.json", "command": opencode_commands}
+    _backup(BASE_DIR / "opencode.json")
     with (BASE_DIR / "opencode.json").open("w") as f:
         json.dump(opencode, f, indent=2)
         f.write("\n")
@@ -230,6 +239,7 @@ def install_mcp_config() -> None:
             },
         }
     }
+    _backup(BASE_DIR / ".mcp.json")
     with (BASE_DIR / ".mcp.json").open("w") as f:
         json.dump(config, f, indent=2)
         f.write("\n")

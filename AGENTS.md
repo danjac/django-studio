@@ -164,6 +164,34 @@ All resource files use lower-kebab-case (e.g. `help.md`, `factory-reference.md`)
 
 Skill files live in `template/.agents/` and are copied verbatim by Copier into the generated project's `.agents/`. They are tracked in git — no `git add -f` needed.
 
+### Writing Python helper scripts for skills
+
+Scripts live in `template/.agents/skills/resources/` (shared) or
+`template/.agents/skills/<command>/resources/` (command-specific).
+
+**Always invoke with `uv run python`** — never plain `python`. This ensures the script
+runs in the project's virtual environment rather than system Python, making behaviour
+predictable and easier to debug.
+
+```bash
+# In SKILL.md code blocks:
+uv run python .agents/skills/resources/my-script.py
+```
+
+**Ruff header for standalone scripts** — scripts outside a package need a noqa header.
+See `template/.agents/skills/resources/random-slug.py` as the canonical example:
+
+```python
+# ruff: noqa: INP001, T201
+```
+
+- `INP001` — not part of a package (no `__init__.py`) — expected for skill scripts
+- `T201` — `print` is intentional for CLI output
+
+Other rules that commonly apply:
+- `PTH123` — use `Path("file").read_text()` instead of `open("file")`
+- `PLW2901` — don't reassign the loop variable; use a separate name for the transformed value
+
 ## Python 3.14 — `except` Without Parentheses (PEP 758)
 
 `pyupgrade --py314` rewrites multi-exception handlers to the Python 3.14 syntax:

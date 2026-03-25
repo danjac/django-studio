@@ -44,10 +44,10 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 >
 > **Optional:**
 > - Mailgun DKIM value (for DNS-based email verification via Cloudflare)
-> - Hetzner object storage credentials (if `use_storage` is enabled)
+> - Hetzner object storage credentials (if `terraform/storage/` exists in your project)
 > - Sentry DSN, OTLP endpoint (for observability)
 >
-> See `resources/deploy-env-vars.md` for exact locations. Say **ready** when you have them.
+> Say **ready** when you have them.
 
 ---
 

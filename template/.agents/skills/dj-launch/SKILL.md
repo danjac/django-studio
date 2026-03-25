@@ -52,7 +52,7 @@ Tell the user:
 After the user confirms, check presence of all deployment vars:
 
 ```bash
-python .agents/skills/resources/check-deploy-env.py
+uv run python .agents/skills/resources/check-deploy-env.py
 ```
 
 If any **required** vars are missing: tell the user which ones, ask them to add them to

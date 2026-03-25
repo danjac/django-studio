@@ -38,6 +38,12 @@ variable "grafana_subdomain" {
   default     = ""
 }
 
+variable "mailgun_sender_domain" {
+  description = "Mailgun sender subdomain (e.g. 'mg' → mg.example.com). Leave empty to skip Mailgun DNS."
+  type        = string
+  default     = "mg"
+}
+
 variable "mailgun_dkim_value" {
   description = "Mailgun DKIM public key (leave empty to skip Mailgun DNS)"
   type        = string

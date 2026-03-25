@@ -77,7 +77,7 @@ locals {
 resource "cloudflare_record" "mailgun_mx" {
   count           = local.mailgun_dkim_value != "" ? length(var.mailgun_mx_servers) : 0
   zone_id         = data.cloudflare_zone.domain.id
-  name            = var.mailgun_sender_domain
+  name            = var.mailgun_subdomain
   content         = var.mailgun_mx_servers[count.index]
   type            = "MX"
   priority        = 10
@@ -89,7 +89,7 @@ resource "cloudflare_record" "mailgun_mx" {
 resource "cloudflare_record" "mailgun_spf" {
   count           = local.mailgun_dkim_value != "" ? 1 : 0
   zone_id         = data.cloudflare_zone.domain.id
-  name            = var.mailgun_sender_domain
+  name            = var.mailgun_subdomain
   content         = "\"${var.mailgun_spf_value}\""
   type            = "TXT"
   ttl             = 1
@@ -100,7 +100,7 @@ resource "cloudflare_record" "mailgun_spf" {
 resource "cloudflare_record" "mailgun_dkim" {
   count           = local.mailgun_dkim_value != "" ? 1 : 0
   zone_id         = data.cloudflare_zone.domain.id
-  name            = "mta._domainkey.${var.mailgun_sender_domain}"
+  name            = "mta._domainkey.${var.mailgun_subdomain}"
   content         = "\"${local.mailgun_dkim_value}\""
   type            = "TXT"
   ttl             = 1
@@ -111,7 +111,7 @@ resource "cloudflare_record" "mailgun_dkim" {
 resource "cloudflare_record" "mailgun_tracking" {
   count           = local.mailgun_dkim_value != "" ? 1 : 0
   zone_id         = data.cloudflare_zone.domain.id
-  name            = "email.${var.mailgun_sender_domain}"
+  name            = "email.${var.mailgun_subdomain}"
   content         = "eu.mailgun.org"
   type            = "CNAME"
   proxied         = false

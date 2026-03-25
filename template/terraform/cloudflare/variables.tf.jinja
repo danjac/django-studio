@@ -38,8 +38,8 @@ variable "grafana_subdomain" {
   default     = ""
 }
 
-variable "mailgun_sender_domain" {
-  description = "Mailgun sender subdomain (e.g. 'mg' → mg.example.com). Leave empty to skip Mailgun DNS."
+variable "mailgun_subdomain" {
+  description = "Subdomain for Mailgun sending (e.g. 'mg' → mg.example.com). Leave empty to skip Mailgun DNS."
   type        = string
   default     = "mg"
 }

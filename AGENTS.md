@@ -110,11 +110,11 @@ a cached `/tmp/my_app` hides.
 
 The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/django-templates.md`. Component classes, icons, dark mode, and Tailwind configuration are in `template/docs/design.md`.
 
-## dj-* Commands
+## Slash Commands
 
-Each slash command is a standalone skill at `template/.agents/skills/dj-<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook scans `.agents/skills/*/SKILL.md` and writes one stub per skill at `.claude/commands/<name>.md` — no list to maintain.
+Each slash command is a standalone skill at `template/.agents/skills/<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook scans `.agents/skills/*/SKILL.md` and writes one stub per skill at `.claude/commands/<name>.md` — no list to maintain.
 
-Supporting files (checklists, prompt templates, report templates, etc.) live in a `resources/` subdirectory: `template/.agents/skills/dj-<command>/resources/`.
+Supporting files (checklists, prompt templates, report templates, etc.) live in a `resources/` subdirectory: `template/.agents/skills/<command>/resources/`.
 
 Files shared across multiple skills live in `template/.agents/skills/resources/` and are referenced as `.agents/skills/resources/<file>` from SKILL.md prose.
 
@@ -133,7 +133,7 @@ description: One-sentence summary shown in opencode.json and the UI (≤80 chars
 **resources/help.md** — every skill must have one. Content:
 
 ```markdown
-**/dj-<command> [args]**
+**/<command> [args]**
 
 <user-facing docs for the command>
 Include: usage line, arguments, what it does, at least one example.
@@ -143,8 +143,8 @@ All resource files use lower-kebab-case (e.g. `help.md`, `factory-reference.md`)
 
 **Checklist when adding a command:**
 
-1. Create `template/.agents/skills/dj-<command>/SKILL.md` with frontmatter.
-2. Create `template/.agents/skills/dj-<command>/resources/help.md` with usage docs.
+1. Create `template/.agents/skills/<command>/SKILL.md` with frontmatter.
+2. Create `template/.agents/skills/<command>/resources/help.md` with usage docs.
 3. Add other supporting files in `resources/` if the skill has reference data or
    fill-in templates (e.g. `resources/plural-forms.md`, `resources/issue-template.md`).
    Reference them from `SKILL.md` as `resources/<file>`.

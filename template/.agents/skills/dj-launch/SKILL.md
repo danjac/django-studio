@@ -44,7 +44,7 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 >
 > **Optional:**
 > - Mailgun DKIM value (for DNS-based email verification via Cloudflare)
-> - Hetzner object storage credentials (if `terraform/storage/` exists in your project)
+> - Hetzner object storage credentials (optional — needed only if you want file/media storage)
 > - Sentry DSN, OTLP endpoint (for observability)
 >
 > Say **ready** when you have them.
@@ -292,7 +292,7 @@ Wait for apply to complete. If it fails for a different reason, show the error a
 
 ---
 
-## Step 3 — Object Storage (skip if terraform/storage/ does not exist)
+## Step 3 — Object Storage (optional — skip if user does not want file/media storage)
 
 **Check:** Read `terraform/storage/terraform.tfvars` if it exists.
 

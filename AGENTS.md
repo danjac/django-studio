@@ -181,6 +181,13 @@ it to the parenthesised form — that is wrong. The parenthesised form is the
 pre-3.14 style; the unparenthesised form is now correct.
 See [pyright#10546](https://github.com/microsoft/pyright/issues/10546) for upstream tracking.
 
+## Git Workflow
+
+When the user requests any change — feature, bug fix, documentation update, or
+otherwise — **always create a new branch**, commit the change there, push, and
+open a pull request. Do **not** commit directly to `main` unless the user
+explicitly instructs you to do so.
+
 ## Bugs and Improvements
 
 Use the `/dj-feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.

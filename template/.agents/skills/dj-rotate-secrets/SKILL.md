@@ -171,7 +171,26 @@ secrets:
   redisPassword: "<new-value>"
 ```
 
-Then deploy:
+### 5a. Update passwords in running services
+
+**Before** redeploying the app, update the passwords in the running database and
+cache services. Otherwise the app will restart with new credentials while the
+services still expect the old ones, causing immediate 500 errors.
+
+**PostgreSQL:**
+```bash
+just kube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
+```
+
+**Redis:**
+```bash
+just kube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
+```
+
+Replace `<new_postgres_password>`, `<old_redis_password>`, and `<new_redis_password>`
+with the actual values (do not print them to the chat — pipe them from variables).
+
+### 5b. Deploy the app
 
 ```bash
 just deploy-config

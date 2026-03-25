@@ -578,16 +578,7 @@ Tell the user:
 If **y**, patch `.mcp.json`:
 
 ```bash
-python3 -c "
-import json, pathlib
-p = pathlib.Path('.mcp.json')
-config = json.loads(p.read_text())
-config['mcpServers']['kubernetes'] = {
-    'command': 'npx',
-    'args': ['-y', 'mcp-server-kubernetes']
-}
-p.write_text(json.dumps(config, indent=2) + '\n')
-"
+uv run python .agents/skills/resources/add-kube-mcp.py
 ```
 
 Tell the user:

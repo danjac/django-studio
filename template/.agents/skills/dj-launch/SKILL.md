@@ -483,6 +483,39 @@ for the first time. Follow the full sequence below.
 
 ### 6a. Build and push the Docker image
 
+**Pre-check: gh token scope**
+
+```bash
+gh auth status 2>&1 | grep -q 'write:packages'
+```
+
+If `write:packages` is missing, stop and tell the user:
+
+> Your gh token is missing the `write:packages` scope. Fix it by running:
+>
+>     gh auth refresh -h github.com -s write:packages
+>
+> This opens a browser to re-authorize. Say **continue** when done.
+
+Wait for the user to confirm, then re-check.
+
+**Pre-check: stale ghcr.io package**
+
+```bash
+gh api "user/packages/container/<repo>" 2>/dev/null
+```
+
+If the package exists but `just gh build` fails with `permission_denied: write_package`,
+a previous failed build may have created a ghcr.io package with no repository linked.
+Tell the user:
+
+> A stale ghcr.io package exists from a previous failed build.
+> Go to: https://github.com/users/<owner>/packages/container/<repo>/settings
+> Under "Actions repository access", click "Add Repository" and add `<owner>/<repo>`
+> with Write role. Say **continue** when done.
+
+**Build:**
+
 Tell the user:
 > **Step 1/3 — Building Docker image via GitHub Actions...**
 > This pushes the image to ghcr.io so Helm can pull it.

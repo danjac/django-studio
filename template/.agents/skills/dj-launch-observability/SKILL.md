@@ -55,6 +55,23 @@ printing it. Tell the user:
 
 ---
 
+## Step 1b — Grafana DNS record
+
+Read `terraform/cloudflare/terraform.tfvars`. If `grafana_subdomain` is not set or
+is empty, set it to `"grafana"` and set `monitor_ip` to the server IP:
+
+```bash
+monitor_ip=$(just terraform-value hetzner server_public_ip)
+```
+
+Then re-apply the Cloudflare terraform to create the Grafana DNS record:
+
+```bash
+just terraform cloudflare apply -auto-approve
+```
+
+---
+
 ## Step 2 — Deploy
 
 ```bash

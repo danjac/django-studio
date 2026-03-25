@@ -90,10 +90,10 @@ repos:
     rev: v0.25
     hooks:
       - id: validate-pyproject
-  # - repo: https://github.com/owenlamont/uv-secure
-  #   rev: 0.17.0
-  #   hooks:
-  #     - id: uv-secure
+  - repo: https://github.com/pysentry/pysentry-pre-commit
+    rev: v0.4.3
+    hooks:
+      - id: pysentry
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.105.0
     hooks:

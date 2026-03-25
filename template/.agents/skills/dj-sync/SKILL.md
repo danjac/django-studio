@@ -14,7 +14,7 @@ uvx copier update --trust
 ```
 
 The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,
-and `opencode.json` to `/tmp/*.bak` before regenerating them.
+and `opencode.json` to `<tmpdir>/<project-slug>/` before regenerating them.
 
 This pulls the latest template into the project and stages the merged files.
 If there are no conflicts, skip to Step 3.
@@ -53,12 +53,15 @@ Repeat until no conflict markers remain.
 
 ### 3. Restore local overrides in generated files
 
-Diff the auto-generated backups against the freshly regenerated files:
+Diff the auto-generated backups against the freshly regenerated files.
+Read the project slug from `.copier-answers.yml`, then compute the backup path:
 
 ```bash
-diff /tmp/settings.json.bak .claude/settings.json
-diff /tmp/mcp.json.bak .mcp.json
-diff /tmp/opencode.json.bak opencode.json
+PROJECT_SLUG=$(python3 -c "import yaml; d=yaml.safe_load(open('.copier-answers.yml')); print(d['project_slug'])")
+BACKUP_DIR="$(python3 -c 'import tempfile; print(tempfile.gettempdir())')/$PROJECT_SLUG"
+diff "$BACKUP_DIR/settings.json.bak" .claude/settings.json
+diff "$BACKUP_DIR/mcp.json.bak" .mcp.json
+diff "$BACKUP_DIR/opencode.json.bak" opencode.json
 ```
 
 For each file with a non-empty diff:

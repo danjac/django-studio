@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -191,7 +192,7 @@ class TestPostGenBackup:
     def test_settings_json_backed_up_on_re_render(self, output_dir):
         project = render(output_dir, DEFAULT_CONTEXT)
         original = (project / ".claude" / "settings.json").read_text()
-        bak = Path("/tmp/settings.json.bak")
+        bak = Path(tempfile.gettempdir()) / "test_project" / "settings.json.bak"
         bak.unlink(missing_ok=True)
 
         render(output_dir, DEFAULT_CONTEXT)
@@ -202,7 +203,7 @@ class TestPostGenBackup:
     def test_mcp_json_backed_up_on_re_render(self, output_dir):
         project = render(output_dir, DEFAULT_CONTEXT)
         original = (project / ".mcp.json").read_text()
-        bak = Path("/tmp/mcp.json.bak")
+        bak = Path(tempfile.gettempdir()) / "test_project" / "mcp.json.bak"
         bak.unlink(missing_ok=True)
 
         render(output_dir, DEFAULT_CONTEXT)
@@ -213,7 +214,7 @@ class TestPostGenBackup:
     def test_opencode_json_backed_up_on_re_render(self, output_dir):
         project = render(output_dir, DEFAULT_CONTEXT)
         original = (project / "opencode.json").read_text()
-        bak = Path("/tmp/opencode.json.bak")
+        bak = Path(tempfile.gettempdir()) / "test_project" / "opencode.json.bak"
         bak.unlink(missing_ok=True)
 
         render(output_dir, DEFAULT_CONTEXT)
@@ -222,7 +223,7 @@ class TestPostGenBackup:
         assert bak.read_text() == original
 
     def test_no_backup_if_file_absent(self, output_dir):
-        bak = Path("/tmp/settings.json.bak")
+        bak = Path(tempfile.gettempdir()) / "test_project" / "settings.json.bak"
         bak.unlink(missing_ok=True)
         # Render into a fresh directory — settings.json doesn't exist yet
         project = render(output_dir, DEFAULT_CONTEXT)

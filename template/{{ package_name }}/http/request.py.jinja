@@ -17,25 +17,21 @@ class HttpRequest(DjangoHttpRequest):
     if TYPE_CHECKING:
         htmx: HtmxDetails
         search: SearchDetails
-
-        @property
-        def user(self) -> User | AnonymousUser: ...
+        user: User | AnonymousUser
 
 
 class AuthenticatedHttpRequest(HttpRequest):
     """HttpRequest guaranteed to have an authenticated user."""
 
     if TYPE_CHECKING:
-        @property
-        def user(self) -> User: ...
+        user: User
 
 
 class RequestContext(DjangoRequestContext):
     """Extended RequestContext with typed request."""
 
     if TYPE_CHECKING:
-        @property
-        def request(self) -> HttpRequest: ...
+        request: HttpRequest
 
 
 def is_authenticated_request(

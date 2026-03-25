@@ -111,11 +111,11 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 **General**
 
-| Command              | Summary                                                                           |
-| -------------------- | --------------------------------------------------------------------------------- |
-| `/dj-help`           | List all dj-* commands or show help for a specific command                        |
-| `/dj-sync`           | Pull latest template changes via Copier and resolve merge conflicts interactively |
-| `/dj-feedback`       | Report a bug or improvement against the django-studio template                    |
+| Command        | Summary                                                                           |
+| -------------- | --------------------------------------------------------------------------------- |
+| `/dj-help`     | List all dj-\* commands or show help for a specific command                       |
+| `/dj-sync`     | Pull latest template changes via Copier and resolve merge conflicts interactively |
+| `/dj-feedback` | Report a bug or improvement against the django-studio template                    |
 
 **Generators**
 
@@ -162,14 +162,14 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 Generated projects include project-local [MCP servers](https://modelcontextprotocol.io) configured in `.mcp.json` (gitignored, generated at project creation). These give AI assistants direct access to your local development environment.
 
-| Server | Purpose |
-| ------ | ------- |
-| `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection |
-| `@playwright/mcp` | Browser automation and E2E test debugging |
-| `mcp-django` | Django shell — ORM queries, model introspection, arbitrary Python |
-| `mcp-server-kubernetes` | Cluster management and log access (added post-launch by `/dj-launch`) |
+| Server                                  | Purpose                                                               |
+| --------------------------------------- | --------------------------------------------------------------------- |
+| `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection                         |
+| `@playwright/mcp`                       | Browser automation and E2E test debugging                             |
+| `mcp-django`                            | Django shell — ORM queries, model introspection, arbitrary Python     |
+| `mcp-server-kubernetes`                 | Cluster management and log access (added post-launch by `/dj-launch`) |
 
-See `docs/MCP.md` in the generated project for usage and security notes.
+See `docs/mcp.md` in the generated project for usage and security notes.
 
 ## Hosting
 

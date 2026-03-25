@@ -50,7 +50,7 @@ Set these in `.env` before running `/dj-launch` or `/dj-rotate-secrets`.
 ## How to check for presence (without exposing values)
 
 ```bash
-python .agents/skills/resources/check-deploy-env.py
+uv run python .agents/skills/resources/check-deploy-env.py
 ```
 
 See `resources/check-deploy-env.py` for the implementation. Exit code 1 if any required

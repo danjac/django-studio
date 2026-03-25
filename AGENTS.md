@@ -194,6 +194,21 @@ Before creating a new branch, ensure you are on `main`. If you are not:
 - If there are uncommitted changes, **stop and ask the user for instructions**
   before proceeding.
 
+## GitHub Issues
+
+When asked to fix a GitHub issue, follow the Git Workflow above (new branch,
+commit, PR). Always reference the issue in the PR so it closes on merge (e.g.
+`Closes #123` in the PR body). **One issue per PR** — do not bundle multiple
+issues together unless the user explicitly asks.
+
+When asked to "fix all open issues":
+
+1. Go through each open issue and check whether it is already addressed in
+   `main`.
+2. If already fixed — tell the user and ask whether to close it.
+3. If not fixed — create a separate branch and PR for each issue, following
+   the protocol above.
+
 ## Bugs and Improvements
 
 Use the `/dj-feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.

@@ -24,14 +24,17 @@ Register it once in your base template's `{% block scripts %}` block:
       Alpine.data('dropdown', () => ({
         open: false,
         init() {
-          this._onDropdownOpen = (e) => { if (e.target !== this.$el) this.close(); };
-          this._onHtmxRequest = () => this.close();
+          this._onDropdownOpen = this.onDropdownOpen.bind(this);
+          this._onHtmxRequest = this.close.bind(this);
           window.addEventListener('dropdown-open', this._onDropdownOpen);
           window.addEventListener('htmx:beforeRequest', this._onHtmxRequest);
         },
         destroy() {
           window.removeEventListener('dropdown-open', this._onDropdownOpen);
           window.removeEventListener('htmx:beforeRequest', this._onHtmxRequest);
+        },
+        onDropdownOpen(e) {
+          if (e.target !== this.$el) this.close();
         },
         toggle() {
           this.open = !this.open;

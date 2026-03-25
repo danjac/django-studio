@@ -13,15 +13,21 @@ Exit code 1 if any required vars are missing.
 
 import os
 import sys
+from pathlib import Path
 
-from dotenv import dotenv_values
 from environs import Env
 
-# Merge .env into the environment: non-empty .env values win over shell;
-# empty placeholders (KEY=) are skipped so they don't clobber real shell values.
-for key, val in dotenv_values(".env").items():
-    if val:
-        os.environ[key] = val
+# Load .env: only apply non-empty values so empty placeholders (KEY=)
+# don't clobber a real shell value.
+try:
+    for raw in Path(".env").read_text().splitlines():
+        entry = raw.strip()
+        if entry and not entry.startswith("#") and "=" in entry:
+            k, _, v = entry.partition("=")
+            if v.strip():
+                os.environ[k.strip()] = v.strip()
+except FileNotFoundError:
+    pass
 
 env = Env()
 

@@ -4,23 +4,20 @@ description: Deploy the observability stack (Grafana + Prometheus + Loki)
 
 Deploy the observability stack (Grafana + Prometheus + Loki) to a running cluster.
 
-## Required reading
-
-- `docs/deployment.md`
-- `resources/deploy-env-vars.md` — deployment env var reference (shared)
-
----
-
 Run this after `/dj-launch` once your application is live.
 
-**Secret handling rules:** Never echo or print secret values. Read from `.env` / shell
-environment. Report errors by variable name, not value.
+**Secret handling rules:**
+- Never echo or print secret values to the terminal or chat.
+- When a secret field is empty or `CHANGE_ME`, fill it in the values file directly.
+- Never ask the user to paste a secret into this chat.
 
 ---
 
 ## Pre-flight
 
-Verify the cluster is accessible:
+Check if the Kubernetes MCP server is configured in `.mcp.json`. If
+`mcpServers.kubernetes` is present, use it to verify the cluster is accessible
+by listing nodes. Otherwise:
 
 ```bash
 just kube get nodes
@@ -39,21 +36,22 @@ Check `helm/observability/values.secret.yaml`:
   cp helm/observability/values.secret.yaml.example helm/observability/values.secret.yaml
   ```
 
-Read the file. If `kube-prometheus-stack.grafana.adminPassword` is already set to a
-non-empty, non-`CHANGE_ME` value, skip this step.
+Read `kube-prometheus-stack.grafana.adminPassword` from the file.
 
-Otherwise, read `GRAFANA_ADMIN_PASSWORD` from the environment (load `.env` if present).
+If it is already set to a non-empty, non-`CHANGE_ME` value, skip this step.
 
-- If `GRAFANA_ADMIN_PASSWORD` is set: write it to `values.secret.yaml` without printing
-  the value. Tell the user: "Grafana password loaded from environment."
-- If not set: auto-generate one:
-  ```bash
-  openssl rand -hex 4
-  ```
-  Write the generated password to `helm/observability/values.secret.yaml`.
-  Tell the user the generated password — they will need it to log in at
-  `https://grafana.<domain>`. Suggest they save it to `.env` as
-  `GRAFANA_ADMIN_PASSWORD` for future reference.
+Otherwise, auto-generate a password:
+
+```bash
+openssl rand -hex 16
+```
+
+Write the generated password to `helm/observability/values.secret.yaml` without
+printing it. Tell the user:
+
+> A Grafana admin password has been generated and saved to
+> `helm/observability/values.secret.yaml`. You will need it to log in at
+> `https://grafana.<domain>` — note it somewhere safe now.
 
 ---
 
@@ -65,7 +63,8 @@ just helm observability
 
 Wait for the command to complete. If it fails, show the error and help the user diagnose it.
 
-Then show pod status:
+Then verify pods are running. If Kubernetes MCP is configured, use it to check pod
+status in the `monitoring` namespace. Otherwise:
 
 ```bash
 just kube get pods -n monitoring
@@ -75,7 +74,30 @@ Once all pods are Running, tell the user:
 
 > Observability stack deployed.
 > Grafana is available at https://grafana.<domain> once DNS propagates.
-> Log in with username `admin` and the password set above.
+> Log in with username `admin` and the password noted above.
+
+---
+
+## Step 3 — Configure OTLP endpoint in app
+
+Now that the observability stack is deployed, configure the app to send telemetry.
+
+Read `secrets.openTelemetryUrl` from `helm/site/values.secret.yaml`.
+
+If it is empty, write the cluster-internal OTLP endpoint:
+
+```
+http://opentelemetry-collector.monitoring.svc.cluster.local:4318
+```
+
+Then push the updated config and redeploy:
+
+```bash
+just deploy-config
+```
+
+Tell the user:
+> App configured to send telemetry to the observability stack.
 
 ---
 
@@ -84,4 +106,4 @@ Once all pods are Running, tell the user:
 | Value | Why the user needs it |
 |-------|----------------------|
 | Grafana URL (`https://grafana.<domain>`) | Confirm stack is reachable |
-| Grafana admin password | Only printed if auto-generated — user must save it |
+| Grafana admin password | Auto-generated — user must note it |

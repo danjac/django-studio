@@ -548,7 +548,6 @@ Then tell the user:
 > Your app is live at https://<domain>
 >
 > Next steps:
-> - Run `just rdj migrate` to apply database migrations
 > - Run `just rdj createsuperuser` to create an admin account
 > - Visit https://<domain>/<admin-url> to access the Django admin
 

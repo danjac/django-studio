@@ -1,5 +1,5 @@
 ---
-description: List all dj-* commands or show help for a specific command
+description: List all slash commands or show help for a specific command
 ---
 
 Run the lookup script, passing through any arguments:

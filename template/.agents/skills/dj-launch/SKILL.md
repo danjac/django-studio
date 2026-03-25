@@ -9,7 +9,6 @@ configuring secrets, and deploying the application end-to-end.
 
 - `docs/infrastructure.md`
 - `docs/deployment.md`
-- `resources/deploy-env-vars.md` — deployment env var reference (shared)
 
 ---
 

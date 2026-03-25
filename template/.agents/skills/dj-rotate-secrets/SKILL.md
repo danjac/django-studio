@@ -7,7 +7,6 @@ Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 ## Required reading
 
 - `docs/deployment.md`
-- `resources/deploy-env-vars.md` — deployment env var reference (shared)
 
 ---
 
@@ -86,35 +85,27 @@ If **n**, stop without making any changes.
 
 ## 3. Third-party secrets
 
-Third-party secrets are rotated by updating them in `.env` and re-running this skill.
-The wizard reads the current value from `.env` (or shell env) and the stored value
-from `values.secret.yaml`, and proposes an update if they differ.
+For each key below, check if it is currently set in `values.secret.yaml`
+(non-empty, non-`CHANGE_ME`). For each that is set, ask:
 
-Tell the user:
+> Do you want to rotate `<key>`? (y/n)
 
-> To rotate a third-party secret, update the relevant variable in `.env`, then
-> say **done**. The wizard will detect changed values and propose an update.
-> Press Enter to continue without rotating.
+If **yes**:
 
-For each key below, check if it is present in `values.secret.yaml` (non-empty,
-non-`CHANGE_ME`). If so, read the corresponding env var from `.env` / shell env
-and compare to the stored value:
+> **Action required:** Open `helm/site/values.secret.yaml`, update `<key>` with
+> your new value, then say **continue**.
 
-| `values.secret.yaml` key | Env var |
-|--------------------------|---------|
-| `secrets.mailgunApiKey` | `MAILGUN_API_KEY` |
-| `secrets.sentryUrl` | `SENTRY_DSN` |
-| `secrets.openTelemetryUrl` | `OTLP_ENDPOINT` |
-| `secrets.hetznerStorageAccessKey` | `HETZNER_STORAGE_ACCESS_KEY` |
-| `secrets.hetznerStorageSecretKey` | `HETZNER_STORAGE_SECRET_KEY` |
-| `secrets.backupAccessKey` | (no env var — skip) |
-| `secrets.backupSecretKey` | (no env var — skip) |
+Wait for the user to confirm, then re-read the file. Include the change in the
+proposed summary (truncated to first 8 chars + `…`).
 
-- If the env var value differs from the stored value: include it in the proposed
-  changes summary (truncated to first 8 chars + `…`).
-- If they match or the env var is unset: skip silently.
-
-Only prompt for keys that are currently set to a non-empty, non-`CHANGE_ME` value.
+| `values.secret.yaml` key | Where to get the new value |
+|--------------------------|---------------------------|
+| `secrets.mailgunApiKey` | mailgun.com → Sending → Domains → API Keys |
+| `secrets.sentryUrl` | Sentry → Project → Settings → Client Keys → DSN |
+| `secrets.hetznerStorageAccessKey` | Hetzner → Security → S3 credentials |
+| `secrets.hetznerStorageSecretKey` | Hetzner → Security → S3 credentials |
+| `secrets.backupAccessKey` | Hetzner → Security → S3 credentials |
+| `secrets.backupSecretKey` | Hetzner → Security → S3 credentials |
 
 ---
 
@@ -127,15 +118,22 @@ should also be offered for rotation.
 **Grafana admin password:**
 
 Read `kube-prometheus-stack.grafana.adminPassword` from the file. If it is set
-to a non-empty, non-`CHANGE_ME` value, read `GRAFANA_ADMIN_PASSWORD` from
-`.env` / shell env and compare to the stored value.
+to a non-empty, non-`CHANGE_ME` value, ask:
 
-- If they differ: include in proposed changes (truncated).
-- If they match or `GRAFANA_ADMIN_PASSWORD` is unset: skip.
+> Do you want to rotate the Grafana admin password? (y/n)
 
-Tell the user before proceeding:
-> To rotate the Grafana password, update `GRAFANA_ADMIN_PASSWORD` in `.env`,
-> then continue.
+If **yes**, auto-generate a new password:
+
+```bash
+openssl rand -hex 16
+```
+
+> **Action required:** Open `helm/observability/values.secret.yaml`, update
+> `kube-prometheus-stack.grafana.adminPassword` with the new password, then
+> say **continue**. Note the new password — you will need it to log in.
+
+Wait for the user to confirm, then re-read the file. Include the change in the
+proposed summary (truncated).
 
 After applying, redeploy the observability stack:
 ```bash

@@ -43,7 +43,7 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 > - Mailgun API key — mailgun.com → Sending → Domains → API Keys (for outbound email)
 > - Mailgun DKIM value (for DNS-based email verification via Cloudflare)
 > - Hetzner object storage credentials (for file/media storage)
-> - Sentry DSN, OTLP endpoint (for observability)
+> - Sentry DSN (for error tracking — from your Sentry project settings)
 >
 > Say **ready** when you have them.
 
@@ -431,15 +431,16 @@ Save this as `<site_name>` for use in Step 6c.
 
 **Meta author, description, keywords** — prompt for each, allow empty to skip.
 
-### Observability credentials
+### Sentry DSN
 
-Read `secrets.sentryUrl` and `secrets.openTelemetryUrl` from `values.secret.yaml`.
-If either is empty and the user wants observability:
+Read `secrets.sentryUrl` from `values.secret.yaml`.
+If empty and the user wants error tracking:
 
 > **Action required:** Open `helm/site/values.secret.yaml` and fill in
-> `secrets.sentryUrl` and/or `secrets.openTelemetryUrl`, then say **continue**.
+> `secrets.sentryUrl` with your Sentry DSN, then say **continue**.
 
-If the user skips, leave them empty — observability will not be configured.
+If the user skips, leave it empty. The OTLP endpoint (`secrets.openTelemetryUrl`)
+is configured later by `/dj-launch-observability` — do not prompt for it here.
 
 ### Mailgun API key
 

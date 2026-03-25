@@ -12,6 +12,8 @@ Composite patterns combining Alpine.js, HTMX, Tailwind, and Django templates.
 ## Dropdown menu
 
 A reusable Alpine `dropdown()` component for action menus and navigation dropdowns.
+Uses `$dispatch` so opening one dropdown automatically closes all others on the page.
+
 Register it once in your base template's `{% block scripts %}` block:
 
 ```html
@@ -21,7 +23,10 @@ Register it once in your base template's `{% block scripts %}` block:
     document.addEventListener('alpine:init', () => {
       Alpine.data('dropdown', () => ({
         open: false,
-        toggle() { this.open = !this.open; },
+        toggle() {
+          this.open = !this.open;
+          if (this.open) this.$dispatch('dropdown-open');
+        },
         close() { this.open = false; },
       }));
     });
@@ -37,6 +42,8 @@ Register it once in your base template's `{% block scripts %}` block:
   x-data="dropdown()"
   @click.outside="close()"
   @keyup.escape.window="close()"
+  @dropdown-open.window="if ($event.target !== $el) close()"
+  @htmx:before-request.window="close()"
 >
   <button
     type="button"
@@ -58,6 +65,8 @@ Register it once in your base template's `{% block scripts %}` block:
   </ul>
 </div>
 ```
+
+`@dropdown-open.window` closes this dropdown when any other opens (`$event.target !== $el`). `@htmx:before-request.window` closes it on any HTMX navigation.
 
 ### Form actions inside a dropdown
 

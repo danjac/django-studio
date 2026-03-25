@@ -59,78 +59,18 @@ Register it once in your base template's `{% block scripts %}` block:
 </div>
 ```
 
-### Hidden-form pattern for non-HTMX actions
+### Form actions inside a dropdown
 
-When a dropdown button needs to submit a form (logout, language switch), place the
-`<form>` elements **outside** the dropdown and reference them via `form="..."`. Do not
-nest `<form>` inside `x-show` — Alpine's DOM manipulation can swallow submit events.
-Always add `hx-disable="true"` so HTMX does not intercept these full-page POSTs.
-
-**Language switcher example:**
+When a dropdown item needs to submit a POST form (e.g. logout, language switch), do
+not nest the `<form>` inside the `x-show` list — place it with `hidden` outside the
+list and reference it from the button via `form="..."`. Add `hx-disable="true"` so
+HTMX does not intercept these full-page POSTs.
 
 ```html
-{% load i18n %}
-
-{# Hidden forms outside the dropdown — one per language #}
-{% for lang in language_info_list %}
-  <form
-    id="set-language-{{ lang.code }}"
-    method="post"
-    action="{% url 'set_language' %}"
-    hx-disable="true"
-    hidden
-  >
-    {% csrf_token %}
-    <input type="hidden" name="language" value="{{ lang.code }}">
-    <input type="hidden" name="next" value="{{ request.get_full_path }}">
-  </form>
-{% endfor %}
-
-<div
-  class="relative"
-  x-data="dropdown()"
-  @click.outside="close()"
-  @keyup.escape.window="close()"
->
-  <button
-    type="button"
-    class="gap-2 btn btn-ghost"
-    :aria-expanded="open.toString()"
-    aria-label="{% translate "Select language" %}"
-    @click="toggle()"
-  >
-    {% heroicon_mini "globe-alt" class="size-5 shrink-0" aria_hidden="true" %}
-    <span class="hidden sm:inline">{{ LANGUAGE_CODE|upper }}</span>
-    {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
-  </button>
-  <ul
-    class="absolute right-0 z-20 p-2 mt-1 w-40 border shadow-xl menu bg-base-100 rounded-box border-base-300"
-    x-cloak
-    x-show="open"
-    x-transition.scale.origin.top
-    role="menu"
-  >
-    {% for lang in language_info_list %}
-      <li role="menuitem">
-        <button type="submit" form="set-language-{{ lang.code }}" class="w-full">
-          {{ lang.name_local }}
-        </button>
-      </li>
-    {% endfor %}
-  </ul>
-</div>
-```
-
-`LANGUAGE_CODE` and `language_info_list` are provided by Django's
-`django.template.context_processors.i18n` (already enabled in settings). For the full
-i18n workflow see `docs/localization.md`.
-
-**User account menu with logout:**
-
-```html
-{# Logout form outside dropdown #}
-<form id="logout-form" method="post" action="{% url 'account_logout' %}" hx-disable="true" hidden>
+{# Form lives outside x-show, referenced by id #}
+<form id="my-action-form" method="post" action="{% url 'my:action' %}" hx-disable="true" hidden>
   {% csrf_token %}
+  {# any hidden inputs #}
 </form>
 
 <div
@@ -139,42 +79,13 @@ i18n workflow see `docs/localization.md`.
   @click.outside="close()"
   @keyup.escape.window="close()"
 >
-  <button
-    type="button"
-    class="gap-2 btn btn-ghost"
-    :aria-expanded="open.toString()"
-    @click="toggle()"
-  >
-    {% heroicon_mini "user-circle" class="size-5 shrink-0" aria_hidden="true" %}
-    <span class="hidden sm:inline">{{ user.username }}</span>
-    {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
+  <button type="button" :aria-expanded="open.toString()" @click="toggle()" class="btn btn-ghost">
+    Label
   </button>
-  <ul
-    class="absolute right-0 z-20 p-2 mt-1 w-56 border shadow-xl menu bg-base-100 rounded-box border-base-300"
-    x-cloak
-    x-show="open"
-    x-transition.scale.origin.top
-    role="menu"
-  >
+  <ul class="absolute right-0 z-20 p-2 mt-1 w-48 border shadow-xl menu bg-base-100 rounded-box border-base-300"
+      x-cloak x-show="open" x-transition.scale.origin.top role="menu">
     <li role="menuitem">
-      <a href="{% url 'account_email' %}">
-        {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
-        {% translate "Account settings" %}
-      </a>
-    </li>
-    {% if user.is_staff %}
-      <li role="menuitem">
-        <a href="{% url 'admin:index' %}" target="_blank" rel="noopener noreferrer">
-          {% heroicon_mini "wrench-screwdriver" class="size-4 shrink-0" aria_hidden="true" %}
-          {% translate "Site admin" %}
-        </a>
-      </li>
-    {% endif %}
-    <li role="menuitem">
-      <button type="submit" form="logout-form">
-        {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria_hidden="true" %}
-        {% translate "Sign out" %}
-      </button>
+      <button type="submit" form="my-action-form">{% translate "Do action" %}</button>
     </li>
   </ul>
 </div>

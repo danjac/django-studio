@@ -204,3 +204,13 @@ django_settings_module = "config.settings"
 include = ["{{ package_name }}"]
 exclude = ["**/migrations/*.py", "**/tests/**/*.py"]
 typeCheckingMode = "basic"
+
+[tool.pysentry.defaults]
+severity = "medium"
+# fail_on = "high"
+
+[tool.pysentry.sources]
+# enabled = ["pypa", "osv", "pypi"]
+
+[tool.pysentry.ignore]
+# ids = []

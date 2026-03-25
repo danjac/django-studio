@@ -1,3 +1,4 @@
+# ruff: noqa: INP001, T201
 """Check presence of deployment environment variables.
 
 Loads .env (takes precedence over shell environment), then reports missing
@@ -11,15 +12,15 @@ Exit code 1 if any required vars are missing.
 
 import os
 import sys
+from pathlib import Path
 
 # Load .env (overrides shell env for same keys)
 try:
-    with open(".env") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                k, _, v = line.partition("=")
-                os.environ[k.strip()] = v.strip()
+    for raw in Path(".env").read_text().splitlines():
+        entry = raw.strip()
+        if entry and not entry.startswith("#") and "=" in entry:
+            k, _, v = entry.partition("=")
+            os.environ[k.strip()] = v.strip()
 except FileNotFoundError:
     pass
 

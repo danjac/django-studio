@@ -273,18 +273,14 @@ literal rather than loaded from the environment:
 
 ### 9. Dependency vulnerabilities
 
-Note: `uv-secure` pre-commit already checks this. Run as a secondary check:
+Note: `pysentry` pre-commit already checks this. Run as a secondary check:
 
 ```bash
-uvx uv-secure
+uvx pysentry-rs
 ```
 
 Flag every reported vulnerability at its upstream severity (CRITICAL/HIGH →
-CRITICAL, MEDIUM → WARNING, LOW → ADVISORY). If `uv-secure` is not available:
-
-```bash
-uvx pip-audit
-```
+CRITICAL, MEDIUM → WARNING, LOW → ADVISORY).
 
 ---
 

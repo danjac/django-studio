@@ -54,7 +54,7 @@ Repeat until no conflict markers remain.
 ### 3. Restore local overrides in generated files
 
 Diff the auto-generated backups against the freshly regenerated files.
-Read the project slug from `.copier-answers.yml`, then compute the backup path:
+The project slug is the current directory name. Substitute it below:
 
 ```bash
 BACKUP_DIR=$(python3 -c 'import tempfile; print(tempfile.gettempdir())')/<project-slug>

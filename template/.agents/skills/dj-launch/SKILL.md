@@ -18,48 +18,36 @@ first. Only fill in what is missing or still `CHANGE_ME`. Re-running is safe —
 where it left off.
 
 **Secret handling rules:**
-- All deployment secrets come from `.env` or the shell environment. `.env` takes precedence.
+- All deployment secrets are stored directly in tfvars and helm values files (gitignored).
 - Never echo, print, or repeat a secret value in the terminal or chat.
-- Check presence only — report missing vars by name, not by value.
-- If an API call fails due to authentication, report: "<VAR_NAME> appears to be invalid.
-  Update it in `.env` and re-run." Do not repeat the value.
-- Write values from env directly to destination files without printing them.
+- Check presence only — report missing values by field name, not by value.
+- When a secret field is empty or `CHANGE_ME`, stop and tell the user exactly which file
+  and field to fill in. Wait for them to confirm, then re-read the file.
+- Never ask the user to paste a secret into this chat.
 
 ---
 
-## Step 0 — Prepare deployment secrets
+## Step 0 — Deployment secrets overview (first run only)
 
-Tell the user:
+If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 
-> **Before we begin:** Add your deployment secrets to `.env`.
+> **Before we begin:** You will need the following values during this process.
+> Look them up now and have them ready — you will be asked to paste them into
+> config files as we go. **Do not paste secrets into this chat.**
 >
-> Open `.env` and fill in the values under the `# ── Deployment ──` section.
-> See `resources/deploy-env-vars.md` for where to find each key.
+> **Required:**
+> - **Hetzner Cloud API token** — console.hetzner.cloud → Security → API Tokens → Generate (Read & Write)
+> - **Cloudflare API token** — dash.cloudflare.com → Profile → API Tokens (Zone permissions)
 >
-> Required:
-> - `HETZNER_TOKEN` — Hetzner Cloud API token (Read & Write)
-> - `CLOUDFLARE_TOKEN` — Cloudflare API token (Zone permissions)
+> **Required for email:**
+> - **Mailgun API key** — mailgun.com → Sending → Domains → API Keys
 >
-> Required for email:
-> - `MAILGUN_API_KEY` — Mailgun sending API key
+> **Optional:**
+> - Mailgun DKIM value (for DNS-based email verification via Cloudflare)
+> - Hetzner object storage credentials (if `use_storage` is enabled)
+> - Sentry DSN, OTLP endpoint (for observability)
 >
-> Optional (skip if not using):
-> - `MAILGUN_DKIM_VALUE`, `HETZNER_STORAGE_ACCESS_KEY`, `HETZNER_STORAGE_SECRET_KEY`,
->   `SENTRY_DSN`, `OTLP_ENDPOINT`
->
-> Once your `.env` is ready, say **done**.
-
-After the user confirms, check presence of all deployment vars:
-
-```bash
-uv run python .agents/skills/resources/check-deploy-env.py
-```
-
-If any **required** vars are missing: tell the user which ones, ask them to add them to
-`.env`, then re-check. Do not proceed until all required vars are present.
-
-If **optional** vars are missing: warn the user which features will be skipped (e.g. no
-email, no object storage, no observability), then continue.
+> See `resources/deploy-env-vars.md` for exact locations. Say **ready** when you have them.
 
 ---
 
@@ -95,9 +83,14 @@ For each variable below, skip it if already set to a non-empty, non-`CHANGE_ME` 
 
 ### 1a. Hetzner API token
 
-Read `HETZNER_TOKEN` from the environment (already loaded from `.env` in Step 0).
-Write it to `terraform/hetzner/terraform.tfvars` as `hcloud_token` without printing
-the value. If the var is absent (should not happen after Step 0 check), stop.
+Read `hcloud_token` from `terraform/hetzner/terraform.tfvars`.
+
+If it is empty or `CHANGE_ME`:
+
+> **Action required:** Open `terraform/hetzner/terraform.tfvars` and fill in `hcloud_token`
+> with your Hetzner Cloud API token (Read & Write), then say **continue**.
+
+Wait for the user to confirm, then re-read the file. Do not proceed until the value is set.
 
 ### 1b. SSH public key
 
@@ -149,8 +142,8 @@ just terraform hetzner apply -auto-approve
 ```
 
 Wait for apply to complete. If it fails with an authentication error, tell the user:
-"HETZNER_TOKEN appears to be invalid. Update it in `.env` and re-run." Do not repeat
-the token value.
+"hcloud_token appears to be invalid. Update it in `terraform/hetzner/terraform.tfvars` and re-run."
+Do not repeat the token value.
 
 If it fails for another reason, show the error and stop.
 
@@ -192,9 +185,14 @@ Only continue when the user confirms the domain is Active.
 
 ### 2b. Cloudflare API token
 
-Read `CLOUDFLARE_TOKEN` from the environment and write it to
-`terraform/cloudflare/terraform.tfvars` as `cloudflare_api_token` without printing
-the value.
+Read `cloudflare_api_token` from `terraform/cloudflare/terraform.tfvars`.
+
+If it is empty or `CHANGE_ME`:
+
+> **Action required:** Open `terraform/cloudflare/terraform.tfvars` and fill in `cloudflare_api_token`
+> with your Cloudflare API token (Zone permissions), then say **continue**.
+
+Wait for the user to confirm, then re-read the file. Do not proceed until the value is set.
 
 ### 2c. Domain
 
@@ -211,9 +209,9 @@ Set `server_ip`.
 
 ### 2e. Mailgun DNS records
 
-If `MAILGUN_DKIM_VALUE` is set in the environment, ask:
+Ask the user:
 
-> Configure Mailgun DNS records in Cloudflare using the DKIM value from your `.env`? (y/n)
+> Do you want to configure Mailgun DNS records in Cloudflare (for outbound email)? (y/n)
 
 If **yes**:
 
@@ -221,14 +219,20 @@ Ask:
 > Enter your Mailgun sender domain (e.g. `mg.example.com`):
 
 Ask:
+> Enter your Mailgun DKIM value (from Mailgun → Sending → Domains → DNS Records →
+> `mailo._domainkey` TXT value). Open `terraform/cloudflare/terraform.tfvars` and
+> fill in `mailgun_dkim_value`, then say **continue**.
+
+Wait for the user to confirm, then re-read the file.
+
+Ask:
 > Are you using EU Mailgun servers? (Y/n) [default: yes]
 
 Set:
-- `mailgun_dkim_value` ← from `$MAILGUN_DKIM_VALUE` (write directly, do not print)
 - `mailgun_mx_servers` ← `["mxa.eu.mailgun.org", "mxb.eu.mailgun.org"]` if yes (default),
   otherwise `["mxa.mailgun.org", "mxb.mailgun.org"]`
 
-If `MAILGUN_DKIM_VALUE` is not set, or user answers **no**, skip. Tell the user:
+If user answers **no**, skip. Tell the user:
 > Mailgun DNS records will not be added automatically. Add them manually in Cloudflare DNS
 > after deploy if you want outbound email to work.
 
@@ -254,7 +258,7 @@ just terraform cloudflare apply -auto-approve
 ```
 
 If `terraform apply` fails with an authentication error, tell the user:
-"CLOUDFLARE_TOKEN appears to be invalid. Update it in `.env` and re-run."
+"cloudflare_api_token appears to be invalid. Update it in `terraform/cloudflare/terraform.tfvars` and re-run."
 
 If it fails with "A similar configuration with rules already exists and overwriting will
 have unintended consequences", existing Cloudflare rulesets must be imported before
@@ -294,19 +298,16 @@ Wait for apply to complete. If it fails for a different reason, show the error a
 
 If `access_key` and `secret_key` are already set, skip this step entirely.
 
-If `HETZNER_STORAGE_ACCESS_KEY` and `HETZNER_STORAGE_SECRET_KEY` are set in the
-environment, write them to `terraform/storage/terraform.tfvars` as `access_key` and
-`secret_key` without printing the values.
+Read `access_key` and `secret_key` from `terraform/storage/terraform.tfvars`.
 
-If either is missing from the environment, tell the user:
+If either is empty or `CHANGE_ME`:
 
-> **HETZNER_STORAGE_ACCESS_KEY or HETZNER_STORAGE_SECRET_KEY is not set.**
-> Add them to `.env` (Hetzner → Security → S3 credentials → Generate credentials)
-> and re-run. The secret key is shown only once when generated.
+> **Action required:** Open `terraform/storage/terraform.tfvars` and fill in `access_key`
+> and `secret_key` with your Hetzner S3 credentials (Hetzner → Security → S3 credentials
+> → Generate credentials). **Note:** the secret key is shown only once when generated.
+> Say **continue** when done.
 
-Stop until the vars are present.
-
-Write `terraform/storage/terraform.tfvars` with collected values.
+Wait for the user to confirm, then re-read the file. Do not proceed until both are set.
 
 ```bash
 just terraform storage init    # skip if terraform/storage/.terraform/ already exists
@@ -434,15 +435,23 @@ Save this as `<site_name>` for use in Step 6c.
 
 ### Observability credentials
 
-Read `SENTRY_DSN` and `OTLP_ENDPOINT` from the environment.
-Write each to `values.secret.yaml` if present — without printing the values.
-If not set, skip silently (the user was warned in Step 0).
+Read `secrets.sentryUrl` and `secrets.openTelemetryUrl` from `values.secret.yaml`.
+If either is empty and the user wants observability:
+
+> **Action required:** Open `helm/site/values.secret.yaml` and fill in
+> `secrets.sentryUrl` and/or `secrets.openTelemetryUrl`, then say **continue**.
+
+If the user skips, leave them empty — observability will not be configured.
 
 ### Mailgun API key
 
-Read `MAILGUN_API_KEY` from the environment.
-Write to `secrets.mailgunApiKey` if present — without printing the value.
-If not set, skip silently.
+Read `secrets.mailgunApiKey` from `values.secret.yaml`.
+If it is empty and the user wants email:
+
+> **Action required:** Open `helm/site/values.secret.yaml` and fill in
+> `secrets.mailgunApiKey` with your Mailgun API key, then say **continue**.
+
+If the user skips, leave it empty — outbound email will not work until this is set.
 
 ### Write the file
 

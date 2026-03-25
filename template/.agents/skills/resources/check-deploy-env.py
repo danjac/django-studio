@@ -27,8 +27,8 @@ OPTIONAL = [
     "OTLP_ENDPOINT",
 ]
 
-missing_req = [v for v in REQUIRED if not env.str(v, default="")]
-missing_opt = [v for v in OPTIONAL if not env.str(v, default="")]
+missing_req = [v for v in REQUIRED if not env.str(v, default="").strip()]
+missing_opt = [v for v in OPTIONAL if not env.str(v, default="").strip()]
 
 for v in missing_req:
     print(f"MISSING (required): {v}")

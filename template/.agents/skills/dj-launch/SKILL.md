@@ -405,7 +405,7 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 > Enter the public contact email address:
 
 **Mailgun sender domain** (the `mg.yourdomain.com` subdomain for outbound email):
-> Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or press Enter to skip:
+> Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or type **skip** to leave empty:
 
 **Admin URL** — generate a random human-readable slug if the user skips:
 
@@ -415,9 +415,9 @@ default_admin_url="${slug}/"
 ```
 
 Then prompt:
-> Enter a custom Django admin URL path (press Enter for `<generated-slug>/`):
+> Enter a custom Django admin URL path (or type **skip** for `<generated-slug>/`):
 
-- If the user presses Enter (empty input), use the generated slug (e.g. `calm-peak/`).
+- If the user types **skip** (or empty input), use the generated slug (e.g. `calm-peak/`).
 - If the user types a value, use that value.
 - Only fall back to `admin/` if the user explicitly types `admin/`.
 
@@ -428,7 +428,7 @@ Tell the user which URL was chosen — they will need this to access Django admi
 
 Save this as `<site_name>` for use in Step 6c.
 
-**Meta author, description, keywords** — prompt for each, allow empty to skip.
+**Meta author, description, keywords** — prompt for each; the user can type **skip** to leave empty.
 
 ### Sentry DSN
 

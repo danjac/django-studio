@@ -9,3 +9,7 @@ python .agents/skills/dj-help/resources/lookup.py $ARGUMENTS
 ```
 
 Print the output verbatim to the user.
+
+Then ask: "Do you have any questions about this command?"
+
+Answer any follow-up questions using the skill documentation and your knowledge of the project.

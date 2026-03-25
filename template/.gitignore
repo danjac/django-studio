@@ -62,3 +62,4 @@ terraform/**/.terraform.lock.hcl
 
 # Helm
 helm/*/values.secret.yaml
+helm/*/charts/

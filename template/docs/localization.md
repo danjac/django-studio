@@ -46,10 +46,19 @@ Use `language_info_list` (available in the template context when
 
 ### Implementation
 
-Use the dropdown component from `docs/ui-recipes.md#dropdown-menu`. That doc covers the
-full language-switcher example, the hidden-form pattern (required to avoid Alpine
-swallowing form submits), and the `hx-disable="true"` attribute needed to prevent HTMX
-intercepting the full-page POST.
+Use the dropdown component from `docs/ui-recipes.md#dropdown-menu` with the
+hidden-form pattern. Render language options using `language_info_list` from the `i18n`
+context processor — `lang.name_local` gives the native language name:
+
+```html
+{% for lang in language_info_list %}
+  <li role="menuitem">
+    <button type="submit" form="set-language-{{ lang.code }}" class="w-full">
+      {{ lang.name_local }}
+    </button>
+  </li>
+{% endfor %}
+```
 
 ---
 

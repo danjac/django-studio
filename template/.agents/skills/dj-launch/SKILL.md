@@ -376,6 +376,19 @@ Fetch automatically — never prompt for these:
 - `secrets.cloudflare.cert` ← `just terraform-value cloudflare origin_cert_pem`
 - `secrets.cloudflare.key` ← `just terraform-value cloudflare origin_key_pem`
 
+**Verify the origin certificate signature** after writing it to `values.secret.yaml`.
+A single corrupted base64 character will cause Cloudflare 526 errors that are nearly
+impossible to diagnose (all metadata checks pass, only crypto verification fails):
+
+```bash
+curl -s https://developers.cloudflare.com/ssl/static/origin_ca_rsa_root.pem -o /tmp/cf_root.pem
+terraform -chdir=terraform/cloudflare output -raw origin_cert_pem > /tmp/origin_cert.pem
+openssl verify -CAfile /tmp/cf_root.pem /tmp/origin_cert.pem
+```
+
+The output must be `/tmp/origin_cert.pem: OK`. If verification fails, re-read the cert
+from terraform output and write it again — do not proceed until it verifies.
+
 If `terraform/storage/` exists:
 - `secrets.hetznerStorageBucket` ← `just terraform-value storage bucket_name`
 - `secrets.hetznerStorageEndpoint` ← `just terraform-value storage endpoint_url`

@@ -39,12 +39,10 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 > - **Hetzner Cloud API token** — console.hetzner.cloud → Security → API Tokens → Generate (Read & Write)
 > - **Cloudflare API token** — dash.cloudflare.com → Profile → API Tokens (Zone permissions)
 >
-> **Required for email:**
-> - **Mailgun API key** — mailgun.com → Sending → Domains → API Keys
->
 > **Optional:**
+> - Mailgun API key — mailgun.com → Sending → Domains → API Keys (for outbound email)
 > - Mailgun DKIM value (for DNS-based email verification via Cloudflare)
-> - Hetzner object storage credentials (optional — needed only if you want file/media storage)
+> - Hetzner object storage credentials (for file/media storage)
 > - Sentry DSN, OTLP endpoint (for observability)
 >
 > Say **ready** when you have them.

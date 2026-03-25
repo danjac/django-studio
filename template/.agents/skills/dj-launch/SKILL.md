@@ -213,7 +213,12 @@ Ask the user:
 If **yes**:
 
 Ask:
-> Enter your Mailgun sender domain (e.g. `mg.example.com`):
+> What subdomain prefix do you use for Mailgun sending? This is the part before
+> your domain in Mailgun (e.g. if your Mailgun sender domain is `mg.example.com`,
+> enter `mg`). Default: `mg`
+
+Set `mailgun_sender_domain` in `terraform/cloudflare/terraform.tfvars` to the user's
+answer (default `mg`). Cloudflare creates DNS records under this subdomain in the zone.
 
 Ask:
 > Enter your Mailgun DKIM value (from Mailgun → Sending → Domains → DNS Records →
@@ -236,7 +241,7 @@ If user answers **no**, skip. Tell the user:
 ### 2f. Write terraform.tfvars and apply
 
 Write `terraform/cloudflare/terraform.tfvars` with all collected values, including
-`mailgun_dkim_value` and `mailgun_mx_servers` if collected in 2e.
+`mailgun_sender_domain`, `mailgun_dkim_value`, and `mailgun_mx_servers` if collected in 2e.
 
 Then:
 ```bash

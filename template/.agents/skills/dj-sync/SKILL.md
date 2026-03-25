@@ -53,11 +53,14 @@ Repeat until no conflict markers remain.
 
 ### 3. Restore local overrides in generated files
 
-Diff the auto-generated backups against the freshly regenerated files.
-The project slug is the current directory name. Substitute it below:
+Diff the auto-generated backups against the freshly regenerated files:
 
 ```bash
-BACKUP_DIR=$(python3 -c 'import tempfile; print(tempfile.gettempdir())')/<project-slug>
+BACKUP_DIR=$(uv run python -c "
+import tempfile, yaml
+slug = yaml.safe_load(open('.copier-answers.yml'))['project_slug']
+print(tempfile.gettempdir() + '/' + slug)
+")
 diff "$BACKUP_DIR/settings.json.bak" .claude/settings.json
 diff "$BACKUP_DIR/mcp.json.bak" .mcp.json
 diff "$BACKUP_DIR/opencode.json.bak" opencode.json

@@ -1,9 +1,8 @@
 # ruff: noqa: INP001, T201
 """Check presence of deployment environment variables.
 
-Loads .env (non-empty values take precedence over shell; empty placeholders
-like KEY= fall back to the shell value). Reports missing required and
-optional vars by name only — never prints values.
+Loads .env (takes precedence over shell environment), then reports missing
+required and optional vars by name only — never prints values.
 
 Usage:
     uv run python .agents/skills/resources/check-deploy-env.py
@@ -11,25 +10,12 @@ Usage:
 Exit code 1 if any required vars are missing.
 """
 
-import os
 import sys
-from pathlib import Path
 
 from environs import Env
 
-# Load .env: only apply non-empty values so empty placeholders (KEY=)
-# don't clobber a real shell value.
-try:
-    for raw in Path(".env").read_text().splitlines():
-        entry = raw.strip()
-        if entry and not entry.startswith("#") and "=" in entry:
-            k, _, v = entry.partition("=")
-            if v.strip():
-                os.environ[k.strip()] = v.strip()
-except FileNotFoundError:
-    pass
-
 env = Env()
+env.read_env()
 
 REQUIRED = ["HETZNER_TOKEN", "CLOUDFLARE_TOKEN"]
 OPTIONAL = [

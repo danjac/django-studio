@@ -200,7 +200,7 @@ known-first-party = ["{{ package_name }}"]
 [tool.django-stubs]
 django_settings_module = "config.settings"
 
-[tool.pyright]
+[tool.basedpyright]
 include = ["{{ package_name }}"]
 exclude = ["**/migrations/*.py", "**/tests/**/*.py"]
 typeCheckingMode = "basic"

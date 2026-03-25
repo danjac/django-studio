@@ -215,9 +215,12 @@ If **yes**:
 Ask:
 > Enter your full Mailgun sender domain (e.g. `mg.example.com`):
 
+Save the full sender domain (e.g. `mg.example.com`) for use in Step 4
+(`app.mailgunSenderDomain` in `values.secret.yaml`).
+
 Extract the subdomain prefix (everything before the first `.`) and set
-`mailgun_sender_domain` in `terraform/cloudflare/terraform.tfvars`. For example,
-`mg.example.com` → `mailgun_sender_domain = "mg"`. The Cloudflare zone handles
+`mailgun_subdomain` in `terraform/cloudflare/terraform.tfvars`. For example,
+`mg.example.com` → `mailgun_subdomain = "mg"`. The Cloudflare zone handles
 the base domain, so only the prefix is needed in tfvars.
 
 Ask:
@@ -241,7 +244,7 @@ If user answers **no**, skip. Tell the user:
 ### 2f. Write terraform.tfvars and apply
 
 Write `terraform/cloudflare/terraform.tfvars` with all collected values, including
-`mailgun_sender_domain`, `mailgun_dkim_value`, and `mailgun_mx_servers` if collected in 2e.
+`mailgun_subdomain`, `mailgun_dkim_value`, and `mailgun_mx_servers` if collected in 2e.
 
 Then:
 ```bash
@@ -422,8 +425,9 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 **Contact email:**
 > Enter the public contact email address:
 
-**Mailgun sender domain** (the `mg.yourdomain.com` subdomain for outbound email):
-> Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or type **skip** to leave empty:
+**Mailgun sender domain** — if the user provided a Mailgun sender domain in Step 2e,
+set `app.mailgunSenderDomain` to the full domain (e.g. `mg.example.com`). If Mailgun
+was not configured in Step 2e, skip.
 
 **Admin URL** — generate a random human-readable slug if the user skips:
 

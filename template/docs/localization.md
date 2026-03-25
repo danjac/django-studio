@@ -44,40 +44,12 @@ Use `language_info_list` (available in the template context when
 `django.template.context_processors.i18n` is enabled) to display native language names
 (`lang.name_local`).
 
-### The hidden-form pattern
+### Implementation
 
-Do not wrap the submit `<button>` inside an `x-show` block — Alpine hides the element
-from the DOM in a way that can swallow form submissions unreliably. Instead, place the
-`<form>` elements outside `x-show` (hidden via the HTML `hidden` attribute) and
-reference them from buttons via the `form="..."` attribute. This is the same pattern
-used for the logout button.
-
-```html
-{# One hidden form per language, outside the x-show container #}
-{% for lang in language_info_list %}
-  <form id="set-language-{{ lang.code }}" method="post" action="{% url 'set_language' %}" hidden>
-    {% csrf_token %}
-    <input type="hidden" name="language" value="{{ lang.code }}">
-    <input type="hidden" name="next" value="{{ request.get_full_path }}">
-  </form>
-{% endfor %}
-
-{# Dropdown controlled by Alpine — buttons reference forms by id #}
-<div x-data="{ open: false }">
-  <button type="button" @click="open = !open" :aria-expanded="open">
-    {% translate "Language" %}
-  </button>
-  <ul x-show="open" @keydown.escape="open = false">
-    {% for lang in language_info_list %}
-      <li>
-        <button type="submit" form="set-language-{{ lang.code }}">
-          {{ lang.name_local }}
-        </button>
-      </li>
-    {% endfor %}
-  </ul>
-</div>
-```
+Use the dropdown component from `docs/ui-recipes.md#dropdown-menu`. That doc covers the
+full language-switcher example, the hidden-form pattern (required to avoid Alpine
+swallowing form submits), and the `hx-disable="true"` attribute needed to prevent HTMX
+intercepting the full-page POST.
 
 ---
 

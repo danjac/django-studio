@@ -188,6 +188,12 @@ otherwise — **always create a new branch**, commit the change there, push, and
 open a pull request. Do **not** commit directly to `main` unless the user
 explicitly instructs you to do so.
 
+Before creating a new branch, ensure you are on `main`. If you are not:
+
+- If all changes on the current branch are committed, check out `main` first.
+- If there are uncommitted changes, **stop and ask the user for instructions**
+  before proceeding.
+
 ## Bugs and Improvements
 
 Use the `/dj-feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.

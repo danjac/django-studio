@@ -57,8 +57,7 @@ Diff the auto-generated backups against the freshly regenerated files.
 Read the project slug from `.copier-answers.yml`, then compute the backup path:
 
 ```bash
-PROJECT_SLUG=$(python3 -c "import yaml; d=yaml.safe_load(open('.copier-answers.yml')); print(d['project_slug'])")
-BACKUP_DIR="$(python3 -c 'import tempfile; print(tempfile.gettempdir())')/$PROJECT_SLUG"
+BACKUP_DIR=$(python3 -c 'import tempfile; print(tempfile.gettempdir())')/<project-slug>
 diff "$BACKUP_DIR/settings.json.bak" .claude/settings.json
 diff "$BACKUP_DIR/mcp.json.bak" .mcp.json
 diff "$BACKUP_DIR/opencode.json.bak" opencode.json

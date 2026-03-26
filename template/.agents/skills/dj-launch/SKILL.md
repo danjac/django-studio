@@ -16,6 +16,10 @@ configuring secrets, and deploying the application end-to-end.
 first. Only fill in what is missing or still `CHANGE_ME`. Re-running is safe — it resumes
 where it left off.
 
+**Terraform rule:** Never use `cd terraform/<dir>` — it changes the working directory
+for subsequent commands. Always use `terraform -chdir=terraform/<dir>` or the
+`just terraform <dir>` wrapper instead.
+
 **Secret handling rules:**
 - All deployment secrets are stored directly in tfvars and helm values files (gitignored).
 - Never echo, print, or repeat a secret value in the terminal or chat.

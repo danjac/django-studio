@@ -283,12 +283,11 @@ curl -s "https://api.cloudflare.com/client/v4/zones/$zone_id/rulesets" \
 Match rulesets by phase and import using format `zone/<zone_id>/<ruleset_id>`:
 
 ```bash
-cd terraform/cloudflare
 # http_request_firewall_custom → cloudflare_ruleset.zone_level_firewall
-terraform import cloudflare_ruleset.zone_level_firewall zone/<zone_id>/<ruleset_id>
+terraform -chdir=terraform/cloudflare import cloudflare_ruleset.zone_level_firewall zone/<zone_id>/<ruleset_id>
 
 # http_response_headers_transform → cloudflare_ruleset.transform_response_headers
-terraform import cloudflare_ruleset.transform_response_headers zone/<zone_id>/<ruleset_id>
+terraform -chdir=terraform/cloudflare import cloudflare_ruleset.transform_response_headers zone/<zone_id>/<ruleset_id>
 ```
 
 Then re-run `just terraform cloudflare apply`.

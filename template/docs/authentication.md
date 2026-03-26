@@ -31,15 +31,29 @@ Social providers can be added at any time without touching the base allauth setu
    ```python
    "allauth.socialaccount.providers.google",
    ```
-2. Configure credentials in `SOCIALACCOUNT_PROVIDERS` (already has a Google stub):
-   ```python
-   SOCIALACCOUNT_PROVIDERS = {
-       "google": {
-           "APP": {"client_id": "…", "secret": "…", "key": ""},
-       }
-   }
-   ```
-3. Run `just dj migrate` - the socialaccount tables are already present.
+2. Run `just dj migrate` — the socialaccount tables are already present.
+3. In the Django admin, go to **Social Applications** and create an entry for the
+   provider. Enter the **Client ID**, **Secret key**, and any other credentials
+   required by that provider. Assign it to the current site.
+
+> **Manual step:** credentials are configured in the admin, not in settings. This
+> keeps secrets out of source control. Each environment (dev, staging, production)
+> needs its own Social Application record.
+
+Consult the provider's documentation for how to obtain credentials and configure
+your app:
+
+- **Google** — [Google Identity: OAuth 2.0](https://developers.google.com/identity/protocols/oauth2)
+  — create a project in Google Cloud Console, enable the OAuth 2.0 API, add your
+  domain to the authorised redirect URIs.
+- **GitHub** — [GitHub: Creating an OAuth app](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
+  — set the callback URL to `https://<your-domain>/account/google/login/callback/`.
+- **LinkedIn** — [LinkedIn: OAuth 2.0](https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow)
+  — create an app in the LinkedIn Developer Portal and request the `openid`,
+  `profile`, and `email` scopes.
+
+For any provider not listed above, see the
+[allauth provider reference](https://docs.allauth.org/en/latest/socialaccount/providers/index.html).
 
 ## Customising the signup form
 

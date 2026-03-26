@@ -192,12 +192,11 @@ with the actual values (do not print them to the chat — pipe them from variabl
 
 ### 5b. Deploy
 
-Update the GitHub secret so CI stays in sync, then redeploy directly via Helm
-to minimise the window between password changes and the app restart:
+Push updated secrets to GitHub and redeploy directly via Helm (this does not
+trigger a CI build — it applies the Helm chart to the cluster immediately):
 
 ```bash
-gh secret set HELM_VALUES_SECRET < helm/site/values.secret.yaml
-just helm site
+just deploy-config
 ```
 
 Tell the user:

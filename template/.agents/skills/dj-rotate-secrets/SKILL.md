@@ -190,10 +190,14 @@ just kube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET re
 Replace `<new_postgres_password>`, `<old_redis_password>`, and `<new_redis_password>`
 with the actual values (do not print them to the chat — pipe them from variables).
 
-### 5b. Deploy the app
+### 5b. Deploy
+
+Update the GitHub secret so CI stays in sync, then redeploy directly via Helm
+to minimise the window between password changes and the app restart:
 
 ```bash
-just deploy-config
+gh secret set HELM_VALUES_SECRET < helm/site/values.secret.yaml
+just helm site
 ```
 
 Tell the user:

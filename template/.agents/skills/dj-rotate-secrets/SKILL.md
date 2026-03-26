@@ -182,10 +182,24 @@ services still expect the old ones, causing immediate 500 errors.
 just kube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
 ```
 
+**Verify** the output contains `ALTER ROLE`. If it does not (empty output, error, or
+unexpected text), **stop immediately** and tell the user:
+
+> Failed to update PostgreSQL password — database still has the old password.
+> Do not proceed with deploy. Fix the `psql` command manually, then re-run
+> `/dj-rotate-secrets`.
+
 **Redis:**
 ```bash
 just kube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
 ```
+
+**Verify** the output contains `OK`. If it does not, **stop immediately** and tell
+the user:
+
+> Failed to update Redis password — Redis still has the old password.
+> Do not proceed with deploy. Fix the `redis-cli` command manually, then re-run
+> `/dj-rotate-secrets`.
 
 Replace `<new_postgres_password>`, `<old_redis_password>`, and `<new_redis_password>`
 with the actual values (do not print them to the chat — pipe them from variables).

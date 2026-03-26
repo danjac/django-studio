@@ -304,7 +304,12 @@ Wait for apply to complete. If it fails for a different reason, show the error a
 
 ## Step 3 — Object Storage (optional — skip if user does not want file/media storage)
 
-**Check:** Read `terraform/storage/terraform.tfvars` if it exists.
+**Check:** Read `terraform/storage/terraform.tfvars` if it exists. If it does not
+exist, copy it from the example:
+
+```bash
+cp terraform/storage/terraform.tfvars.example terraform/storage/terraform.tfvars
+```
 
 If `access_key` and `secret_key` are already set, skip this step entirely.
 

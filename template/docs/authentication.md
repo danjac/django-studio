@@ -37,8 +37,7 @@ Social providers can be added at any time without touching the base allauth setu
    required by that provider. Assign it to the current site.
 
 > **Manual step:** credentials are configured in the admin, not in settings. This
-> keeps secrets out of source control. Each environment (dev, staging, production)
-> needs its own Social Application record.
+> keeps secrets out of source control.
 
 Consult the provider's documentation for how to obtain credentials and configure
 your app:

@@ -7,6 +7,17 @@ resizing and thumbnail generation. See `docs/packages.md` for installation notes
 
 For upload form widgets with inline preview, see `docs/django-forms.md#thumbnail-widget`.
 
+## Thumbnail cache cleanup
+
+The thumbnail cache is **not** automatically cleared when the original image is deleted.
+Add a daily cron job to remove stale cache entries:
+
+```bash
+./manage.sh thumbnail cleanup
+```
+
+See `docs/cron-jobs.md` for instructions on adding cron jobs.
+
 ## sorl-thumbnail and S3
 
 If you use sorl-thumbnail with S3 storage (see `docs/file-storage.md`), there are

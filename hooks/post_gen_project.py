@@ -179,6 +179,15 @@ def install_claude_hooks() -> None:
                                 " — run: just dj makemigrations'; fi"
                             ),
                         },
+                        {
+                            "type": "command",
+                            "command": (
+                                "FILE=$(jq -r '.tool_input.file_path // empty');"
+                                ' if [ -n "$FILE" ]'
+                                " && echo \"$FILE\" | grep -q '\\.html$';"
+                                ' then uv run djlint --lint "$FILE"; fi'
+                            ),
+                        },
                     ],
                 }
             ],

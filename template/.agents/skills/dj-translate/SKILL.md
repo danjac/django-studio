@@ -5,6 +5,9 @@ description: Extract strings, translate via Claude, compile .mo catalogue
 Extract all translatable strings, translate them using Claude, and compile the
 message catalogue for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
 
+If no locale is given, audit source code for untranslated strings first, then
+run the full translation pipeline for every language already in `LANGUAGES`.
+
 Read `docs/localization.md` for details on managing i18n/l10n in Django.
 
 **Prerequisites:**
@@ -24,7 +27,105 @@ If `gettext` is not available, stop and tell the user to install it first.
 
 ---
 
-**Steps:**
+## No-locale mode (no argument given)
+
+When the user runs `/dj-translate` with no locale, perform the audit + bulk
+update flow below instead of the single-locale steps.
+
+### A — Audit source for untranslated strings
+
+**Python files** — search `<package_name>/` for user-facing strings that are
+not wrapped in a gettext call (`_()`, `gettext()`, `gettext_lazy()`,
+`ngettext()`, `ngettext_lazy()`, `pgettext()`, `pgettext_lazy()`).
+
+Focus on strings that will be shown to end users:
+
+- `verbose_name`, `verbose_name_plural`, `help_text`, `label` in models/forms
+- Error messages in `ValidationError`, `forms.ValidationError`
+- Flash/status messages passed to `messages.add_message` / `messages.success` etc.
+- String literals returned in HTTP responses or passed to `render()` context
+  that look like display text (not variable names, URLs, or format keys)
+
+Ignore: string literals that are clearly internal (log messages, variable
+names, URL patterns, settings values, migration strings, `__str__` format
+strings that are not display labels).
+
+**Django templates** — search all `.html` files under `<package_name>/` and
+`templates/` for visible text content that is not inside a
+`{% translate %}` / `{% trans %}` tag or a `{% blocktranslate %}` /
+`{% blocktrans %}` block.
+
+Ignore: template tags, filter expressions, comments `{# … #}`, attribute
+values that are URLs or CSS class names, and any text that is already
+wrapped in a translation tag.
+
+**Report findings before making changes:**
+
+```
+Untranslated strings found
+==========================
+
+Python (N files, M strings):
+  <package_name>/models.py:12  verbose_name="Widget"
+  <package_name>/forms.py:34   ValidationError("This field is required.")
+  …
+
+Templates (N files, M strings):
+  templates/base.html:45       "Sign in"
+  <package_name>/templates/…:8 "No results found."
+  …
+```
+
+If no issues are found, print:
+
+```
+All user-facing strings are already marked for translation.
+```
+
+and jump straight to step B.
+
+**Fix all findings** — wrap each bare string with the appropriate call:
+
+- Python: `_("…")` (import `from django.utils.translation import gettext_lazy as _`
+  at the top of the file if not already present; use `gettext_lazy` in
+  module-level scope, `gettext` inside functions/methods).
+- Templates: `{% translate "…" %}` for inline strings; `{% blocktranslate %}…{% endblocktranslate %}` for multi-word blocks containing variables.
+
+After fixing, print a brief summary:
+
+```
+Fixed: N strings across M files.
+```
+
+---
+
+### B — Detect current languages
+
+Read `config/settings.py` and extract all locales from `LANGUAGES` (skip
+`"en"` — English is the source language and has no `.po` file).
+
+Example: if `LANGUAGES = [("en", "English"), ("fr", "Français"), ("de", "Deutsch")]`,
+the target locales are `["fr", "de"]`.
+
+If `LANGUAGES` contains only `"en"` (or is empty), print:
+
+```
+No non-English locales configured in LANGUAGES. Nothing to translate.
+```
+
+and stop.
+
+---
+
+### C — Run the single-locale pipeline for each locale
+
+For every locale detected in step B, run steps 1 through 5 from the
+single-locale flow below (treating each as an existing locale — skip step 2
+and step 2b). Work through them sequentially, one locale at a time.
+
+---
+
+**Steps (single-locale mode):**
 
 ### 0 — Detect existing locale
 

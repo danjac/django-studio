@@ -1,64 +1,83 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}
-    {% title_tag "Privacy" %}
+    {% title_tag _("Privacy") %}
 {% endblock title %}
 
 {% block content %}
-    {% include "header.html" with title="Privacy" %}
+    {% include "header.html" with title=_("Privacy") %}
     {% with site=request.site %}
         <div class="space-y-6">
             <p class="prose dark:prose-invert">
-                This privacy policy ("policy") will help you understand how <strong>{{ site.name }}</strong> ("us", "we",
-                "our") uses and protects the data you provide to us when you visit and use <strong>http://{{ site.domain }}</strong> ("site", "service").
+                {% blocktranslate trimmed with name=site.name domain=site.domain %}
+                    This privacy policy ("policy") will help you understand how <strong>{{ name }}</strong> ("us", "we",
+                    "our") uses and protects the data you provide to us when you visit and use <strong>http://{{ domain }}</strong> ("site", "service").
+                {% endblocktranslate %}
             </p>
             <p class="prose dark:prose-invert">
-                We reserve the right to change this policy at any given time, of which you will be promptly updated. If you want to make sure that you are up to date with the latest changes, we advise you to frequently visit this page.
+                {% blocktranslate trimmed %}
+                    We reserve the right to change this policy at any given time, of which you will be promptly updated. If you want to make sure that you are up to date with the latest changes, we advise you to frequently visit this page.
+                {% endblocktranslate %}
             </p>
-            <h2 class="text-lg font-semibold lg:text-xl">What User Data We Collect</h2>
-            <p class="prose dark:prose-invert">When you visit the site, we may collect the following data:</p>
+            <h2 class="text-lg font-semibold lg:text-xl">{% translate "What User Data We Collect" %}</h2>
+            <p class="prose dark:prose-invert">{% translate "When you visit the site, we may collect the following data:" %}</p>
             <ul class="space-y-3 list-disc list-inside">
-                <li>Your IP address.</li>
-                <li>Your email address.</li>
-                <li>Data profile regarding your online behavior on our site.</li>
+                <li>{% translate "Your IP address." %}</li>
+                <li>{% translate "Your email address." %}</li>
+                <li>{% translate "Data profile regarding your online behavior on our site." %}</li>
             </ul>
-            <h2 class="text-lg font-semibold lg:text-xl">Why We Collect Your Data</h2>
-            <p class="prose dark:prose-invert">We are collecting your data for several reasons:</p>
+            <h2 class="text-lg font-semibold lg:text-xl">{% translate "Why We Collect Your Data" %}</h2>
+            <p class="prose dark:prose-invert">{% translate "We are collecting your data for several reasons:" %}</p>
             <ul class="space-y-3 list-disc list-inside">
-                <li>To better understand your needs.</li>
-                <li>To improve our services and products.</li>
-                <li>To send you promotional emails containing the information we think you will find interesting.</li>
-                <li>To customize our site according to your online behavior and personal preferences.</li>
+                <li>{% translate "To better understand your needs." %}</li>
+                <li>{% translate "To improve our services and products." %}</li>
+                <li>{% translate "To send you promotional emails containing the information we think you will find interesting." %}</li>
+                <li>{% translate "To customize our site according to your online behavior and personal preferences." %}</li>
             </ul>
-            <h2 class="text-lg font-semibold lg:text-xl">Safeguarding and Securing the Data</h2>
+            <h2 class="text-lg font-semibold lg:text-xl">{% translate "Safeguarding and Securing the Data" %}</h2>
             <p class="prose dark:prose-invert">
-                <strong>{{ site.name }}</strong> is committed to securing your data and keeping it confidential. <strong>{{ site.name }}</strong> has done all in its power to prevent data theft, unauthorized access, and disclosure by implementing the latest technologies and software, which help us safeguard all the information we collect online.
+                {% blocktranslate trimmed with name=site.name %}
+                    <strong>{{ name }}</strong> is committed to securing your data and keeping it confidential. <strong>{{ name }}</strong> has done all in its power to prevent data theft, unauthorized access, and disclosure by implementing the latest technologies and software, which help us safeguard all the information we collect online.
+                {% endblocktranslate %}
             </p>
-            <h2 class="text-lg font-semibold lg:text-xl">Account Deletion</h2>
+            <h2 class="text-lg font-semibold lg:text-xl">{% translate "Account Deletion" %}</h2>
             <p class="prose dark:prose-invert">
-                Users may request account deletion at any time by contacting us at
-                <a href="mailto:{{ contact_email }}" class="link">{{ contact_email }}</a>.
-                All collected user-specific data will also be irrevocably deleted.
+                {% blocktranslate trimmed with email=contact_email %}
+                    Users may request account deletion at any time by contacting us at
+                    <a href="mailto:{{ email }}" class="link">{{ email }}</a>.
+                    All collected user-specific data will also be irrevocably deleted.
+                {% endblocktranslate %}
             </p>
-            <h2 class="text-lg font-semibold lg:text-xl">Our Cookie Policy</h2>
+            <h2 class="text-lg font-semibold lg:text-xl">{% translate "Our Cookie Policy" %}</h2>
             <p class="prose dark:prose-invert">
-                Once you agree to allow our site to use cookies, you also agree to use the data it collects regarding your online behavior (analyze web traffic, web pages you visit and spend the most time on).
-            </p>
-            <p class="prose dark:prose-invert">
-                The data we collect by using cookies is used to customize our site to your needs. After we use the data for statistical analysis, the data is completely removed from our systems.
-            </p>
-            <p class="prose dark:prose-invert">
-                Please note that cookies don't allow us to gain control of your computer in any way. They are strictly used to monitor which pages you find useful and which you do not so that we can provide a better experience for you.
+                {% blocktranslate trimmed %}
+                    Once you agree to allow our site to use cookies, you also agree to use the data it collects regarding your online behavior (analyze web traffic, web pages you visit and spend the most time on).
+                {% endblocktranslate %}
             </p>
             <p class="prose dark:prose-invert">
-                If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href="https://www.internetcookies.com"
-                                                                                                                                   target="_blank"
-                                                                                                                                   rel="noopener"
-                                                                                                                                   class="link">https://www.internetcookies.com</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices.
+                {% blocktranslate trimmed %}
+                    The data we collect by using cookies is used to customize our site to your needs. After we use the data for statistical analysis, the data is completely removed from our systems.
+                {% endblocktranslate %}
             </p>
-            <h2 class="text-lg font-semibold lg:text-xl">Links to Other Websites</h2>
             <p class="prose dark:prose-invert">
-                Our site contains links that lead to other websites. If you click on these links <strong>{{ site.name }}</strong> is not held responsible for your data and privacy protection. Visiting those websites is not governed by this privacy policy agreement. Make sure to read the privacy policy documentation of the website you go to from our website.
+                {% blocktranslate trimmed %}
+                    Please note that cookies don't allow us to gain control of your computer in any way. They are strictly used to monitor which pages you find useful and which you do not so that we can provide a better experience for you.
+                {% endblocktranslate %}
+            </p>
+            <p class="prose dark:prose-invert">
+                {% blocktranslate trimmed with url="https://www.internetcookies.com" %}
+                    If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href="{{ url }}"
+                                                                                                                                       target="_blank"
+                                                                                                                                       rel="noopener"
+                                                                                                                                       class="link">{{ url }}</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices.
+                {% endblocktranslate %}
+            </p>
+            <h2 class="text-lg font-semibold lg:text-xl">{% translate "Links to Other Websites" %}</h2>
+            <p class="prose dark:prose-invert">
+                {% blocktranslate trimmed with name=site.name %}
+                    Our site contains links that lead to other websites. If you click on these links <strong>{{ name }}</strong> is not held responsible for your data and privacy protection. Visiting those websites is not governed by this privacy policy agreement. Make sure to read the privacy policy documentation of the website you go to from our website.
+                {% endblocktranslate %}
             </p>
         </div>
     {% endwith %}

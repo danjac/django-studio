@@ -14,12 +14,12 @@
   <body class="bg-base-100 text-base-content min-h-screen">
     <div id="hx-indicator" x-data="hxIndicator"></div>
     {% include "messages.html" %}
-    {% cookie_banner %}
     {% include "navbar.html" %}
     <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {% block content %}
       {% endblock content %}
     </main>
+    {% cookie_banner %}
     {% block scripts %}
     <script src="{% static 'indicator.js' %}"></script>
     <script>

@@ -39,16 +39,23 @@ the user this project does not have the backup infrastructure — they may need 
 
 If `access_key` and `secret_key` are already set to non-empty values, skip to Step 2.
 
-Otherwise, tell the user:
+Otherwise, check whether `terraform/storage/terraform.tfvars` exists and contains
+non-empty `access_key` and `secret_key` values.
+
+**If storage credentials exist**, ask:
+
+> `terraform/storage/terraform.tfvars` already contains S3 credentials.
+> Use the same credentials for the backup bucket? (y/n)
+
+If **y**, read the values from `terraform/storage/terraform.tfvars` and use them
+silently — do **not** print the credential values to the screen.
+
+If **n**, or if `terraform/storage/terraform.tfvars` does not exist or its credentials
+are empty, prompt the user:
 
 > **Action required — S3 credentials for the backup bucket**
 >
-> The backup bucket uses the same Hetzner S3 credentials as the media storage bucket.
->
-> If you already ran `terraform/storage/`, reuse the same credentials:
-> - Open `terraform/storage/terraform.tfvars` and copy `access_key` and `secret_key`.
->
-> If you have not set up object storage yet, generate credentials now:
+> Generate new S3 credentials:
 > 1. Go to [console.hetzner.cloud](https://console.hetzner.cloud)
 > 2. Select your project → **Security** → **S3 credentials**
 > 3. Click **Generate credentials**

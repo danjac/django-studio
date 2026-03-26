@@ -638,6 +638,7 @@ Tell the user:
 > **Next steps (optional):**
 > - Run `/dj-launch-observability` to deploy Grafana + Prometheus + Loki
 > - Run `/dj-enable-db-backups` to set up automated daily PostgreSQL backups
+> - Run `/dj-rotate-secrets` to rotate auto-generated secrets when ready
 
 ---
 

@@ -158,6 +158,7 @@ Available in Claude Code and OpenCode as `/dj-<command>`.
 | `/dj-create-command <app_name> [desc]` | Add a management command with tests |
 | `/dj-create-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
 | `/dj-create-model <app_name> <model>` | Design a model with factory, fixture, and tests |
+| `/dj-create-migration <app_name> [name]` | Create a data migration (Python or SQL) |
 | `/dj-create-crud <app_name> <model>` | Full CRUD views, templates, URLs, forms, and tests |
 | `/dj-create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
 | `/dj-create-tag [<app_name>] [<module>]` | Add a template tag |

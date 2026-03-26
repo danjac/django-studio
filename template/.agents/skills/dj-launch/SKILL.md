@@ -162,7 +162,12 @@ just get-kubeconfig
 
 ## Step 2 — Cloudflare DNS and SSL
 
-**Check:** Read `terraform/cloudflare/terraform.tfvars` if it exists.
+**Check:** Read `terraform/cloudflare/terraform.tfvars` if it exists. If it does not
+exist, copy it from the example:
+
+```bash
+cp terraform/cloudflare/terraform.tfvars.example terraform/cloudflare/terraform.tfvars
+```
 
 ### 2a. Confirm domain is Active in Cloudflare
 

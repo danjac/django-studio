@@ -140,7 +140,7 @@ Ask the user:
 If yes:
 
 ```bash
-just dj migrate --run-syncdb
+just dj migrate
 ```
 
 Then:

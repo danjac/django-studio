@@ -134,9 +134,9 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 **Localisation**
 
-| Command         | Summary                                                        |
-| --------------- | -------------------------------------------------------------- |
-| `/dj-translate` | Extract strings, translate via Claude, compile `.mo` catalogue |
+| Command         | Summary                                                         |
+| --------------- | --------------------------------------------------------------- |
+| `/dj-translate` | Extract strings, translate using agent, compile `.mo` catalogue |
 
 **Audits**
 

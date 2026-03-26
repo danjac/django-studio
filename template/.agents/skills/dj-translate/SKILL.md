@@ -1,8 +1,8 @@
 ---
-description: Extract strings, translate via Claude, compile .mo catalogue
+description: Extract strings, translate via agent, compile .mo catalogue
 ---
 
-Extract all translatable strings, translate them using Claude, and compile the
+Extract all translatable strings, translate them using the agent, and compile the
 message catalogue for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
 
 If no locale is given, audit source code for untranslated strings first, then
@@ -153,7 +153,7 @@ exist, Django creates it automatically.
 
 ---
 
-### 2 — Add locale to LANGUAGES *(new locale only — skip if re-running)*
+### 2 — Add locale to LANGUAGES _(new locale only — skip if re-running)_
 
 Open `config/settings.py` and find the `LANGUAGES` list. If `<locale>` is not
 already present, add it using the **native name** of the language:
@@ -172,7 +172,7 @@ Common native names: `fr` → Français, `fr_CA` → Français (Canada),
 
 ---
 
-### 2b — Create locale format file *(new locale only — skip if re-running)*
+### 2b — Create locale format file _(new locale only — skip if re-running)_
 
 Check whether `config/formats/<locale>/` exists.
 
@@ -218,12 +218,14 @@ Use the project name and description (from `cookiecutter.json` or README) as
 context so proper nouns and app-specific terminology are translated consistently.
 
 For simple strings:
+
 ```
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 ```
 
 For plural strings, fill in all `msgstr[n]` forms:
+
 ```
 msgid "%(count)s item"
 msgid_plural "%(count)s items"

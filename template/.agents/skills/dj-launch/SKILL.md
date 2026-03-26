@@ -331,16 +331,6 @@ just terraform storage apply -auto-approve
 
 ---
 
-## Database backups
-
-Tell the user:
-
-> Automated database backups are not set up here. Run `/dj-enable-db-backups` when your project is live and actively used.
-
-Then continue to Step 4.
-
----
-
 ## Step 4 — Helm secrets
 
 **Check:** If `helm/site/values.secret.yaml` does not exist, copy it from the example:
@@ -641,14 +631,13 @@ If **n**, skip silently.
 
 ---
 
-## Step 7 — Observability
+## Step 7 — Post-launch (optional)
 
-Check whether `helm/observability/values.secret.yaml` exists.
+Tell the user:
 
-If it does **not** exist, tell the user:
-
-> The observability stack (Grafana + Prometheus + Loki) is not yet deployed.
-> Run `/dj-launch-observability` when you are ready to set it up.
+> **Next steps (optional):**
+> - Run `/dj-launch-observability` to deploy Grafana + Prometheus + Loki
+> - Run `/dj-enable-db-backups` to set up automated daily PostgreSQL backups
 
 ---
 

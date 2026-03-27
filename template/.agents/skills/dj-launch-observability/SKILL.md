@@ -38,11 +38,6 @@ If **y**:
    ```bash
    just terraform hetzner apply -auto-approve
    ```
-3. Add the monitor node to SSH known hosts:
-   ```bash
-   monitor_ip=$(just terraform-value hetzner monitor_public_ip)
-   ssh-keyscan -H "$monitor_ip" >> ~/.ssh/known_hosts
-   ```
 
 Wait for apply to complete before continuing.
 

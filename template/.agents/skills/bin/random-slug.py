@@ -1,8 +1,9 @@
+#!/usr/bin/env -S uv run python
 # ruff: noqa: INP001, T201, S311
 """Print a random human-readable slug in the form <adjective>-<noun>.
 
 Usage:
-    uv run python .agents/skills/bin/random-slug.py
+    .agents/skills/bin/random-slug.py
     # → calm-peak
 """
 

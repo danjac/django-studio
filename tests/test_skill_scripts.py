@@ -14,7 +14,7 @@ def run_script(
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess:
     return subprocess.run(
-        ["uv", "run", "python", f".agents/skills/bin/{script}"],
+        [f".agents/skills/bin/{script}"],
         cwd=str(project),
         capture_output=True,
         text=True,

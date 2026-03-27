@@ -172,14 +172,15 @@ Skill files live in `template/.agents/` and are copied verbatim by Copier into t
 Scripts live in `template/.agents/skills/bin/` (shared) or
 `template/.agents/skills/<command>/bin/` (command-specific).
 
-**Always invoke with `uv run python`** — never plain `python`. This ensures the script
-runs in the project's virtual environment rather than system Python, making behaviour
-predictable and easier to debug.
+Scripts must have a `#!/usr/bin/env -S uv run python` shebang and be `chmod +x`.
+Invoke them directly — no `uv run python` prefix needed:
 
 ```bash
 # In SKILL.md code blocks:
-uv run python .agents/skills/bin/my-script.py
+.agents/skills/bin/my-script.py
 ```
+
+This ensures the script runs in the project's virtual environment via uv.
 
 **Ruff header for standalone scripts** — scripts outside a package need a noqa header.
 See `template/.agents/skills/bin/random-slug.py` as the canonical example:

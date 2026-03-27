@@ -60,7 +60,7 @@ runbooks that reference the current admin path:
 If **yes**, generate a new random human-readable slug:
 
 ```bash
-new_admin_url="$(uv run python .agents/skills/bin/random-slug.py)/"
+new_admin_url="$(.agents/skills/bin/random-slug.py)/"
 ```
 
 Present the pending changes before touching anything:

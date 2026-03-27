@@ -1,3 +1,4 @@
+#!/usr/bin/env -S uv run python
 # ruff: noqa: INP001, T201
 """Add the Kubernetes MCP server entry to .mcp.json.
 
@@ -8,7 +9,7 @@ Sets KUBECONFIG to ~/.kube/<project_slug>.yaml so the MCP server
 uses the project-specific kubeconfig instead of the default context.
 
 Usage:
-    uv run python .agents/skills/bin/add-kube-mcp.py
+    .agents/skills/bin/add-kube-mcp.py
 """
 
 import json

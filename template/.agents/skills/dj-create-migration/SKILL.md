@@ -4,6 +4,8 @@ description: Create an empty Django data migration (Python or SQL) for an app
 
 Create a Django data migration for `<app>`.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/python-style-guide.md`

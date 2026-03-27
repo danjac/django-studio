@@ -4,6 +4,8 @@ description: Schedule a management command as a Kubernetes cron job
 
 Schedule a Django management command as a Kubernetes cron job in `helm/site/values.yaml`.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/cron-jobs.md`

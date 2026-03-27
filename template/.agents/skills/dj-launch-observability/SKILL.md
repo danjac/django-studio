@@ -6,6 +6,8 @@ Deploy the observability stack (Grafana + Prometheus + Loki) to a running cluste
 
 Run this after `/dj-launch` once your application is live.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 **Secret handling rules:**
 - Never echo or print secret values to the terminal or chat.
 - When a secret field is empty or `CHANGE_ME`, fill it in the values file directly.

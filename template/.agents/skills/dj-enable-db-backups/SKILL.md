@@ -5,6 +5,8 @@ description: Enable automated daily PostgreSQL backups to a private Object Stora
 Interactive wizard to enable automated daily PostgreSQL backups to a private Hetzner
 Object Storage bucket.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/deployment.md`

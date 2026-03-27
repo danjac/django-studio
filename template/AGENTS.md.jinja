@@ -127,6 +127,7 @@ If a doc contradicts what you see in existing code, flag it — do not silently 
 
 - **Search before implementing** — search with `rg` or `ast-grep` for existing utilities. Check `{{ package_name }}/db/search.py`, `{{ package_name }}/http/`, `{{ package_name }}/partials.py`, and `{{ package_name }}/paginator.py` before writing new code.
 - **Scope discipline** — only change what was explicitly requested.
+- **One step at a time** — in multi-step skills, execute one sub-step at a time. Wait for user confirmation before proceeding to the next. Do not batch multiple questions or actions into a single response.
 - **Diagnose before changing** — state your diagnosis with a file:line reference before editing.
 - **Add imports and first usage in the same edit** — the pre-commit ruff hook strips unused imports immediately. Always add an import and its first usage together in a single edit.
 

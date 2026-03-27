@@ -5,6 +5,8 @@ description: Enable 100% coverage gate and write tests for all uncovered lines
 Enforce 100% test coverage by enabling the coverage gate and writing tests
 for every uncovered line.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ---
 
 ## Warning

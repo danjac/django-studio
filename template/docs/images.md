@@ -23,15 +23,10 @@ See `docs/cron-jobs.md` for instructions on adding cron jobs.
 If you use sorl-thumbnail with S3 storage (see `docs/file-storage.md`), there are
 several important behaviours to be aware of:
 
-### Management commands are unreliable with S3
+### `thumbnail cleanup` removes stale cache entries from storage
 
-The `thumbnail cleanup`, `thumbnail clear`, `thumbnail clear_delete_all`, and
-`thumbnail clear_delete_referenced` management commands use `storage.listdir()`
-internally. This does not work correctly with all S3-compatible backends, including
-Hetzner Object Storage. These commands will complete without errors but will **not**
-delete thumbnail files from S3.
-
-Do not rely on management commands for thumbnail cleanup in production S3 setups.
+`thumbnail cleanup` removes stale cache entries from storage. It does not remove
+original images — that is handled by sorl-thumbnail's `post_delete` signal (see below).
 
 ### Thumbnail cleanup on model deletion works via signal
 

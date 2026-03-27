@@ -35,15 +35,7 @@ Stop.
 Run a one-off pod to list backups from Object Storage:
 
 ```bash
-just --yes rkube run --rm -it list-backups \
-  --image=amazon/aws-cli:2 \
-  --restart=Never \
-  --env="AWS_ACCESS_KEY_ID=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
-  --env="AWS_SECRET_ACCESS_KEY=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
-  --env="AWS_DEFAULT_REGION=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
-  --env="BACKUP_ENDPOINT=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
-  --env="BACKUP_BUCKET=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
-  -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls s3://$BACKUP_BUCKET/ | sort'
+.agents/skills/dj-db-restore/bin/list-backups.sh
 ```
 
 If the output is empty, tell the user no backups are available yet and stop.

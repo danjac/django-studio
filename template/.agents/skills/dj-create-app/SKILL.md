@@ -4,6 +4,10 @@ description: Scaffold a complete Django app
 
 Create a basic Django app with the standard file structure for this project.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 **Steps:**
 
 1. Create the directory structure under `<package_name>/<app_name>/`:

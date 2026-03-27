@@ -5,6 +5,10 @@ description: Add a management command with tests
 Create a Django management command for the given app, with tests. Optionally
 enqueues background tasks via `django-tasks-db` for long-running or parallel work.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 Parse `$ARGUMENTS` as: `<app_name> [description]`
 
 ---

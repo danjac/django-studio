@@ -5,6 +5,10 @@ description: Add a template filter with correct escaping flags
 Add a template filter to an existing app or the root `templatetags.py` module.
 See `docs/django-templates.md` for filter conventions and testing patterns.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 **Parsing arguments:**
 
 - Two words (e.g. `blog my_filter`): first is `<app_name>`, second is `<filter_name>`.

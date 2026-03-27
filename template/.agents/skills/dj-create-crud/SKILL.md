@@ -4,6 +4,10 @@ description: Generate full CRUD views, templates, URLs, and tests for a model
 
 Generate a complete set of CRUD views for a model.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 **Definitions:**
 - `<model_lower>` = `<model_name>` lower-cased (e.g. `Photo` → `photo`)
 - `<model_plural>` = pluralised `<model_lower>` (e.g. `photos`) — adjust for

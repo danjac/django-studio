@@ -4,6 +4,10 @@ description: Create an empty Django data migration (Python or SQL) for an app
 
 Create a Django data migration for `<app>`.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 **Never write migration files by hand.** Always generate the empty file first:
 
 ```bash

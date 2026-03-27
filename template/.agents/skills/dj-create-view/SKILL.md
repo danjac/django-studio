@@ -4,6 +4,10 @@ description: Add a view, template, and URL
 
 Add a view, template, and URL following HTMX conventions.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 **Parsing arguments:**
 
 - Two words (e.g. `store product_list`): first is `<app_name>`, second is `<view_name>`.

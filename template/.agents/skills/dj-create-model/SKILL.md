@@ -4,7 +4,9 @@ description: Design and write a Django model with factory, fixture, and model te
 
 Design and write a Django model with factory, fixture, and model tests.
 
-**Before writing anything**, read:
+## Required reading
+
+- `docs/python-style-guide.md`
 - `<package_name>/<app_name>/models.py` — existing models and patterns
 - `<package_name>/<app_name>/tests/factories.py` — existing factories
 

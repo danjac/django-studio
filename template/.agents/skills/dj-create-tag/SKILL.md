@@ -5,6 +5,10 @@ description: Add a template tag (simple_tag, simple_block_tag, inclusion_tag, No
 Add a template tag to an existing app or the root `templatetags.py` module.
 See `docs/django-templates.md` for the tag type reference and testing conventions.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 **Parsing arguments:**
 
 - Two words (e.g. `blog my_tag`): first is `<app_name>`, second is `<tag_name>`.

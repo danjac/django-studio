@@ -57,9 +57,10 @@ Starts a Django shell session with the full application context loaded
 
 **Package:** `mcp-server-kubernetes`
 
-Uses your current `kubectl` context (configured by `just get-kubeconfig` during
-`/dj-launch`). Added to `.mcp.json` at the end of the launch wizard — not present
-in fresh projects.
+Uses the project-specific kubeconfig at `~/.kube/<project_slug>.yaml` (configured
+by `just get-kubeconfig` during `/dj-launch`). The `KUBECONFIG` env var is set in
+the MCP entry so the server uses the correct cluster context. Added to `.mcp.json`
+at the end of the launch wizard — not present in fresh projects.
 
 **Use for:**
 - Checking pod status and events: `kubectl get pods`
@@ -70,16 +71,7 @@ in fresh projects.
 To add it manually after launch:
 
 ```bash
-python3 -c "
-import json, pathlib
-p = pathlib.Path('.mcp.json')
-config = json.loads(p.read_text())
-config['mcpServers']['kubernetes'] = {
-    'command': 'npx',
-    'args': ['-y', 'mcp-server-kubernetes']
-}
-p.write_text(json.dumps(config, indent=2) + '\n')
-"
+uv run python .agents/skills/resources/add-kube-mcp.py
 ```
 
 ---

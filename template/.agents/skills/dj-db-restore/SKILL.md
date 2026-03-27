@@ -103,13 +103,13 @@ If the job fails or times out, tell the user:
 > Safety backup failed. The restore has been paused. Re-enable CronJobs with:
 >
 > ```bash
-> just --yes rcrons-enable
+> just rcrons-enable
 > ```
 >
 > Then check the backup job logs:
 >
 > ```bash
-> just --yes rkube logs job/postgres-backup-pre-restore --all-containers
+> just rkube logs job/postgres-backup-pre-restore --all-containers
 > ```
 
 Stop without proceeding to the restore.

@@ -119,29 +119,44 @@ just check-all
 
 ---
 
-## Step 8 — Prompt to ship via CI
+## Step 8 — Prompt to deploy
 
 Check whether `helm/site/values.secret.yaml` exists (indicating the project has
 already been deployed to production).
 
-If it exists, remind the user:
+If it does not exist, no action needed here — the cron job will be created when
+the project is first deployed via `/dj-launch`.
 
-> The cron job entry is in `values.yaml` but won't be live until CI deploys it.
-> CI builds the Docker image (which must include the management command) and runs
-> `helm upgrade` together — this ensures the cron job and the command it calls are
-> deployed atomically.
->
-> Once all tests pass, commit and push. CI will handle the rest.
->
-> If GitHub Actions secrets haven't been set up yet (or have changed), run this
-> before pushing:
-> ```bash
-> just gh-set-secrets
-> ```
+If it exists, check whether the management command is a **custom project command**
+or a **third-party command**:
 
-Do NOT suggest running `just deploy` manually — that would deploy the Helm chart
-without a freshly built image and could register a cron job for a command that
-doesn't exist in the running container.
+- **Custom project command** — file exists at
+  `<package_name>/<app_name>/management/commands/<command_name>.py`:
 
-If `values.secret.yaml` does not exist, no action needed here — the cron job will
-be created when the project is first deployed via `/dj-launch`.
+  > The cron job entry is in `values.yaml` but won't be live until CI deploys it.
+  > CI builds the Docker image (which must include the management command) and runs
+  > `helm upgrade` together — this ensures the cron job and the command it calls are
+  > deployed atomically.
+  >
+  > Once all tests pass, commit and push. CI will handle the rest.
+  >
+  > If GitHub Actions secrets haven't been set up yet (or have changed), run this
+  > before pushing:
+  > ```bash
+  > just gh-set-secrets
+  > ```
+
+  Do NOT suggest running `just deploy` or `just deploy-config` manually — that
+  would deploy the Helm chart without a freshly built image and could register a
+  cron job for a command that doesn't exist in the running container.
+
+- **Third-party command** — no project file (the command is already in the
+  container image via an installed package):
+
+  > The command is provided by a third-party package already in the container
+  > image — no new build is needed. Run:
+  > ```bash
+  > just deploy-config
+  > ```
+  > This applies the updated `values.yaml` directly via `helm upgrade` without
+  > triggering a full CI build.

@@ -1,5 +1,5 @@
 #!/usr/bin/env -S uv run python
-# ruff: noqa: T201, INP001
+# ruff: noqa: T201
 """Look up help for skills in .agents/skills/."""
 
 from __future__ import annotations

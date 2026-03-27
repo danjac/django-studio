@@ -14,24 +14,35 @@ Design and write a Django model with factory, fixture, and model tests.
 
 **STOP. Do not write any code yet.**
 
-Unless the user has explicitly listed every field and relationship inline with
-the command, ask now and wait for their reply before doing anything else:
+#### 1a — Timestamps (ask first, wait for answer)
 
-> Describe `<model_name>`. For each field give: name, type, and options (e.g.
-> `null`, `blank`, `choices`, `max_length`, `default`). For relationships
-> (ForeignKey, ManyToMany, OneToOneField) also give: target model/app,
-> `on_delete`, and `related_name`.
+Ask this question alone and wait for the user's reply before asking anything else:
 
-Also ask:
+> Should `<model_name>` have timestamps?  [Y/n]
 
-> Should `<model_name>` have timestamps? (created / updated)
+If **yes**, ask a follow-up and wait for the reply:
 
-If yes, add these fields automatically — do not ask the user to specify them:
+> Use the default field names `created` / `updated`?  [Y/n]
+
+If **yes** to defaults, use:
 
 ```python
 created = models.DateTimeField(auto_now_add=True)
 updated = models.DateTimeField(auto_now=True)
 ```
+
+If **no** to defaults, ask the user for the preferred names, then use those.
+
+If **no** to timestamps, skip timestamp fields entirely.
+
+#### 1b — Field details (ask after timestamps are settled)
+
+Now ask for the remaining fields:
+
+> Describe `<model_name>`. For each field give: name, type, and options (e.g.
+> `null`, `blank`, `choices`, `max_length`, `default`). For relationships
+> (ForeignKey, ManyToMany, OneToOneField) also give: target model/app,
+> `on_delete`, and `related_name`.
 
 Do not invent fields. Do not make assumptions about what the model "probably"
 needs based on the app name or project context. Wait.
@@ -41,6 +52,23 @@ proceeding:
 - Which app and model is the target?
 - `on_delete`: default to `CASCADE`; use `SET_NULL` if the field is nullable.
 - `related_name`: suggest `<model_lower>s` if omitted; confirm with the user.
+
+#### 1c — ImageField → sorl-thumbnail (ask if applicable)
+
+If the user's field list includes an `ImageField`, or the model name / description
+strongly implies image uploads, ask **before** proceeding to Step 2:
+
+> The model includes an `ImageField`. Do you want to use sorl-thumbnail for
+> on-the-fly image resizing?  [Y/n]  (see `docs/images.md`)
+
+If **yes**:
+- Use `sorl.thumbnail.ImageField` instead of `django.db.models.ImageField`.
+- Import: `from sorl.thumbnail import ImageField`
+- Template/view work should use `sorl.thumbnail` tags instead of raw `<img>` tags.
+- Do not add sorl-thumbnail to `INSTALLED_APPS` or requirements here; just flag it
+  for the user to confirm the package is installed.
+
+If **no**, use the standard `models.ImageField`.
 
 State every assumption explicitly.
 

@@ -22,7 +22,7 @@
     hx-swap="outerHTML show:window:top"
     hx-target="#{{ pagination_config.target }}"
   >
-    <div class="join">
+    <div class="join grid grid-cols-2">
       {% if page.has_previous %}
         {% querystring page=page.previous_page_number as prev_url %}
         <a
@@ -30,11 +30,11 @@
           hx-get="{{ request.path }}{{ prev_url }}"
           aria-label="{% translate "Previous Page" %}"
           title="{% translate "Previous Page" %}"
-          class="btn btn-ghost join-item"
+          class="join-item btn btn-outline"
         >{% translate "Previous" %}</a>
       {% else %}
         <span
-          class="btn btn-ghost btn-disabled join-item"
+          class="join-item btn btn-outline btn-disabled"
           title="{% translate "First Page" %}"
           aria-label="{% translate "First Page" %}"
         >{% translate "Previous" %}</span>
@@ -46,11 +46,11 @@
           hx-get="{{ request.path }}{{ next_url }}"
           aria-label="{% translate "Next Page" %}"
           title="{% translate "Next Page" %}"
-          class="btn btn-ghost join-item"
+          class="join-item btn btn-outline"
         >{% translate "Next" %}</a>
       {% else %}
         <span
-          class="btn btn-ghost btn-disabled join-item"
+          class="join-item btn btn-outline btn-disabled"
           title="{% translate "Last Page" %}"
           aria-label="{% translate "Last Page" %}"
         >{% translate "Next" %}</span>

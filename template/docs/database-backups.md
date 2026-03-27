@@ -99,7 +99,7 @@ just helm site
 Verify the CronJob was created:
 
 ```bash
-just kube get cronjob postgres-backup
+just rkube get cronjob postgres-backup
 ```
 
 ### Step 4 — Trigger a test backup
@@ -107,14 +107,14 @@ just kube get cronjob postgres-backup
 Run a manual job to confirm the first backup works before relying on the schedule:
 
 ```bash
-just kube create job postgres-backup-test --from=cronjob/postgres-backup
+just rkube create job postgres-backup-test --from=cronjob/postgres-backup
 ```
 
 Watch the logs:
 
 ```bash
-just kube logs -f job/postgres-backup-test -c dump
-just kube logs -f job/postgres-backup-test -c upload
+just rkube logs -f job/postgres-backup-test -c dump
+just rkube logs -f job/postgres-backup-test -c upload
 ```
 
 You should see the dump size and "Upload complete". Then verify the file appeared in
@@ -123,7 +123,7 @@ the bucket by following the "List available backups" steps in the Restore sectio
 Clean up the test job:
 
 ```bash
-just kube delete job postgres-backup-test
+just rkube delete job postgres-backup-test
 ```
 
 ## Configuration
@@ -145,7 +145,7 @@ backup:
 
 ### What you need before starting
 
-- Cluster access (`KUBECONFIG` configured — test with `just kube get pods`)
+- Cluster access (`KUBECONFIG` configured — test with `just rkube get pods`)
 - The backup filename you want to restore (Step 1 shows how to find it)
 
 ### Step 1 — List available backups
@@ -153,14 +153,14 @@ backup:
 Run a one-off pod using the `backup-secret` credentials already in your cluster:
 
 ```bash
-just kube run --rm -it list-backups \
+just rkube run --rm -it list-backups \
   --image=amazon/aws-cli:2 \
   --restart=Never \
-  --env="AWS_ACCESS_KEY_ID=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
-  --env="AWS_SECRET_ACCESS_KEY=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
-  --env="AWS_DEFAULT_REGION=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
-  --env="BACKUP_ENDPOINT=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
-  --env="BACKUP_BUCKET=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
+  --env="AWS_ACCESS_KEY_ID=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
+  --env="AWS_SECRET_ACCESS_KEY=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
+  --env="AWS_DEFAULT_REGION=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
+  --env="BACKUP_ENDPOINT=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
+  --env="BACKUP_BUCKET=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
   -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls s3://$BACKUP_BUCKET/ | sort'
 ```
 
@@ -253,7 +253,7 @@ just rscale-down django-worker
 **Step D — Port-forward postgres and restore**
 
 ```bash
-just kube port-forward service/postgres 5432:5432 &
+just rkube port-forward service/postgres 5432:5432 &
 PF_PID=$!
 sleep 2
 
@@ -281,19 +281,19 @@ rm $SQL_FILE
 ### Backup job fails — dump stage
 
 ```bash
-just kube logs job/<job-name> -c dump
+just rkube logs job/<job-name> -c dump
 ```
 
 Common causes:
 - **`pg_isready` healthy but pg_dump fails** — the postgres pod may be under heavy load.
-  Check `just kube logs statefulset/postgres`.
+  Check `just rkube logs statefulset/postgres`.
 - **Password error** — the `backup-secret` may be out of sync with the postgres password.
   Re-run `just helm site` to re-apply secrets.
 
 ### Backup job fails — upload stage
 
 ```bash
-just kube logs job/<job-name> -c upload
+just rkube logs job/<job-name> -c upload
 ```
 
 Common causes:
@@ -310,7 +310,7 @@ The port-forward may have dropped. Kill it and restart:
 
 ```bash
 kill $PF_PID 2>/dev/null; sleep 1
-just kube port-forward service/postgres 5432:5432 &
+just rkube port-forward service/postgres 5432:5432 &
 PF_PID=$!
 sleep 2
 ```
@@ -320,7 +320,7 @@ sleep 2
 The app pods did not fully terminate. Wait and recheck:
 
 ```bash
-just kube get pods
+just rkube get pods
 ```
 
 If Django pods are still Terminating, wait 30 seconds and try again.

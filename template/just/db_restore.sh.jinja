@@ -18,8 +18,8 @@ APP_REPLICAS=$(kubectl get deployment/django-app -o jsonpath='{.spec.replicas}' 
 WORKER_REPLICAS=$(kubectl get deployment/django-worker -o jsonpath='{.spec.replicas}' 2>/dev/null || echo 1)
 
 echo "==> Scaling down app (${APP_REPLICAS} replicas) and worker (${WORKER_REPLICAS} replicas)..."
-just rscale-down django-app
-just rscale-down django-worker
+just --yes rscale-down django-app
+just --yes rscale-down django-worker
 
 echo "==> Starting in-cluster restore pod for: ${FILENAME}"
 kubectl delete pod db-restore --ignore-not-found=true
@@ -106,8 +106,8 @@ kubectl logs pod/db-restore -c restore
 kubectl delete pod db-restore
 
 echo "==> Scaling app back up to ${APP_REPLICAS} replicas..."
-just rscale-up django-app "${APP_REPLICAS}"
-just rscale-up django-worker "${WORKER_REPLICAS}"
+just --yes rscale-up django-app "${APP_REPLICAS}"
+just --yes rscale-up django-worker "${WORKER_REPLICAS}"
 
 echo ""
 echo "Done. Run: just rdj migrate"

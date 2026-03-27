@@ -22,7 +22,7 @@ Check if the Kubernetes MCP server is configured in `.mcp.json`. If
 by listing nodes. Otherwise:
 
 ```bash
-just kube get nodes
+just --yes rkube get nodes
 ```
 
 If this fails, ensure your kubeconfig is set up (`just get-kubeconfig`).
@@ -86,7 +86,7 @@ Then verify pods are running. If Kubernetes MCP is configured, use it to check p
 status in the `monitoring` namespace. Otherwise:
 
 ```bash
-just kube get pods -n monitoring
+just --yes rkube get pods -n monitoring
 ```
 
 Once all pods are Running, tell the user:
@@ -106,7 +106,7 @@ Read `secrets.openTelemetryUrl` from `helm/site/values.secret.yaml`.
 If it is empty, discover the OTLP collector service name dynamically:
 
 ```bash
-just kube get svc -A | grep otel
+just --yes rkube get svc -A | grep otel
 ```
 
 Use the discovered service name and namespace to build the endpoint URL. The
@@ -119,7 +119,7 @@ http://otel-gateway.default.svc.cluster.local:4318
 If no otel service is found, tell the user:
 
 > No OTLP collector service found in the cluster. Verify the observability
-> chart deployed correctly with `just kube get pods -n monitoring`.
+> chart deployed correctly with `just --yes rkube get pods -n monitoring`.
 
 Write the discovered endpoint to `secrets.openTelemetryUrl`.
 

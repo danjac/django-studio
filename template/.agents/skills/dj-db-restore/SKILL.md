@@ -18,7 +18,7 @@ Restore the production database from a backup stored in Hetzner Object Storage.
 Check whether backup credentials exist in the cluster:
 
 ```bash
-just kube get secret backup-secret --ignore-not-found -o name
+just --yes rkube get secret backup-secret --ignore-not-found -o name
 ```
 
 If the output is empty, tell the user:
@@ -35,14 +35,14 @@ Stop.
 Run a one-off pod to list backups from Object Storage:
 
 ```bash
-just kube run --rm -it list-backups \
+just --yes rkube run --rm -it list-backups \
   --image=amazon/aws-cli:2 \
   --restart=Never \
-  --env="AWS_ACCESS_KEY_ID=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
-  --env="AWS_SECRET_ACCESS_KEY=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
-  --env="AWS_DEFAULT_REGION=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
-  --env="BACKUP_ENDPOINT=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
-  --env="BACKUP_BUCKET=$(just kube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
+  --env="AWS_ACCESS_KEY_ID=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
+  --env="AWS_SECRET_ACCESS_KEY=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
+  --env="AWS_DEFAULT_REGION=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
+  --env="BACKUP_ENDPOINT=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
+  --env="BACKUP_BUCKET=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
   -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls s3://$BACKUP_BUCKET/ | sort'
 ```
 
@@ -79,7 +79,7 @@ If no, stop.
 Suspend all CronJobs to prevent scheduled tasks from firing during the restore:
 
 ```bash
-just rcrons-disable
+just --yes rcrons-disable
 ```
 
 ---
@@ -89,13 +89,13 @@ just rcrons-disable
 Trigger an immediate backup before overwriting the database:
 
 ```bash
-just kube create job postgres-backup-pre-restore --from=cronjob/postgres-backup
+just --yes rkube create job postgres-backup-pre-restore --from=cronjob/postgres-backup
 ```
 
 Wait for it to complete (timeout: 5 minutes):
 
 ```bash
-just kube wait --for=condition=complete job/postgres-backup-pre-restore --timeout=300s
+just --yes rkube wait --for=condition=complete job/postgres-backup-pre-restore --timeout=300s
 ```
 
 If the job fails or times out, tell the user:
@@ -103,13 +103,13 @@ If the job fails or times out, tell the user:
 > Safety backup failed. The restore has been paused. Re-enable CronJobs with:
 >
 > ```bash
-> just rcrons-enable
+> just --yes rcrons-enable
 > ```
 >
 > Then check the backup job logs:
 >
 > ```bash
-> just kube logs job/postgres-backup-pre-restore --all-containers
+> just --yes rkube logs job/postgres-backup-pre-restore --all-containers
 > ```
 
 Stop without proceeding to the restore.
@@ -117,7 +117,7 @@ Stop without proceeding to the restore.
 Clean up the job after success:
 
 ```bash
-just kube delete job postgres-backup-pre-restore
+just --yes rkube delete job postgres-backup-pre-restore
 ```
 
 ---
@@ -125,7 +125,7 @@ just kube delete job postgres-backup-pre-restore
 ## Step 6 — Restore the backup
 
 ```bash
-just rdb-restore <selected-filename>
+just --yes rdb-restore <selected-filename>
 ```
 
 Confirm the prompt when asked. The script scales down the app and worker, runs the
@@ -138,7 +138,7 @@ in-cluster restore pod, then scales them back up to their original replica count
 Run migrations to confirm the restored database is consistent:
 
 ```bash
-just rdj migrate
+just --yes rdj migrate
 ```
 
 If migrations fail, stop and tell the user to check the backup file and restore logs
@@ -149,7 +149,7 @@ before proceeding.
 ## Step 8 — Re-enable CronJobs
 
 ```bash
-just rcrons-enable
+just --yes rcrons-enable
 ```
 
 ---

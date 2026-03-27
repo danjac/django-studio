@@ -159,6 +159,7 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-scale [n]`            | View or change the webapp replica count                                        |
 | `/dj-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
 | `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
+| `/dj-db-backup`            | Trigger an immediate database backup without waiting for the daily cron        |
 | `/dj-db-restore`           | Guided production database restore from Object Storage backup                  |
 
 ## MCP Servers

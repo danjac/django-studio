@@ -623,6 +623,10 @@ Diagnose and help the user fix the issue before declaring success.
 Now that the cluster is live, offer to add the Kubernetes MCP server to `.mcp.json`
 so AI assistants can inspect pods, logs, and deployments directly.
 
+**Pre-check:** Read `.mcp.json` and check whether a `kubernetes` key already exists
+under `mcpServers`. If it does, skip this step entirely — the MCP server is already
+configured.
+
 Tell the user:
 
 > Would you like to add the Kubernetes MCP server to `.mcp.json`?

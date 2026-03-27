@@ -314,6 +314,13 @@ exist, copy it from the example:
 cp terraform/storage/terraform.tfvars.example terraform/storage/terraform.tfvars
 ```
 
+Set `location` to match the Hetzner cluster location chosen in step 1. Confirm with
+the user:
+
+> Storage location set to `<location>` to match your cluster — OK?
+
+If the user wants a different location, let them override it.
+
 If `access_key` and `secret_key` are already set, skip this step entirely.
 
 Read `access_key` and `secret_key` from `terraform/storage/terraform.tfvars`.

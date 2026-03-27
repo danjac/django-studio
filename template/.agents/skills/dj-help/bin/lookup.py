@@ -1,3 +1,4 @@
+#!/usr/bin/env -S uv run python
 # ruff: noqa: T201, INP001
 """Look up help for skills in .agents/skills/."""
 

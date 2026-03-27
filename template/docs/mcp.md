@@ -71,7 +71,7 @@ at the end of the launch wizard — not present in fresh projects.
 To add it manually after launch:
 
 ```bash
-uv run python .agents/skills/bin/add-kube-mcp.py
+.agents/skills/bin/add-kube-mcp.py
 ```
 
 ---

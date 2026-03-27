@@ -8,6 +8,9 @@
 #   .agents/skills/dj-db-restore/bin/list-backups.sh
 set -euo pipefail
 
+# shellcheck disable=SC1073,SC2016
+# SC1073: shellcheck cannot parse `just` (not a standard shell command)
+# SC2016: vars in single quotes intentionally expand inside the container pod, not locally
 just --yes rkube run --rm -it list-backups \
   --image=amazon/aws-cli:2 \
   --restart=Never \
@@ -16,5 +19,4 @@ just --yes rkube run --rm -it list-backups \
   --env="AWS_DEFAULT_REGION=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
   --env="BACKUP_ENDPOINT=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
   --env="BACKUP_BUCKET=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
-  # shellcheck disable=SC2016  # vars intentionally expand inside the container, not here
   -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls s3://$BACKUP_BUCKET/ | sort'

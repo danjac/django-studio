@@ -25,6 +25,7 @@ b64_redis_pass=$(printf '%s' "$NEW_REDIS_PASSWORD" | base64 -w0)
 b64_redis_url=$(printf 'redis://default:%s@redis.%s.svc.cluster.local:6379/0' \
   "$NEW_REDIS_PASSWORD" "$NAMESPACE" | base64 -w0)
 
+# shellcheck disable=SC1073  # shellcheck cannot parse `just` (not a standard shell command)
 just --yes rkube patch secret secrets -p "{\"data\":{
   \"POSTGRES_PASSWORD\":\"$b64_pg_pass\",
   \"DATABASE_URL\":\"$b64_db_url\",

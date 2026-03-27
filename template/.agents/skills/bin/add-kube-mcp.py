@@ -1,5 +1,5 @@
 #!/usr/bin/env -S uv run python
-# ruff: noqa: INP001, T201
+# ruff: noqa: T201
 """Add the Kubernetes MCP server entry to .mcp.json.
 
 Idempotent — safe to run multiple times. Does nothing if the entry

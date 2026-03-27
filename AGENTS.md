@@ -182,14 +182,14 @@ Invoke them directly — no `uv run python` prefix needed:
 
 This ensures the script runs in the project's virtual environment via uv.
 
-**Ruff header for standalone scripts** — scripts outside a package need a noqa header.
+**Ruff header for standalone scripts** — scripts with a shebang don't need `INP001`
+(ruff recognises them as scripts, not package files). Only suppress what's actually used.
 See `template/.agents/skills/bin/random-slug.py` as the canonical example:
 
 ```python
-# ruff: noqa: INP001, T201
+# ruff: noqa: T201
 ```
 
-- `INP001` — not part of a package (no `__init__.py`) — expected for skill scripts
 - `T201` — `print` is intentional for CLI output
 
 Other rules that commonly apply:

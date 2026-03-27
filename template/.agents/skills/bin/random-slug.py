@@ -1,5 +1,5 @@
 #!/usr/bin/env -S uv run python
-# ruff: noqa: INP001, T201, S311
+# ruff: noqa: T201, S311
 """Print a random human-readable slug in the form <adjective>-<noun>.
 
 Usage:

@@ -174,7 +174,15 @@ Output looks like this (newest last):
 
 Pick the filename you want to restore. In most cases this is the most recent one (last line).
 
-### Step 2 — Run the restore
+### Step 2 — Disable CronJobs
+
+Suspend scheduled tasks before taking the cluster down:
+
+```bash
+just rcrons-disable
+```
+
+### Step 3 — Run the restore
 
 ```bash
 just rdb-restore backup-20240103-030000.sql.gz
@@ -186,12 +194,18 @@ Confirm the prompt. The script will:
 2. Start a temporary in-cluster pod that downloads the backup from Object Storage
 3. Drop and restore the `postgres` database inside the pod
 4. Delete the pod
-5. Scale `django-app` and `django-worker` back up
+5. Scale `django-app` and `django-worker` back up to their previous replica counts
 
 You will see progress logs for each phase streamed to your terminal. The whole
 process takes 2–10 minutes depending on database size.
 
-### Step 3 — Run migrations and confirm the site is live
+### Step 4 — Re-enable CronJobs
+
+```bash
+just rcrons-enable
+```
+
+### Step 5 — Run migrations and confirm the site is live
 
 ```bash
 just rdj migrate
@@ -228,12 +242,12 @@ gunzip /tmp/$BACKUP_FILE
 SQL_FILE="/tmp/backup-20240103-030000.sql"
 ```
 
-**Step C — Scale down the app**
+**Step C — Disable CronJobs and scale down the app**
 
 ```bash
-just kube scale deployment/django-app --replicas=0
-just kube scale deployment/django-worker --replicas=0
-just kube get pods   # wait until app/worker pods are gone
+just rcrons-disable
+just rscale-down django-app
+just rscale-down django-worker
 ```
 
 **Step D — Port-forward postgres and restore**
@@ -250,11 +264,12 @@ psql -h localhost -p 5432 -U postgres -d postgres < $SQL_FILE
 kill $PF_PID
 ```
 
-**Step E — Verify and scale up**
+**Step E — Scale up, re-enable CronJobs, and verify**
 
 ```bash
-just kube scale deployment/django-app --replicas=1
-just kube scale deployment/django-worker --replicas=1
+just rscale-up django-app 1
+just rscale-up django-worker 1
+just rcrons-enable
 just rdj migrate
 rm $SQL_FILE
 ```

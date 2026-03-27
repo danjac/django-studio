@@ -13,6 +13,7 @@ and creates one `CronJob` per entry.
 - [Resource Limits](#resource-limits)
 - [Concurrency Policy](#concurrency-policy)
 - [Node Scheduling](#node-scheduling)
+- [Suspending and Resuming CronJobs](#suspending-and-resuming-cronjobs)
 - [Observing Jobs](#observing-jobs)
 
 ## Adding a Cron Job
@@ -127,6 +128,26 @@ nodeSelector:
 This is already set in all chart templates (`cronjobs.yaml`, `postgres-backup-cronjob.yaml`,
 `release-job.yaml`) and in the `db-restore` pod created by `just rdb-restore`. When adding
 any new one-off job or CronJob, always include this selector.
+
+## Suspending and Resuming CronJobs
+
+During maintenance windows (e.g. database restores), suspend CronJobs to prevent
+scheduled tasks from firing while the cluster is in a degraded state:
+
+```bash
+just rcrons-disable                    # suspend all CronJobs
+just rcrons-disable postgres-backup    # suspend one specific CronJob
+```
+
+Re-enable them once maintenance is complete:
+
+```bash
+just rcrons-enable                     # resume all CronJobs
+just rcrons-enable postgres-backup     # resume one specific CronJob
+```
+
+These commands patch the CronJob's `spec.suspend` field. Any jobs that were already
+running when you suspend are not interrupted — only future scheduled runs are blocked.
 
 ## Observing Jobs
 

@@ -13,11 +13,13 @@ FILENAME="${1:?Usage: db_restore.sh <backup-filename.sql.gz>}"
 # Read the postgres image from the running StatefulSet so the restore version matches exactly.
 POSTGRES_IMAGE=$(kubectl get statefulset postgres -o jsonpath='{.spec.template.spec.containers[0].image}')
 
-echo "==> Scaling down app and worker..."
-kubectl scale deployment/django-app --replicas=0
-kubectl scale deployment/django-worker --replicas=0
-kubectl wait --for=delete pod -l app=django-app --timeout=60s 2>/dev/null || true
-kubectl wait --for=delete pod -l app=django-worker --timeout=60s 2>/dev/null || true
+# Capture current replica counts so we restore to the same number after the restore.
+APP_REPLICAS=$(kubectl get deployment/django-app -o jsonpath='{.spec.replicas}' 2>/dev/null || echo 1)
+WORKER_REPLICAS=$(kubectl get deployment/django-worker -o jsonpath='{.spec.replicas}' 2>/dev/null || echo 1)
+
+echo "==> Scaling down app (${APP_REPLICAS} replicas) and worker (${WORKER_REPLICAS} replicas)..."
+just rscale-down django-app
+just rscale-down django-worker
 
 echo "==> Starting in-cluster restore pod for: ${FILENAME}"
 kubectl delete pod db-restore --ignore-not-found=true
@@ -103,9 +105,9 @@ kubectl logs pod/db-restore -c restore
 
 kubectl delete pod db-restore
 
-echo "==> Scaling app back up..."
-kubectl scale deployment/django-app --replicas=1
-kubectl scale deployment/django-worker --replicas=1
+echo "==> Scaling app back up to ${APP_REPLICAS} replicas..."
+just rscale-up django-app "${APP_REPLICAS}"
+just rscale-up django-worker "${WORKER_REPLICAS}"
 
 echo ""
 echo "Done. Run: just rdj migrate"

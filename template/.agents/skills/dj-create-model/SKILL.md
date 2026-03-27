@@ -4,6 +4,8 @@ description: Design and write a Django model with factory, fixture, and model te
 
 Design and write a Django model with factory, fixture, and model tests.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/python-style-guide.md`

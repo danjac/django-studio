@@ -5,6 +5,8 @@ description: Add a management command with tests
 Create a Django management command for the given app, with tests. Optionally
 enqueues background tasks via `django-tasks-db` for long-running or parallel work.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/python-style-guide.md`

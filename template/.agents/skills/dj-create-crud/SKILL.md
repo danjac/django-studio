@@ -4,6 +4,8 @@ description: Generate full CRUD views, templates, URLs, and tests for a model
 
 Generate a complete set of CRUD views for a model.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/python-style-guide.md`

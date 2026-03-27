@@ -4,6 +4,8 @@ description: Rotate auto-generated and third-party Helm secrets and redeploy
 
 Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/deployment.md`

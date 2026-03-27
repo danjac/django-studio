@@ -17,37 +17,42 @@ Uses `$dispatch` so opening one dropdown automatically closes all others on the 
 Register it once in your base template's `{% block scripts %}` block:
 
 ```html
-{% block scripts %}
-  {{ block.super }}
-  <script>
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('dropdown', () => ({
-        open: false,
-        init() {
-          this._onDropdownOpen = this.onDropdownOpen.bind(this);
-          this._onHtmxRequest = this.close.bind(this);
-          window.addEventListener('dropdown-open', this._onDropdownOpen);
-          window.addEventListener('htmx:beforeRequest', this._onHtmxRequest);
-        },
-        destroy() {
-          window.removeEventListener('dropdown-open', this._onDropdownOpen);
-          window.removeEventListener('htmx:beforeRequest', this._onHtmxRequest);
-        },
-        onDropdownOpen(e) {
-          if (e.target !== this.$el) this.close();
-        },
-        toggle() {
-          this.open = !this.open;
-          if (this.open) this.$dispatch('dropdown-open');
-        },
-        close() { this.open = false; },
-      }));
-    });
-  </script>
+{% block scripts %} {{ block.super }}
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("dropdown", () => ({
+      open: false,
+      init() {
+        this._dropdownId = this.$id("dropdown");
+        this._onDropdownOpen = this.onDropdownOpen.bind(this);
+        this._close = this.close.bind(this);
+        window.addEventListener("dropdown-open", this._onDropdownOpen);
+        window.addEventListener("htmx:beforeRequest", this._close);
+      },
+      destroy() {
+        window.removeEventListener("dropdown-open", this._onDropdownOpen);
+        window.removeEventListener("htmx:beforeRequest", this._close);
+      },
+      onDropdownOpen(e) {
+        if (e.detail.id !== this._dropdownId) this.close();
+      },
+      toggle() {
+        this.open = !this.open;
+        if (this.open)
+          this.$dispatch("dropdown-open", { id: this._dropdownId });
+      },
+      close() {
+        this.open = false;
+      },
+    }));
+  });
+</script>
 {% endblock scripts %}
 ```
 
 `init()` wires up two window listeners: one closes this dropdown when any other opens, one closes on HTMX navigation. `destroy()` removes them to prevent leaks when the element is removed from the DOM.
+
+Note the use of `$id('dropdown')` to generate a unique ID for each instance, which is included in the dispatched event so other dropdowns know when to close, rather than comparing directly against the element target.
 
 ### Basic usage
 
@@ -64,8 +69,7 @@ Register it once in your base template's `{% block scripts %}` block:
     :aria-expanded="open.toString()"
     @click="toggle()"
   >
-    Options
-    {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
+    Options {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
   </button>
   <ul
     class="absolute right-0 z-20 p-2 mt-1 w-48 border shadow-xl menu bg-base-100 rounded-box border-base-300"
@@ -88,9 +92,14 @@ HTMX does not intercept these full-page POSTs.
 
 ```html
 {# Form lives outside x-show, referenced by id #}
-<form id="my-action-form" method="post" action="{% url 'my:action' %}" hx-disable="true" hidden>
-  {% csrf_token %}
-  {# any hidden inputs #}
+<form
+  id="my-action-form"
+  method="post"
+  action="{% url 'my:action' %}"
+  hx-disable="true"
+  hidden
+>
+  {% csrf_token %} {# any hidden inputs #}
 </form>
 
 <div
@@ -99,13 +108,25 @@ HTMX does not intercept these full-page POSTs.
   @click.outside="close()"
   @keyup.escape.window="close()"
 >
-  <button type="button" :aria-expanded="open.toString()" @click="toggle()" class="btn btn-ghost">
+  <button
+    type="button"
+    :aria-expanded="open.toString()"
+    @click="toggle()"
+    class="btn btn-ghost"
+  >
     Label
   </button>
-  <ul class="absolute right-0 z-20 p-2 mt-1 w-48 border shadow-xl menu bg-base-100 rounded-box border-base-300"
-      x-cloak x-show="open" x-transition.scale.origin.top role="menu">
+  <ul
+    class="absolute right-0 z-20 p-2 mt-1 w-48 border shadow-xl menu bg-base-100 rounded-box border-base-300"
+    x-cloak
+    x-show="open"
+    x-transition.scale.origin.top
+    role="menu"
+  >
     <li role="menuitem">
-      <button type="submit" form="my-action-form">{% translate "Do action" %}</button>
+      <button type="submit" form="my-action-form">
+        {% translate "Do action" %}
+      </button>
     </li>
   </ul>
 </div>
@@ -124,54 +145,54 @@ photo list from Django via `json_script`.
 Place in `{% block scripts %}` (no `defer`):
 
 ```html
-{% block scripts %}
-  {{ block.super }}
-  <script>
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('lightbox', (photos) => ({
-        open: false,
-        current: 0,
-        photos,
+{% block scripts %} {{ block.super }}
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("lightbox", (photos) => ({
+      open: false,
+      current: 0,
+      photos,
 
-        openLightbox(index) {
-          this.current = index;
-          this.open = true;
-          this.$nextTick(() => this.$refs.closeButton.focus());
-        },
+      openLightbox(index) {
+        this.current = index;
+        this.open = true;
+        this.$nextTick(() => this.$refs.closeButton.focus());
+      },
 
-        closeLightbox() {
-          this.open = false;
-        },
+      closeLightbox() {
+        this.open = false;
+      },
 
-        prev() {
-          this.current = (this.current - 1 + this.photos.length) % this.photos.length;
-        },
+      prev() {
+        this.current =
+          (this.current - 1 + this.photos.length) % this.photos.length;
+      },
 
-        next() {
-          this.current = (this.current + 1) % this.photos.length;
-        },
+      next() {
+        this.current = (this.current + 1) % this.photos.length;
+      },
 
-        trapFocus(event) {
-          const focusable = this.$el.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-          );
-          const first = focusable[0];
-          const last = focusable[focusable.length - 1];
-          if (event.shiftKey) {
-            if (document.activeElement === first) {
-              event.preventDefault();
-              last.focus();
-            }
-          } else {
-            if (document.activeElement === last) {
-              event.preventDefault();
-              first.focus();
-            }
+      trapFocus(event) {
+        const focusable = this.$el.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey) {
+          if (document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
           }
-        },
-      }));
-    });
-  </script>
+        } else {
+          if (document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        }
+      },
+    }));
+  });
+</script>
 {% endblock scripts %}
 ```
 
@@ -285,34 +306,33 @@ action URL are passed as constructor arguments so the component stays reusable.
 ### JS component
 
 ```html
-{% block scripts %}
-  {{ block.super }}
-  <script>
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('dragDrop', (csrfHeader, csrfToken, actionUrl) => ({
-        dragging: null,
+{% block scripts %} {{ block.super }}
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("dragDrop", (csrfHeader, csrfToken, actionUrl) => ({
+      dragging: null,
 
-        onDragStart(item) {
-          this.dragging = item;
-        },
+      onDragStart(item) {
+        this.dragging = item;
+      },
 
-        onDragEnd() {
-          this.dragging = null;
-        },
+      onDragEnd() {
+        this.dragging = null;
+      },
 
-        onDrop(target) {
-          if (!this.dragging) return;
-          htmx.ajax('POST', actionUrl, {
-            values: { ...this.dragging, ...target },
-            headers: { [csrfHeader]: csrfToken },
-            target: '#drop-area',
-            swap: 'outerHTML',
-          });
-          this.dragging = null;
-        },
-      }));
-    });
-  </script>
+      onDrop(target) {
+        if (!this.dragging) return;
+        htmx.ajax("POST", actionUrl, {
+          values: { ...this.dragging, ...target },
+          headers: { [csrfHeader]: csrfToken },
+          target: "#drop-area",
+          swap: "outerHTML",
+        });
+        this.dragging = null;
+      },
+    }));
+  });
+</script>
 {% endblock scripts %}
 ```
 
@@ -379,38 +399,44 @@ Place in `{% block scripts %}` (no `defer`), or extract to `static/` if reused
 across pages:
 
 ```html
-{% block scripts %}
-  {{ block.super }}
-  <script>
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('fileUpload', () => ({
-        files: [],
-        previews: {},
+{% block scripts %} {{ block.super }}
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("fileUpload", () => ({
+      files: [],
+      previews: {},
 
-        addFiles(event) {
-          const incoming = Array.from(event.target?.files ?? event.dataTransfer?.files ?? []);
-          this.files = [...this.files, ...incoming];
-          incoming.forEach(f => { this.previews = {...this.previews, [f.name]: URL.createObjectURL(f)}; });
-          this.syncInput();
-        },
+      addFiles(event) {
+        const incoming = Array.from(
+          event.target?.files ?? event.dataTransfer?.files ?? [],
+        );
+        this.files = [...this.files, ...incoming];
+        incoming.forEach((f) => {
+          this.previews = {
+            ...this.previews,
+            [f.name]: URL.createObjectURL(f),
+          };
+        });
+        this.syncInput();
+      },
 
-        removeFile(file) {
-          URL.revokeObjectURL(this.previews[file.name]);
-          const p = {...this.previews};
-          delete p[file.name];
-          this.previews = p;
-          this.files = this.files.filter(f => f !== file);
-          this.syncInput();
-        },
+      removeFile(file) {
+        URL.revokeObjectURL(this.previews[file.name]);
+        const p = { ...this.previews };
+        delete p[file.name];
+        this.previews = p;
+        this.files = this.files.filter((f) => f !== file);
+        this.syncInput();
+      },
 
-        syncInput() {
-          const dt = new DataTransfer();
-          this.files.forEach(f => dt.items.add(f));
-          this.$refs.fileInput.files = dt.files;
-        },
-      }));
-    });
-  </script>
+      syncInput() {
+        const dt = new DataTransfer();
+        this.files.forEach((f) => dt.items.add(f));
+        this.$refs.fileInput.files = dt.files;
+      },
+    }));
+  });
+</script>
 {% endblock scripts %}
 ```
 

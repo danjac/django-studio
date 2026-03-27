@@ -5,6 +5,8 @@ description: Interactive first-deploy wizard: provisions infra, configures secre
 Interactive first-deploy wizard. Guides the user through provisioning infrastructure,
 configuring secrets, and deploying the application end-to-end.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/infrastructure.md`

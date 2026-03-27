@@ -39,6 +39,7 @@ class TestAddKubeMcp:
         assert config["mcpServers"]["kubernetes"] == {
             "command": "npx",
             "args": ["-y", "mcp-server-kubernetes"],
+            "env": {"KUBECONFIG": "~/.kube/my_app.yaml"},
         }
 
     def test_idempotent_when_already_configured(self, project_with_deps: Path) -> None:

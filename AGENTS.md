@@ -114,9 +114,11 @@ The template uses [DaisyUI](https://daisyui.com/components/) for component styli
 
 Each slash command is a standalone skill at `template/.agents/skills/<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook scans `.agents/skills/*/SKILL.md` and writes one stub per skill at `.claude/commands/<name>.md` — no list to maintain.
 
-Supporting files (checklists, prompt templates, report templates, etc.) live in a `resources/` subdirectory: `template/.agents/skills/<command>/resources/`.
+Supporting files (Markdown docs, prompt templates, JSON/text reference data) live in a `resources/` subdirectory: `template/.agents/skills/<command>/resources/`.
 
-Files shared across multiple skills live in `template/.agents/skills/resources/` and are referenced as `.agents/skills/resources/<file>` from SKILL.md prose.
+Python helper scripts live in a `bin/` subdirectory: `template/.agents/skills/<command>/bin/`.
+
+Files shared across multiple skills live in `template/.agents/skills/resources/` (docs) or `template/.agents/skills/bin/` (scripts) and are referenced as `.agents/skills/resources/<file>` or `.agents/skills/bin/<file>` from SKILL.md prose.
 
 ### Writing a new skill
 
@@ -145,9 +147,10 @@ All resource files use lower-kebab-case (e.g. `help.md`, `factory-reference.md`)
 
 1. Create `template/.agents/skills/<command>/SKILL.md` with frontmatter.
 2. Create `template/.agents/skills/<command>/resources/help.md` with usage docs.
-3. Add other supporting files in `resources/` if the skill has reference data or
-   fill-in templates (e.g. `resources/plural-forms.md`, `resources/issue-template.md`).
-   Reference them from `SKILL.md` as `resources/<file>`.
+3. Add Markdown/JSON/text reference files in `resources/` if the skill needs them
+   (e.g. `resources/plural-forms.md`, `resources/issue-template.md`).
+   Add Python helper scripts in `bin/` (e.g. `bin/my-script.py`).
+   Reference them from `SKILL.md` as `resources/<file>` or `bin/<file>`.
 3. The post-gen hook auto-discovers the skill (no list to update) and generates
    `opencode.json` from the frontmatter `description` field.
 4. Update relevant docs:
@@ -166,8 +169,8 @@ Skill files live in `template/.agents/` and are copied verbatim by Copier into t
 
 ### Writing Python helper scripts for skills
 
-Scripts live in `template/.agents/skills/resources/` (shared) or
-`template/.agents/skills/<command>/resources/` (command-specific).
+Scripts live in `template/.agents/skills/bin/` (shared) or
+`template/.agents/skills/<command>/bin/` (command-specific).
 
 **Always invoke with `uv run python`** — never plain `python`. This ensures the script
 runs in the project's virtual environment rather than system Python, making behaviour
@@ -175,11 +178,11 @@ predictable and easier to debug.
 
 ```bash
 # In SKILL.md code blocks:
-uv run python .agents/skills/resources/my-script.py
+uv run python .agents/skills/bin/my-script.py
 ```
 
 **Ruff header for standalone scripts** — scripts outside a package need a noqa header.
-See `template/.agents/skills/resources/random-slug.py` as the canonical example:
+See `template/.agents/skills/bin/random-slug.py` as the canonical example:
 
 ```python
 # ruff: noqa: INP001, T201

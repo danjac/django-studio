@@ -2,7 +2,7 @@
 """Print a random human-readable slug in the form <adjective>-<noun>.
 
 Usage:
-    uv run python .agents/skills/resources/random-slug.py
+    uv run python .agents/skills/bin/random-slug.py
     # → calm-peak
 """
 

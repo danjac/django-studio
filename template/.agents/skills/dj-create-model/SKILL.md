@@ -134,7 +134,7 @@ Confirm both with the user before proceeding.
 
 **Never** add `ordering` unless the user explicitly requests it.
 
-**Never** use `ClassVar` + list syntax for Meta attributes.
+Use plain tuples for Meta sequences — no `ClassVar` annotation needed.
 
 ---
 
@@ -162,8 +162,15 @@ Model: <model_name>  →  <package_name>/<app_name>/models.py
 ```
 
 **Never** include `ordering` in the sketch unless the user explicitly asked for
-it. **Never** use `ClassVar` + list syntax for Meta attributes in the sketch or
-in generated code.
+it. Use plain tuples for Meta sequences — no `ClassVar` annotation needed:
+
+```python
+# Good
+ordering = ("-created",)
+
+# Bad — unnecessary annotation
+ordering: ClassVar[list[str]] = ["-created"]
+```
 
 ---
 
@@ -179,8 +186,8 @@ Conventions:
 - FK `related_name` must always be explicit — never rely on the Django default
 - Always include `class Meta` with `verbose_name` and `verbose_name_plural`
 - Never add `ordering` to Meta unless the user explicitly requested it
-- Never use `ClassVar` + list syntax for Meta attributes — plain assignment only:
-  `verbose_name = "..."` not `verbose_name: ClassVar[str] = "..."`
+- Use plain tuples for Meta sequences (e.g. `ordering = ("-created",)`) — no
+  `ClassVar` annotation needed; see `docs/python-style-guide.md`
 
 ```python
 from __future__ import annotations

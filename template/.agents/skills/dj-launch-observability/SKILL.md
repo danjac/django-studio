@@ -88,10 +88,10 @@ printing it. Tell the user:
 ## Step 1b — Grafana DNS record
 
 Read `terraform/cloudflare/terraform.tfvars`. If `grafana_subdomain` is not set or
-is empty, set it to `"grafana"` and set `monitor_ip` to the monitor node's public IP:
+is empty, set it to `"grafana"` and set `monitor_ip` to the server node's public IP:
 
 ```bash
-monitor_ip=$(just terraform-value hetzner monitor_public_ip)
+monitor_ip=$(just terraform-value hetzner server_public_ip)
 ```
 
 Then re-apply the Cloudflare terraform to create the Grafana DNS record:

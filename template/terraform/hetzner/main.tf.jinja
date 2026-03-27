@@ -97,7 +97,8 @@ resource "hcloud_firewall" "server" {
 
 # Firewall for monitor node (needs HTTP/HTTPS open for Traefik ServiceLB ingress)
 resource "hcloud_firewall" "monitor" {
-  name = "${var.cluster_name}-monitor-firewall"
+  count = var.create_monitor ? 1 : 0
+  name  = "${var.cluster_name}-monitor-firewall"
 
   rule {
     direction  = "in"
@@ -348,12 +349,13 @@ resource "hcloud_server" "webapp" {
 
 # Monitor node (observability stack: Prometheus, Grafana, Loki, Tempo, OTel)
 resource "hcloud_server" "monitor" {
+  count        = var.create_monitor ? 1 : 0
   name         = "${var.cluster_name}-monitor"
   server_type  = var.agent_server_type
   image        = var.server_image
   location     = var.location
   ssh_keys     = [hcloud_ssh_key.default.id]
-  firewall_ids = [hcloud_firewall.monitor.id]
+  firewall_ids = [hcloud_firewall.monitor[0].id]
 
   user_data = templatefile("${path.module}/templates/cloud_init_agent.tftpl", {
     hostname          = "${var.cluster_name}-monitor"

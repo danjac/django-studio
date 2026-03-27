@@ -39,13 +39,13 @@ output "webapp_private_ips" {
 }
 
 output "monitor_public_ip" {
-  description = "Public IPv4 address of the monitor node"
-  value       = hcloud_server.monitor.ipv4_address
+  description = "Public IPv4 address of the monitor node (null if not provisioned)"
+  value       = var.create_monitor ? hcloud_server.monitor[0].ipv4_address : null
 }
 
 output "monitor_private_ip" {
-  description = "Private IP address of the monitor node"
-  value       = local.monitor_private_ip
+  description = "Private IP address of the monitor node (null if not provisioned)"
+  value       = var.create_monitor ? local.monitor_private_ip : null
 }
 
 output "postgres_volume_id" {

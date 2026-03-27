@@ -86,3 +86,9 @@ variable "admin_ips" {
   type        = list(string)
   default     = ["0.0.0.0/0", "::/0"]
 }
+
+variable "create_monitor" {
+  description = "Whether to provision the monitor node (Grafana + Prometheus + Loki observability stack)"
+  type        = bool
+  default     = true
+}

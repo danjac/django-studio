@@ -226,20 +226,10 @@ Build base64-encoded values for every key that changed and patch them in one
 call:
 
 ```bash
-# Build the base64 values (never print raw secrets)
-b64_pg_pass=$(printf '%s' "$new_postgres" | base64 -w0)
-b64_db_url=$(printf 'postgresql://postgres:%s@postgres.%s.svc.cluster.local:5432/postgres' \
-  "$new_postgres" "$namespace" | base64 -w0)
-b64_redis_pass=$(printf '%s' "$new_redis" | base64 -w0)
-b64_redis_url=$(printf 'redis://default:%s@redis.%s.svc.cluster.local:6379/0' \
-  "$new_redis" "$namespace" | base64 -w0)
-
-just --yes rkube patch secret secrets -p "{\"data\":{
-  \"POSTGRES_PASSWORD\":\"$b64_pg_pass\",
-  \"DATABASE_URL\":\"$b64_db_url\",
-  \"REDIS_PASSWORD\":\"$b64_redis_pass\",
-  \"REDIS_URL\":\"$b64_redis_url\"
-}}"
+NEW_POSTGRES_PASSWORD="$new_postgres" \
+NEW_REDIS_PASSWORD="$new_redis" \
+NAMESPACE="$namespace" \
+  .agents/skills/dj-rotate-secrets/bin/patch-k8s-secrets.sh
 ```
 
 Replace `$namespace` with the Helm release namespace (the same namespace the

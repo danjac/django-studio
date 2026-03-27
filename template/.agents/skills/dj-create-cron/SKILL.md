@@ -133,22 +133,19 @@ or a **third-party command**:
 - **Custom project command** — file exists at
   `<package_name>/<app_name>/management/commands/<command_name>.py`:
 
-  > The cron job entry is in `values.yaml` but won't be live until CI deploys it.
-  > CI builds the Docker image (which must include the management command) and runs
-  > `helm upgrade` together — this ensures the cron job and the command it calls are
-  > deployed atomically.
-  >
-  > Once all tests pass, commit and push. CI will handle the rest.
-  >
-  > If GitHub Actions secrets haven't been set up yet (or have changed), run this
-  > before pushing:
-  > ```bash
-  > just gh-set-secrets
-  > ```
+  Ask the user to commit and push the change (or offer to do it for them), then
+  ask how they want to deploy:
 
-  Do NOT suggest running `just deploy` or `just deploy-config` manually — that
-  would deploy the Helm chart without a freshly built image and could register a
-  cron job for a command that doesn't exist in the running container.
+  > How would you like to deploy?
+  > 1. **Deploy through CI** — `just gh deploy` (recommended: builds a fresh Docker
+  >    image containing the new command, then runs `helm upgrade` atomically)
+  > 2. **Deploy config immediately** — `just deploy-config` (applies the Helm chart
+  >    now, but the command must already be in the running container image)
+
+  Recommend option 1 unless the user has a reason to skip CI.
+
+  If GitHub Actions secrets haven't been set up yet (or have changed), remind the
+  user to run `just gh-set-secrets` before deploying.
 
 - **Third-party command** — no project file (the command is already in the
   container image via an installed package):

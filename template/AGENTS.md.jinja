@@ -49,6 +49,22 @@ just start / just stop  # Docker services (PostgreSQL, Redis, Mailpit)
 
 Run `just` with no arguments for the full command list.
 
+### Production commands (`r` prefix)
+
+All production commands use the `r` prefix and are gated with an interactive confirmation
+prompt. When running them inside a skill (where the user has already confirmed intent),
+use `just --yes` to suppress the prompt:
+
+```bash
+just --yes rkube get pods          # run kubectl without re-prompting
+just --yes rdj migrate             # run manage.py on production
+just --yes rscale-down django-app  # scale down a deployment
+just --yes rcrons-disable          # suspend all CronJobs
+```
+
+Human-invoked commands (typed directly in the terminal) do not need `--yes` — the
+confirmation is the intended safety gate.
+
 Tests live in `{{ package_name }}/**/tests/`; framework: `pytest`+`pytest-django`; E2E tests marked `@pytest.mark.e2e`.
 
 ## Git Workflow

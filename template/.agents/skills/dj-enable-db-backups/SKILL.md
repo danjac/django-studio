@@ -23,7 +23,7 @@ are already set. Re-running is safe.
 Verify the cluster is accessible and Terraform is installed:
 
 ```bash
-just kube get pods    # cluster must be reachable
+just --yes rkube get pods    # cluster must be reachable
 terraform version     # Terraform must be installed
 ```
 
@@ -160,9 +160,9 @@ Wait for the command to complete. If it fails, show the error and help the user 
 Verify the CronJob, secret, and scripts ConfigMap were created:
 
 ```bash
-just kube get cronjob postgres-backup
-just kube get secret backup-secret
-just kube get configmap db-scripts
+just --yes rkube get cronjob postgres-backup
+just --yes rkube get secret backup-secret
+just --yes rkube get configmap db-scripts
 ```
 
 ---
@@ -174,20 +174,20 @@ Tell the user:
 > **Testing the first backup now...**
 
 ```bash
-just kube create job postgres-backup-test --from=cronjob/postgres-backup
+just --yes rkube create job postgres-backup-test --from=cronjob/postgres-backup
 ```
 
 Wait for the job to complete (poll every 5 seconds, timeout after 5 minutes):
 
 ```bash
-just kube wait --for=condition=complete job/postgres-backup-test --timeout=300s
+just --yes rkube wait --for=condition=complete job/postgres-backup-test --timeout=300s
 ```
 
 If it times out or fails, show the logs from both containers:
 
 ```bash
-just kube logs job/postgres-backup-test -c dump
-just kube logs job/postgres-backup-test -c upload
+just --yes rkube logs job/postgres-backup-test -c dump
+just --yes rkube logs job/postgres-backup-test -c upload
 ```
 
 Diagnose the failure and help the user fix it before declaring success.
@@ -195,8 +195,8 @@ Diagnose the failure and help the user fix it before declaring success.
 If the job succeeds, show the upload logs and then clean up:
 
 ```bash
-just kube logs job/postgres-backup-test -c upload
-just kube delete job postgres-backup-test
+just --yes rkube logs job/postgres-backup-test -c upload
+just --yes rkube delete job postgres-backup-test
 ```
 
 ---

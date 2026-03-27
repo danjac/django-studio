@@ -181,7 +181,7 @@ services still expect the old ones, causing immediate 500 errors.
 
 **PostgreSQL:**
 ```bash
-just kube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
+just --yes rkube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
 ```
 
 **Verify** the output contains `ALTER ROLE`. If it does not (empty output, error, or
@@ -199,7 +199,7 @@ If **manual**, stop and tell the user to re-run `/dj-rotate-secrets` when ready.
 
 **Redis:**
 ```bash
-just kube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
+just --yes rkube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
 ```
 
 **Verify** the output contains `OK`. If it does not, **stop immediately**. Tell the
@@ -234,7 +234,7 @@ b64_redis_pass=$(printf '%s' "$new_redis" | base64 -w0)
 b64_redis_url=$(printf 'redis://default:%s@redis.%s.svc.cluster.local:6379/0' \
   "$new_redis" "$namespace" | base64 -w0)
 
-just kube patch secret secrets -p "{\"data\":{
+just --yes rkube patch secret secrets -p "{\"data\":{
   \"POSTGRES_PASSWORD\":\"$b64_pg_pass\",
   \"DATABASE_URL\":\"$b64_db_url\",
   \"REDIS_PASSWORD\":\"$b64_redis_pass\",
@@ -254,7 +254,7 @@ Environment variables are baked into pods at start time. Restart the app and
 worker deployments so running pods pick up the patched secret:
 
 ```bash
-just kube rollout restart deployment/django-app deployment/django-worker
+just --yes rkube rollout restart deployment/django-app deployment/django-worker
 ```
 
 **Verify** each deployment shows `deployment.apps/django-app restarted` and

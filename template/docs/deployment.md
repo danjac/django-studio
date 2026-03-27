@@ -226,7 +226,7 @@ This is fine for open-source or personal projects where the image itself contain
 Create a GitHub PAT with `read:packages` scope, then add it to the cluster:
 
 ```bash
-just kube create secret docker-registry ghcr-pull-secret \
+just rkube create secret docker-registry ghcr-pull-secret \
   --docker-server=ghcr.io \
   --docker-username=<github-username> \
   --docker-password=<your-pat>
@@ -264,8 +264,8 @@ just rdj createsuperuser
 just rpsql
 
 # Kubernetes
-just kube get pods
-just kube logs -f deployment/django-app
+just rkube get pods
+just rkube logs -f deployment/django-app
 
 # Fetch kubeconfig
 just get-kubeconfig

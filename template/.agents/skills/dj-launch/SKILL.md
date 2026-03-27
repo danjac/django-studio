@@ -622,19 +622,19 @@ gh run watch
 
 Then show pod status:
 ```bash
-just kube get pods
+just --yes rkube get pods
 ```
 
 If all pods are Running:
 
 If `<site_name>` was provided in Step 4, run:
 ```bash
-just rdj set_default_site <domain> "<site_name>"
+just --yes rdj set_default_site <domain> "<site_name>"
 ```
 
 If it was not provided, tell the user:
 > You can set the default site name at any time by running:
-> `just rdj set_default_site <domain> "Your Site Name"`
+> `just --yes rdj set_default_site <domain> "Your Site Name"`
 
 Then tell the user:
 
@@ -642,13 +642,13 @@ Then tell the user:
 > Your app is live at https://<domain>
 >
 > Next steps:
-> - Run `just rdj createsuperuser` to create an admin account
+> - Run `just --yes rdj createsuperuser` to create an admin account
 > - Visit https://<domain>/<admin-url> to access the Django admin
 
 If any pods are not Running, show the pod status and relevant logs:
 ```bash
-just kube describe pod <failing-pod>
-just kube logs <failing-pod>
+just --yes rkube describe pod <failing-pod>
+just --yes rkube logs <failing-pod>
 ```
 Diagnose and help the user fix the issue before declaring success.
 

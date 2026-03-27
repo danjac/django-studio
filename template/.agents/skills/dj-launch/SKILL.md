@@ -620,6 +620,9 @@ Diagnose and help the user fix the issue before declaring success.
 
 ## Step 6d — Kubernetes MCP
 
+**Pre-check:** Read `.mcp.json` and check whether it already contains a `kubernetes`
+key under `mcpServers`. If it does, skip this step entirely — do not prompt the user.
+
 Now that the cluster is live, offer to add the Kubernetes MCP server to `.mcp.json`
 so AI assistants can inspect pods, logs, and deployments directly.
 

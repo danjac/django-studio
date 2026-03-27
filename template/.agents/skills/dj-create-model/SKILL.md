@@ -87,7 +87,8 @@ For each field the user gives:
 
 | Type | Ask |
 |------|-----|
-| `CharField` | `max_length`? |
+| `CharField` | If the field name implies a finite set of values (e.g. `status`, `state`, `type`, `kind`, `category`, `role`), ask: *"Does this field use a fixed set of choices? [Y/n]"* — if yes, prompt for the choice values (e.g. `pending`, `active`, `closed`), generate a `TextChoices` inner class named `<FieldName>` (e.g. `Status`), and set `max_length` to the length of the longest choice value (no need to ask). Otherwise ask `max_length` directly. |
+| `IntegerField` | If the field name implies a finite set of values, ask: *"Does this field use a fixed set of choices? [Y/n]"* — if yes, prompt for the choice values and generate an `IntegerChoices` inner class. |
 | `DecimalField` | `max_digits`? `decimal_places`? If the field name implies currency (e.g. `price`, `cost`, `amount`, `fee`), ask: *"Use `MoneyField` from django-money instead? [Y/n]  (see `docs/packages.md`)"* — if yes, confirm the package is installed (`uv add django-money`) and use `from djmoney.models.fields import MoneyField`. |
 | `ForeignKey` / `OneToOneField` | Target model (and app if ambiguous)? `on_delete`? (default `CASCADE`; use `SET_NULL` if nullable) `related_name`? (suggest `<model_lower>s`) |
 | `ManyToManyField` | Target model (and app if ambiguous)? `related_name`? (suggest `<model_lower>s`) |

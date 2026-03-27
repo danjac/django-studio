@@ -157,6 +157,8 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-launch`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
 | `/dj-launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
 | `/dj-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| `/dj-scale-up`             | Scale up django-app replicas and provision Hetzner nodes if needed              |
+| `/dj-scale-down`           | Scale down django-app replicas and optionally remove Hetzner nodes             |
 | `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
 
 ## MCP Servers

@@ -88,7 +88,7 @@ For each field the user gives:
 | Type | Ask |
 |------|-----|
 | `CharField` | `max_length`? |
-| `DecimalField` | `max_digits`? `decimal_places`? |
+| `DecimalField` | `max_digits`? `decimal_places`? If the field name implies currency (e.g. `price`, `cost`, `amount`, `fee`), ask: *"Use `MoneyField` from django-money instead? [Y/n]  (see `docs/packages.md`)"* — if yes, confirm the package is installed (`uv add django-money`) and use `from djmoney.models.fields import MoneyField`. |
 | `ForeignKey` / `OneToOneField` | Target model (and app if ambiguous)? `on_delete`? (default `CASCADE`; use `SET_NULL` if nullable) `related_name`? (suggest `<model_lower>s`) |
 | `ManyToManyField` | Target model (and app if ambiguous)? `related_name`? (suggest `<model_lower>s`) |
 | `BooleanField` | `default`? |

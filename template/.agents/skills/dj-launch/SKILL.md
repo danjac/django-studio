@@ -52,6 +52,22 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 
 ---
 
+## Webapp replica count
+
+Before provisioning infrastructure, ask the user:
+
+> How many webapp instances do you want? (default: 2)
+
+Accept a positive integer. If the user presses Enter or says "default", use **2**.
+
+Save the answer as `<webapp_count>`. This value is used in two places:
+- `webapp_count` in `terraform/hetzner/terraform.tfvars` (number of Hetzner nodes)
+- `replicas` in `helm/site/values.secret.yaml` (number of Kubernetes pods)
+
+Both must match so the cluster has enough nodes to schedule the requested replicas.
+
+---
+
 ## Pre-flight checks
 
 Run all of the following before proceeding. If any fail, tell the user what to install
@@ -121,10 +137,15 @@ If `location` is not already set, ask:
 
 Set `location`.
 
-### 1e. Write terraform.tfvars and apply
+### 1e. Webapp count
 
-Write `terraform/hetzner/terraform.tfvars` with all collected values, preserving any
-existing values that were already set.
+Set `webapp_count` to `<webapp_count>` (collected earlier). This determines how many
+Hetzner nodes are created for webapp pods.
+
+### 1f. Write terraform.tfvars and apply
+
+Write `terraform/hetzner/terraform.tfvars` with all collected values (including
+`webapp_count`), preserving any existing values that were already set.
 
 Then:
 ```bash
@@ -378,6 +399,12 @@ secrets:
 ```
 
 Tell the user these have been generated automatically.
+
+### Webapp replicas
+
+Set `replicas` to `<webapp_count>` (collected at the start of the wizard). This must
+match the `webapp_count` in `terraform/hetzner/terraform.tfvars` so each replica has
+a dedicated node.
 
 ### Values from Terraform outputs
 
@@ -662,7 +689,8 @@ non-secret or required for the user to take action:
 
 | Value | Step | Why the user needs it |
 |-------|------|----------------------|
-| Server IP address | 1e | SSH access, DNS verification |
+| Webapp replica count | Pre-flight | Confirms node and replica count |
+| Server IP address | 1f | SSH access, DNS verification |
 | Domain (confirmed) | 2c | Sanity check |
 | Admin URL path | 4 | Needed to bookmark Django admin |
 | Site URL (`https://<domain>`) | 6c | Confirm app is live |

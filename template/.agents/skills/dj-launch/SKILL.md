@@ -471,7 +471,7 @@ was not configured in Step 2e, skip.
 **Admin URL** — generate a random human-readable slug if the user skips:
 
 ```bash
-slug=$(uv run python .agents/skills/resources/random-slug.py)
+slug=$(uv run python .agents/skills/bin/random-slug.py)
 default_admin_url="${slug}/"
 ```
 
@@ -674,7 +674,7 @@ Tell the user:
 If **y**, patch `.mcp.json`:
 
 ```bash
-uv run python .agents/skills/resources/add-kube-mcp.py
+uv run python .agents/skills/bin/add-kube-mcp.py
 ```
 
 Tell the user:

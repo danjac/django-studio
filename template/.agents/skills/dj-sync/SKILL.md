@@ -56,7 +56,7 @@ Repeat until no conflict markers remain.
 Diff the auto-generated backups against the freshly regenerated files:
 
 ```bash
-BACKUP_DIR=$(uv run python .agents/skills/dj-sync/resources/get-backup-dir.py)
+BACKUP_DIR=$(uv run python .agents/skills/dj-sync/bin/get-backup-dir.py)
 diff "$BACKUP_DIR/settings.json.bak" .claude/settings.json
 diff "$BACKUP_DIR/mcp.json.bak" .mcp.json
 diff "$BACKUP_DIR/opencode.json.bak" opencode.json

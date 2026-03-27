@@ -1,4 +1,4 @@
-"""Tests for Python helper scripts in template/.agents/skills/resources/."""
+"""Tests for Python helper scripts in template/.agents/skills/bin/."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ def run_script(
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess:
     return subprocess.run(
-        ["uv", "run", "python", f".agents/skills/resources/{script}"],
+        ["uv", "run", "python", f".agents/skills/bin/{script}"],
         cwd=str(project),
         capture_output=True,
         text=True,

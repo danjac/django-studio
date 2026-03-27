@@ -8,7 +8,7 @@ Sets KUBECONFIG to ~/.kube/<project_slug>.yaml so the MCP server
 uses the project-specific kubeconfig instead of the default context.
 
 Usage:
-    uv run python .agents/skills/resources/add-kube-mcp.py
+    uv run python .agents/skills/bin/add-kube-mcp.py
 """
 
 import json

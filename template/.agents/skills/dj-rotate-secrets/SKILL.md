@@ -212,7 +212,54 @@ Same flow as above — do not proceed to deploy until `OK` is confirmed.
 Replace `<new_postgres_password>`, `<old_redis_password>`, and `<new_redis_password>`
 with the actual values (do not print them to the chat — pipe them from variables).
 
-### 5b. Deploy the app
+### 5b. Patch the live Kubernetes Secret atomically
+
+After updating the running services, patch **all** affected keys in the live
+Kubernetes Secret in a single `kubectl patch` call. This ensures that any pods
+restarted before `helm upgrade` completes will pick up consistent credentials —
+including the full connection-string keys (`DATABASE_URL`, `REDIS_URL`) that
+embed the passwords.
+
+Build base64-encoded values for every key that changed and patch them in one
+call:
+
+```bash
+# Build the base64 values (never print raw secrets)
+b64_pg_pass=$(printf '%s' "$new_postgres" | base64 -w0)
+b64_db_url=$(printf 'postgresql://postgres:%s@postgres.%s.svc.cluster.local:5432/postgres' \
+  "$new_postgres" "$namespace" | base64 -w0)
+b64_redis_pass=$(printf '%s' "$new_redis" | base64 -w0)
+b64_redis_url=$(printf 'redis://default:%s@redis.%s.svc.cluster.local:6379/0' \
+  "$new_redis" "$namespace" | base64 -w0)
+
+just kube patch secret secrets -p "{\"data\":{
+  \"POSTGRES_PASSWORD\":\"$b64_pg_pass\",
+  \"DATABASE_URL\":\"$b64_db_url\",
+  \"REDIS_PASSWORD\":\"$b64_redis_pass\",
+  \"REDIS_URL\":\"$b64_redis_url\"
+}}"
+```
+
+Replace `$namespace` with the Helm release namespace (the same namespace the
+chart is deployed into).
+
+**Verify** the output contains `secret/secrets patched`. If it does not, **stop
+immediately** and tell the user what went wrong.
+
+### 5c. Restart app deployments
+
+Environment variables are baked into pods at start time. Restart the app and
+worker deployments so running pods pick up the patched secret:
+
+```bash
+just kube rollout restart deployment/django-app deployment/django-worker
+```
+
+**Verify** each deployment shows `deployment.apps/django-app restarted` and
+`deployment.apps/django-worker restarted`. If either fails, stop and ask the
+user before continuing.
+
+### 5d. Deploy the app
 
 ```bash
 just deploy-config

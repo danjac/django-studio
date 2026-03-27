@@ -308,8 +308,25 @@ Add extra methods for:
 
 ### Step 8 — Verify
 
+Generate the migration:
+
 ```bash
 just dj makemigrations <app_name>
+```
+
+Ask the user:
+
+> Run `just dj migrate` now?  [Y/n]
+
+If yes:
+
+```bash
+just dj migrate
+```
+
+Then run the full check suite:
+
+```bash
 just check-all
 ```
 

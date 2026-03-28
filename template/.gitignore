@@ -10,7 +10,7 @@ dist/
 build/
 memory/
 *.so
-.backups/
+.django_studio/
 .claude/
 .venv/
 venv/
@@ -24,6 +24,8 @@ staticfiles/
 media/
 static/app.css
 .django_tailwind_cli/
+.playwright-mcp/
+.ruff_cache/
 
 # i18n
 locale/**/*.mo

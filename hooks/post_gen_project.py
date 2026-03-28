@@ -86,9 +86,13 @@ def _parse_skill_description(skill_file: Path) -> str:
 
 
 def _next_backup_dir() -> Path:
-    """Return .backups/<n>/ where n is one higher than the current maximum."""
-    backup_root = BASE_DIR / ".backups"
-    existing = [int(d.name) for d in backup_root.iterdir() if d.is_dir() and d.name.isdigit()] if backup_root.exists() else []
+    """Return .django_studio/backups/<n>/ where n is one higher than the current maximum."""
+    backup_root = BASE_DIR / ".django_studio" / "backups"
+    existing = (
+        [int(d.name) for d in backup_root.iterdir() if d.is_dir() and d.name.isdigit()]
+        if backup_root.exists()
+        else []
+    )
     return backup_root / str(max(existing, default=0) + 1)
 
 
@@ -170,7 +174,7 @@ def install_claude_hooks() -> None:
                             ),
                         },
                     ],
-                }
+                },
             ],
             "PostToolUse": [
                 {
@@ -226,15 +230,16 @@ def install_claude_hooks() -> None:
         if not skill_file.exists():
             continue
         name = skill_dir.name
-        (commands_dst / f"{name}.md").write_text(
-            f"@.agents/skills/{name}/SKILL.md\n"
-        )
+        (commands_dst / f"{name}.md").write_text(f"@.agents/skills/{name}/SKILL.md\n")
         description = _parse_skill_description(skill_file)
         opencode_commands[name] = {
             "template": f".agents/skills/{name}/SKILL.md",
             "description": description,
         }
-    opencode = {"$schema": "https://opencode.ai/config.json", "command": opencode_commands}
+    opencode = {
+        "$schema": "https://opencode.ai/config.json",
+        "command": opencode_commands,
+    }
     with (BASE_DIR / "opencode.json").open("w") as f:
         json.dump(opencode, f, indent=2)
         f.write("\n")

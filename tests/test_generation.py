@@ -193,7 +193,7 @@ class TestPostGenBackup:
 
         render(output_dir, DEFAULT_CONTEXT)
 
-        bak = project / ".backups" / "1" / ".claude" / "settings.json"
+        bak = project / ".django_studio" / "backups" / "1" / ".claude" / "settings.json"
         assert bak.exists()
         assert bak.read_text() == original
 
@@ -203,7 +203,7 @@ class TestPostGenBackup:
 
         render(output_dir, DEFAULT_CONTEXT)
 
-        bak = project / ".backups" / "1" / ".mcp.json"
+        bak = project / ".django_studio" / "backups" / "1" / ".mcp.json"
         assert bak.exists()
         assert bak.read_text() == original
 
@@ -213,7 +213,7 @@ class TestPostGenBackup:
 
         render(output_dir, DEFAULT_CONTEXT)
 
-        bak = project / ".backups" / "1" / "opencode.json"
+        bak = project / ".django_studio" / "backups" / "1" / "opencode.json"
         assert bak.exists()
         assert bak.read_text() == original
 
@@ -222,4 +222,4 @@ class TestPostGenBackup:
         project = render(output_dir, DEFAULT_CONTEXT)
         assert (project / ".claude" / "settings.json").exists()
         # The hook should not have created a backup dir (nothing to back up)
-        assert not (project / ".backups").exists()
+        assert not (project / ".django_studio").exists()

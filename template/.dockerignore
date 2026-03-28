@@ -7,13 +7,14 @@
 **/__pycache__
 **/tests
 .agents
-.backups
+.django_studio
 .claude
 .claudeignore
 .copier-answers.yml
 .mcp.json
 opencode.json
 .django_tailwind_cli
+.playwright-mcp
 .git
 .github
 .idea

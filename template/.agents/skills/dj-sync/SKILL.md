@@ -14,7 +14,7 @@ uvx copier update --trust
 ```
 
 The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,
-and `opencode.json` to `.backups/<n>/` (incrementing integer) before regenerating them.
+and `opencode.json` to `.django_studio/backups/<n>/` (incrementing integer) before regenerating them.
 
 This pulls the latest template into the project and stages the merged files.
 If there are no conflicts, skip to Step 3.

@@ -214,13 +214,13 @@ terraform-value dir name:
 [group('production')]
 [confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
 rdj *args:
-    {{ script_dir }}/manage.sh {{ args }}
+    {{ script_dir }}/rmanage.sh {{ args }}
 
 # Open a psql shell on the production database via Django dbshell
 [group('production')]
 [confirm("WARNING!!! Are you sure you want to run this command on production? (y/N)")]
 rpsql:
-    {{ script_dir }}/manage.sh dbshell
+    {{ script_dir }}/rmanage.sh dbshell
 
 # Run kubectl commands on the production cluster
 [group('production')]

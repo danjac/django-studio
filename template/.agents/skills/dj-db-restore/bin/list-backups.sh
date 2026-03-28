@@ -18,9 +18,10 @@ just --yes rkube delete pod list-backups --ignore-not-found=true
 # Clean up the pod on exit regardless of how the script terminates.
 trap 'just --yes rkube delete pod list-backups --ignore-not-found=true 2>/dev/null || true' EXIT
 
-# \$ escaping: just runs recipes via sh -c "...", so bare $VAR would expand in just's shell
-# (to empty — these vars only exist inside the pod). \$ survives just's shell as $, which
-# kubectl passes verbatim to the pod where the pod's sh expands it from the --env values.
+# shellcheck disable=SC2016
+# SC2016: \$ in single quotes is intentional — just runs recipes via sh -c "...", so bare
+# $VAR expands to empty in just's shell. \$ (literal backslash-dollar in single quotes)
+# survives just's sh -c as $, which kubectl passes to the pod where sh expands it from --env.
 just --yes rkube run list-backups \
   --image="${AWS_CLI_IMAGE}" \
   --restart=Never \

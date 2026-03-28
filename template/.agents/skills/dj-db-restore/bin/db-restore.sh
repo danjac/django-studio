@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 # Restore the production database from a named backup file in Object Storage.
 # Runs entirely in-cluster — no local aws CLI or psql installation required.
-# Usage: called via 'just rdb-restore <filename>' — do not invoke directly.
 #   filename: e.g. backup-20240103-030000.sql.gz
 # See docs/database-backups.md for the full restore guide including how to list available backups.
 set -euo pipefail
 
-export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/{{ project_slug }}.yaml}"
+export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/PROJECT_SLUG.yaml}"
 
-FILENAME="${1:?Usage: db_restore.sh <backup-filename.sql.gz>}"
+FILENAME="${1:?Usage: db-restore.sh <backup-filename.sql.gz>}"
 
 # Read the postgres image from the running StatefulSet so the restore version matches exactly.
 POSTGRES_IMAGE=$(kubectl get statefulset postgres -o jsonpath='{.spec.template.spec.containers[0].image}')
@@ -34,8 +33,10 @@ done < <(kubectl get cronjobs -o name 2>/dev/null)
 echo "All CronJobs suspended."
 
 echo "==> Scaling down app (${APP_REPLICAS} replicas) and worker (${WORKER_REPLICAS} replicas)..."
-just --yes rscale-down django-app
-just --yes rscale-down django-worker
+kubectl scale deployment/django-app --replicas=0
+kubectl wait --for=delete pod -l app=django-app --timeout=60s 2>/dev/null || true
+kubectl scale deployment/django-worker --replicas=0
+kubectl wait --for=delete pod -l app=django-worker --timeout=60s 2>/dev/null || true
 
 echo "==> Taking safety backup (app is down, no in-flight writes)..."
 kubectl delete job postgres-backup-pre-restore --ignore-not-found=true
@@ -129,8 +130,8 @@ kubectl logs pod/db-restore -c restore
 kubectl delete pod db-restore
 
 echo "==> Scaling app back up to ${APP_REPLICAS} replicas..."
-just --yes rscale-up django-app "${APP_REPLICAS}"
-just --yes rscale-up django-worker "${WORKER_REPLICAS}"
+kubectl scale deployment/django-app --replicas="${APP_REPLICAS}"
+kubectl scale deployment/django-worker --replicas="${WORKER_REPLICAS}"
 
 echo ""
 echo "Done. Run: just rdj migrate"

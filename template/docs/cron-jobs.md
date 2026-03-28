@@ -126,7 +126,7 @@ nodeSelector:
 ```
 
 This is already set in all chart templates (`cronjobs.yaml`, `postgres-backup-cronjob.yaml`,
-`release-job.yaml`) and in the `db-restore` pod created by `just rdb-restore`. When adding
+`release-job.yaml`) and in the `db-restore` pod created by the restore script. When adding
 any new one-off job or CronJob, always include this selector.
 
 ## Suspending and Resuming CronJobs
@@ -135,15 +135,15 @@ During maintenance windows (e.g. database restores), suspend CronJobs to prevent
 scheduled tasks from firing while the cluster is in a degraded state:
 
 ```bash
-just rcrons-disable                    # suspend all CronJobs
-just rcrons-disable postgres-backup    # suspend one specific CronJob
+just rkube patch cronjob/postgres-backup -p '{"spec":{"suspend":true}}'     # suspend one
+kubectl get cronjobs -o name | xargs -I{} kubectl patch {} -p '{"spec":{"suspend":true}}'  # suspend all
 ```
 
 Re-enable them once maintenance is complete:
 
 ```bash
-just rcrons-enable                     # resume all CronJobs
-just rcrons-enable postgres-backup     # resume one specific CronJob
+just rkube patch cronjob/postgres-backup -p '{"spec":{"suspend":false}}'    # resume one
+kubectl get cronjobs -o name | xargs -I{} kubectl patch {} -p '{"spec":{"suspend":false}}' # resume all
 ```
 
 These commands patch the CronJob's `spec.suspend` field. Any jobs that were already

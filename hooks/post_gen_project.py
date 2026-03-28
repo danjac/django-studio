@@ -40,6 +40,9 @@ BACKUP_FILES = [
 # conflicts with Jinja2.
 PLAIN_SLUG_FILES = [
     BASE_DIR / "justfile",
+    BASE_DIR / ".agents" / "skills" / "dj-db-backup" / "bin" / "db-backup.sh",
+    BASE_DIR / ".agents" / "skills" / "dj-db-restore" / "bin" / "db-restore.sh",
+    BASE_DIR / ".agents" / "skills" / "dj-db-restore" / "bin" / "list-backups.sh",
     *[
         BASE_DIR / ".github" / "workflows" / name
         for name in (

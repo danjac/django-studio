@@ -69,7 +69,7 @@ If no, stop.
 ## Step 4 — Restore the backup
 
 ```bash
-just --yes rdb-restore <selected-filename>
+.agents/skills/dj-db-restore/bin/db-restore.sh <selected-filename>
 ```
 
 The script handles the full restore atomically:

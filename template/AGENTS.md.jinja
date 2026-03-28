@@ -58,9 +58,11 @@ use `just --yes` to suppress the prompt:
 ```bash
 just --yes rkube get pods          # run kubectl without re-prompting
 just --yes rdj migrate             # run manage.py on production
-just --yes rscale-down django-app  # scale down a deployment
-just --yes rcrons-disable          # suspend all CronJobs
 ```
+
+Skills that need kubectl beyond these two recipes should call `kubectl` directly.
+Skill scripts (e.g. `.agents/skills/dj-db-restore/bin/`) handle kubeconfig resolution
+internally.
 
 Human-invoked commands (typed directly in the terminal) do not need `--yes` — the
 confirmation is the intended safety gate.

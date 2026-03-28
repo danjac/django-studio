@@ -118,7 +118,7 @@ just rkube logs -f job/postgres-backup-test -c upload
 ```
 
 You should see the dump size and "Upload complete". Then verify the file appeared in
-the bucket by following the "List available backups" steps in the Restore section below.
+the bucket by running `.agents/skills/dj-db-restore/bin/list-backups.sh`.
 
 Clean up the test job:
 
@@ -140,72 +140,25 @@ backup:
 
 ## Restoring a Backup
 
-> **3 AM emergency?** You need only `kubectl` and cluster access. Start at Step 1.
-> The restore runs entirely in-cluster — no local `aws` CLI or `psql` required.
+Use `/dj-db-restore` for a guided restore. The steps below are for manual use.
 
-### What you need before starting
-
-- Cluster access (`KUBECONFIG` configured — test with `just rkube get pods`)
-- The backup filename you want to restore (Step 1 shows how to find it)
-
-### Step 1 — List available backups
-
-Run a one-off pod using the `backup-secret` credentials already in your cluster:
+### List available backups
 
 ```bash
-just rkube run --rm -it list-backups \
-  --image=amazon/aws-cli:2 \
-  --restart=Never \
-  --env="AWS_ACCESS_KEY_ID=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
-  --env="AWS_SECRET_ACCESS_KEY=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
-  --env="AWS_DEFAULT_REGION=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
-  --env="BACKUP_ENDPOINT=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
-  --env="BACKUP_BUCKET=$(just rkube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
-  -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls s3://$BACKUP_BUCKET/ | sort'
+.agents/skills/dj-db-restore/bin/list-backups.sh
 ```
 
-Output looks like this (newest last):
-
-```
-2024-01-01 03:00:05    1453291 backup-20240101-030000.sql.gz
-2024-01-02 03:00:04    1461873 backup-20240102-030000.sql.gz
-2024-01-03 03:00:03    1459204 backup-20240103-030000.sql.gz
-```
-
-Pick the filename you want to restore. In most cases this is the most recent one (last line).
-
-### Step 2 — Disable CronJobs
-
-Suspend scheduled tasks before taking the cluster down:
+### Run the restore
 
 ```bash
-just rcrons-disable
+.agents/skills/dj-db-restore/bin/db-restore.sh backup-20240103-030000.sql.gz
 ```
 
-### Step 3 — Run the restore
+The script handles the full lifecycle: suspend CronJobs, scale down app/worker, safety
+backup, in-cluster restore, scale back up, resume CronJobs (EXIT trap ensures CronJobs
+are always resumed, even on failure).
 
-```bash
-just rdb-restore backup-20240103-030000.sql.gz
-```
-
-Confirm the prompt. The script will:
-
-1. Scale down `django-app` and `django-worker` (stops writes to the database)
-2. Start a temporary in-cluster pod that downloads the backup from Object Storage
-3. Drop and restore the `postgres` database inside the pod
-4. Delete the pod
-5. Scale `django-app` and `django-worker` back up to their previous replica counts
-
-You will see progress logs for each phase streamed to your terminal. The whole
-process takes 2–10 minutes depending on database size.
-
-### Step 4 — Re-enable CronJobs
-
-```bash
-just rcrons-enable
-```
-
-### Step 5 — Run migrations and confirm the site is live
+### Verify
 
 ```bash
 just rdj migrate
@@ -213,11 +166,9 @@ just rdj migrate
 
 Open the site in a browser. If the home page loads and you can log in, you are done.
 
----
-
 ### Manual restore (fallback)
 
-If `just rdb-restore` fails or the backup CronJob is not set up, you can restore
+If the restore script fails or the backup CronJob is not set up, you can restore
 manually. You will need `kubectl`, `aws` CLI, and `psql` installed locally.
 
 **Step A — Set credentials**
@@ -245,9 +196,11 @@ SQL_FILE="/tmp/backup-20240103-030000.sql"
 **Step C — Disable CronJobs and scale down the app**
 
 ```bash
-just rcrons-disable
-just rscale-down django-app
-just rscale-down django-worker
+kubectl get cronjobs -o name | xargs -I{} kubectl patch {} -p '{"spec":{"suspend":true}}'
+kubectl scale deployment/django-app --replicas=0
+kubectl scale deployment/django-worker --replicas=0
+kubectl wait --for=delete pod -l app=django-app --timeout=60s 2>/dev/null || true
+kubectl wait --for=delete pod -l app=django-worker --timeout=60s 2>/dev/null || true
 ```
 
 **Step D — Port-forward postgres and restore**
@@ -267,14 +220,12 @@ kill $PF_PID
 **Step E — Scale up, re-enable CronJobs, and verify**
 
 ```bash
-just rscale-up django-app 1
-just rscale-up django-worker 1
-just rcrons-enable
+kubectl scale deployment/django-app --replicas=1
+kubectl scale deployment/django-worker --replicas=1
+kubectl get cronjobs -o name | xargs -I{} kubectl patch {} -p '{"spec":{"suspend":false}}'
 just rdj migrate
 rm $SQL_FILE
 ```
-
----
 
 ## Troubleshooting
 
@@ -304,7 +255,7 @@ Common causes:
 - **Region mismatch** — `secrets.backupRegion` must match the `location` in
   `terraform/backups/terraform.tfvars`.
 
-### Restore: `psql` hangs or connection refused
+### Restore: `psql` hangs or connection refused (manual fallback only)
 
 The port-forward may have dropped. Kill it and restart:
 
@@ -340,8 +291,6 @@ Recreate it:
 ```bash
 just terraform backups apply
 ```
-
----
 
 ## What pg_dump Captures
 

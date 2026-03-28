@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # Trigger an immediate database backup on the production cluster.
 # Runs the postgres-backup CronJob as a one-off job and streams the logs.
-# Usage: called via 'just rdb-backup' — do not invoke directly.
 set -euo pipefail
 
-export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/{{ project_slug }}.yaml}"
+export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/PROJECT_SLUG.yaml}"
 
 JOB_NAME="postgres-backup-manual-$(date +%s)"
 kubectl create job "${JOB_NAME}" --from=cronjob/postgres-backup

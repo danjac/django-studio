@@ -15,11 +15,8 @@ No arguments — the skill walks you through every step interactively.
 1. Checks that backup credentials are configured in the cluster (`backup-secret`).
 2. Lists available backups from Object Storage and asks you to select one (default: most recent). Offers date filtering.
 3. Asks for confirmation before overwriting the database.
-4. Suspends all CronJobs (`just rcrons-disable`).
-5. Takes a safety backup of the current database before proceeding.
-6. Runs `just rdb-restore <filename>` — scales down app and worker, restores in-cluster, scales back up.
-7. Runs `just rdj migrate` to verify the restored database is consistent.
-8. Resumes all CronJobs (`just rcrons-enable`).
+4. Runs `.agents/skills/dj-db-restore/bin/db-restore.sh <filename>` — suspends CronJobs, scales down app and worker, takes a safety backup, restores in-cluster, scales back up, resumes CronJobs (even if interrupted).
+5. Runs `just rdj migrate` to verify the restored database is consistent.
 
 **Prerequisites**
 
@@ -29,8 +26,6 @@ No arguments — the skill walks you through every step interactively.
 **Related commands**
 
 - `/dj-enable-db-backups` — set up automated backups if not yet configured
-- `just rdb-backup` — trigger a manual backup immediately
-- `just rcrons-disable [name]` — suspend all or one CronJob
-- `just rcrons-enable [name]` — resume all or one CronJob
+- `/dj-db-backup` — trigger a manual backup immediately
 
 **See also:** `docs/database-backups.md`

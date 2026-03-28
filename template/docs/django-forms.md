@@ -480,8 +480,8 @@ identically to a standard `<select>`, so no custom partial is needed — the exi
 
 ## Alpine Widget JS and class Media
 
-Any custom widget that uses an Alpine.js component **must** load its JavaScript via
-`class Media`, not as an inline `<script>` in the partial template:
+When a widget uses a reusable, named Alpine component (registered via `Alpine.data()`),
+load the JS through `class Media` rather than inlining it in the partial template:
 
 ```python
 class ThumbnailWidget(FileInput):
@@ -498,6 +498,6 @@ The form template renders `{{ form.media }}` in `{% block scripts %}`, which col
 and deduplicates JS from every widget on the form automatically. Place static files
 under `static/widgets/`.
 
-**Do not** inline Alpine component definitions in `forms/partials.html`. Inline scripts
-prevent browser caching, run before Alpine initialises, and make the widget
-non-reusable across forms.
+Simple inline `x-data` objects — a single reactive variable, no shared logic — do not
+need a separate file. Use `class Media` when the component has methods or state complex
+enough to benefit from browser caching and reuse across forms.

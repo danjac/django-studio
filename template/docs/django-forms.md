@@ -258,7 +258,13 @@ Add the `thumbnailwidget` partialdef to `forms/partials.html`:
             height="{{ im.height }}"
             class="mb-2 rounded-lg"
           />
-          {% render_field field class="file-input" "@change"="onFileChange" %}
+          <input
+            type="file"
+            name="{{ field.html_name }}"
+            id="{{ field.id_for_label }}"
+            class="file-input"
+            @change="onFileChange"
+          >
         </div>
       {% endthumbnail %}
     {% else %}
@@ -266,7 +272,13 @@ Add the `thumbnailwidget` partialdef to `forms/partials.html`:
         <template x-if="previewUrl">
           <img :src="previewUrl" alt="{% translate "Preview" %}" width="340" height="240" class="mb-2 rounded-lg" />
         </template>
-        {% render_field field class="file-input" "@change"="onFileChange" %}
+        <input
+          type="file"
+          name="{{ field.html_name }}"
+          id="{{ field.id_for_label }}"
+          class="file-input"
+          @change="onFileChange"
+        >
       </div>
     {% endif %}
   {% endwith %}

@@ -66,66 +66,23 @@ If no, stop.
 
 ---
 
-## Step 4 — Disable CronJobs
-
-Suspend all CronJobs to prevent scheduled tasks from firing during the restore:
-
-```bash
-just --yes rcrons-disable
-```
-
----
-
-## Step 5 — Take a safety backup
-
-Trigger an immediate backup before overwriting the database:
-
-```bash
-just --yes rkube create job postgres-backup-pre-restore --from=cronjob/postgres-backup
-```
-
-Wait for it to complete (timeout: 5 minutes):
-
-```bash
-just --yes rkube wait --for=condition=complete job/postgres-backup-pre-restore --timeout=300s
-```
-
-If the job fails or times out, tell the user:
-
-> Safety backup failed. The restore has been paused. Re-enable CronJobs with:
->
-> ```bash
-> just rcrons-enable
-> ```
->
-> Then check the backup job logs:
->
-> ```bash
-> just rkube logs job/postgres-backup-pre-restore --all-containers
-> ```
-
-Stop without proceeding to the restore.
-
-Clean up the job after success:
-
-```bash
-just --yes rkube delete job postgres-backup-pre-restore
-```
-
----
-
-## Step 6 — Restore the backup
+## Step 4 — Restore the backup
 
 ```bash
 just --yes rdb-restore <selected-filename>
 ```
 
-Confirm the prompt when asked. The script scales down the app and worker, runs the
-in-cluster restore pod, then scales them back up to their original replica counts.
+The script handles the full restore atomically:
+1. Suspends all CronJobs
+2. Scales down the app and worker
+3. Takes a safety backup (after scale-down, no in-flight writes)
+4. Runs the in-cluster restore pod
+5. Scales the app and worker back up
+6. Resumes all CronJobs (even if interrupted)
 
 ---
 
-## Step 7 — Verify
+## Step 5 — Verify
 
 Run migrations to confirm the restored database is consistent:
 
@@ -138,15 +95,7 @@ before proceeding.
 
 ---
 
-## Step 8 — Re-enable CronJobs
-
-```bash
-just --yes rcrons-enable
-```
-
----
-
-## Step 9 — Done
+## Step 6 — Done
 
 Tell the user:
 

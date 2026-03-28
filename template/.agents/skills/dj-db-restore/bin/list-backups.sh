@@ -8,15 +8,29 @@
 #   .agents/skills/dj-db-restore/bin/list-backups.sh
 set -euo pipefail
 
-# shellcheck disable=SC1073,SC2016
-# SC1073: shellcheck cannot parse `just` (not a standard shell command)
+# Read the aws-cli image from the backup CronJob so the version matches exactly.
+AWS_CLI_IMAGE=$(just --yes rkube get cronjob postgres-backup \
+  -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].image}')
+
+# Delete any stale pod from a previous interrupted run.
+just --yes rkube delete pod list-backups --ignore-not-found=true
+
+# Clean up the pod on exit regardless of how the script terminates.
+trap 'just --yes rkube delete pod list-backups --ignore-not-found=true 2>/dev/null || true' EXIT
+
+# shellcheck disable=SC2016
 # SC2016: vars in single quotes intentionally expand inside the container pod, not locally
-just --yes rkube run --rm -it list-backups \
-  --image=amazon/aws-cli:2 \
+just --yes rkube run list-backups \
+  --image="${AWS_CLI_IMAGE}" \
   --restart=Never \
   --env="AWS_ACCESS_KEY_ID=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ACCESS_KEY}' | base64 -d)" \
   --env="AWS_SECRET_ACCESS_KEY=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_SECRET_KEY}' | base64 -d)" \
   --env="AWS_DEFAULT_REGION=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
   --env="BACKUP_ENDPOINT=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
   --env="BACKUP_BUCKET=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
-  -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls s3://$BACKUP_BUCKET/ | sort'
+  --command -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls "s3://$BACKUP_BUCKET/" | sort'
+
+just --yes rkube wait --for=jsonpath='{.status.phase}'=Succeeded pod/list-backups --timeout=120s \
+  || { echo "Failed to list backups. Logs:"; just --yes rkube logs pod/list-backups; exit 1; }
+
+just --yes rkube logs pod/list-backups

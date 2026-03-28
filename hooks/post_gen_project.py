@@ -17,7 +17,6 @@ import json
 import shutil
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 _, PROJECT_SLUG, *_args = sys.argv
@@ -28,6 +27,13 @@ AUTHOR = _args[1] if len(_args) > 1 else ""
 _TEMPLATE_ROOT = Path(sys.argv[0]).resolve().parent.parent
 
 BASE_DIR = Path()
+
+# Generated config files backed up before each copier update so dj-sync can diff them.
+BACKUP_FILES = [
+    BASE_DIR / ".claude" / "settings.json",
+    BASE_DIR / ".mcp.json",
+    BASE_DIR / "opencode.json",
+]
 
 # Files containing PROJECT_SLUG as a plain-text placeholder. These cannot be
 # .jinja templates because they use ${{ }}, {{ args }}, or other syntax that
@@ -79,12 +85,23 @@ def _parse_skill_description(skill_file: Path) -> str:
     return ""
 
 
-def _backup(src: Path) -> None:
-    """Copy src to <tmpdir>/<project_slug>/<name>.bak if it exists, so dj-sync can diff it."""
-    if src.exists():
-        backup_dir = Path(tempfile.gettempdir()) / PROJECT_SLUG
-        backup_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, backup_dir / f"{src.name.lstrip('.')}.bak")
+def _next_backup_dir() -> Path:
+    """Return .backups/<n>/ where n is one higher than the current maximum."""
+    backup_root = BASE_DIR / ".backups"
+    existing = [int(d.name) for d in backup_root.iterdir() if d.is_dir() and d.name.isdigit()] if backup_root.exists() else []
+    return backup_root / str(max(existing, default=0) + 1)
+
+
+def _backup_files(backup_dir: Path) -> None:
+    """Copy existing BACKUP_FILES into backup_dir preserving relative paths.
+
+    dj-sync diffs each backup against its counterpart in the project root.
+    """
+    for src in BACKUP_FILES:
+        if src.exists():
+            dest = backup_dir / src.relative_to(BASE_DIR)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dest)
 
 
 def install_claude_hooks() -> None:
@@ -195,7 +212,6 @@ def install_claude_hooks() -> None:
     }
     claude_dir = BASE_DIR / ".claude"
     claude_dir.mkdir(parents=True, exist_ok=True)
-    _backup(claude_dir / "settings.json")
     with (claude_dir / "settings.json").open("w") as f:
         json.dump(settings, f, indent=2)
         f.write("\n")
@@ -219,7 +235,6 @@ def install_claude_hooks() -> None:
             "description": description,
         }
     opencode = {"$schema": "https://opencode.ai/config.json", "command": opencode_commands}
-    _backup(BASE_DIR / "opencode.json")
     with (BASE_DIR / "opencode.json").open("w") as f:
         json.dump(opencode, f, indent=2)
         f.write("\n")
@@ -251,7 +266,6 @@ def install_mcp_config() -> None:
             },
         }
     }
-    _backup(BASE_DIR / ".mcp.json")
     with (BASE_DIR / ".mcp.json").open("w") as f:
         json.dump(config, f, indent=2)
         f.write("\n")
@@ -268,7 +282,11 @@ for path in PLAIN_SLUG_FILES:
     if path.exists():
         path.write_text(path.read_text().replace("PROJECT_SLUG", PROJECT_SLUG))
 
-# 4. Install Claude hooks, MCP config, and generate lock file
+# 4. Back up generated config files, then regenerate them
+_backup_dir = _next_backup_dir()
+_backup_files(_backup_dir)
+if _backup_dir.exists():
+    print(f"Backed up generated config files to {_backup_dir}")
 install_claude_hooks()
 install_mcp_config()
 

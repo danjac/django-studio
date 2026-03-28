@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import datetime
-import tempfile
-from pathlib import Path
 
 import pytest
 
@@ -192,41 +190,36 @@ class TestPostGenBackup:
     def test_settings_json_backed_up_on_re_render(self, output_dir):
         project = render(output_dir, DEFAULT_CONTEXT)
         original = (project / ".claude" / "settings.json").read_text()
-        bak = Path(tempfile.gettempdir()) / "test_project" / "settings.json.bak"
-        bak.unlink(missing_ok=True)
 
         render(output_dir, DEFAULT_CONTEXT)
 
+        bak = project / ".backups" / "1" / ".claude" / "settings.json"
         assert bak.exists()
         assert bak.read_text() == original
 
     def test_mcp_json_backed_up_on_re_render(self, output_dir):
         project = render(output_dir, DEFAULT_CONTEXT)
         original = (project / ".mcp.json").read_text()
-        bak = Path(tempfile.gettempdir()) / "test_project" / "mcp.json.bak"
-        bak.unlink(missing_ok=True)
 
         render(output_dir, DEFAULT_CONTEXT)
 
+        bak = project / ".backups" / "1" / ".mcp.json"
         assert bak.exists()
         assert bak.read_text() == original
 
     def test_opencode_json_backed_up_on_re_render(self, output_dir):
         project = render(output_dir, DEFAULT_CONTEXT)
         original = (project / "opencode.json").read_text()
-        bak = Path(tempfile.gettempdir()) / "test_project" / "opencode.json.bak"
-        bak.unlink(missing_ok=True)
 
         render(output_dir, DEFAULT_CONTEXT)
 
+        bak = project / ".backups" / "1" / "opencode.json"
         assert bak.exists()
         assert bak.read_text() == original
 
     def test_no_backup_if_file_absent(self, output_dir):
-        bak = Path(tempfile.gettempdir()) / "test_project" / "settings.json.bak"
-        bak.unlink(missing_ok=True)
-        # Render into a fresh directory — settings.json doesn't exist yet
+        # Render into a fresh directory — no existing files to back up
         project = render(output_dir, DEFAULT_CONTEXT)
         assert (project / ".claude" / "settings.json").exists()
-        # The hook should not have created a backup (nothing to back up)
-        assert not bak.exists()
+        # The hook should not have created a backup dir (nothing to back up)
+        assert not (project / ".backups").exists()

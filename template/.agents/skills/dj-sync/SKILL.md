@@ -14,7 +14,7 @@ uvx copier update --trust
 ```
 
 The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,
-and `opencode.json` to `<tmpdir>/<project-slug>/` before regenerating them.
+and `opencode.json` to `.backups/<n>/` (incrementing integer) before regenerating them.
 
 This pulls the latest template into the project and stages the merged files.
 If there are no conflicts, skip to Step 3.
@@ -53,13 +53,14 @@ Repeat until no conflict markers remain.
 
 ### 3. Restore local overrides in generated files
 
-Diff the auto-generated backups against the freshly regenerated files:
+Diff each backed-up file against its current counterpart in the project root:
 
 ```bash
 BACKUP_DIR=$(.agents/skills/dj-sync/bin/get-backup-dir.py)
-diff "$BACKUP_DIR/settings.json.bak" .claude/settings.json
-diff "$BACKUP_DIR/mcp.json.bak" .mcp.json
-diff "$BACKUP_DIR/opencode.json.bak" opencode.json
+find "$BACKUP_DIR" -type f | while read -r backup_file; do
+    rel="${backup_file#"$BACKUP_DIR/"}"
+    diff "$backup_file" "$rel"
+done
 ```
 
 For each file with a non-empty diff:
@@ -69,7 +70,7 @@ For each file with a non-empty diff:
    the user had made (e.g. extra `permissions.allow` entries, extra MCP servers).
 3. Ask the user which local customizations to restore, then apply them.
 
-If the backup files don't exist (first sync on a fresh project), skip this step.
+If `get-backup-dir.py` prints nothing (no backups yet), skip this step.
 
 ### 4. Verify
 

@@ -1,17 +1,17 @@
 #!/usr/bin/env -S uv run python
 # ruff: noqa: T201
-"""Print the backup directory for this project's pre-sync snapshots.
+"""Print the most recent backup directory for pre-sync snapshots.
 
-The post-gen hook backs up generated config files to
-<tmpdir>/<project_slug>/ before running copier update.
-This script prints that directory so dj-sync can diff the snapshots.
+The post-gen hook backs up generated config files to .backups/<n>/
+(incrementing integers) preserving their relative paths. This script
+prints the highest-numbered directory so dj-sync can diff each file
+against its counterpart in the project root.
 """
 
-import tempfile
 from pathlib import Path
 
-import yaml
-
-answers = yaml.safe_load(Path(".copier-answers.yml").read_text())
-slug = answers["project_slug"]
-print(Path(tempfile.gettempdir()) / slug)
+backup_root = Path(".backups")
+if backup_root.exists():
+    dirs = [d for d in backup_root.iterdir() if d.is_dir() and d.name.isdigit()]
+    if dirs:
+        print(max(dirs, key=lambda d: int(d.name)))

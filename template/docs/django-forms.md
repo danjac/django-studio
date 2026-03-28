@@ -225,6 +225,9 @@ from django.forms.widgets import FileInput
 
 class ThumbnailWidget(FileInput):
     """File input widget that renders a sorl thumbnail preview in forms/partials.html."""
+
+    class Media:
+        js = ("widgets/thumbnail.js",)
 ```
 
 Use it via `Meta.widgets`:
@@ -244,31 +247,45 @@ Add the `thumbnailwidget` partialdef to `forms/partials.html`:
 {% partialdef thumbnailwidget %}
   {% load thumbnail %}
   {% partial label %}
-  <div
-    x-data="{ previewUrl: null }"
-    @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
-  >
-    {% with image=field.field.widget.image %}
-      {% if image %}
-        {% thumbnail image "340x240" crop="center" as im %}
+  {% with image=field.field.widget.image %}
+    {% if image %}
+      {% thumbnail image "340x240" crop="center" as im %}
+        <div x-data="thumbnailWidget()">
           <img
-            src="{{ im.url }}"
             :src="previewUrl ?? '{{ im.url }}'"
             alt="{% translate "Preview" %}"
             width="{{ im.width }}"
             height="{{ im.height }}"
             class="mb-2 rounded-lg"
           />
-        {% endthumbnail %}
-      {% else %}
+          {% render_field field class="file-input" "@change"="onFileChange" %}
+        </div>
+      {% endthumbnail %}
+    {% else %}
+      <div x-data="thumbnailWidget()">
         <template x-if="previewUrl">
           <img :src="previewUrl" alt="{% translate "Preview" %}" width="340" height="240" class="mb-2 rounded-lg" />
         </template>
-      {% endif %}
-    {% endwith %}
-    {% render_field field class="file-input" %}
-  </div>
+        {% render_field field class="file-input" "@change"="onFileChange" %}
+      </div>
+    {% endif %}
+  {% endwith %}
 {% endpartialdef thumbnailwidget %}
+```
+
+Create `static/widgets/thumbnail.js`:
+
+```js
+document.addEventListener('alpine:init', () => {
+  Alpine.data('thumbnailWidget', () => ({
+    previewUrl: null,
+
+    onFileChange(event) {
+      const file = event.target.files[0];
+      this.previewUrl = file ? URL.createObjectURL(file) : null;
+    },
+  }));
+});
 ```
 
 Then render normally:

@@ -18,8 +18,9 @@ just --yes rkube delete pod list-backups --ignore-not-found=true
 # Clean up the pod on exit regardless of how the script terminates.
 trap 'just --yes rkube delete pod list-backups --ignore-not-found=true 2>/dev/null || true' EXIT
 
-# shellcheck disable=SC2016
-# SC2016: vars in single quotes intentionally expand inside the container pod, not locally
+# \$ escaping: just runs recipes via sh -c "...", so bare $VAR would expand in just's shell
+# (to empty — these vars only exist inside the pod). \$ survives just's shell as $, which
+# kubectl passes verbatim to the pod where the pod's sh expands it from the --env values.
 just --yes rkube run list-backups \
   --image="${AWS_CLI_IMAGE}" \
   --restart=Never \
@@ -28,7 +29,7 @@ just --yes rkube run list-backups \
   --env="AWS_DEFAULT_REGION=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_REGION}' | base64 -d)" \
   --env="BACKUP_ENDPOINT=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_ENDPOINT}' | base64 -d)" \
   --env="BACKUP_BUCKET=$(just --yes rkube get secret backup-secret -o jsonpath='{.data.BACKUP_BUCKET}' | base64 -d)" \
-  --command -- sh -c 'aws --endpoint-url "$BACKUP_ENDPOINT" s3 ls "s3://$BACKUP_BUCKET/" | sort'
+  --command -- sh -c 'aws --endpoint-url \$BACKUP_ENDPOINT s3 ls s3://\$BACKUP_BUCKET/ | sort'
 
 just --yes rkube wait --for=jsonpath='{.status.phase}'=Succeeded pod/list-backups --timeout=120s \
   || { echo "Failed to list backups. Logs:"; just --yes rkube logs pod/list-backups; exit 1; }

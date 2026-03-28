@@ -171,7 +171,6 @@ Generated projects include project-local [MCP servers](https://modelcontextproto
 | `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection                         |
 | `@playwright/mcp`                       | Browser automation and E2E test debugging                             |
 | `mcp-django`                            | Django shell — ORM queries, model introspection, arbitrary Python     |
-| `mcp-server-kubernetes`                 | Cluster management and log access (added post-launch by `/dj-launch`) |
 
 See `docs/mcp.md` in the generated project for usage and security notes.
 

@@ -45,9 +45,7 @@ Wait for apply to complete before continuing.
 
 ## Pre-flight — Cluster
 
-Check if the Kubernetes MCP server is configured in `.mcp.json`. If
-`mcpServers.kubernetes` is present, use it to verify the cluster is accessible
-by listing nodes. Otherwise:
+Verify the cluster is accessible:
 
 ```bash
 just --yes rkube get nodes

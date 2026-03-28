@@ -53,27 +53,6 @@ Starts a Django shell session with the full application context loaded
 > including the database. Use it in development only. Never run it against a database that
 > contains production data.
 
-### Kubernetes
-
-**Package:** `mcp-server-kubernetes`
-
-Uses the project-specific kubeconfig at `~/.kube/<project_slug>.yaml` (configured
-by `just get-kubeconfig` during `/dj-launch`). The `KUBECONFIG` env var is set in
-the MCP entry so the server uses the correct cluster context. Added to `.mcp.json`
-at the end of the launch wizard — not present in fresh projects.
-
-**Use for:**
-- Checking pod status and events: `kubectl get pods`
-- Reading application logs: `kubectl logs <pod>`
-- Describing failing deployments
-- Inspecting ConfigMaps and Secrets (non-sensitive values)
-
-To add it manually after launch:
-
-```bash
-.agents/skills/bin/add-kube-mcp.py
-```
-
 ---
 
 ## Troubleshooting
@@ -87,10 +66,6 @@ Run `just start` to ensure Docker services are running, then verify `DATABASE_UR
 **`django` fails to start**
 Run `just install` to ensure `mcp-django` is installed in the project virtualenv.
 Check that `config/settings.py` loads without errors: `uv run python -m django check`.
-
-**`kubernetes` context is wrong**
-Run `just get-kubeconfig` to refresh the kubeconfig from the Hetzner cluster, then
-restart Claude Code.
 
 **Playwright: browser not available / MCP server fails to launch**
 By default, `@playwright/mcp` tries to use Google Chrome. If Chrome is not installed,

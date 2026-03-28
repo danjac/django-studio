@@ -66,8 +66,7 @@ For each file with a non-empty diff:
 
 1. Show the diff to the user.
 2. Identify which lines are new template additions vs. local customizations
-   the user had made (e.g. extra `permissions.allow` entries, extra MCP
-   servers such as `kubernetes`).
+   the user had made (e.g. extra `permissions.allow` entries, extra MCP servers).
 3. Ask the user which local customizations to restore, then apply them.
 
 If the backup files don't exist (first sync on a fresh project), skip this step.

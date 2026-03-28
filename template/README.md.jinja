@@ -116,7 +116,6 @@ Project-local [MCP servers](https://modelcontextprotocol.io) are configured in `
 | `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection |
 | `@playwright/mcp` | Browser automation and E2E test debugging |
 | `mcp-django` | Django shell — ORM queries, model introspection, arbitrary Python |
-| `mcp-server-kubernetes` | Cluster management and log access (added by `/dj-launch`) |
 
 > **Security:** `mcp-django` gives full shell access to your Django project. Use in development only; never point it at a database containing production data.
 

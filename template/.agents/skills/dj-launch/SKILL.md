@@ -672,36 +672,6 @@ Diagnose and help the user fix the issue before declaring success.
 
 ---
 
-## Step 6d — Kubernetes MCP
-
-Now that the cluster is live, offer to add the Kubernetes MCP server to `.mcp.json`
-so AI assistants can inspect pods, logs, and deployments directly.
-
-**Pre-check:** Read `.mcp.json` and check whether a `kubernetes` key already exists
-under `mcpServers`. If it does, skip this step entirely — the MCP server is already
-configured.
-
-Tell the user:
-
-> Would you like to add the Kubernetes MCP server to `.mcp.json`?
-> This lets AI assistants (Claude Code) inspect pods, view logs, and manage
-> deployments using your current kubectl context.
->
-> Add Kubernetes MCP? (y/n)
-
-If **y**, patch `.mcp.json`:
-
-```bash
-.agents/skills/bin/add-kube-mcp.py
-```
-
-Tell the user:
-> Kubernetes MCP added to `.mcp.json`. Restart Claude Code to activate it.
-
-If **n**, skip silently.
-
----
-
 ## Step 7 — Post-launch (optional)
 
 Tell the user:

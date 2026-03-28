@@ -220,9 +220,7 @@ The following MCP servers are configured in `.mcp.json` (gitignored, generated a
 | `postgres` | Always | Execute SQL, inspect schema, check migrations |
 | `playwright` | Always | Browser automation, E2E test debugging |
 | `django` | Always | Django shell: ORM queries, model introspection, arbitrary Python in Django context |
-| `kubernetes` | After `/dj-launch` | Inspect pods, view logs, manage deployments |
-
-Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively. Use `kubernetes` to diagnose production pod failures without leaving the editor.
+Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively.
 
 See `docs/mcp.md` for details.
 

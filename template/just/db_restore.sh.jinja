@@ -17,9 +17,32 @@ POSTGRES_IMAGE=$(kubectl get statefulset postgres -o jsonpath='{.spec.template.s
 APP_REPLICAS=$(kubectl get deployment/django-app -o jsonpath='{.spec.replicas}' 2>/dev/null || echo 1)
 WORKER_REPLICAS=$(kubectl get deployment/django-worker -o jsonpath='{.spec.replicas}' 2>/dev/null || echo 1)
 
+# Resume CronJobs on exit (normal or interrupted) so they are never left suspended.
+_resume_cronjobs() {
+    echo "==> Resuming CronJobs..."
+    while IFS= read -r cj; do
+        kubectl patch "$cj" -p '{"spec":{"suspend":false}}' 2>/dev/null || true
+    done < <(kubectl get cronjobs -o name 2>/dev/null)
+    echo "All CronJobs resumed."
+}
+trap _resume_cronjobs EXIT
+
+echo "==> Suspending CronJobs..."
+while IFS= read -r cj; do
+    kubectl patch "$cj" -p '{"spec":{"suspend":true}}'
+done < <(kubectl get cronjobs -o name 2>/dev/null)
+echo "All CronJobs suspended."
+
 echo "==> Scaling down app (${APP_REPLICAS} replicas) and worker (${WORKER_REPLICAS} replicas)..."
 just --yes rscale-down django-app
 just --yes rscale-down django-worker
+
+echo "==> Taking safety backup (app is down, no in-flight writes)..."
+kubectl delete job postgres-backup-pre-restore --ignore-not-found=true
+kubectl create job postgres-backup-pre-restore --from=cronjob/postgres-backup
+kubectl wait --for=condition=complete job/postgres-backup-pre-restore --timeout=300s \
+  || { echo "Safety backup failed. Logs:"; kubectl logs job/postgres-backup-pre-restore --all-containers; kubectl delete job postgres-backup-pre-restore --ignore-not-found=true; exit 1; }
+kubectl delete job postgres-backup-pre-restore
 
 echo "==> Starting in-cluster restore pod for: ${FILENAME}"
 kubectl delete pod db-restore --ignore-not-found=true
@@ -111,3 +134,4 @@ just --yes rscale-up django-worker "${WORKER_REPLICAS}"
 
 echo ""
 echo "Done. Run: just rdj migrate"
+# trap EXIT fires here, resuming CronJobs

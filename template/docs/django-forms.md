@@ -501,3 +501,18 @@ under `static/widgets/`.
 Simple inline `x-data` objects — a single reactive variable, no shared logic — do not
 need a separate file. Use `class Media` when the component has methods or state complex
 enough to benefit from browser caching and reuse across forms.
+
+**Inline is fine** — the `passwordinput` partial uses a single boolean toggle; no
+separate file is warranted:
+
+```html
+<div x-data="{ show: false }" class="relative">
+  ...
+  <button x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';">
+  ...
+</div>
+```
+
+**Use `class Media`** — `TagWidget` and `ThumbnailWidget` register named
+`Alpine.data()` components with multiple methods; these belong in static files loaded
+via `class Media` so the browser can cache and deduplicate them across forms.

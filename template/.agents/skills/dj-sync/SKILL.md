@@ -94,3 +94,6 @@ git commit -m "chore: sync with django-studio template"
 ```
 
 Inform the user the sync is complete and the project is ready to push.
+
+> **Start a new conversation** before using any skills — updated skill files
+> are not re-read mid-conversation.

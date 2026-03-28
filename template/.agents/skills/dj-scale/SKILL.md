@@ -70,12 +70,24 @@ If `<n>` > `webapp_count`, advise:
 > `terraform/hetzner/terraform.tfvars` to `<n>` and running:
 >
 > ```bash
-> just tf hetzner apply
+> just terraform hetzner plan
+> just terraform hetzner apply -auto-approve
 > ```
 >
 > Provision additional nodes first? [y/n]
 
-If yes, update `webapp_count` in `terraform.tfvars` and run `just tf hetzner apply`.
+If yes, update `webapp_count` in `terraform.tfvars` and run:
+
+```bash
+just terraform hetzner plan
+```
+
+Show the plan output and wait for user confirmation before running:
+
+```bash
+just terraform hetzner apply -auto-approve
+```
+
 Wait for it to complete before proceeding.
 
 If no, proceed with the current node count (Kubernetes will schedule pods as best
@@ -96,7 +108,7 @@ just deploy-config
 ### Step 5 — Verify
 
 ```bash
-kubectl get pods -l app=django-app
+just --yes rkube get pods -l app=django-app
 ```
 
 Confirm the expected number of pods are running.

@@ -59,11 +59,11 @@ If `<n>` is **1**, warn:
 
 Wait for confirmation. If no, stop.
 
-### Step 2 — Check node capacity
+### Step 2 — Check node capacity (scale-up and scale-down)
 
 Read `webapp_count` from `terraform/hetzner/terraform.tfvars`.
 
-If `<n>` > `webapp_count`, advise:
+**Scale-up:** If `<n>` > `webapp_count`, advise:
 
 > You're scaling to `<n>` replicas but only have `<webapp_count>` Hetzner
 > node(s). Consider increasing `webapp_count` in
@@ -71,7 +71,7 @@ If `<n>` > `webapp_count`, advise:
 >
 > Provision additional nodes first? [y/n]
 
-If yes, update `webapp_count` in `terraform.tfvars` and run:
+If yes, update `webapp_count` to `<n>` in `terraform.tfvars` and run:
 
 ```bash
 just terraform hetzner plan
@@ -91,6 +91,31 @@ Wait for it to complete before proceeding.
 
 If no, proceed with the current node count (Kubernetes will schedule pods as best
 it can).
+
+**Scale-down:** If `<n>` < `webapp_count`, warn:
+
+> Scaling down to `<n>` replicas will leave `<webapp_count - n>` idle Hetzner
+> node(s) running and billing. Reduce `webapp_count` to `<n>` and deprovision? [y/n]
+
+If yes, update `webapp_count` to `<n>` in `terraform.tfvars` and run:
+
+```bash
+just terraform hetzner plan
+```
+
+Show the plan output, then ask:
+
+> Proceed with apply? [y/n]
+
+If yes:
+
+```bash
+just terraform hetzner apply -auto-approve
+```
+
+Wait for it to complete before proceeding.
+
+If no, proceed without changing node count (user accepts the ongoing cost).
 
 ### Step 3 — Update replicas
 

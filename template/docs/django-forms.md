@@ -16,8 +16,10 @@ This project uses Django forms for HTML form submissions, with
 - [Common Custom Widgets](#common-custom-widgets)
   - [Thumbnail Widget](#thumbnail-widget)
   - [Multiple File Upload](#multiple-file-upload)
+  - [Tag Widget](#tag-widget)
   - [MoneyWidget](#moneywidget)
   - [django-countries LazySelect](#django-countries-lazyselect)
+- [Alpine Widget JS and class Media](#alpine-widget-js-and-class-media)
 
 ## Form View Pattern
 
@@ -316,6 +318,109 @@ Django form submission works normally.
 - The upload/delete workflow for existing server-side files is project-specific —
   implement via HTMX partial swaps.
 
+### Tag Widget
+
+`TagWidget` is a `TextInput` subclass that renders an Alpine.js pill/chip tag editor.
+Tags are stored as a space-separated string in the database; the widget splits and
+joins on spaces. Create the widget class in `widgets.py`:
+
+```python
+from django.forms.widgets import TextInput
+
+
+class TagWidget(TextInput):
+    """Text input that renders as an Alpine.js pill/chip tag editor in forms/partials.html."""
+
+    class Media:
+        js = ("widgets/tags.js",)
+```
+
+Add the `tagwidget` partialdef to `templates/forms/partials.html`:
+
+```html
+{# Tag chip widget — pill editor backed by a hidden text input #}
+{% partialdef tagwidget %}
+  {% partial label %}
+  <div
+    x-data="tagWidget('{{ field.value|default:''|escapejs }}')"
+    class="space-y-2"
+  >
+    <div class="flex flex-wrap gap-2 items-center py-2 !h-auto input"
+         @click="$refs.tagInput.focus()">
+      <template x-for="tag in tags" :key="tag">
+        <span class="gap-1 badge badge-outline">
+          <span x-text="tag"></span>
+          <button
+            type="button"
+            @click.stop="removeTag(tag)"
+            aria-label="{% translate "Remove tag" %}"
+          >
+            {% heroicon_mini "x-mark" class="size-3" aria_hidden="true" %}
+          </button>
+        </span>
+      </template>
+      <input
+        type="text"
+        x-ref="tagInput"
+        @input="onInput"
+        @keydown.enter.prevent="addTag()"
+        @keydown.backspace="$refs.tagInput.value === '' && removeLastTag()"
+        placeholder="{% translate "Add tag…" %}"
+        class="flex-1 text-sm bg-transparent outline-none min-w-20"
+      >
+    </div>
+    <input type="hidden" name="{{ field.html_name }}" :value="tags.join(' ')">
+  </div>
+{% endpartialdef tagwidget %}
+```
+
+Create `static/widgets/tags.js`:
+
+```js
+document.addEventListener('alpine:init', () => {
+  Alpine.data('tagWidget', (initial) => ({
+    tags: initial ? initial.trim().split(/\s+/) : [],
+
+    onInput(event) {
+      const value = event.target.value;
+      if (!value.endsWith(' ')) return;
+      const tag = value.trim().toLowerCase();
+      event.target.value = '';
+      if (tag && !this.tags.includes(tag)) {
+        this.tags = [...this.tags, tag];
+      }
+    },
+
+    addTag() {
+      const tag = this.$refs.tagInput.value.trim().toLowerCase();
+      this.$refs.tagInput.value = '';
+      if (tag && !this.tags.includes(tag)) {
+        this.tags = [...this.tags, tag];
+      }
+    },
+
+    removeTag(tag) {
+      this.tags = this.tags.filter((t) => t !== tag);
+    },
+
+    removeLastTag() {
+      if (this.tags.length > 0) {
+        this.tags = this.tags.slice(0, -1);
+      }
+    },
+  }));
+});
+```
+
+The hidden input uses `:value="tags.join(' ')"` (reactive binding) so Alpine always
+keeps it in sync with the displayed chips.
+
+Then render normally:
+
+```html
+{{ form.tags.as_field_group }}
+```
+
 ### MoneyWidget
 
 [django-money](https://github.com/django-money/django-money) pairs `MoneyField` with
@@ -343,3 +448,27 @@ identically to a standard `<select>`, so no custom partial is needed — the exi
 {# django-countries LazySelect (same as a regular select) #}
 {% partialdef lazyselect %}{% partial select %}{% endpartialdef %}
 ```
+
+## Alpine Widget JS and class Media
+
+Any custom widget that uses an Alpine.js component **must** load its JavaScript via
+`class Media`, not as an inline `<script>` in the partial template:
+
+```python
+class ThumbnailWidget(FileInput):
+    class Media:
+        js = ("widgets/thumbnail.js",)
+
+
+class TagWidget(TextInput):
+    class Media:
+        js = ("widgets/tags.js",)
+```
+
+The form template renders `{{ form.media }}` in `{% block scripts %}`, which collects
+and deduplicates JS from every widget on the form automatically. Place static files
+under `static/widgets/`.
+
+**Do not** inline Alpine component definitions in `forms/partials.html`. Inline scripts
+prevent browser caching, run before Alpine initialises, and make the widget
+non-reusable across forms.

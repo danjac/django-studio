@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run Django manage.py commands inside the production django-app pod.
-# Usage: manage.sh <manage_command> [args...]
-# Example: manage.sh migrate
+# Usage: rmanage.sh <manage_command> [args...]
+# Example: rmanage.sh migrate
 set -euo pipefail
 
 export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/{{ project_slug }}.yaml}"

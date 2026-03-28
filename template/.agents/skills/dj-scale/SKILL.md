@@ -92,10 +92,32 @@ Wait for it to complete before proceeding.
 If no, proceed with the current node count (Kubernetes will schedule pods as best
 it can).
 
-**Scale-down:** If `<n>` < `webapp_count`, warn:
+**Scale-down:** If `<n>` < `webapp_count`, note that Hetzner nodes will be
+deprovisioned **after** the replica count is reduced (so pods are drained
+first and no workload lands on the node being removed).
 
-> Scaling down to `<n>` replicas will leave `<webapp_count - n>` idle Hetzner
-> node(s) running and billing. Reduce `webapp_count` to `<n>` and deprovision? [y/n]
+Proceed to Step 3 now. After deploy completes, return to Step 2 to deprovision.
+
+If no scale-down is needed (node counts already match or user declines), proceed
+without changing node count (user accepts the ongoing cost).
+
+### Step 3 — Update replicas
+
+Set `replicas: <n>` in `helm/site/values.secret.yaml`.
+
+If `values.secret.yaml` does not exist, set it in `helm/site/values.yaml` instead.
+
+### Step 4 — Deploy
+
+```bash
+just deploy-config
+```
+
+### Step 4b — Deprovision idle nodes (scale-down only)
+
+If this was a scale-down and `<n>` < `webapp_count`, now deprovision the idle nodes:
+
+> `<webapp_count - n>` idle Hetzner node(s) will be removed. Deprovision now? [y/n]
 
 If yes, update `webapp_count` to `<n>` in `terraform.tfvars` and run:
 
@@ -115,19 +137,7 @@ just terraform hetzner apply -auto-approve
 
 Wait for it to complete before proceeding.
 
-If no, proceed without changing node count (user accepts the ongoing cost).
-
-### Step 3 — Update replicas
-
-Set `replicas: <n>` in `helm/site/values.secret.yaml`.
-
-If `values.secret.yaml` does not exist, set it in `helm/site/values.yaml` instead.
-
-### Step 4 — Deploy
-
-```bash
-just deploy-config
-```
+If no, leave the nodes running (user accepts the ongoing cost).
 
 ### Step 5 — Verify
 

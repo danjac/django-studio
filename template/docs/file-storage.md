@@ -150,7 +150,9 @@ collisions when two users upload files with the same name — or a user double-s
 Collisions also poison the sorl-thumbnail cache: deleting one duplicate wipes the shared
 cache entry and breaks thumbnails for the surviving record.
 
-Use a callable `upload_to` that generates a UUID-based filename on every upload:
+Use a callable `upload_to` that generates a UUID-based filename on every upload.
+
+### Simple function
 
 ```python
 import pathlib
@@ -160,16 +162,41 @@ import uuid
 def upload_handler(instance: object, filename: str) -> str:
     ext = pathlib.Path(filename).suffix.lower()
     return f"uploads/{uuid.uuid4().hex}{ext}"
-```
 
-Pass it as `upload_to` on any `FileField` or `ImageField`:
 
-```python
 image = models.ImageField(upload_to=upload_handler)
 ```
 
-This guarantees unique filenames per upload, prevents storage collisions, and ensures
-thumbnail caches are never shared between records.
+### Reusable class (multiple fields/directories)
+
+When you have many `FileField`/`ImageField` across a model or project, use a
+`@deconstructible` class so each field can specify its own directory while Django's
+migration framework can serialise the callable:
+
+```python
+import pathlib
+import uuid
+
+from django.db.models import Model
+from django.utils.deconstruct import deconstructible
+
+
+@deconstructible
+class UploadHandler:
+    def __init__(self, dirname: str) -> None:
+        self.dirname = dirname
+
+    def __call__(self, instance: Model, filename: str) -> str:
+        ext = pathlib.Path(filename).suffix.lower()
+        return f"{self.dirname}/{uuid.uuid4().hex}{ext}"
+
+
+avatar = models.ImageField(upload_to=UploadHandler("avatars"))
+document = models.FileField(upload_to=UploadHandler("documents"))
+```
+
+Both patterns guarantee unique filenames per upload, prevent storage collisions, and
+ensure thumbnail caches are never shared between records.
 
 ## sorl-thumbnail
 

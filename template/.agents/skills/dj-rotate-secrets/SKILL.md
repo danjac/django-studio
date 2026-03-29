@@ -179,9 +179,19 @@ secrets:
 cache services. Otherwise the app will restart with new credentials while the
 services still expect the old ones, causing immediate 500 errors.
 
+These commands call `kubectl` directly — `just rkube` passes arguments through the
+shell which breaks quoted strings. Export `KUBECONFIG` first so kubectl finds the
+cluster:
+
+```bash
+export KUBECONFIG="$HOME/.kube/<project-slug>.yaml"
+```
+
+Replace `<project-slug>` with the value of `project_slug` from `.copier-answers.yml`.
+
 **PostgreSQL:**
 ```bash
-kubectl --kubeconfig "$(just --evaluate kubeconfig)" exec postgres-0 -- su postgres -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
+kubectl exec postgres-0 -- su postgres -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
 ```
 
 **Verify** the output contains `ALTER ROLE`. If it does not (empty output, error, or
@@ -199,7 +209,7 @@ If **manual**, stop and tell the user to re-run `/dj-rotate-secrets` when ready.
 
 **Redis:**
 ```bash
-kubectl --kubeconfig "$(just --evaluate kubeconfig)" exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
+kubectl exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
 ```
 
 **Verify** the output contains `OK`. If it does not, **stop immediately**. Tell the
@@ -223,13 +233,12 @@ including the full connection-string keys (`DATABASE_URL`, `REDIS_URL`) that
 embed the passwords.
 
 Build base64-encoded values for every key that changed and patch them in one
-call:
+call (`KUBECONFIG` is already exported from step 5a):
 
 ```bash
 NEW_POSTGRES_PASSWORD="$new_postgres" \
 NEW_REDIS_PASSWORD="$new_redis" \
 NAMESPACE="$namespace" \
-KUBECONFIG="$(just --evaluate kubeconfig)" \
   .agents/skills/dj-rotate-secrets/bin/patch-k8s-secrets.sh
 ```
 

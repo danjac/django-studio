@@ -101,7 +101,7 @@ the `fieldset` fragment to keep the DaisyUI structure, errors, and help text:
 ```html
 {% load widget_tweaks %}
 {{ form.title.as_field_group }}
-{% fragment "forms/partials.html#fieldset" with field=form.body %}
+{% fragment "forms/partials.html#fieldset" field=form.body %}
   {% partial label %}
   {% render_field form.body class="textarea w-full" rows="8" %}
 {% endfragment %}
@@ -158,7 +158,7 @@ level-3 rendering (see [Rendering Fields](#rendering-fields)):
 | `{% partial label %}` | `<legend>` with label text, optional marker, error colour |
 | `{% partial errors %}` | `<ul>` of validation errors |
 | `{% partial help_text %}` | `<p>` of help text |
-| `{% fragment "forms/partials.html#fieldset" with field=... %}` | Full `<fieldset>` wrapper — `{{ content }}` + errors + help text |
+| `{% fragment "forms/partials.html#fieldset" field=... %}` | Full `<fieldset>` wrapper — `{{ content }}` + errors + help text |
 
 The rendered output for a standard field:
 

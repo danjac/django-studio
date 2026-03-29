@@ -226,6 +226,12 @@ Use `postgres` and `django` to debug data issues. Use `playwright` to investigat
 
 See `docs/mcp.md` for details.
 
+## Deployment & Operations
+
+When rotating secrets or credentials, ALWAYS verify the change worked before proceeding.
+Never assume `ALTER ROLE`, password changes, or credential updates succeeded — run a
+connection test. Update ALL references (`DATABASE_URL`, `REDIS_URL`, etc.) atomically.
+
 ## Template Feedback
 
 Generated from [django-studio](https://github.com/danjac/django-studio). To report a bug or improvement: `/dj-feedback`

@@ -10,6 +10,10 @@ Do not make excessive or environment-specific changes beyond what was requested.
 user asks for a targeted edit, make only that edit. Ask before adding dev/staging/production
 variants.
 
+When the user corrects you or says 'stop', immediately stop, acknowledge the correction,
+and re-examine the situation from scratch. Do not repeat the same approach or question the
+user's stated facts.
+
 ## Testing
 
 Create a new project in `/tmp` using the Copier template:

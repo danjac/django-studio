@@ -181,7 +181,7 @@ services still expect the old ones, causing immediate 500 errors.
 
 **PostgreSQL:**
 ```bash
-just --yes rkube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
+just --yes rkube exec postgres-0 -- su postgres -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
 ```
 
 **Verify** the output contains `ALTER ROLE`. If it does not (empty output, error, or
@@ -229,6 +229,7 @@ call:
 NEW_POSTGRES_PASSWORD="$new_postgres" \
 NEW_REDIS_PASSWORD="$new_redis" \
 NAMESPACE="$namespace" \
+KUBECONFIG="$(just --evaluate kubeconfig)" \
   .agents/skills/dj-rotate-secrets/bin/patch-k8s-secrets.sh
 ```
 

@@ -2,9 +2,9 @@ This is a Copier template to create a new Django project.
 
 ## General Rules
 
-STOP and ask before applying a fix. Do not assume the root cause — state your hypothesis
-first and wait for confirmation. If the user corrects you, re-read the relevant code/docs
-before responding.
+STOP and ask before applying a fix. Before making any changes, state your hypothesis about
+the root cause and which files you plan to modify. Wait for confirmation before proceeding.
+If the user corrects you, re-read the relevant code/docs before responding.
 
 Do not make excessive or environment-specific changes beyond what was requested. If the
 user asks for a targeted edit, make only that edit. Ask before adding dev/staging/production

@@ -5,8 +5,8 @@ your use case:
 
 | Use case | Approach |
 |---|---|
-| Simple browse/search lists | Previous/Next (default) |
-| User needs to jump to a specific page | Numbered pages |
+| Standard browse/search lists | Numbered pages (default) |
+| Simple prev/next only | [Previous/Next](#previousnext) |
 | Feed-style content | Infinite scroll |
 | Django admin on large tables | `FastCountAdminMixin` |
 | Large tables where COUNT(*) is too slow | [Performance Optimizations](#performance-optimizations) |
@@ -15,16 +15,16 @@ your use case:
 
 ## Contents
 
-- [Previous/Next (default)](#previousnext-default)
-- [Numbered Pagination](#numbered-pagination)
+- [Numbered Pages (default)](#numbered-pages-default)
+- [Previous/Next](#previousnext)
 - [Infinite Scroll](#infinite-scroll)
 - [Performance Optimizations](#performance-optimizations)
 - [Django Admin: FastCountAdminMixin](#django-admin-fastcountadminmixin)
 
-## Previous/Next (default)
+## Numbered Pages (default)
 
-Use `render_paginated_response` with no custom paginator — Django's built-in `Paginator`
-is used by default.
+Use `render_paginated_response` with no extra configuration — Django's built-in
+`Paginator` is used by default and `paginate.html` renders numbered navigation.
 
 ```python
 from my_package.paginator import render_paginated_response
@@ -56,8 +56,9 @@ In the template, include `paginate.html` via `{% fragment %}` inside a
 {% endblock content %}
 ```
 
-`paginate.html` renders Previous/Next navigation around `{{ content }}`.
-On an HTMX page request only the `pagination` partial is returned.
+`paginate.html` renders first/previous, a ±3 window of numbered page links, and
+next/last controls around `{{ content }}`. On an HTMX request only the `pagination`
+partial is returned.
 
 To override the page size, pass a `Paginator` instance directly:
 
@@ -77,88 +78,88 @@ def item_list(request: HttpRequest) -> TemplateResponse:
     )
 ```
 
+For very large unfiltered tables where `COUNT(*)` is slow, see
+[FastCountPaginator](#fastcountpaginator--estimated-counts-for-numbered-pagination).
+
 ---
 
-## Numbered Pagination
+## Previous/Next
 
-When users need to jump to a specific page you need a total count. Use Django's
-built-in `Paginator` — the `COUNT(*)` query is fast on indexed, filtered querysets and
-fine for most tables. Pass it via `PaginationConfig`:
+For simple lists where users don't need to jump to a specific page, create a minimal
+`templates/paginate_prevnext.html` and reference it in the view template. The view
+is identical to the default:
 
 ```python
-from django.core.paginator import Paginator
-
-from my_package.paginator import PaginationConfig, render_paginated_response
+from my_package.paginator import render_paginated_response
 
 
 def item_list(request: HttpRequest) -> TemplateResponse:
-    qs = Item.objects.order_by("-created_at")
     return render_paginated_response(
         request,
         "my_app/items_list.html",
-        qs,
-        config=PaginationConfig(paginator=Paginator(qs, 20)),
+        Item.objects.order_by("-created_at"),
     )
 ```
 
-### Template
-
-Create `templates/paginate_numbered.html` following `paginate.html`'s structure —
-`{% partialdef links %}` defines the nav once and `{% partial links %}` renders it
-above and below the list without duplication:
-
 ```html
-<!-- templates/paginate_numbered.html -->
+<!-- templates/paginate_prevnext.html -->
 {% load i18n %}
 {% with has_other_pages=page.has_other_pages %}
   <div id="{{ pagination_config.target }}" aria-live="polite" aria-atomic="true">
-    {% if has_other_pages %}
-      <div class="pb-3">{% partial links %}</div>
-    {% endif %}
     {{ content }}
     {% if has_other_pages %}
-      <div class="pt-3">{% partial links %}</div>
+      <div class="flex justify-center pt-6">
+        {% partial links %}
+      </div>
     {% endif %}
   </div>
 {% endwith %}
 
 {% partialdef links %}
-  <nav role="navigation"
-       aria-label="{% translate "Pagination" %}"
-       hx-target="#{{ pagination_config.target }}"
-       hx-swap="outerHTML show:window:top">
+  <nav
+    role="navigation"
+    aria-label="{% translate "Pagination" %}"
+    hx-swap="outerHTML show:window:top"
+    hx-target="#{{ pagination_config.target }}"
+  >
     <div class="join">
       {% if page.has_previous %}
-        <a href="{{ request.path }}{% querystring page=1 %}"
-           class="btn btn-ghost join-item"
-           aria-label="{% translate "First page" %}">«</a>
-        <a href="{{ request.path }}{% querystring page=page.previous_page_number %}"
-           class="btn btn-ghost join-item"
-           aria-label="{% translate "Previous page" %}">‹</a>
+        {% querystring page=1 as first_url %}
+        <a
+          href="{{ request.path }}{{ first_url }}"
+          hx-get="{{ request.path }}{{ first_url }}"
+          aria-label="{% translate "First page" %}"
+          class="join-item btn btn-outline"
+        >«</a>
+        {% querystring page=page.previous_page_number as prev_url %}
+        <a
+          href="{{ request.path }}{{ prev_url }}"
+          hx-get="{{ request.path }}{{ prev_url }}"
+          aria-label="{% translate "Previous page" %}"
+          class="join-item btn btn-outline"
+        >‹</a>
       {% else %}
-        <span class="btn btn-ghost btn-disabled join-item" aria-hidden="true">«</span>
-        <span class="btn btn-ghost btn-disabled join-item" aria-hidden="true">‹</span>
+        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">«</span>
+        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">‹</span>
       {% endif %}
-
-      {% for num in page.paginator.page_range %}
-        {% if num == page.number %}
-          <span class="btn btn-active join-item" aria-current="page">{{ num }}</span>
-        {% elif num >= page.number|add:"-3" and num <= page.number|add:"3" %}
-          <a href="{{ request.path }}{% querystring page=num %}"
-             class="btn btn-ghost join-item">{{ num }}</a>
-        {% endif %}
-      {% endfor %}
-
       {% if page.has_next %}
-        <a href="{{ request.path }}{% querystring page=page.next_page_number %}"
-           class="btn btn-ghost join-item"
-           aria-label="{% translate "Next page" %}">›</a>
-        <a href="{{ request.path }}{% querystring page=page.paginator.num_pages %}"
-           class="btn btn-ghost join-item"
-           aria-label="{% translate "Last page" %}">»</a>
+        {% querystring page=page.next_page_number as next_url %}
+        <a
+          href="{{ request.path }}{{ next_url }}"
+          hx-get="{{ request.path }}{{ next_url }}"
+          aria-label="{% translate "Next page" %}"
+          class="join-item btn btn-outline"
+        >›</a>
+        {% querystring page=page.paginator.num_pages as last_url %}
+        <a
+          href="{{ request.path }}{{ last_url }}"
+          hx-get="{{ request.path }}{{ last_url }}"
+          aria-label="{% translate "Last page" %}"
+          class="join-item btn btn-outline"
+        >»</a>
       {% else %}
-        <span class="btn btn-ghost btn-disabled join-item" aria-hidden="true">›</span>
-        <span class="btn btn-ghost btn-disabled join-item" aria-hidden="true">»</span>
+        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">›</span>
+        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">»</span>
       {% endif %}
     </div>
   </nav>
@@ -173,7 +174,7 @@ Use it in the page template the same way as `paginate.html`:
 
 {% block content %}
   {% partialdef pagination inline %}
-    {% fragment "paginate_numbered.html" %}
+    {% fragment "paginate_prevnext.html" %}
       {% for item in page.object_list %}
         <p>{{ item.name }}</p>
       {% endfor %}
@@ -182,11 +183,8 @@ Use it in the page template the same way as `paginate.html`:
 {% endblock content %}
 ```
 
-The ±3 window in `paginate_numbered.html` keeps the page range short on large datasets.
-Adjust `add:"-3"` / `add:"3"` to taste.
-
-For very large unfiltered tables where `COUNT(*)` is slow, see
-[FastCountPaginator](#fastcountpaginator--estimated-counts-for-numbered-pagination).
+This avoids `COUNT(*)` when combined with `ZeroCountPaginator` — see
+[ZeroCountPaginator](#zerocountpaginator--skip-count-for-previousnext-pagination).
 
 ---
 

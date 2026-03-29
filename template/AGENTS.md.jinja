@@ -96,6 +96,12 @@ See `docs/django-forms.md`.
 
 **Documentation**: When updating a `docs/` file, keep its `## Contents` table of contents in sync. If a doc lacks a ToC and has 8+ `##` sections or 250+ lines, add one below the intro paragraph.
 
+## General Rules
+
+STOP and ask before applying a fix. Do not assume the root cause — state your hypothesis
+first and wait for confirmation. If the user corrects you, re-read the relevant code/docs
+before responding.
+
 ## Working Conventions
 
 ### Required reading before implementation
@@ -225,6 +231,11 @@ The following MCP servers are configured in `.mcp.json` (gitignored, generated a
 Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively.
 
 See `docs/mcp.md` for details.
+
+## Django
+
+When working with Django migrations: use `reverse_code` (not `reverse_func`), never add
+`--run-syncdb`, and confirm the makemigrations command with the user before running it.
 
 ## Deployment & Operations
 

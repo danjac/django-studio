@@ -1,5 +1,11 @@
 This is a Copier template to create a new Django project.
 
+## General Rules
+
+STOP and ask before applying a fix. Do not assume the root cause — state your hypothesis
+first and wait for confirmation. If the user corrects you, re-read the relevant code/docs
+before responding.
+
 ## Testing
 
 Create a new project in `/tmp` using the Copier template:

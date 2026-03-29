@@ -181,7 +181,7 @@ services still expect the old ones, causing immediate 500 errors.
 
 **PostgreSQL:**
 ```bash
-just --yes rkube exec postgres-0 -- su postgres -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
+kubectl --kubeconfig "$(just --evaluate kubeconfig)" exec postgres-0 -- su postgres -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
 ```
 
 **Verify** the output contains `ALTER ROLE`. If it does not (empty output, error, or
@@ -199,7 +199,7 @@ If **manual**, stop and tell the user to re-run `/dj-rotate-secrets` when ready.
 
 **Redis:**
 ```bash
-just --yes rkube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
+kubectl --kubeconfig "$(just --evaluate kubeconfig)" exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
 ```
 
 **Verify** the output contains `OK`. If it does not, **stop immediately**. Tell the

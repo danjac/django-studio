@@ -60,6 +60,10 @@ In the template, include `paginate.html` via `{% fragment %}` inside a
 next/last controls around `{{ content }}`. On an HTMX request only the `pagination`
 partial is returned.
 
+Button classes follow the [DaisyUI pagination conventions](https://daisyui.com/components/pagination/):
+use `join-item btn` for all buttons, `btn-active` for the current page, and `btn-disabled`
+for inactive controls. Do not add `btn-outline` — it is not used in this project's pagination.
+
 To override the page size, pass a `Paginator` instance directly:
 
 ```python
@@ -129,18 +133,18 @@ def item_list(request: HttpRequest) -> TemplateResponse:
           href="{{ request.path }}{{ first_url }}"
           hx-get="{{ request.path }}{{ first_url }}"
           aria-label="{% translate "First page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >«</a>
         {% querystring page=page.previous_page_number as prev_url %}
         <a
           href="{{ request.path }}{{ prev_url }}"
           hx-get="{{ request.path }}{{ prev_url }}"
           aria-label="{% translate "Previous page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >‹</a>
       {% else %}
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">«</span>
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">‹</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">«</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">‹</span>
       {% endif %}
       {% if page.has_next %}
         {% querystring page=page.next_page_number as next_url %}
@@ -148,18 +152,18 @@ def item_list(request: HttpRequest) -> TemplateResponse:
           href="{{ request.path }}{{ next_url }}"
           hx-get="{{ request.path }}{{ next_url }}"
           aria-label="{% translate "Next page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >›</a>
         {% querystring page=page.paginator.num_pages as last_url %}
         <a
           href="{{ request.path }}{{ last_url }}"
           hx-get="{{ request.path }}{{ last_url }}"
           aria-label="{% translate "Last page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >»</a>
       {% else %}
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">›</span>
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">»</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">›</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">»</span>
       {% endif %}
     </div>
   </nav>

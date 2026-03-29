@@ -249,6 +249,9 @@ issues together unless the user explicitly asks.
 
 When asked to "fix all open issues":
 
+Work on them ONE AT A TIME sequentially — do not use parallel agents or worktrees.
+For each: create branch, fix, test, open PR, then move to the next issue.
+
 1. Go through each open issue and check whether it is already addressed in
    `main`.
 2. If already fixed — tell the user and ask whether to close it.

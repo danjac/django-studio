@@ -255,6 +255,12 @@ When rotating secrets or credentials, ALWAYS verify the change worked before pro
 Never assume `ALTER ROLE`, password changes, or credential updates succeeded — run a
 connection test. Update ALL references (`DATABASE_URL`, `REDIS_URL`, etc.) atomically.
 
+## GitHub Issues
+
+When asked to "fix all open issues": work on them ONE AT A TIME sequentially — do not use
+parallel agents or worktrees. For each: create branch, fix, test, open PR, then move to
+the next issue.
+
 ## Template Feedback
 
 Generated from [django-studio](https://github.com/danjac/django-studio). To report a bug or improvement: `/dj-feedback`

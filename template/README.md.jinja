@@ -82,7 +82,7 @@ Available in Claude Code and OpenCode as `/dj-<command>`:
 
 | Command         | Summary                                                        |
 | --------------- | -------------------------------------------------------------- |
-| `/dj-translate` | Extract strings, translate via Claude, compile `.mo` catalogue |
+| `/dj-localize` | Add localization formats, extract strings, translate using agent, compile `.mo` catalogue |
 
 **Audits**
 

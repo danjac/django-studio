@@ -143,6 +143,34 @@ Storage is S3-compatible, so the same library works without modification.
 `django-storages[s3]` is included in `pyproject.toml`. It brings in `boto3` as a transitive
 dependency. No manual `uv add` is needed.
 
+## Unique Filenames
+
+Django's default `upload_to="path/"` stores files at their original name, which causes
+collisions when two users upload files with the same name — or a user double-submits.
+Collisions also poison the sorl-thumbnail cache: deleting one duplicate wipes the shared
+cache entry and breaks thumbnails for the surviving record.
+
+Use a callable `upload_to` that generates a UUID-based filename on every upload:
+
+```python
+import pathlib
+import uuid
+
+
+def upload_handler(instance: object, filename: str) -> str:
+    ext = pathlib.Path(filename).suffix.lower()
+    return f"uploads/{uuid.uuid4().hex}{ext}"
+```
+
+Pass it as `upload_to` on any `FileField` or `ImageField`:
+
+```python
+image = models.ImageField(upload_to=upload_handler)
+```
+
+This guarantees unique filenames per upload, prevents storage collisions, and ensures
+thumbnail caches are never shared between records.
+
 ## sorl-thumbnail
 
 For image resizing, thumbnail generation, and upload form widgets, see `docs/images.md`.

@@ -203,6 +203,15 @@ Then fetch the kubeconfig:
 just get-kubeconfig
 ```
 
+**Verify** the cluster is reachable before continuing:
+```bash
+just --yes rkube get nodes
+```
+
+If this fails, stop and tell the user:
+> Cluster is not reachable. Check that the server is up and `just get-kubeconfig` succeeded,
+> then re-run `/dj-launch`.
+
 ---
 
 ## Step 2 — Cloudflare DNS and SSL
@@ -622,6 +631,20 @@ just helm site
 ```
 
 Wait for the command to complete. If it fails, show the error and help the user diagnose it.
+
+**Verify** core pods are Running before continuing:
+```bash
+just --yes rkube get pods
+```
+
+Check that `postgres-0`, `redis-*`, and ingress pods are Running. If any are not, stop and diagnose:
+```bash
+just --yes rkube describe pod <failing-pod>
+just --yes rkube logs <failing-pod>
+```
+
+Do not proceed to Step 6c until postgres and redis are Running — the app deploy will fail
+if the database or cache is not ready.
 
 ### 6c. Trigger app deploy via GitHub Actions
 

@@ -6,6 +6,10 @@ STOP and ask before applying a fix. Do not assume the root cause — state your 
 first and wait for confirmation. If the user corrects you, re-read the relevant code/docs
 before responding.
 
+Do not make excessive or environment-specific changes beyond what was requested. If the
+user asks for a targeted edit, make only that edit. Ask before adding dev/staging/production
+variants.
+
 ## Testing
 
 Create a new project in `/tmp` using the Copier template:

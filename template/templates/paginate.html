@@ -24,18 +24,18 @@
           href="{{ request.path }}{{ first_url }}"
           hx-get="{{ request.path }}{{ first_url }}"
           aria-label="{% translate "First page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >«</a>
         {% querystring page=page.previous_page_number as prev_url %}
         <a
           href="{{ request.path }}{{ prev_url }}"
           hx-get="{{ request.path }}{{ prev_url }}"
           aria-label="{% translate "Previous page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >‹</a>
       {% else %}
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">«</span>
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">‹</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">«</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">‹</span>
       {% endif %}
 
       {% for num in page.paginator.page_range %}
@@ -46,7 +46,7 @@
           <a
             href="{{ request.path }}{{ page_url }}"
             hx-get="{{ request.path }}{{ page_url }}"
-            class="join-item btn btn-outline"
+            class="join-item btn"
           >{{ num }}</a>
         {% endif %}
       {% endfor %}
@@ -57,18 +57,18 @@
           href="{{ request.path }}{{ next_url }}"
           hx-get="{{ request.path }}{{ next_url }}"
           aria-label="{% translate "Next page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >›</a>
         {% querystring page=page.paginator.num_pages as last_url %}
         <a
           href="{{ request.path }}{{ last_url }}"
           hx-get="{{ request.path }}{{ last_url }}"
           aria-label="{% translate "Last page" %}"
-          class="join-item btn btn-outline"
+          class="join-item btn"
         >»</a>
       {% else %}
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">›</span>
-        <span class="join-item btn btn-outline btn-disabled" aria-hidden="true">»</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">›</span>
+        <span class="join-item btn btn-disabled" aria-hidden="true">»</span>
       {% endif %}
     </div>
   </nav>

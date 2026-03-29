@@ -6,6 +6,7 @@
     {% if htmx %}
       id="{{ target }}"
       hx-{{ method }}="{{ action }}"
+      hx-trigger="submit once"
       hx-disabled-elt="this"
       hx-swap="{{ hx_swap|default:'outerHTML' }}"
       hx-target="{{ hx_target|default:'this' }}"

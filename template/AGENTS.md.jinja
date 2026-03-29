@@ -237,6 +237,10 @@ See `docs/mcp.md` for details.
 When working with Django migrations: use `reverse_code` (not `reverse_func`), never add
 `--run-syncdb`, and confirm the makemigrations command with the user before running it.
 
+For i18n/translation work, READ `docs/localization.md` before making any changes. Follow
+the exact syntax patterns documented there. Do not claim templates are correct without
+verifying against the docs.
+
 ## Deployment & Operations
 
 When rotating secrets or credentials, ALWAYS verify the change worked before proceeding.

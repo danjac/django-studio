@@ -158,8 +158,10 @@ Use a callable `upload_to` that generates a UUID-based filename on every upload.
 import pathlib
 import uuid
 
+from django.db.models import Model
 
-def upload_handler(instance: object, filename: str) -> str:
+
+def upload_handler(instance: Model, filename: str) -> str:
     ext = pathlib.Path(filename).suffix.lower()
     return f"uploads/{uuid.uuid4().hex}{ext}"
 

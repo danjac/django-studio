@@ -1,4 +1,4 @@
-**/dj-translate [locale]**
+**/dj-localize [locale]**
 
 Extracts translatable strings, translates them with Claude, and compiles the
 message catalogue.
@@ -15,7 +15,7 @@ message catalogue.
 Requires `gettext` binaries (`xgettext`, `msgfmt`).
 
 Examples:
-  /dj-translate           (audit all source, then update all languages)
-  /dj-translate fr
-  /dj-translate de
-  /dj-translate fr_CA
+  /dj-localize           (audit all source, then update all languages)
+  /dj-localize fr
+  /dj-localize de
+  /dj-localize fr_CA

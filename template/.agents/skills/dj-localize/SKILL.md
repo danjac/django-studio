@@ -1,5 +1,5 @@
 ---
-description: Extract strings, translate via agent, compile .mo catalogue
+description: Add localization formats, extract strings, translate using agent, compile .mo catalogue
 ---
 
 Extract all translatable strings, translate them using the agent, and compile the
@@ -29,7 +29,7 @@ If `gettext` is not available, stop and tell the user to install it first.
 
 ## No-locale mode (no argument given)
 
-When the user runs `/dj-translate` with no locale, perform the audit + bulk
+When the user runs `/dj-localize` with no locale, perform the audit + bulk
 update flow below instead of the single-locale steps.
 
 ### A — Audit source for untranslated strings

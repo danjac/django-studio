@@ -213,9 +213,9 @@ formats.localize(value)                         # auto-detects type
 
 ---
 
-## dj-translate skill
+## dj-localize skill
 
-Use `/dj-translate <locale>` to extract, translate, and compile a message catalogue in
+Use `/dj-localize <locale>` to extract, translate, and compile a message catalogue in
 one step. The skill handles `makemessages`, translates empty/fuzzy entries via Claude,
 and runs `compilemessages`. See `docs/localization.md` (this file) for background on
 the full i18n workflow.

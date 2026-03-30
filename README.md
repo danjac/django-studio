@@ -118,7 +118,6 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-create-view`      | Add a view, template, and URL                                          |
 | `/dj-create-task`      | Add a `django-tasks-db` background task with correct async patterns    |
 | `/dj-create-command`   | Add a management command with tests                                    |
-| `/dj-create-cron`      | Schedule a management command as a Kubernetes cron job                 |
 | `/dj-create-model`     | Design and write a Django model with factory, fixture, and model tests |
 | `/dj-create-migration` | Create a data migration (Python or SQL)                                |
 | `/dj-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
@@ -154,6 +153,7 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
 | `/dj-db-backup`            | Trigger an immediate database backup without waiting for the daily cron        |
 | `/dj-db-restore`           | Guided production database restore from Object Storage backup                  |
+| `/dj-deploy-cron`          | Schedule a management command as a Kubernetes cron job                         |
 
 ## MCP Servers
 

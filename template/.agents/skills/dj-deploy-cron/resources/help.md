@@ -1,4 +1,4 @@
-**/dj-create-cron <app_name> <command_name>**
+**/dj-deploy-cron <app_name> <command_name>**
 
 Adds a Kubernetes cron job to `helm/site/values.yaml` for an existing management
 command.
@@ -13,4 +13,4 @@ the image and deploys the Helm chart atomically. Reminds you to run
 `just gh-set-secrets` if GitHub Actions secrets haven't been configured.
 
 Example:
-  /dj-create-cron orders process_pending_refunds
+  /dj-deploy-cron orders process_pending_refunds

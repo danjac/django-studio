@@ -172,6 +172,6 @@ just check-all
 Once tests pass, ask:
 
 > `<command_name>` is ready. Would you like to schedule it as a Kubernetes cron job?
-> (`/dj-create-cron <app_name> <command_name>`)
+> (`/dj-deploy-cron <app_name> <command_name>`)
 
-Wait for the user's answer. Do not run `dj-create-cron` automatically.
+Wait for the user's answer. Do not run `dj-deploy-cron` automatically.

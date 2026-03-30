@@ -18,17 +18,10 @@ This project is best described as "pre-alpha". While based on working projects i
 
 ## Audience
 
-This template is built for **solo developers based in the EU** building side projects
+This template is built for **solo developers** building side projects
 and small SaaS applications. It encodes one person's proven defaults (stack choices,
 hosting provider, deployment topology) rather than aiming to be a general-purpose
 starter kit.
-
-The EU focus is deliberate: hosting is on [Hetzner Cloud](https://hetzner.com)
-(Germany-based, GDPR-compliant), DNS/CDN via [Cloudflare](https://cloudflare.com),
-GDPR compliance guidance is built into the docs, and i18n/l10n patterns assume a
-European-first audience. If you are based outside the EU, the template will still
-work but the hosting defaults and compliance tooling are optimised for EU data
-residency requirements.
 
 This project is intended for experienced developers who are comfortable with the stack choices and general web development concepts. It is not a tutorial or learning resource for beginners, but rather a practical tool to jumpstart new projects with a solid foundation.
 
@@ -119,24 +112,24 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 **Generators**
 
-| Command              | Summary                                                                |
-| -------------------- | ---------------------------------------------------------------------- |
-| `/dj-create-app`     | Create a Django app (apps.py, models, views, urls, admin, tests)       |
-| `/dj-create-view`    | Add a view, template, and URL                                          |
-| `/dj-create-task`    | Add a `django-tasks-db` background task with correct async patterns    |
-| `/dj-create-command` | Add a management command with tests                                    |
-| `/dj-create-cron`    | Schedule a management command as a Kubernetes cron job                 |
+| Command                | Summary                                                                |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `/dj-create-app`       | Create a Django app (apps.py, models, views, urls, admin, tests)       |
+| `/dj-create-view`      | Add a view, template, and URL                                          |
+| `/dj-create-task`      | Add a `django-tasks-db` background task with correct async patterns    |
+| `/dj-create-command`   | Add a management command with tests                                    |
+| `/dj-create-cron`      | Schedule a management command as a Kubernetes cron job                 |
 | `/dj-create-model`     | Design and write a Django model with factory, fixture, and model tests |
 | `/dj-create-migration` | Create a data migration (Python or SQL)                                |
 | `/dj-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
-| `/dj-create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
-| `/dj-create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
-| `/dj-create-filter`  | Add a template filter with correct escaping flags                      |
+| `/dj-create-e2e`       | Write Playwright E2E test(s) for a described user interaction          |
+| `/dj-create-tag`       | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
+| `/dj-create-filter`    | Add a template filter with correct escaping flags                      |
 
 **Localisation**
 
-| Command         | Summary                                                         |
-| --------------- | --------------------------------------------------------------- |
+| Command        | Summary                                                                                   |
+| -------------- | ----------------------------------------------------------------------------------------- |
 | `/dj-localize` | Add localization formats, extract strings, translate using agent, compile `.mo` catalogue |
 
 **Audits**
@@ -166,11 +159,11 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 Generated projects include project-local [MCP servers](https://modelcontextprotocol.io) configured in `.mcp.json` (gitignored, generated at project creation). These give AI assistants direct access to your local development environment.
 
-| Server                                  | Purpose                                                               |
-| --------------------------------------- | --------------------------------------------------------------------- |
-| `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection                         |
-| `@playwright/mcp`                       | Browser automation and E2E test debugging                             |
-| `mcp-django`                            | Django shell — ORM queries, model introspection, arbitrary Python     |
+| Server                                  | Purpose                                                           |
+| --------------------------------------- | ----------------------------------------------------------------- |
+| `@modelcontextprotocol/server-postgres` | Direct database queries and schema inspection                     |
+| `@playwright/mcp`                       | Browser automation and E2E test debugging                         |
+| `mcp-django`                            | Django shell — ORM queries, model introspection, arbitrary Python |
 
 See `docs/mcp.md` in the generated project for usage and security notes.
 

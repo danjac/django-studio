@@ -5,6 +5,7 @@ Composite patterns combining Alpine.js, HTMX, Tailwind, and Django templates.
 ## Contents
 
 - [Dropdown menu](#dropdown-menu)
+  - [Accessible keyboard navigation](#accessible-keyboard-navigation)
 - [Photo Lightbox](#photo-lightbox)
 - [Drag and Drop](#drag-and-drop)
 - [Multiple File Upload](#multiple-file-upload)
@@ -43,6 +44,21 @@ Register it once in your base template's `{% block scripts %}` block:
       },
       close() {
         this.open = false;
+      },
+      navigateMenu(e) {
+        if (!this.open) return;
+        const items = Array.from(
+          this.$el.querySelectorAll('[role="menuitem"] :is(a, button)'),
+        );
+        if (!items.length) return;
+        const idx = items.indexOf(document.activeElement);
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          items[(idx + 1) % items.length].focus();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          items[(idx - 1 + items.length) % items.length].focus();
+        }
       },
     }));
   });
@@ -131,6 +147,51 @@ HTMX does not intercept these full-page POSTs.
   </ul>
 </div>
 ```
+
+### Accessible keyboard navigation
+
+For `role="menu"` dropdowns, place `@keydown="navigateMenu($event)"` on the **outer
+wrapper `<div>`**, not on the `<ul>`. After the toggle button is clicked, focus stays on
+the button — which is a sibling of the `<ul>`, not a child — so keydown events on the
+button do not bubble into the `<ul>`. Placing the handler on the shared ancestor catches
+events from both the button and any focused menu item.
+
+The `navigateMenu` method is already included in the `dropdown()` component above. Use
+it like this:
+
+```html
+<div
+  class="relative"
+  x-data="dropdown()"
+  @click.outside="close()"
+  @keyup.escape.window="close()"
+  @keydown="navigateMenu($event)"
+>
+  <button
+    type="button"
+    class="btn btn-ghost"
+    :aria-expanded="open.toString()"
+    @click="toggle()"
+  >
+    Menu
+  </button>
+
+  <ul
+    class="absolute right-0 z-20 p-2 mt-1 w-48 border shadow-xl menu bg-base-100 rounded-box border-base-300"
+    x-cloak
+    x-show="open"
+    x-transition.scale.origin.top
+    role="menu"
+  >
+    <li role="menuitem"><a href="#">Item one</a></li>
+    <li role="menuitem"><a href="#">Item two</a></li>
+  </ul>
+</div>
+```
+
+Each focusable element inside a menu item must be a direct `<a>` or `<button>` child of
+the `<li role="menuitem">` element — `navigateMenu` selects
+`[role="menuitem"] :is(a, button)` to find them.
 
 ---
 

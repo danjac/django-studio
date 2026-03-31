@@ -245,7 +245,7 @@ empty lists rather than guessing.
 ### Step 5 — Update the factory
 
 Edit `<package_name>/<app_name>/tests/factories.py`. Use `factory.Faker` matched
-to the field type — see `resources/factory-reference.md` for the full mapping
+to the field type — see `references/factory-reference.md` for the full mapping
 table and M2M pattern.
 
 Full factory example:

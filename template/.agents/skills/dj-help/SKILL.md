@@ -5,7 +5,7 @@ description: List all slash commands or show help for a specific command
 Run the lookup script, passing through any arguments:
 
 ```bash
-.agents/skills/dj-help/bin/lookup.py $ARGUMENTS
+.agents/skills/dj-help/scripts/lookup.py $ARGUMENTS
 ```
 
 Print the output verbatim to the user.

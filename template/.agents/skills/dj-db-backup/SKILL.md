@@ -41,7 +41,7 @@ If no, stop.
 ## Step 3 — Run the backup
 
 ```bash
-.agents/skills/dj-db-backup/bin/db-backup.sh
+.agents/skills/dj-db-backup/scripts/db-backup.sh
 ```
 
 This creates a one-off Kubernetes job from the `postgres-backup` CronJob, waits for it

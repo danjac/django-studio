@@ -10,6 +10,11 @@ Restart Claude Code after running `just install` to activate the servers.
 
 ---
 
+## Contents
+
+- [Servers](#servers)
+- [Troubleshooting](#troubleshooting)
+
 ## Servers
 
 ### PostgreSQL

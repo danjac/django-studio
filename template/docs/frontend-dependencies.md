@@ -12,6 +12,13 @@ These can be placed in `static/vendor/` directly — just copy the file manually
 and reference it from templates. There is no need to add them to `vendors.json`
 since `sync_vendors` would have nothing to check.
 
+## Contents
+
+- [vendors.json format](#vendorsjson-format)
+- [Adding a new dependency](#adding-a-new-dependency)
+- [Checking for and downloading updates](#checking-for-and-downloading-updates)
+- [What goes where](#what-goes-where)
+
 ## vendors.json format
 
 Each key is the package name. Two layouts are supported:

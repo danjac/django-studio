@@ -3,6 +3,12 @@
 This project uses [sorl-thumbnail](https://sorl-thumbnail.readthedocs.io/) for image
 resizing and thumbnail generation. See `docs/packages.md` for installation notes.
 
+## Contents
+
+- [Thumbnail widget with instant preview](#thumbnail-widget-with-instant-preview)
+- [Thumbnail cache cleanup](#thumbnail-cache-cleanup)
+- [sorl-thumbnail and S3](#sorl-thumbnail-and-s3)
+
 ## Thumbnail widget with instant preview
 
 For upload form widgets with inline preview, see `docs/django-forms.md#thumbnail-widget`.

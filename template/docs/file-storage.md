@@ -4,6 +4,17 @@ This project uses **Hetzner Object Storage** for user-uploaded media files in pr
 Storage is always included in the project scaffold — activate it by setting `USE_S3_STORAGE=true`
 and providing the Hetzner bucket credentials.
 
+## Contents
+
+- [Overview](#overview)
+- [Local Development](#local-development)
+- [Provisioning the Bucket (Terraform)](#provisioning-the-bucket-terraform)
+- [Production Configuration](#production-configuration)
+- [Settings Reference](#settings-reference)
+- [Dependency](#dependency)
+- [Unique Filenames](#unique-filenames)
+- [sorl-thumbnail](#sorl-thumbnail)
+
 ## Overview
 
 | Environment | Backend | How media is served |

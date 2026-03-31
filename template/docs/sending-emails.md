@@ -2,6 +2,15 @@
 
 This project uses Mailgun for transactional email in production.
 
+## Contents
+
+- [Configuration](#configuration)
+- [Environment Variables](#environment-variables)
+- [Development](#development)
+- [Anymail](#anymail)
+- [Email Templates](#email-templates)
+- [Best Practices](#best-practices)
+
 ## Configuration
 
 ```python

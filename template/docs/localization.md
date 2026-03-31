@@ -6,6 +6,15 @@ models and forms.
 
 ---
 
+## Contents
+
+- [Workflow](#workflow)
+- [Language switcher](#language-switcher)
+- [Marking strings for translation](#marking-strings-for-translation)
+- [Models and forms](#models-and-forms)
+- [Dates, numbers, and locale-aware formatting](#dates-numbers-and-locale-aware-formatting)
+- [dj-localize skill](#dj-localize-skill)
+
 ## Workflow
 
 ### Extracting strings

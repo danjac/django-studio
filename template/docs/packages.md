@@ -9,6 +9,11 @@ speculatively.**
 Check this list before reaching for an unfamiliar package; the preferred choice
 per use-case is already decided.
 
+## Contents
+
+- [Choosing a package not on this list](#choosing-a-package-not-on-this-list)
+- [Notes](#notes)
+
 ## Choosing a package not on this list
 
 If your need isn't covered above, research before recommending. Check in order:

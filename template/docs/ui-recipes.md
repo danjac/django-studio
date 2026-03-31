@@ -5,6 +5,8 @@ Composite patterns combining Alpine.js, HTMX, Tailwind, and Django templates.
 ## Contents
 
 - [Dropdown menu](#dropdown-menu)
+  - [Basic usage](#basic-usage)
+  - [Form actions inside a dropdown](#form-actions-inside-a-dropdown)
   - [Accessible keyboard navigation](#accessible-keyboard-navigation)
 - [Photo Lightbox](#photo-lightbox)
 - [Drag and Drop](#drag-and-drop)

@@ -11,6 +11,15 @@ User-uploaded files (media) are separate — see `docs/file-storage.md`.
 
 ---
 
+## Contents
+
+- [Architecture](#architecture)
+- [How Content Hashing Makes It Work](#how-content-hashing-makes-it-work)
+- [Settings](#settings)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Cloudflare Caching](#cloudflare-caching)
+
 ## Architecture
 
 ```

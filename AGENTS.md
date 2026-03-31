@@ -97,7 +97,7 @@ Before adding or modifying any code under `template/`, read the generated projec
 
 These docs describe the patterns, types, and conventions the generated project uses. Code that ignores them will be wrong.
 
-**Naming convention:** all files under `template/docs/` and `template/.agents/skills/*/resources/` use lower-kebab-case (e.g. `django-views.md`, `help.md`). New docs and resource files must follow the same pattern.
+**Naming convention:** all files under `template/docs/` and `template/.agents/skills/*/references/` use lower-kebab-case (e.g. `django-views.md`, `help.md`). New docs and reference files must follow the same pattern.
 
 After any change to `template/`, regenerate the project and verify all checks pass before committing:
 
@@ -128,11 +128,11 @@ The template uses [DaisyUI](https://daisyui.com/components/) for component styli
 
 Each slash command is a standalone skill at `template/.agents/skills/<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook scans `.agents/skills/*/SKILL.md` and writes one stub per skill at `.claude/commands/<name>.md` — no list to maintain.
 
-Supporting files (Markdown docs, prompt templates, JSON/text reference data) live in a `resources/` subdirectory: `template/.agents/skills/<command>/resources/`.
+Supporting files (Markdown docs, prompt templates, JSON/text reference data) live in a `references/` subdirectory: `template/.agents/skills/<command>/references/`.
 
-Python helper scripts live in a `bin/` subdirectory: `template/.agents/skills/<command>/bin/`.
+Python helper scripts live in a `scripts/` subdirectory: `template/.agents/skills/<command>/scripts/`.
 
-Files shared across multiple skills live in `template/.agents/skills/resources/` (docs) or `template/.agents/skills/bin/` (scripts) and are referenced as `.agents/skills/resources/<file>` or `.agents/skills/bin/<file>` from SKILL.md prose.
+Files shared across multiple skills live in `template/.agents/skills/scripts/` (scripts) and are referenced as `.agents/skills/scripts/<file>` from SKILL.md prose.
 
 ### Writing a new skill
 
@@ -146,7 +146,7 @@ description: One-sentence summary shown in opencode.json and the UI (≤80 chars
 <workflow prose — steps, code blocks, decisions>
 ```
 
-**resources/help.md** — every skill must have one. Content:
+**references/help.md** — every skill must have one. Content:
 
 ```markdown
 **/<command> [args]**
@@ -155,16 +155,16 @@ description: One-sentence summary shown in opencode.json and the UI (≤80 chars
 Include: usage line, arguments, what it does, at least one example.
 ```
 
-All resource files use lower-kebab-case (e.g. `help.md`, `factory-reference.md`).
+All reference files use lower-kebab-case (e.g. `help.md`, `factory-reference.md`).
 
 **Checklist when adding a command:**
 
 1. Create `template/.agents/skills/<command>/SKILL.md` with frontmatter.
-2. Create `template/.agents/skills/<command>/resources/help.md` with usage docs.
-3. Add Markdown/JSON/text reference files in `resources/` if the skill needs them
-   (e.g. `resources/plural-forms.md`, `resources/issue-template.md`).
-   Add Python helper scripts in `bin/` (e.g. `bin/my-script.py`).
-   Reference them from `SKILL.md` as `resources/<file>` or `bin/<file>`.
+2. Create `template/.agents/skills/<command>/references/help.md` with usage docs.
+3. Add Markdown/JSON/text reference files in `references/` if the skill needs them
+   (e.g. `references/plural-forms.md`, `references/issue-template.md`).
+   Add Python helper scripts in `scripts/` (e.g. `scripts/my-script.py`).
+   Reference them from `SKILL.md` as `references/<file>` or `scripts/<file>`.
 3. The post-gen hook auto-discovers the skill (no list to update) and generates
    `opencode.json` from the frontmatter `description` field.
 4. Update relevant docs:
@@ -183,22 +183,22 @@ Skill files live in `template/.agents/` and are copied verbatim by Copier into t
 
 ### Writing Python helper scripts for skills
 
-Scripts live in `template/.agents/skills/bin/` (shared) or
-`template/.agents/skills/<command>/bin/` (command-specific).
+Scripts live in `template/.agents/skills/scripts/` (shared) or
+`template/.agents/skills/<command>/scripts/` (command-specific).
 
 Scripts must have a `#!/usr/bin/env -S uv run python` shebang and be `chmod +x`.
 Invoke them directly — no `uv run python` prefix needed:
 
 ```bash
 # In SKILL.md code blocks:
-.agents/skills/bin/my-script.py
+.agents/skills/scripts/my-script.py
 ```
 
 This ensures the script runs in the project's virtual environment via uv.
 
 **Ruff header for standalone scripts** — scripts with a shebang don't need `INP001`
 (ruff recognises them as scripts, not package files). Only suppress what's actually used.
-See `template/.agents/skills/bin/random-slug.py` as the canonical example:
+See `template/.agents/skills/scripts/random-slug.py` as the canonical example:
 
 ```python
 # ruff: noqa: T201

@@ -56,7 +56,7 @@ Repeat until no conflict markers remain.
 Diff each backed-up file against its current counterpart in the project root:
 
 ```bash
-BACKUP_DIR=$(.agents/skills/dj-sync/bin/get-backup-dir.py)
+BACKUP_DIR=$(.agents/skills/dj-sync/scripts/get-backup-dir.py)
 find "$BACKUP_DIR" -type f | while read -r backup_file; do
     rel="${backup_file#"$BACKUP_DIR/"}"
     diff "$backup_file" "$rel"

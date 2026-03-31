@@ -35,7 +35,7 @@ Stop.
 Run a one-off pod to list backups from Object Storage:
 
 ```bash
-.agents/skills/dj-db-restore/bin/list-backups.sh
+.agents/skills/dj-db-restore/scripts/list-backups.sh
 ```
 
 If the output is empty, tell the user no backups are available yet and stop.
@@ -69,7 +69,7 @@ If no, stop.
 ## Step 4 — Restore the backup
 
 ```bash
-.agents/skills/dj-db-restore/bin/db-restore.sh <selected-filename>
+.agents/skills/dj-db-restore/scripts/db-restore.sh <selected-filename>
 ```
 
 The script handles the full restore atomically:

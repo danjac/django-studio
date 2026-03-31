@@ -25,6 +25,6 @@ bug or improvement belongs in the template, not this project.
    gh issue create --repo danjac/django-studio --title "<title>" --body "<description>"
    ```
 
-   See `resources/issue-template.md` for the expected body structure.
+   See `references/issue-template.md` for the expected body structure.
 
 5. Print the new issue URL.

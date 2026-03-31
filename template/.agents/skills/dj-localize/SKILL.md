@@ -210,7 +210,7 @@ Read `locale/<locale>/LC_MESSAGES/django.po`.
 
 **Check the `Plural-Forms` header.** If it is still the default
 `nplurals=INTEGER; plural=EXPRESSION;` placeholder, replace it with the
-correct rule for `<locale>`. See `resources/plural-forms.md` for the full
+correct rule for `<locale>`. See `references/plural-forms.md` for the full
 reference table. For any locale not listed there, use the GNU gettext manual.
 
 **Translate every entry where `msgstr` is empty** (and any marked `#, fuzzy`).

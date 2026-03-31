@@ -498,7 +498,7 @@ was not configured in Step 2e, skip.
 **Admin URL** — generate a random human-readable slug if the user skips:
 
 ```bash
-slug=$(.agents/skills/bin/random-slug.py)
+slug=$(.agents/skills/scripts/random-slug.py)
 default_admin_url="${slug}/"
 ```
 

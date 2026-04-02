@@ -58,7 +58,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Machine learning                                          | [`scikit-learn`](https://scikit-learn.org/) | `uv add scikit-learn`     |
 | Rich text editor (admin + forms)                          | [`django-prose-editor`](https://django-prose-editor.readthedocs.io/) | `uv add "django-prose-editor[sanitize]"` |
 | HTML sanitization                                         | [`nh3`](https://pypi.org/project/nh3/) | `uv add nh3`              |
-| Complex authorization (code-defined rules)                | [`django-rules`](https://pypi.org/project/django-rules/) | `uv add django-rules`     |
+| Complex authorization (code-defined rules)                | [`rules`](https://pypi.org/project/rules/) | `uv add rules`     |
 | Complex authorization (runtime per-object DB permissions) | [`django-guardian`](https://django-guardian.readthedocs.io/) | `uv add django-guardian`  |
 
 ## Notes
@@ -97,7 +97,7 @@ State your findings explicitly when suggesting a package — don't just name it.
   inserting into templates.
 - **nltk**: download corpora at startup or in a management command; do not
   download inside request handlers.
-- **django-rules**: predicate-based authorization. Define composable rule
+- **rules**: predicate-based authorization. Define composable rule
   functions (`is_owner`, `is_member`, etc.) combined with `&`, `|`, `~`.
   Integrates with Django's standard `has_perm`/`has_object_perm` via a custom
   backend. No DB overhead. Best fit when authorization logic is expressed in

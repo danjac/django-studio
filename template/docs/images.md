@@ -5,9 +5,37 @@ resizing and thumbnail generation. See `docs/packages.md` for installation notes
 
 ## Contents
 
+- [Rendering thumbnails in templates](#rendering-thumbnails-in-templates)
 - [Thumbnail widget with instant preview](#thumbnail-widget-with-instant-preview)
 - [Thumbnail cache cleanup](#thumbnail-cache-cleanup)
 - [sorl-thumbnail and S3](#sorl-thumbnail-and-s3)
+
+## Rendering thumbnails in templates
+
+Use the `{% thumbnail %}` tag to resize an image and render it with correct dimensions:
+
+```html
+{% load thumbnail %}
+
+{% thumbnail photo.image "300x200" crop="center" as thumb %}
+  <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="...">
+{% endthumbnail %}
+```
+
+- The geometry string (`"300x200"`) sets the bounding box. sorl-thumbnail preserves aspect
+  ratio by default — use `crop="center"` (or another anchor) to fill the box exactly.
+- Always set `width` and `height` on the `<img>` from `thumb.width`/`thumb.height` — these
+  reflect the actual rendered dimensions after resizing, preventing layout shift.
+- The block is skipped if the source image is missing or empty, so no `{% if %}` guard is needed.
+
+Common geometry formats:
+
+| Geometry | Behaviour |
+|----------|-----------|
+| `"300x200"` | Fit within 300×200, preserve aspect ratio |
+| `"300x200"` + `crop="center"` | Fill 300×200, crop to center |
+| `"300"` | Scale to width 300, height auto |
+| `"x200"` | Scale to height 200, width auto |
 
 ## Thumbnail widget with instant preview
 

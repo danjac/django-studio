@@ -23,7 +23,7 @@ def auth_page(page: Page, e2e_user, live_server) -> Page:
     """Playwright page authenticated as e2e_user."""
     login_url = f"{live_server.url}{reverse('account_login')}"
     page.goto(login_url)
-    page.locator('[name="login"]').fill(e2e_user.username)
+    page.locator('[name="login"]').fill(e2e_user.email)
     page.locator('[name="password"]').fill("testpass")
     page.get_by_role("button", name="Sign In").click()
     return page

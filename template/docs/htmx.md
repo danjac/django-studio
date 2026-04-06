@@ -312,7 +312,7 @@ Do not load extensions globally in `base.html` unless every page needs them.
 
 | Extension | Package | Use case | Docs |
 | --------- | ------- | -------- | ---- |
-| SSE | `htmx-ext-sse` | Server-Sent Events | `docs/channels.md` |
+| SSE | `htmx-ext-sse` | Server-Sent Events | `docs/sse.md` |
 | WebSocket | `htmx-ext-ws` | Bidirectional WebSockets | `docs/channels.md` |
 
 See [htmx.org/extensions](https://htmx.org/extensions/) for the full list.

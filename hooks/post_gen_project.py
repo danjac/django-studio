@@ -187,29 +187,9 @@ def install_claude_hooks() -> None:
                             "type": "command",
                             "command": (
                                 "FILE=$(jq -r '.tool_input.file_path // empty');"
-                                ' if [ -n "$FILE" ]'
-                                " && echo \"$FILE\" | grep -q '\\.py$'"
-                                " && ! echo \"$FILE\" | grep -q '/migrations/';"
-                                ' then uv run ruff check --fix "$FILE"'
-                                ' && uv run ruff format "$FILE"; fi'
-                            ),
-                        },
-                        {
-                            "type": "command",
-                            "command": (
-                                "FILE=$(jq -r '.tool_input.file_path // empty');"
                                 " if echo \"$FILE\" | grep -qE '/models[^/]*\\.py$';"
                                 " then echo 'REMINDER: models file edited"
                                 " — run: just dj makemigrations'; fi"
-                            ),
-                        },
-                        {
-                            "type": "command",
-                            "command": (
-                                "FILE=$(jq -r '.tool_input.file_path // empty');"
-                                ' if [ -n "$FILE" ]'
-                                " && echo \"$FILE\" | grep -q '\\.html$';"
-                                ' then uv run djlint --lint "$FILE"; fi'
                             ),
                         },
                     ],

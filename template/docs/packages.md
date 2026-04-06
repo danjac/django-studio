@@ -67,8 +67,8 @@ State your findings explicitly when suggesting a package — don't just name it.
   Redis cache backend (already configured).
 - **aiohttp**: use for async HTTP calls to third-party APIs. See
   `docs/api-integration.md` for the `USER_AGENT` setting, error handling, and testing patterns.
-- **channels**: for real-time (SSE and WebSockets). See `docs/channels.md` for
-  setup, consumers, and HTMX integration.
+- **channels**: for WebSocket-based real-time communication. See `docs/channels.md` for
+  setup, consumers, and HTMX integration. For one-way push (SSE), see `docs/sse.md`.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. `MoneyWidget` renders an amount input and a
   currency select side-by-side. See `docs/django-forms.md#moneywidget` for the

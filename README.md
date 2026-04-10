@@ -140,6 +140,7 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-gdpr`          | GDPR compliance audit: PII in models, erasure, consent, logging              |
 | `/dj-a11y`          | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
 | `/dj-deadcode`      | Remove unused Python code, Django templates and static assets                |
+| `/dj-remove-slop`   | Audit and remove Django anti-patterns introduced by AI or inattentive devs   |
 | `/dj-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
 
 **Deployment**

@@ -121,7 +121,7 @@ and stop.
 
 For every locale detected in step B, run steps 1 through 5 from the
 single-locale flow below (treating each as an existing locale — skip step 2
-and step 2b). Work through them sequentially, one locale at a time.
+and steps 2b and 2c). Work through them sequentially, one locale at a time.
 
 ---
 
@@ -172,7 +172,28 @@ Common native names: `fr` → Français, `fr_CA` → Français (Canada),
 
 ---
 
-### 2b — Create locale format file _(new locale only — skip if re-running)_
+### 2b — django-modeltranslation schema _(new locale only, if modeltranslation is installed)_
+
+Check whether `"modeltranslation"` is in `INSTALLED_APPS` in `config/settings.py`.
+
+If it is, `django-modeltranslation` will generate migrations that add the new
+language columns (e.g. `title_fr`, `body_fr`) when it detects a new entry in
+`LANGUAGES`. Run:
+
+```bash
+just dj makemigrations
+just dj migrate
+```
+
+This works for both standard and `django-tenants` projects — `migrate` applies
+the new migrations to every tenant schema automatically. No custom sync command
+is needed.
+
+If `"modeltranslation"` is not in `INSTALLED_APPS`, skip this step.
+
+---
+
+### 2c — Create locale format file _(new locale only — skip if re-running)_
 
 Check whether `config/formats/<locale>/` exists.
 
@@ -237,6 +258,24 @@ Remove the `#, fuzzy` flag after translating a fuzzy entry.
 
 Write the updated `.po` file back.
 
+#### Large files — chunked translation
+
+If the file contains more than ~100 untranslated entries (empty `msgstr` or
+`#, fuzzy`), translate in batches of 50–100 entries rather than all at once.
+This avoids hitting context/token limits and makes the session resumable:
+
+1. Collect all entries that need translation.
+2. Split them into batches of 50–100 entries each.
+3. For each batch:
+   a. Translate the entries.
+   b. Write the translated `msgstr` values back into the `.po` file immediately.
+   c. Print a progress line: `Translated batch N/M (X entries)`.
+4. After all batches are done, continue to step 4 (compilemessages).
+
+Because each batch is written back before the next starts, interrupting and
+resuming is safe — already-translated entries have a non-empty `msgstr` and
+are skipped on the next run.
+
 ---
 
 ### 4 — Compile
@@ -267,3 +306,43 @@ No new or changed strings found for <locale>. Catalogue is up to date.
 
 If any `msgid` contained Python format specifiers (`%(var)s`, `{var}`), remind
 the user to verify that the translated strings preserve them exactly.
+
+---
+
+### 6 — Populate modeltranslation fields _(new locale only, if modeltranslation is installed)_
+
+Check whether `"modeltranslation"` is in `INSTALLED_APPS`. If it is not, skip
+this step entirely.
+
+For each model registered in any `<app>/translation.py`, populate the new
+language columns for existing records:
+
+1. **Discover registered models and their translatable fields.** Read every
+   `translation.py` file in the project and collect the model class and the
+   fields listed in each `TranslationOptions.fields`.
+
+2. **Query records with empty new-language fields.** For each registered model,
+   build a queryset that filters for rows where the new locale's field is null
+   or empty — e.g. `Model.objects.filter(title_<locale>__isnull=True)`.
+   Use `.iterator()` to avoid loading all records into memory at once.
+
+3. **Translate field values in chunks.** Process 50–100 records per batch:
+   - Translate each field value from the source language (English) to
+     `<locale>`.
+   - Set the translated value on the new-language field attribute
+     (e.g. `obj.title_<locale> = translated_value`).
+   - Collect the batch into a list and call `Model.objects.bulk_update(batch,
+     ["title_<locale>", ...])`  once per batch.
+   - Print a progress line: `Populated batch N (X records)`.
+
+4. **Report.** After all models are processed, print a summary:
+   ```
+   modeltranslation sync
+   =====================
+   MyModel  title, body   42 records populated
+   OtherModel  name        7 records populated
+   ```
+   If all fields were already populated (no null rows found), say:
+   ```
+   All modeltranslation fields already populated for <locale>.
+   ```

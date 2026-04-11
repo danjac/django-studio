@@ -39,7 +39,7 @@ conftest.py         # Root pytest config (fixture plugins)
 ## Commands
 
 ```bash
-just check-all          # lint → typecheck → manage.py check → test-all — run before committing
+just check-all          # lint → typecheck → manage.py check → test-all — run before opening a PR
 just test               # unit tests with coverage
 just test-e2e           # Playwright E2E tests (headless)
 just serve              # dev server + Tailwind watcher
@@ -74,6 +74,8 @@ Tests live in `{{ package_name }}/**/tests/`; framework: `pytest`+`pytest-django
 Conventional commits enforced by commitlint. Format: `type: subject`
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+
+Run targeted tests on intermediate commits. Run `just check-all` once before opening a PR — not on every commit.
 
 ## Code Style
 

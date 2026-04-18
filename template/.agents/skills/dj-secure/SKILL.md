@@ -38,7 +38,7 @@ For each setting, apply this decision tree:
 | Setting | Secure value | Severity if hardcoded insecure or unsafe default |
 |---|---|---|
 | `DEBUG` | `False` | CRITICAL |
-| `SECRET_KEY` | any value from env | CRITICAL |
+| `SECRET_KEY` | any value from env (see note) | CRITICAL |
 | `ALLOWED_HOSTS` | explicit list from env | CRITICAL |
 | `DATABASE PASSWORD` | from env | CRITICAL |
 | `SESSION_COOKIE_SECURE` | `True` | WARNING |
@@ -65,6 +65,19 @@ ADVISORY: [settings] SECURE_HSTS_SECONDS not set — not applicable, HSTS is han
 ```
 
 If `terraform/cloudflare/` does not exist, apply the standard WARNING check.
+
+**Note on `SECRET_KEY` with a `django-insecure-*` default:** A pattern like
+`SECRET_KEY = env("SECRET_KEY", default="django-insecure-...")` is **not CRITICAL**.
+It falls under rule 3 of the decision tree — the default is insecure but can be
+overridden in production via the environment variable. Treat it as **ADVISORY**:
+
+```
+ADVISORY: [settings] SECRET_KEY uses a django-insecure-* default — ensure
+  production sets SECRET_KEY to a real secret via the environment
+```
+
+Only flag as CRITICAL if `SECRET_KEY` is hardcoded to a real secret with no env
+override mechanism at all.
 
 ---
 
@@ -264,7 +277,8 @@ secondary check. Flag as **CRITICAL** any of the following found as a string
 literal rather than loaded from the environment:
 
 - A Django `SECRET_KEY` value (long random string; `django-insecure-*`
-  placeholder is acceptable in `.env.example` only)
+  placeholder is acceptable in `.env.example` and as a `default=` fallback in
+  `settings.py` — see the note in section 1)
 - API keys (patterns like `sk_live_`, `ghp_`, `AKIA`, `Bearer `)
 - Database or service passwords
 - OAuth client secrets

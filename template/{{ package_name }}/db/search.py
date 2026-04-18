@@ -41,7 +41,7 @@ class Searchable(Base):
         query = SearchQuery(value, search_type=search_type, config=config)
 
         rank = functools.reduce(
-            lambda a, b: a + b,  # operator.add is overloaded; lambda avoids basedpyright error
+            operator.add,  # pyright: ignore[reportArgumentType]
             (SearchRank(F(field), query=query) for field in search_fields),
         )
 

@@ -15,6 +15,7 @@ tables).
 - [Tenant model](#tenant-model)
 - [File uploads](#file-uploads)
 - [Admin site customisation](#admin-site-customisation)
+- [Management commands](#management-commands)
 - [Testing](#testing)
 - [Gotchas](#gotchas)
 
@@ -264,6 +265,49 @@ the app registry is ready (Django imports the `AppConfig` class listed in
   `ImproperlyConfigured: Application labels aren't unique, duplicates: admin`.
 - A dedicated `admin_config.py` that imports only `AdminConfig` (no models)
   avoids both problems.
+
+---
+
+## Management commands
+
+### tenant_command
+
+`tenant_command` wraps any Django management command so it runs within a specific
+tenant's schema context. Use it whenever you need to run a command (e.g.
+`migrate`, `shell`, `dbshell`, a custom management command) against a single
+tenant's data rather than the public schema.
+
+```bash
+# Run against a specific tenant schema
+python manage.py tenant_command --schema=acme migrate
+
+# Pass options to the subcommand
+python manage.py tenant_command --schema=acme shell --no-startup
+
+# Interactive — prompts for tenant if --schema is omitted
+python manage.py tenant_command migrate
+```
+
+When `--schema` is omitted, the command lists all available tenants and prompts
+you to pick one. Enter `?` at the prompt to display schemas and their primary
+domains.
+
+#### Writing subcommands that run inside a tenant context
+
+If you need a custom management command that always targets a specific tenant,
+inherit from `BaseTenantCommand` and set `COMMAND_NAME`:
+
+```python
+from django_tenants.management.commands import BaseTenantCommand
+
+class Command(BaseTenantCommand):
+    COMMAND_NAME = "your_existing_command"
+```
+
+`BaseTenantCommand` iterates over all tenant schemas by default, or targets a
+single schema when `--schema` is supplied. Use it for batch operations like
+re-indexing search, sending per-tenant notifications, or running data migrations
+across every tenant.
 
 ---
 

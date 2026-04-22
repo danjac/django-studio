@@ -174,6 +174,31 @@ is correct and sufficient.
 
 ---
 
+## 9. Low-quality redirect assertions in tests
+
+Redirect assertions written against raw status codes and `response["Location"]`
+are harder to read and more brittle than Django's built-in `response.url`.
+
+```bash
+rg 'status_code\s*==\s*30[0-9]' --type py
+rg 'response\["Location"\]' --type py
+```
+
+Apply these mechanical fixes:
+
+1. `assert response.status_code == 302` + `assert response["Location"] == X`
+   → `assert response.url == X`
+2. `assert response.status_code == 302` + `assert response.url == X` (already present)
+   → drop the now-redundant `status_code` line
+3. `assert response.status_code == 302` + `assert "X" in response["Location"]`
+   → `assert "X" in response.url`
+4. `assert response.status_code == 302` + `assert response["Location"].endswith(X)`
+   → `assert response.url.endswith(X)`
+5. Bare `assert response.status_code == 302` with no URL check
+   → leave unchanged (destination unknown; flagging only)
+
+---
+
 ## Report format
 
 Present findings grouped by category before taking any action:
@@ -205,6 +230,11 @@ Meta.ordering (§7)
 Mutable class constants (§8)
   accounts/forms.py:12  fields = ["name", "email"]       → change to tuple
   reports/models.py:7   ClassVar[list[str]] = [...]       → tuple[str, ...] = (...) (no ClassVar needed for tuples)
+
+Redirect assertions (§9)
+  orders/tests.py:44    assert response.status_code == 302; assert response["Location"] == "/orders/"
+                        → assert response.url == "/orders/"
+  orders/tests.py:71    assert response.status_code == 302  (no URL check — flagged only)
 ```
 
 After presenting, ask:

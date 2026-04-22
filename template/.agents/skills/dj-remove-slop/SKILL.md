@@ -199,6 +199,30 @@ Apply these mechanical fixes:
 
 ---
 
+## 10. Private methods/functions defined before public ones
+
+Private methods and functions (prefixed with `_`) are implementation details.
+They should follow the public interface they support, not precede it. Defining
+private helpers before the public methods that call them forces readers to wade
+through internals before understanding the public API.
+
+```bash
+rg "^\s+def _" --type py
+```
+
+For each class, check whether any `_private` method is defined above a `def`
+method (without the `_` prefix) in the same class body. Flag the offending
+ordering; the fix is to move private methods to after all public methods.
+
+Apply the same rule to module-level functions: a `_helper()` defined above the
+public `do_thing()` that calls it should be moved below it.
+
+**Exception:** `__dunder__` methods are not private in this sense — they belong
+wherever Django/Python convention places them (e.g. `__str__` near the top of
+a model class).
+
+---
+
 ## Report format
 
 Present findings grouped by category before taking any action:
@@ -235,6 +259,10 @@ Redirect assertions (§9)
   orders/tests.py:44    assert response.status_code == 302; assert response["Location"] == "/orders/"
                         → assert response.url == "/orders/"
   orders/tests.py:71    assert response.status_code == 302  (no URL check — flagged only)
+
+Private before public (§10)
+  orders/views.py       OrderView._build_query (line 12) defined before get (line 28) → move below
+  utils/helpers.py      _parse_date (line 3) defined before format_date (line 19) → move below
 ```
 
 After presenting, ask:

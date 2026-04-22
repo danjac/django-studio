@@ -15,6 +15,7 @@ making any changes; waits for confirmation before touching anything.
 7. `ordering` in `Model.Meta` (implicit ordering on every queryset)
 8. Mutable list literals where tuples should be used (class-level constants)
 9. Low-quality redirect assertions (`status_code == 302` + `response["Location"]`) in tests
+10. Private methods/functions (`_name`) defined before public ones in the same class or module
 
 **Example:**
 

@@ -23,6 +23,7 @@ install:
    fi
    just pyinstall
    just precommitinstall
+   just playwright-install
 
 # Update all dependencies
 [group('development')]

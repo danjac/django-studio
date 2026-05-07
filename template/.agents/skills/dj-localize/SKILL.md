@@ -32,6 +32,13 @@ If `gettext` is not available, stop and tell the user to install it first.
 When the user runs `/dj-localize` with no locale, perform the audit + bulk
 update flow below instead of the single-locale steps.
 
+**Before auditing**, ask the user:
+
+> Do you want a full audit of untranslated strings first, or skip straight to `makemessages`?
+
+- If the user wants the **audit**, proceed with step A.
+- If the user wants to **skip**, jump to step B.
+
 ### A — Audit source for untranslated strings
 
 **Python files** — search `<package_name>/` for user-facing strings that are

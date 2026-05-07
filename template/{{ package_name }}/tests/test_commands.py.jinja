@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import importlib
 import json
 import re
+import sys
 from io import StringIO
+from unittest.mock import MagicMock
 
 import aiohttp
 import pytest
@@ -10,6 +13,8 @@ from aioresponses import aioresponses
 from django.contrib.sites.models import Site
 from django.core.management import call_command
 from django.core.management.base import CommandError
+
+import {{ package_name }}.management.commands.translate as translate_cmd
 
 MOCK_VENDORS = {
     "htmx": {
@@ -247,3 +252,230 @@ class TestSyncVendors:
             )
             with pytest.raises(CommandError, match="Failed to download"):
                 call_command("sync_vendors", "--no-input")
+
+
+# ---------------------------------------------------------------------------
+# translate helpers
+# ---------------------------------------------------------------------------
+
+
+def _make_entry(
+    *,
+    msgid: str,
+    msgstr: str = "",
+    fuzzy: bool = False,
+    msgid_plural: str = "",
+    msgstr_plural: dict | None = None,
+    comment: str = "",
+) -> MagicMock:
+    entry = MagicMock()
+    entry.msgid = msgid
+    entry.msgstr = msgstr
+    entry.fuzzy = fuzzy
+    entry.msgid_plural = msgid_plural
+    entry.msgstr_plural = msgstr_plural or {}
+    entry.comment = comment
+    entry.flags = ["fuzzy"] if fuzzy else []
+    return entry
+
+
+def _make_polib_mock(entries: list) -> tuple[MagicMock, MagicMock]:
+    mock = MagicMock()
+    po = MagicMock()
+    po.__iter__ = MagicMock(return_value=iter(entries))
+    mock.pofile.return_value = po
+    return mock, po
+
+
+# ---------------------------------------------------------------------------
+# translate fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def mock_polib(mocker):
+    mock = MagicMock()
+    mocker.patch.object(translate_cmd, "polib", mock)
+    return mock
+
+
+@pytest.fixture
+def po_file(tmp_path):
+    f = tmp_path / "django.po"
+    f.touch()
+    return f
+
+
+# ---------------------------------------------------------------------------
+# translate
+# ---------------------------------------------------------------------------
+
+
+class TestTranslateCommand:
+    def test_missing_polib_raises_error(self, mocker, po_file):
+        mocker.patch.object(translate_cmd, "polib", None)
+        with pytest.raises(CommandError, match="polib is not installed"):
+            call_command("translate", "extract", str(po_file))
+
+    def test_polib_import_error_branch(self):
+        original = sys.modules.get("polib", MagicMock())
+        sys.modules["polib"] = None  # type: ignore[assignment]
+        try:
+            importlib.reload(translate_cmd)
+            assert translate_cmd.polib is None
+        finally:
+            sys.modules["polib"] = original
+            importlib.reload(translate_cmd)
+
+    def test_missing_po_file_raises_error(self, mock_polib, tmp_path):
+        with pytest.raises(CommandError, match="File not found"):
+            call_command("translate", "extract", str(tmp_path / "missing.po"))
+
+    def test_apply_without_translations_arg_raises_error(self, mock_polib, po_file):
+        with pytest.raises(CommandError, match="required for apply"):
+            call_command("translate", "apply", str(po_file))
+
+    def test_apply_missing_translations_file_raises_error(
+        self, mock_polib, po_file, tmp_path
+    ):
+        with pytest.raises(CommandError, match="Translations file not found"):
+            call_command(
+                "translate", "apply", str(po_file), str(tmp_path / "missing.json")
+            )
+
+    def test_extract_empty_po_returns_empty_array(self, mocker, po_file):
+        mock, _po = _make_polib_mock([])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "extract", str(po_file), stdout=out)
+        assert json.loads(out.getvalue()) == []
+
+    def test_extract_skips_already_translated_entry(self, mocker, po_file):
+        entry = _make_entry(msgid="Save", msgstr="Enregistrer")
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "extract", str(po_file), stdout=out)
+        assert json.loads(out.getvalue()) == []
+
+    def test_extract_includes_empty_msgstr(self, mocker, po_file):
+        entry = _make_entry(msgid="Save", msgstr="")
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "extract", str(po_file), stdout=out)
+        result = json.loads(out.getvalue())
+        assert len(result) == 1
+        assert result[0]["msgid"] == "Save"
+
+    def test_extract_includes_fuzzy_entry(self, mocker, po_file):
+        entry = _make_entry(msgid="Save", msgstr="Sauvegarder", fuzzy=True)
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "extract", str(po_file), stdout=out)
+        result = json.loads(out.getvalue())
+        assert len(result) == 1
+        assert result[0]["fuzzy"] is True
+
+    def test_extract_includes_plural_fields(self, mocker, po_file):
+        entry = _make_entry(
+            msgid="%(n)s item",
+            msgid_plural="%(n)s items",
+            msgstr_plural={0: "", 1: ""},
+        )
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "extract", str(po_file), stdout=out)
+        result = json.loads(out.getvalue())
+        assert result[0]["msgid_plural"] == "%(n)s items"
+        assert "msgstr_plural" in result[0]
+
+    def test_extract_includes_comment(self, mocker, po_file):
+        entry = _make_entry(msgid="Save", comment="Translators: save button")
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "extract", str(po_file), stdout=out)
+        result = json.loads(out.getvalue())
+        assert result[0]["comment"] == "Translators: save button"
+
+    def test_apply_updates_msgstr_and_saves(self, mocker, po_file, tmp_path):
+        entry = _make_entry(msgid="Save", msgstr="")
+        mock, po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        translations = tmp_path / "t.json"
+        translations.write_text(
+            json.dumps([{"msgid": "Save", "msgstr": "Enregistrer"}])
+        )
+        call_command("translate", "apply", str(po_file), str(translations))
+        assert entry.msgstr == "Enregistrer"
+        po.save.assert_called_once_with(str(po_file))
+
+    def test_apply_strips_fuzzy_flag(self, mocker, po_file, tmp_path):
+        entry = _make_entry(msgid="Save", msgstr="Sauvegarder", fuzzy=True)
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        translations = tmp_path / "t.json"
+        translations.write_text(
+            json.dumps([{"msgid": "Save", "msgstr": "Enregistrer"}])
+        )
+        call_command("translate", "apply", str(po_file), str(translations))
+        assert "fuzzy" not in entry.flags
+
+    def test_apply_updates_plural_forms(self, mocker, po_file, tmp_path):
+        entry = _make_entry(
+            msgid="%(n)s item",
+            msgid_plural="%(n)s items",
+            msgstr_plural={0: "", 1: ""},
+        )
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        translations = tmp_path / "t.json"
+        translations.write_text(
+            json.dumps(
+                [
+                    {
+                        "msgid": "%(n)s item",
+                        "msgstr": "",
+                        "msgstr_plural": {"0": "%(n)s élément", "1": "%(n)s éléments"},
+                    }
+                ]
+            )
+        )
+        call_command("translate", "apply", str(po_file), str(translations))
+        assert entry.msgstr_plural[0] == "%(n)s élément"
+        assert entry.msgstr_plural[1] == "%(n)s éléments"
+
+    def test_apply_skips_entries_not_in_translations(self, mocker, po_file, tmp_path):
+        entry = _make_entry(msgid="Save", msgstr="")
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        translations = tmp_path / "t.json"
+        translations.write_text(json.dumps([{"msgid": "Cancel", "msgstr": "Annuler"}]))
+        call_command("translate", "apply", str(po_file), str(translations))
+        assert entry.msgstr == ""
+
+    def test_apply_skips_entry_with_empty_msgstr_in_translations(
+        self, mocker, po_file, tmp_path
+    ):
+        entry = _make_entry(msgid="Save", msgstr="old")
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        translations = tmp_path / "t.json"
+        translations.write_text(json.dumps([{"msgid": "Save", "msgstr": ""}]))
+        call_command("translate", "apply", str(po_file), str(translations))
+        assert entry.msgstr == "old"
+
+    def test_apply_outputs_success_message(self, mocker, po_file, tmp_path):
+        entry = _make_entry(msgid="Save", msgstr="")
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        translations = tmp_path / "t.json"
+        translations.write_text(
+            json.dumps([{"msgid": "Save", "msgstr": "Enregistrer"}])
+        )
+        out = StringIO()
+        call_command("translate", "apply", str(po_file), str(translations), stdout=out)
+        assert "1 translation" in out.getvalue()

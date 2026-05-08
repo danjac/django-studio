@@ -29,6 +29,15 @@ before marking it dead — `vulture` has false-positive rates on:
 - Class-based view methods (`get`, `post`, `form_valid`, etc.)
 - Template tag and filter functions registered via `@register`
 - `pytest` fixtures and test helper functions
+- **Pytest fixture arguments** — unused variables in test function signatures
+  are pytest fixtures injected by name for their side effects (e.g.
+  `transactional_db`, `django_db_setup`). They appear unused to vulture but
+  are required for the fixture to run. **Never remove these.**
+- **`TYPE_CHECKING` imports used in `cast()` string annotations** — imports
+  guarded by `if TYPE_CHECKING:` are invisible to vulture at runtime. An
+  import like `from myapp.types import GeopyLocation` used only in
+  `cast("GeopyLocation | None", ...)` will be flagged as unused. Verify
+  with `rg 'GeopyLocation'` before removing.
 
 Exclude any item that is a framework hook unless you can confirm it is never
 called. When in doubt, mark it **uncertain** and surface it to the user rather
@@ -38,29 +47,37 @@ than proposing deletion.
 
 ## 2. Unused URL patterns
 
-Read all `urls.py` files. For each `path()`/`re_path()` entry:
+Run the bundled scanner:
 
-1. Note the `name=` argument.
-2. Search the codebase for `{% url '<name>' %}` in templates and
-   `reverse('<name>')` / `redirect('<name>')` in Python files.
+```bash
+scripts/find-unused-urls.py
+```
 
-Flag any named URL with no references in templates or Python as a candidate
-for removal, along with its corresponding view and template if those are also
-unreferenced.
+It reads all `urls.py` files to collect named URL patterns, then scans every
+`.py` and `.html` file (excluding `.venv`) for `{% url %}`, `reverse()`, and
+`redirect()` references, stripping namespace prefixes before comparing. Any
+pattern with no references is printed.
+
+Flag each result as a candidate for removal together with its view and template
+if those are also unreferenced.
 
 ---
 
 ## 3. Unreferenced templates
 
-List every file under `templates/`. For each template:
+Run the bundled scanner:
 
-1. Search Python files for `render(request, "<path>")`,
-   `get_template("<path>")`, `loader.get_template("<path>")`.
-2. Search templates for `{% include "<path>" %}` and `{% extends "<path>" %}`.
+```bash
+scripts/find-unused-templates.py
+```
 
-Flag any template not found by either search as potentially unused. Exclude
-`base.html` and layout templates (files whose name starts with `_` or
-`base`) — these are typically inherited, not referenced directly.
+It walks every `.html` file under `templates/`, greps the path string across
+all `.py` and `.html` files, and prints any with no hits. Catches all reference
+forms: `TemplateResponse`, `render_to_string`, `{% extends %}`, `{% include %}`,
+`{% fragment %}`, `{% partial "file#name" %}`. Skips `base*.html` and `_*.html`
+automatically.
+
+Flag any template printed by the script as potentially unused.
 
 ---
 

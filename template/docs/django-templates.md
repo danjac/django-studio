@@ -84,6 +84,22 @@ On an HTMX request targeting `#item-list`, `render_partial_response` returns onl
 
 Component templates such as `browse.html`, `paginate.html`, and `sidebar.html` define partials without `inline` because they are always rendered via `{% fragment %}` or `{% partial %}` — never directly. The caller controls what gets rendered.
 
+### Same-file vs cross-file includes
+
+When rendering a `{% partialdef %}` that lives in the **same** template file, use `{% partial name %}` — not `{% include "same/file.html#name" %}`. The `{% include %}` form re-loads the template from disk unnecessarily.
+
+```html
+{# WRONG — re-loads template from disk #}
+{% include "my_app/items_list.html#item-list" %}
+
+{# CORRECT — renders in-file partial directly #}
+{% partial item-list %}
+```
+
+The only exception is when the template name is dynamic (e.g. `forms/partials.html` uses `try_include` with a variable name).
+
+For cross-file partials, `{% include "other/partials.html#name" %}` remains correct.
+
 ### Extracting shared partials into partials.html
 
 When several templates share the same `{% partialdef %}` blocks (e.g. a card layout, a status badge, a shared action menu), extract them into a dedicated `partials.html` file. Callers include the partial via `{% partial "partials.html#block-name" %}`.
@@ -104,6 +120,23 @@ Conventional locations:
 ```html
 {% fragment "form.html" htmx=True target="my-form" %}
   {{ form }}
+{% endfragment %}
+```
+
+Use `{% fragment %}` **only when there is content to pass** inside the block (available as `{{ content }}`). When there is no inner content, use `{% include %}` with `with` instead. An empty `{% fragment %}{% endfragment %}` pair is always wrong.
+
+```html
+{# WRONG — no content to pass; use {% include %} instead #}
+{% fragment "paginate.html#links" htmx=True target="item-list" %}{% endfragment %}
+
+{# CORRECT — no inner content; pass context via with #}
+{% include "paginate.html#links" with htmx=True target="item-list" %}
+
+{# CORRECT — has content to pass as {{ content }} #}
+{% fragment "paginate.html" %}
+  {% for item in page %}
+    <p>{{ item.name }}</p>
+  {% endfor %}
 {% endfragment %}
 ```
 

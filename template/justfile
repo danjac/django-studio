@@ -141,7 +141,7 @@ precommitinstall:
 # Update pre-commit hooks
 [group('development')]
 precommitupdate:
-   @just precommit autoupdate
+   @just precommit autoupdate --freeze
 
 # Re-run pre-commit on all files
 [group('development')]

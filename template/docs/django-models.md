@@ -83,39 +83,48 @@ adding the comment.
 
 ## Full-Text Search
 
-Use the `Searchable` mixin from `my_package/db/search.py` for PostgreSQL full-text
-search:
+Use the `search()` function from `my_package/db/search.py` for PostgreSQL full-text
+search. It works with any queryset and defaults to the `search_vector` field:
 
 ```python
-from my_package.db.search import Searchable
+from my_package.db.search import search
 
 
-class ItemQuerySet(Searchable, models.QuerySet):
-    default_search_fields = ("search_vector",)
+# Default — searches search_vector
+search(Item.objects.all(), "django")
 
+# Cross-relation — explicit fields
+search(Message.objects.all(), "django", "search_vector", "sender__search_vector")
 
+# No direct search_vector — explicit fields only
+search(Applicant.objects.all(), "django", "project__search_vector", "user__search_vector")
+```
+
+Models need no mixin or `default_search_fields` attribute — just a `search_vector` field:
+
+```python
 class Item(models.Model):
-    objects = ItemQuerySet.as_manager()
     search_vector = SearchVectorField(null=True)
 ```
 
-Usage:
+In filter classes:
 
 ```python
-Item.objects.search("django")
-Item.objects.search("django", "title", "description")  # override fields
+from my_package.db.search import search
+
+def filter_q(self, queryset, name, value):
+    return search(queryset, value)
 ```
 
 ### Search Vector Updates via Triggers
 
 Maintain `search_vector` via a database trigger rather than `post_save`.
 
-**Important:** the trigger config and the `Searchable.search()` config must
-match. The mixin defaults to `config='simple'`, so the trigger must also use
-`pg_catalog.simple`. Using `pg_catalog.english` in the trigger would apply
-English stemming when building the vector (`"alice"` → `"alic"`) but the query
-would search for the literal token `"alice"`, silently breaking search for many
-common words.
+**Important:** the trigger config and the `search()` config must match. `search()`
+defaults to `config='simple'`, so the trigger must also use `pg_catalog.simple`.
+Using `pg_catalog.english` in the trigger would apply English stemming when building
+the vector (`"alice"` → `"alic"`) but the query would search for the literal token
+`"alice"`, silently breaking search for many common words.
 
 ```python
 # migrations/0002_add_search_trigger.py

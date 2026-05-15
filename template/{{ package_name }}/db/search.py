@@ -1,53 +1,45 @@
 import functools
 import operator
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TypeVar, cast
 
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.db.models import F, Q, QuerySet
 
-if TYPE_CHECKING:
-    Base: TypeAlias = QuerySet
-
-else:
-    Base = object
+_QS = TypeVar("_QS", bound=QuerySet)
 
 
-class Searchable(Base):
-    """Mixin to add PostgreSQL full-text search capabilities to a QuerySet."""
+def search(
+    qs: _QS,
+    value: str,
+    *search_fields: str,
+    annotation: str = "rank",
+    config: str = "simple",
+    search_type: str = "websearch",
+) -> _QS:
+    """Search a queryset using PostgreSQL full-text search.
 
-    default_search_fields: tuple[str, ...] = ()
+    Args:
+        qs: The queryset to search.
+        value: The search query string.
+        search_fields: tsvector fields to search. Defaults to ``("search_vector",)``.
+        annotation: Name for the rank annotation.
+        config: PostgreSQL text search configuration.
+        search_type: Type of search query (websearch, plain, phrase, raw).
+    """
+    if not value:
+        return qs.none()
 
-    def search(
-        self,
-        value: str,
-        *search_fields: str,
-        annotation: str = "rank",
-        config: str = "simple",
-        search_type: str = "websearch",
-    ) -> QuerySet:
-        """Search the queryset using PostgreSQL full-text search.
+    fields = search_fields or ("search_vector",)
+    query = SearchQuery(value, search_type=search_type, config=config)
 
-        Args:
-            value: The search query string.
-            search_fields: Fields to search. Falls back to default_search_fields.
-            annotation: Name for the rank annotation.
-            config: PostgreSQL text search configuration.
-            search_type: Type of search query (websearch, plain, phrase, raw).
-        """
-        if not value:
-            return self.none()
+    rank = functools.reduce(
+        operator.add,
+        (SearchRank(F(field), query=query) for field in fields),
+    )
 
-        search_fields = search_fields if search_fields else self.default_search_fields
-        query = SearchQuery(value, search_type=search_type, config=config)
+    q = functools.reduce(
+        operator.or_,
+        (Q(**{field: query}) for field in fields),
+    )
 
-        rank = functools.reduce(
-            operator.add,  # pyright: ignore[reportArgumentType]
-            (SearchRank(F(field), query=query) for field in search_fields),
-        )
-
-        q = functools.reduce(
-            operator.or_,
-            (Q(**{field: query}) for field in search_fields),
-        )
-
-        return self.annotate(**{annotation: rank}).filter(q)
+    return cast("_QS", qs.annotate(**{annotation: rank}).filter(q))

@@ -46,6 +46,14 @@ Then follow the prompts:
 | `domain`       | `example.com`           | Production domain                                                                                      |
 | `license`      | `MIT`                   | MIT, Apache-2.0, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0, BSD-2-Clause, BSD-3-Clause, ISC, EUPL-1.2, None |
 
+### Generating from a branch
+
+To generate from a specific branch (e.g. to test a pre-release feature):
+
+```bash
+uvx copier copy --trust "gh:danjac/django-studio@branch-name" my-project
+```
+
 ### Updating a generated project
 
 Once a project has been generated and committed, you can pull in template updates:

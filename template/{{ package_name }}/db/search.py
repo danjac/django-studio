@@ -33,7 +33,7 @@ def search(
     query = SearchQuery(value, search_type=search_type, config=config)
 
     rank = functools.reduce(
-        operator.add,
+        operator.add,  # pyright: ignore[reportArgumentType]
         (SearchRank(F(field), query=query) for field in fields),
     )
 

@@ -212,14 +212,41 @@ rg "^\s+def _" --type py
 
 For each class, check whether any `_private` method is defined above a `def`
 method (without the `_` prefix) in the same class body. Flag the offending
-ordering; the fix is to move private methods to after all public methods.
+ordering; the fix is to move private methods to after **all** public methods in
+the class, not just after the nearest caller.
 
 Apply the same rule to module-level functions: a `_helper()` defined above the
-public `do_thing()` that calls it should be moved below it.
+public `do_thing()` that calls it should be moved below **all** public functions
+in the module.
 
 **Exception:** `__dunder__` methods are not private in this sense — they belong
 wherever Django/Python convention places them (e.g. `__str__` near the top of
 a model class).
+
+### Signal handlers
+
+Django `@receiver`-decorated signal handlers must be **public** — never prefixed
+with `_`. A leading underscore signals "implementation detail not meant to be
+called directly," which is the wrong intent for a signal handler that Django
+calls by name.
+
+Name them `on_<model>_<event>`:
+
+```python
+# Bad
+@receiver(post_delete, sender=Organization)
+def _on_organization_deleted(sender, instance, **kwargs):
+    ...
+
+# Good
+@receiver(post_delete, sender=Organization)
+def on_organization_deleted(sender, instance, **kwargs):
+    """Clean up resources when an organization is deleted."""
+    ...
+```
+
+Signal handlers must also have a one-line docstring (required by ruff D103 for
+public functions). Place them with other public functions, after private helpers.
 
 ---
 

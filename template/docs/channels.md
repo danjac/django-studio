@@ -230,10 +230,11 @@ Key points:
 Vendor the `htmx-ext-ws` extension (see `docs/htmx.md` → Extensions for how
 to vendor and load it; `vendors.json` key: `htmx-ext-ws`).
 
-Use `ws-connect` to open a connection and `ws-send` on a form to transmit data:
+In htmx 4, the WebSocket extension uses `hx-ws:connect` instead of
+`hx-ext="ws" ws-connect`:
 
 ```html
-<div hx-ext="ws" ws-connect="/ws/chat/lobby/">
+<div hx-ws:connect="/ws/chat/lobby/">
     <div id="chat-messages">
         <!-- incoming messages swapped here by id -->
     </div>
@@ -244,13 +245,16 @@ Use `ws-connect` to open a connection and `ws-send` on a form to transmit data:
 </div>
 ```
 
-The server must return HTML fragments with an `id` attribute — the extension
-swaps content by matching element IDs (out-of-band swap):
+The server sends messages as a JSON envelope — htmx 4 uses `{"content": html,
+"target": "#id", "swap": "..."}` instead of raw HTML with `hx-swap-oob`:
 
 ```python
 async def chat_message(self, event):
-    html = f'<div id="chat-messages" hx-swap-oob="beforeend"><p>{event["message"]}</p></div>'
-    await self.send(text_data=html)
+    await self.send_json({
+        "content": f"<p>{event['message']}</p>",
+        "target": "#chat-messages",
+        "swap": "beforeend",
+    })
 ```
 
 Customize the WebSocket constructor (e.g. to add subprotocols):
@@ -263,20 +267,16 @@ htmx.createWebSocket = function(url) {
 
 ### Clearing the input after send (Alpine + htmx-ext-ws)
 
-After a `ws-send` form submits, use the `htmx:ws-after-send` event to clear
-the input. htmx dispatches events in both camelCase (`htmx:wsAfterSend`) and
-kebab-case (`htmx:ws-after-send`); use the kebab-case form with Alpine because
-the camelCase version contains a colon that confuses Alpine's `x-on:` directive
-parser.
-
-Add `x-data` for Alpine scope and `@htmx:ws-after-send` on the form:
+After a `ws-send` form submits, use the `htmx:ws:after-send` event to clear
+the input. In htmx 4, event names use colon separators (`htmx:ws:after-send`)
+instead of camelCase (`htmx:wsAfterSend`):
 
 ```html
 <form
   x-data
   ws-send
   @submit.prevent
-  @htmx:ws-after-send="$refs.input.value = ''"
+  @htmx:ws:after-send.window="$refs.input.value = ''"
 >
   <input x-ref="input" type="text" name="text_data" autocomplete="off">
   <button type="submit">Send</button>

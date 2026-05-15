@@ -174,12 +174,20 @@ class TestSseView:
 Vendor the `htmx-ext-sse` extension (see `docs/htmx.md` → Extensions for how
 to vendor and load it; `vendors.json` key: `htmx-ext-sse`).
 
-Use `sse-connect` and `sse-swap` to subscribe to server events and swap content
-into the DOM:
+In htmx 4, the SSE extension uses `hx-sse:connect` instead of
+`hx-ext="sse" sse-connect`, and listens for events via `hx-on:*` attributes:
 
 ```html
-<div hx-ext="sse" sse-connect="{% url 'sse-notifications' %}" sse-swap="notification">
+<div hx-sse:connect="{% url 'sse-notifications' %}">
     <!-- replaced with each incoming event -->
+    <p>Waiting for notifications...</p>
+</div>
+```
+
+Swap content when a named event arrives using `hx-sse:swap`:
+
+```html
+<div hx-sse:connect="{% url 'sse-notifications' %}" hx-sse:swap="notification">
     <p>Waiting for notifications...</p>
 </div>
 ```
@@ -195,17 +203,16 @@ data: <p>New comment on your post</p>
 Multiple event types on one connection:
 
 ```html
-<div hx-ext="sse" sse-connect="{% url 'sse-feed' %}">
-    <div sse-swap="comment">No comments yet</div>
-    <div sse-swap="like">No likes yet</div>
+<div hx-sse:connect="{% url 'sse-feed' %}">
+    <div hx-sse:swap="comment">No comments yet</div>
+    <div hx-sse:swap="like">No likes yet</div>
 </div>
 ```
 
-Use `hx-trigger="sse:<event>"` to fire an HTTP request when an event arrives
-(instead of swapping the event data directly):
+Fire an HTTP request when an event arrives (instead of swapping event data directly):
 
 ```html
-<div hx-ext="sse" sse-connect="{% url 'sse-feed' %}">
+<div hx-sse:connect="{% url 'sse-feed' %}">
     <div hx-get="{% url 'notifications-list' %}"
          hx-trigger="sse:refresh"
          hx-target="#notifications">
@@ -216,10 +223,9 @@ Use `hx-trigger="sse:<event>"` to fire an HTTP request when an event arrives
 Close the connection when the server sends a specific event:
 
 ```html
-<div hx-ext="sse"
-     sse-connect="{% url 'sse-progress' %}"
-     sse-swap="progress"
-     sse-close="complete">
+<div hx-sse:connect="{% url 'sse-progress' %}"
+     hx-sse:swap="progress"
+     hx-sse:close="complete">
 </div>
 ```
 

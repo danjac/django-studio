@@ -17,6 +17,7 @@ tables).
 - [Admin site customisation](#admin-site-customisation)
 - [Management commands](#management-commands)
 - [Testing](#testing)
+- [First-deploy initialisation](#first-deploy-initialisation)
 - [Gotchas](#gotchas)
 
 ---
@@ -445,6 +446,42 @@ def tenant_fixture(transactional_db, settings, _tenant_schema):
             qualified = ", ".join(f'"{TENANT_SCHEMA_NAME}"."{t}"' for t in tables)
             cursor.execute(f"TRUNCATE {qualified} CASCADE")
 ```
+
+---
+
+## First-deploy initialisation
+
+After a first production deploy, the app pods will return 404 (or crash) until the
+public tenant and its domain record exist. `TenantMainMiddleware` rejects every request
+that has no matching `Domain` row, so the app is effectively dead until you seed the
+database.
+
+The app pods may not be healthy yet, so run the command via the **worker pod**, which
+does not serve incoming requests:
+
+```bash
+kubectl exec deployment/django-worker -- python manage.py shell -c "
+from my_package.tenants.models import Tenant, Domain
+t, _ = Tenant.objects.get_or_create(schema_name='public', defaults={'name': 'Public'})
+Domain.objects.get_or_create(domain='yourdomain.com', defaults={'tenant': t, 'is_primary': True})
+"
+```
+
+Replace `my_package` with your package name and `yourdomain.com` with your production
+domain. If you use `just`, the remote kubectl wrapper makes this shorter:
+
+```bash
+just --yes rkube exec deployment/django-worker -- python manage.py shell -c "
+from my_package.tenants.models import Tenant, Domain
+t, _ = Tenant.objects.get_or_create(schema_name='public', defaults={'name': 'Public'})
+Domain.objects.get_or_create(domain='yourdomain.com', defaults={'tenant': t, 'is_primary': True})
+"
+```
+
+Once the row exists, the app pods will start responding normally.
+
+> **Gotcha:** If your app uses subdomains, each tenant subdomain also needs a `Domain`
+> record. The public domain is the minimum required to unblock the first deploy.
 
 ---
 

@@ -699,6 +699,45 @@ just --yes rkube get pods
 
 If all pods are Running:
 
+### django-tenants initialisation (if applicable)
+
+Check whether django-tenants is installed:
+
+```bash
+grep -q 'django-tenants' pyproject.toml && echo "tenants" || echo "no-tenants"
+```
+
+If django-tenants is present, the public tenant and domain record must be created now or
+the app pods will stay in a 404/crash loop. Get the package name from `.copier-answers.yml`:
+
+```bash
+package_name=$(grep '^package_name:' .copier-answers.yml | awk '{print $2}')
+```
+
+Then seed the public tenant via the worker pod (which is healthy even when app pods are crashing):
+
+```bash
+just --yes rkube exec deployment/django-worker -- python manage.py shell -c "
+from ${package_name}.tenants.models import Tenant, Domain
+t, _ = Tenant.objects.get_or_create(schema_name='public', defaults={'name': 'Public'})
+Domain.objects.get_or_create(domain='<domain>', defaults={'tenant': t, 'is_primary': True})
+"
+```
+
+Tell the user: "Public tenant and domain record created — app pods should now become healthy."
+
+Verify the app pods recover:
+
+```bash
+just --yes rkube get pods
+```
+
+If any app pods are still not Running after the tenant is created, diagnose with logs before continuing.
+
+If django-tenants is not present, skip this section.
+
+### Set default site
+
 If `<site_name>` was provided in Step 4, run:
 ```bash
 just --yes rdj set_default_site <domain> "<site_name>"

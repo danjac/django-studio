@@ -17,6 +17,14 @@ packages:
   - apt-transport-https
 
 write_files:
+  - path: /etc/netplan/51-private-network.yaml
+    permissions: "0600"
+    content: |
+      network:
+        version: 2
+        ethernets:
+          enp7s0:
+            dhcp4: true
   - path: /usr/local/bin/k3s-daily-cleanup.sh
     permissions: "0755"
     content: |
@@ -28,6 +36,7 @@ write_files:
     content: "0 2 * * * root /usr/local/bin/k3s-daily-cleanup.sh\n"
 
 runcmd:
+  - netplan apply
   - |
     PUBLIC_IP="$(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4)"
     curl -sfL https://get.k3s.io | \

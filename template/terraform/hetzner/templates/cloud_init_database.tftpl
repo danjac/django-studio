@@ -17,6 +17,14 @@ packages:
   - apt-transport-https
 
 write_files:
+  - path: /etc/netplan/51-private-network.yaml
+    permissions: "0600"
+    content: |
+      network:
+        version: 2
+        ethernets:
+          enp7s0:
+            dhcp4: true
   - path: /usr/local/bin/k3s-daily-cleanup.sh
     permissions: "0755"
     content: |
@@ -49,6 +57,7 @@ write_files:
       exit 1
 
 runcmd:
+  - netplan apply
   - |
     # Start volume permission setter in background (volume arrives after cloud-init)
     nohup /usr/local/bin/postgres-volume-perms.sh \

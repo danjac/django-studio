@@ -17,6 +17,14 @@ packages:
   - apt-transport-https
 
 write_files:
+  - path: /etc/netplan/51-private-network.yaml
+    permissions: "0600"
+    content: |
+      network:
+        version: 2
+        ethernets:
+          enp7s0:
+            dhcp4: true
   - path: /usr/local/bin/k3s-daily-cleanup.sh
     permissions: "0755"
     content: |
@@ -28,6 +36,7 @@ write_files:
     content: "0 2 * * * root /usr/local/bin/k3s-daily-cleanup.sh\n"
 
 runcmd:
+  - netplan apply
   - |
     # Wait for K3s server to be reachable (up to 10 minutes)
     for i in $(seq 1 60); do

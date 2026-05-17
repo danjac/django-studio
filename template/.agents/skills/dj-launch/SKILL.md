@@ -108,6 +108,37 @@ Also verify:
 - Derive the GitHub owner/repo: `gh repo view --json nameWithOwner -q .nameWithOwner`
   Save this as `<github_repo>` (e.g. `danjac/my_project`) for use in later steps.
 
+### Image mismatch check
+
+Read the `postgres` and `redis` image values from both files:
+
+```bash
+# docker-compose.yml
+dc_postgres=$(grep -A10 '^\s*postgres:' docker-compose.yml | grep 'image:' | head -1 | awk '{print $2}')
+dc_redis=$(grep -A10 '^\s*redis:' docker-compose.yml | grep 'image:' | head -1 | awk '{print $2}')
+
+# helm/site/values.yaml
+helm_postgres=$(grep -A5 '^\s*postgres:' helm/site/values.yaml | grep 'image:' | head -1 | awk '{print $2}')
+helm_redis=$(grep -A5 '^\s*redis:' helm/site/values.yaml | grep 'image:' | head -1 | awk '{print $2}')
+```
+
+If `dc_postgres != helm_postgres` or `dc_redis != helm_redis`, warn the user:
+
+> **Image mismatch detected:**
+>
+> | Service  | docker-compose.yml | helm/site/values.yaml |
+> |----------|--------------------|-----------------------|
+> | postgres | `<dc_postgres>`    | `<helm_postgres>`     |
+> | redis    | `<dc_redis>`       | `<helm_redis>`        |
+>
+> Production will run a different image than local dev. This can cause migration
+> failures or runtime errors. Update `helm/site/values.yaml` to match
+> `docker-compose.yml` (or vice versa), then say **continue**.
+
+Wait for the user to confirm, then re-read `helm/site/values.yaml` and verify the values match before proceeding.
+
+If both images match, continue silently.
+
 Print a summary of what will be set up and ask the user to confirm before proceeding.
 
 ---

@@ -9,4 +9,4 @@ set -euo pipefail
 MANAGE="python ./manage.py"
 
 $MANAGE check --deploy --traceback
-$MANAGE migrate --noinput --traceback
+$MANAGE migrate --no-input --traceback

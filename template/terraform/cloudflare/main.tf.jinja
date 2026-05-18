@@ -56,6 +56,19 @@ resource "cloudflare_record" "grafana" {
   comment         = "Grafana observability UI - managed by Terraform"
 }
 
+# Optional: Wildcard A record for tenant subdomains (django-tenants)
+resource "cloudflare_record" "wildcard" {
+  count           = var.wildcard_subdomains ? 1 : 0
+  zone_id         = data.cloudflare_zone.domain.id
+  name            = "*"
+  content         = var.server_ip
+  type            = "A"
+  proxied         = true
+  ttl             = 1
+  allow_overwrite = true
+  comment         = "Wildcard - tenant subdomains - managed by Terraform"
+}
+
 # Optional: WWW redirect
 resource "cloudflare_record" "www" {
   count           = var.enable_www_redirect ? 1 : 0

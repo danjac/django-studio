@@ -74,6 +74,10 @@ resources:
 # Application domain - set in values.secret.yaml
 domain: ""
 
+# Multi-tenancy (django-tenants) - set to true to route all subdomains to Django
+tenants:
+  enabled: false
+
 # Django application settings
 app:
   adminUrl: admin/

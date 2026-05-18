@@ -18,6 +18,7 @@ tables).
 - [Management commands](#management-commands)
 - [Testing](#testing)
 - [First-deploy initialisation](#first-deploy-initialisation)
+- [Social authentication](#social-authentication)
 - [Gotchas](#gotchas)
 
 ---
@@ -485,6 +486,34 @@ Once the row exists, the app pods will start responding normally.
 
 ---
 
+## Social authentication
+
+Social auth providers (Google, GitHub, LinkedIn, and others) do not support
+wildcard redirect URIs. In a subdomain multi-tenant setup every tenant's
+callback URL must be registered individually in each provider's developer
+console:
+
+```
+https://acme.yourdomain.com/account/google/login/callback/
+https://globex.yourdomain.com/account/google/login/callback/
+# ... one entry per tenant, per provider
+```
+
+**Sessions are not shared across subdomains by default.** `SESSION_COOKIE_DOMAIN`
+defaults to the exact request host, so a session established on
+`acme.yourdomain.com` is not visible on `globex.yourdomain.com`. If your auth
+flow requires cross-subdomain session access (e.g. OAuth redirects that land on
+a different subdomain), set:
+
+```python
+SESSION_COOKIE_DOMAIN = ".yourdomain.com"   # leading dot matches all subdomains
+```
+
+Be aware that sharing a session cookie across subdomains means a compromised
+tenant subdomain can read cookies from other subdomains.
+
+---
+
 ## Gotchas
 
 | Symptom | Cause | Fix |
@@ -499,3 +528,5 @@ Once the row exists, the app pods will start responding normally.
 | Tenant subdomain returns 404 in development | `ALLOWED_HOSTS` explicitly set without the `.localhost` wildcard | In `.env` set `ALLOWED_HOSTS=.localhost,127.0.0.1`. The leading dot is Django's wildcard and matches all `*.localhost` subdomains |
 | `AppRegistryNotReady` or `ImproperlyConfigured: duplicates: admin` when wiring a custom `AdminSite` | Putting the `AdminConfig` subclass in `admin.py` (imports models) or `apps.py` (Django auto-scans and finds two configs with the same label) | Put the `AdminConfig` subclass in its own module (e.g. `admin_config.py`) that imports only `AdminConfig` and no models — see [Admin site customisation](#admin-site-customisation) |
 | `release.sh` fails with `unrecognized arguments: --no-input` during `migrate` | django-tenants overrides the `migrate` command and only accepts the short form `--noinput`; Django's `--no-input` alias is not recognised | Change `--no-input` to `--noinput` in `release.sh` for tenant projects |
+| OAuth callback fails with `redirect_uri_mismatch` on a tenant subdomain | Provider requires explicit redirect URI registration; wildcards are not supported | Register `https://<tenant>.yourdomain.com/account/<provider>/login/callback/` in the provider's developer console for each tenant |
+| Login session lost after OAuth redirect to a tenant subdomain | `SESSION_COOKIE_DOMAIN` defaults to the exact request host, so cookies are not shared across subdomains | Set `SESSION_COOKIE_DOMAIN = ".yourdomain.com"` — see [Social authentication](#social-authentication) |

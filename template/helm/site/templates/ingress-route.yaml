@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`{{ .Values.domain }}`)
+    - match: {{ if .Values.tenants.enabled }}PathPrefix(`/`){{ else }}Host(`{{ .Values.domain }}`){{ end }}
       kind: Rule
       services:
         - name: django

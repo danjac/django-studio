@@ -4,7 +4,7 @@ Sets up Cloudflare DNS, CDN caching, SSL/TLS, and security settings.
 
 ## What This Configures
 
-- **DNS Records**: A record pointing to your Hetzner server (+ optional Grafana subdomain)
+- **DNS Records**: A record pointing to your Hetzner server (+ optional Grafana subdomain, optional wildcard for tenant subdomains)
 - **CDN**: Caching for static assets
 - **SSL/TLS**: Full SSL mode with automatic HTTPS redirects
 - **Security**: Firewall rules, security headers

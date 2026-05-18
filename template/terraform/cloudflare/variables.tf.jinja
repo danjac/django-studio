@@ -32,6 +32,12 @@ variable "enable_www_redirect" {
   default     = true
 }
 
+variable "wildcard_subdomains" {
+  description = "Create a wildcard A record (*.domain) for tenant subdomains (django-tenants)"
+  type        = bool
+  default     = false
+}
+
 variable "grafana_subdomain" {
   description = "Subdomain for Grafana UI (e.g. 'grafana' → grafana.example.com). Leave empty to skip."
   type        = string

@@ -50,6 +50,12 @@ variable "mailgun_subdomain" {
   default     = "mg"
 }
 
+variable "mailgun_dkim_selector" {
+  description = "DKIM selector for Mailgun (shown in Mailgun DNS setup as '<selector>._domainkey')"
+  type        = string
+  default     = "s1"
+}
+
 variable "mailgun_dkim_value" {
   description = "Mailgun DKIM public key (leave empty to skip Mailgun DNS)"
   type        = string

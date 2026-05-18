@@ -113,7 +113,7 @@ resource "cloudflare_record" "mailgun_spf" {
 resource "cloudflare_record" "mailgun_dkim" {
   count           = local.mailgun_dkim_value != "" ? 1 : 0
   zone_id         = data.cloudflare_zone.domain.id
-  name            = "mta._domainkey.${var.mailgun_subdomain}"
+  name            = "${var.mailgun_dkim_selector}._domainkey.${var.mailgun_subdomain}"
   content         = "\"${local.mailgun_dkim_value}\""
   type            = "TXT"
   ttl             = 1

@@ -113,15 +113,7 @@ Open `helm/site/values.yaml` and:
 
 ---
 
-## Step 7 — Verify
-
-```bash
-just check-all
-```
-
----
-
-## Step 8 — Prompt to deploy
+## Step 7 — Prompt to deploy
 
 Check whether `helm/site/values.secret.yaml` exists (indicating the project has
 already been deployed to production).

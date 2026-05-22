@@ -94,6 +94,10 @@ repos:
     rev: v0.4.5
     hooks:
       - id: pysentry
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.25.2
+    hooks:
+      - id: zizmor
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.105.0
     hooks:

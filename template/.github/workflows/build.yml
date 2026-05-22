@@ -10,7 +10,6 @@ jobs:
   build:
     uses: ./.github/workflows/docker.yml
     needs: checks
-    secrets: inherit # pragma: allowlist secret
     permissions:
       attestations: write
       contents: write

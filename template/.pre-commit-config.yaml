@@ -91,7 +91,7 @@ repos:
     hooks:
       - id: validate-pyproject
   - repo: https://github.com/pysentry/pysentry-pre-commit
-    rev: v0.4.3
+    rev: v0.4.5
     hooks:
       - id: pysentry
   - repo: https://github.com/antonbabenko/pre-commit-terraform

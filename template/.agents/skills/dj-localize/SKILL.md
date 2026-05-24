@@ -5,8 +5,10 @@ description: Add localization formats, extract strings, translate using agent, c
 Extract all translatable strings, translate them using the agent, and compile the
 message catalogue for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
 
-If no locale is given, audit source code for untranslated strings first, then
-run the full translation pipeline for every language already in `LANGUAGES`.
+If no locale is given, **first ask the user** whether they want a full audit of
+untranslated strings in the source code, or whether to skip straight to
+`makemessages`. If they say skip (or similar), go directly to step B (detect
+languages) and then the single-locale pipeline.
 
 Read `docs/localization.md` for details on managing i18n/l10n in Django.
 
@@ -136,7 +138,8 @@ and steps 2b and 2c). Work through them sequentially, one locale at a time.
 
 ### 0 — Detect existing locale
 
-Check whether `locale/<locale>/LC_MESSAGES/django.po` already exists.
+Check whether `locale/<locale>/LC_MESSAGES/django.po` already exists (and any
+other `.po` files like `djangojs.po` under the same directory).
 
 - **New locale** — the file does not exist. Run all steps below (1 through 5).
 - **Existing locale** — the file already exists. This is a re-run to pick up
@@ -157,6 +160,14 @@ This creates or updates `locale/<locale>/LC_MESSAGES/django.po`. Django marks
 strings that were previously translated but whose source has since changed as
 `#, fuzzy`; brand-new strings get an empty `msgstr`. If the directory does not
 exist, Django creates it automatically.
+
+If your project uses JavaScript files with translatable strings, also run:
+
+```bash
+just dj makemessages -l <locale> -d djangojs --no-wrap
+```
+
+This creates or updates `djangojs.po` alongside `django.po`.
 
 ---
 
@@ -232,7 +243,62 @@ full list of available variables.
 
 ---
 
+### 2c — Migrate model translation fields _(new locale only — skip if re-running)_
+
+If `django-modeltranslation` is installed (check `INSTALLED_APPS` for
+`modeltranslation`), run migrations to add the new language columns:
+
+```bash
+just dj makemigrations
+just dj migrate
+```
+
+`django-modeltranslation` generates migrations for the new `_<locale>` columns.
+`migrate` applies them to every schema automatically (including all tenant
+schemas in `django-tenants` projects).
+
+After migrations, populate the new language fields with translated content.
+For each `modeltranslation`-registered model:
+
+1. Query records where the new language field is null/empty.
+2. Translate each field value from the source language (`en`) into `<locale>`.
+3. Write the translated values back in chunks of ≤100 records at a time using
+   `queryset.iterator()` + `Model.objects.bulk_update(records, fields)` to
+   avoid loading all records into memory.
+
+Report progress to the user after each model is complete.
+
+---
+
 ### 3 — Translate the `.po` file
+
+> **Recommended:** use the `translate` management command instead of editing the
+> `.po` file directly. It handles multi-line strings, escaped characters, and
+> fuzzy markers correctly via `polib`.
+>
+> ```bash
+> # Requires polib — install once per project:
+> uv add --dev polib
+>
+> # 0. Check how many entries need translation — accepts a file, locale dir, or locale code
+> just dj translate count locale/<locale>/LC_MESSAGES/django.po   # single file
+> just dj translate count locale/<locale>                          # all .po files for that locale
+> just dj translate count <locale>                                 # resolve locale code from cwd
+>
+> # 1. Dump all entries needing translation to JSON (single .po file only)
+> just dj translate extract locale/<locale>/LC_MESSAGES/django.po > /tmp/untranslated.json
+> # Same for djangojs.po or any other .po file under the locale
+> just dj translate extract locale/<locale>/LC_MESSAGES/djangojs.po > /tmp/untranslated-js.json
+>
+> # 2. Fill in msgstr values in the JSON files (LLM does this step)
+>
+> # 3. Apply completed translations back to the .po files
+> just dj translate apply locale/<locale>/LC_MESSAGES/django.po /tmp/untranslated.json
+> just dj translate apply locale/<locale>/LC_MESSAGES/djangojs.po /tmp/untranslated-js.json
+> ```
+>
+> The `apply` subcommand also strips `#, fuzzy` markers automatically.
+> Fall back to direct file editing only if `polib` is unavailable.
 
 Read `locale/<locale>/LC_MESSAGES/django.po`.
 
@@ -262,6 +328,45 @@ msgstr[1] "%(count)s éléments"
 ```
 
 Remove the `#, fuzzy` flag after translating a fuzzy entry.
+
+#### Large .po files — chunk approach
+
+If `locale/<locale>/LC_MESSAGES/django.po` is **larger than ~500 lines**, do
+not attempt to read and rewrite the entire file in one pass — the context
+window cannot hold it reliably. Instead:
+
+1. **Split** the file into numbered chunks of ≤500 lines each:
+
+   ```bash
+   cd locale/<locale>/LC_MESSAGES
+   split -l 500 django.po django- \
+     --numeric-suffixes=1 --suffix-length=1 --additional-suffix=.po
+   ```
+
+   This produces `django-1.po`, `django-2.po`, … in the same directory.
+
+2. **Translate one chunk at a time**, sequentially:
+   - Read the chunk file.
+   - Fill in all empty `msgstr` values (preserving any entries that already
+     have translations).
+   - Write the translated chunk back.
+   - **Report to the user** when each chunk is finished before moving to the next.
+
+   > Note: the split may cut across a `msgid`/`msgstr` pair. The first line of
+   > a later chunk may be an orphan `msgstr ""`. Leave these boundary lines as-is
+   > in each chunk file — they will be correct once the file is reassembled.
+
+3. **Reassemble** once all chunks are translated:
+
+   ```bash
+   cat django-1.po django-2.po ... django-N.po > django.po
+   rm django-1.po django-2.po ... django-N.po
+   ```
+
+   Use the exact chunk filenames produced by `split` — do not add a separate
+   header; `django-1.po` already contains the original file header.
+
+4. Continue to step 4 (compile).
 
 Write the updated `.po` file back.
 

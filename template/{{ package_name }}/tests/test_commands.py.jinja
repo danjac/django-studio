@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import importlib
 import json
 import re
@@ -23,7 +21,7 @@ MOCK_VENDORS = {
         "dest": "static/vendor/htmx.js",
     },
     "daisyui": {
-        "version": "5.5.18",
+        "version": "2.0.7",
         "files": [
             {
                 "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui.mjs",
@@ -91,6 +89,81 @@ class TestSyncVendors:
         output = capsys.readouterr().out
         assert "up to date" in output
 
+    def test_check_rejects_downgrade(self, vendors_path, mocker, capsys):
+        """Upstream reporting an older version must not trigger a 'download'."""
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="1.0.0",
+        )
+        mock_download = mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._download_file",
+        )
+        call_command("sync_vendors", "--no-input")
+        output = capsys.readouterr().out
+        assert "upstream reports older 1.0.0" in output
+        assert "2.0.7 -> 1.0.0" not in output
+        mock_download.assert_not_called()
+
+    def test_check_prerelease_upgrade(self, tmp_path, settings, mocker, capsys):
+        """Prerelease tags (e.g. htmx 4.0.0-beta3 -> -beta4) compare correctly."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "htmx": {
+                        "version": "4.0.0-beta3",
+                        "source": "https://example.com/htmx@{version}.js",
+                        "dest": "static/vendor/htmx.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="4.0.0-beta4",
+        )
+        call_command("sync_vendors", "--check")
+        assert "4.0.0-beta3 -> 4.0.0-beta4" in capsys.readouterr().out
+
+    def test_check_prerelease_downgrade_rejected(
+        self, tmp_path, settings, mocker, capsys
+    ):
+        """Prerelease downgrade (beta4 -> beta3) is rejected."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "htmx": {
+                        "version": "4.0.0-beta4",
+                        "source": "https://example.com/htmx@{version}.js",
+                        "dest": "static/vendor/htmx.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="4.0.0-beta3",
+        )
+        call_command("sync_vendors", "--check")
+        assert "upstream reports older 4.0.0-beta3" in capsys.readouterr().out
+
+    def test_check_invalid_version_warns(self, vendors_path, mocker, capsys):
+        """Unparseable version strings warn and are treated as not-an-update."""
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="not-a-version",
+        )
+        mock_download = mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._download_file",
+        )
+        call_command("sync_vendors", "--no-input")
+        output = capsys.readouterr().out
+        assert "cannot compare versions" in output
+        mock_download.assert_not_called()
+
     def test_download_all_packages(self, vendors_path, mocker, tmp_path):
         (tmp_path / "static" / "vendor").mkdir(parents=True)
         mocker.patch(
@@ -111,9 +184,7 @@ class TestSyncVendors:
             "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
             return_value="2.0.8",
         )
-        mocker.patch(
-            "{{ package_name }}.management.commands.sync_vendors.Command._download_file"
-        )
+        mocker.patch("{{ package_name }}.management.commands.sync_vendors.Command._download_file")
         call_command("sync_vendors", "--no-input")
         updated = json.loads(vendors_path.read_text())
         assert updated["htmx"]["version"] == "2.0.8"
@@ -197,13 +268,15 @@ class TestSyncVendors:
         """Non-GitHub URL with no repo: _latest_github_version returns None → warning."""
         path = tmp_path / "vendors.json"
         path.write_text(
-            json.dumps({
-                "mylib": {
-                    "version": "1.0.0",
-                    "source": "https://cdn.example.com/mylib.js",
-                    "dest": "static/vendor/mylib.js",
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "source": "https://cdn.example.com/mylib.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
                 }
-            })
+            )
         )
         settings.VENDORS_FILE = path
         call_command("sync_vendors", "--check")
@@ -213,13 +286,15 @@ class TestSyncVendors:
         """GitHub URL with no explicit repo: version resolved via regex + API call."""
         path = tmp_path / "vendors.json"
         path.write_text(
-            json.dumps({
-                "mylib": {
-                    "version": "1.0.0",
-                    "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
-                    "dest": "static/vendor/mylib.js",
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
                 }
-            })
+            )
         )
         settings.VENDORS_FILE = path
         with aioresponses() as m:
@@ -230,21 +305,196 @@ class TestSyncVendors:
             call_command("sync_vendors", "--check")
         assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
 
+    def test_releases_api_404_falls_back_to_tags(self, tmp_path, settings, capsys):
+        """404 from /releases/latest falls back to /tags to resolve version."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        with aioresponses() as m:
+            m.get(
+                "https://api.github.com/repos/owner/mylib/releases/latest",
+                status=404,
+                payload={"message": "Not Found"},
+            )
+            m.get(
+                "https://api.github.com/repos/owner/mylib/tags",
+                payload=[{"name": "v2.0.0"}],
+            )
+            call_command("sync_vendors", "--check")
+        assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
+
+    def test_releases_api_error_warns_and_returns_none(
+        self, tmp_path, settings, capsys
+    ):
+        """Non-404 API error (e.g., 403 rate limit) warns and continues."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        with aioresponses() as m:
+            m.get(
+                "https://api.github.com/repos/owner/mylib/releases/latest",
+                status=403,
+                payload={"message": "rate limit exceeded"},
+            )
+            call_command("sync_vendors", "--check")
+        assert "could not determine latest version" in capsys.readouterr().out
+
+    def test_releases_api_500_warns_and_returns_none(self, tmp_path, settings, capsys):
+        """500 server error warns and continues."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        with aioresponses() as m:
+            m.get(
+                "https://api.github.com/repos/owner/mylib/releases/latest",
+                status=500,
+                payload={"message": "Internal Server Error"},
+            )
+            call_command("sync_vendors", "--check")
+        assert "could not determine latest version" in capsys.readouterr().out
+
+    def test_releases_api_404_and_tags_http_error_returns_none(
+        self, tmp_path, settings, capsys
+    ):
+        """404 from /releases/latest with non-OK /tags response returns None."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        with aioresponses() as m:
+            m.get(
+                "https://api.github.com/repos/owner/mylib/releases/latest",
+                status=404,
+                payload={"message": "Not Found"},
+            )
+            m.get(
+                "https://api.github.com/repos/owner/mylib/tags",
+                status=500,
+                payload={"message": "boom"},
+            )
+            call_command("sync_vendors", "--check")
+        assert "could not determine latest version" in capsys.readouterr().out
+
+    def test_explicit_repo_used_for_lookup(self, tmp_path, settings, capsys):
+        """Explicit `repo` config is used directly, bypassing URL regex extraction."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "repo": "explicit/repo",
+                        "source": "https://cdn.jsdelivr.net/npm/mylib@{version}.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        with aioresponses() as m:
+            m.get(
+                "https://api.github.com/repos/explicit/repo/releases/latest",
+                payload={"tag_name": "v2.0.0"},
+            )
+            call_command("sync_vendors", "--check")
+        assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
+
+    def test_releases_api_404_and_tags_empty_returns_none(
+        self, tmp_path, settings, capsys
+    ):
+        """404 from /releases/latest with empty tags list returns None."""
+        path = tmp_path / "vendors.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "mylib": {
+                        "version": "1.0.0",
+                        "source": "https://github.com/owner/mylib/releases/download/v{version}/mylib.js",
+                        "dest": "static/vendor/mylib.js",
+                    }
+                }
+            )
+        )
+        settings.VENDORS_FILE = path
+        with aioresponses() as m:
+            m.get(
+                "https://api.github.com/repos/owner/mylib/releases/latest",
+                status=404,
+                payload={"message": "Not Found"},
+            )
+            m.get(
+                "https://api.github.com/repos/owner/mylib/tags",
+                payload=[],
+            )
+            call_command("sync_vendors", "--check")
+        assert "could not determine latest version" in capsys.readouterr().out
+
     def test_download_file_writes_content(self, vendors_path, tmp_path):
         """_download_file success path: HTTP response body written to dest file."""
         (tmp_path / "static" / "vendor").mkdir(parents=True)
         (tmp_path / "tailwind").mkdir(parents=True)
         with aioresponses() as m:
-            m.get(re.compile(r"https://api\.github\.com/.*"), payload={"tag_name": "v2.0.8"}, repeat=True)
-            m.get(re.compile(r"https://github\.com/.*"), body=b"fake content", repeat=True)
+            m.get(
+                re.compile(r"https://api\.github\.com/.*"),
+                payload={"tag_name": "v2.0.8"},
+                repeat=True,
+            )
+            m.get(
+                re.compile(r"https://github\.com/.*"), body=b"fake content", repeat=True
+            )
             call_command("sync_vendors", "--no-input")
-        assert (tmp_path / "static" / "vendor" / "htmx.js").read_bytes() == b"fake content"
+        assert (
+            tmp_path / "static" / "vendor" / "htmx.js"
+        ).read_bytes() == b"fake content"
         assert (tmp_path / "tailwind" / "daisyui.mjs").read_bytes() == b"fake content"
 
     def test_download_http_error_raises_command_error(self, vendors_path):
         """_download_file ClientError path: raises CommandError."""
         with aioresponses() as m:
-            m.get(re.compile(r"https://api\.github\.com/.*"), payload={"tag_name": "v2.0.8"}, repeat=True)
+            m.get(
+                re.compile(r"https://api\.github\.com/.*"),
+                payload={"tag_name": "v2.0.8"},
+                repeat=True,
+            )
             m.get(
                 re.compile(r"https://github\.com/.*"),
                 exception=aiohttp.ClientError("connection refused"),
@@ -255,7 +505,7 @@ class TestSyncVendors:
 
 
 # ---------------------------------------------------------------------------
-# translate helpers
+# translate
 # ---------------------------------------------------------------------------
 
 
@@ -276,20 +526,20 @@ def _make_entry(
     entry.msgstr_plural = msgstr_plural or {}
     entry.comment = comment
     entry.flags = ["fuzzy"] if fuzzy else []
+    entry.obsolete = False
+    has_translation = bool(msgstr) or bool(
+        msgstr_plural and all(msgstr_plural.values())
+    )
+    entry.translated = MagicMock(return_value=has_translation)
     return entry
 
 
-def _make_polib_mock(entries: list) -> tuple[MagicMock, MagicMock]:
+def _make_polib_mock(entries: list) -> MagicMock:
     mock = MagicMock()
     po = MagicMock()
     po.__iter__ = MagicMock(return_value=iter(entries))
     mock.pofile.return_value = po
     return mock, po
-
-
-# ---------------------------------------------------------------------------
-# translate fixtures
-# ---------------------------------------------------------------------------
 
 
 @pytest.fixture
@@ -306,9 +556,14 @@ def po_file(tmp_path):
     return f
 
 
-# ---------------------------------------------------------------------------
-# translate
-# ---------------------------------------------------------------------------
+@pytest.fixture
+def locale_dir(tmp_path):
+    """Create a locale directory with two .po files."""
+    base = tmp_path / "locale" / "fr" / "LC_MESSAGES"
+    base.mkdir(parents=True)
+    for name in ("django.po", "djangojs.po"):
+        (base / name).touch()
+    return tmp_path / "locale"
 
 
 class TestTranslateCommand:
@@ -328,7 +583,7 @@ class TestTranslateCommand:
             importlib.reload(translate_cmd)
 
     def test_missing_po_file_raises_error(self, mock_polib, tmp_path):
-        with pytest.raises(CommandError, match="File not found"):
+        with pytest.raises(CommandError, match=r"\.po file not found"):
             call_command("translate", "extract", str(tmp_path / "missing.po"))
 
     def test_apply_without_translations_arg_raises_error(self, mock_polib, po_file):
@@ -390,7 +645,18 @@ class TestTranslateCommand:
         call_command("translate", "extract", str(po_file), stdout=out)
         result = json.loads(out.getvalue())
         assert result[0]["msgid_plural"] == "%(n)s items"
-        assert "msgstr_plural" in result[0]
+
+    def test_extract_skips_plural_with_all_forms_filled(self, mocker, po_file):
+        entry = _make_entry(
+            msgid="%(n)s item",
+            msgid_plural="%(n)s items",
+            msgstr_plural={0: "%(n)s élément", 1: "%(n)s éléments"},
+        )
+        mock, _po = _make_polib_mock([entry])
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "extract", str(po_file), stdout=out)
+        assert json.loads(out.getvalue()) == []
 
     def test_extract_includes_comment(self, mocker, po_file):
         entry = _make_entry(msgid="Save", comment="Translators: save button")
@@ -479,3 +745,126 @@ class TestTranslateCommand:
         out = StringIO()
         call_command("translate", "apply", str(po_file), str(translations), stdout=out)
         assert "1 translation" in out.getvalue()
+
+    def test_count_summary(self, mocker, po_file):
+        entries = [
+            _make_entry(msgid="Save", msgstr="Enregistrer"),
+            _make_entry(msgid="Cancel", msgstr="Annuler"),
+            _make_entry(msgid="New", msgstr=""),
+            _make_entry(msgid="Edit", msgstr="Modifier"),
+        ]
+        mock, po = _make_polib_mock(entries)
+        po.__len__ = MagicMock(return_value=4)
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "count", str(po_file), stdout=out)
+        assert "Translated:   3" in out.getvalue()
+        assert "Untranslated: 1" in out.getvalue()
+        assert "Fuzzy:        0" in out.getvalue()
+
+    def test_count_fuzzy_entry(self, mocker, po_file):
+        entry = _make_entry(msgid="Save", msgstr="Sauvegarder", fuzzy=True)
+        mock, po = _make_polib_mock([entry])
+        po.__len__ = MagicMock(return_value=1)
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "count", str(po_file), stdout=out)
+        assert "Fuzzy:        1" in out.getvalue()
+
+    def test_count_obsolete_entry(self, mocker, po_file):
+        entry = _make_entry(msgid="Old", msgstr="Vieux")
+        entry.obsolete = True
+        mock, po = _make_polib_mock([entry])
+        po.__len__ = MagicMock(return_value=1)
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "count", str(po_file), stdout=out)
+        assert "Obsolete:     1" in out.getvalue()
+        assert "Untranslated: 0" in out.getvalue()
+
+    def test_count_plural_translated(self, mocker, po_file):
+        entry = _make_entry(
+            msgid="%(n)s item",
+            msgid_plural="%(n)s items",
+            msgstr_plural={0: "%(n)s élément", 1: "%(n)s éléments"},
+        )
+        mock, po = _make_polib_mock([entry])
+        po.__len__ = MagicMock(return_value=1)
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "count", str(po_file), stdout=out)
+        assert "Translated:   1" in out.getvalue()
+        assert "Untranslated: 0" in out.getvalue()
+
+    def test_count_plural_untranslated(self, mocker, po_file):
+        entry = _make_entry(
+            msgid="%(n)s item",
+            msgid_plural="%(n)s items",
+            msgstr_plural={0: "", 1: ""},
+        )
+        mock, po = _make_polib_mock([entry])
+        po.__len__ = MagicMock(return_value=1)
+        mocker.patch.object(translate_cmd, "polib", mock)
+        out = StringIO()
+        call_command("translate", "count", str(po_file), stdout=out)
+        assert "Translated:   0" in out.getvalue()
+        assert "Untranslated: 1" in out.getvalue()
+
+    def test_count_locale_directory(self, mocker, locale_dir):
+        entry = _make_entry(msgid="Save", msgstr="Enregistrer")
+        mock_po = MagicMock()
+        mock_po.__iter__ = MagicMock(return_value=iter([entry]))
+        mock_po.__len__ = MagicMock(return_value=1)
+        mock_polib = MagicMock()
+        mock_polib.pofile.return_value = mock_po
+        mocker.patch.object(translate_cmd, "polib", mock_polib)
+        out = StringIO()
+        call_command("translate", "count", str(locale_dir / "fr"), stdout=out)
+        result = out.getvalue()
+        assert "django.po" in result
+        assert "djangojs.po" in result
+        assert "totals" in result
+
+    def test_count_locale_code_resolves(self, mocker, locale_dir, monkeypatch):
+        monkeypatch.chdir(locale_dir.parent)
+        entry = _make_entry(msgid="Hello", msgstr="Bonjour")
+        mock_po = MagicMock()
+        mock_po.__iter__ = MagicMock(return_value=iter([entry]))
+        mock_po.__len__ = MagicMock(return_value=1)
+        mock_polib = MagicMock()
+        mock_polib.pofile.return_value = mock_po
+        mocker.patch.object(translate_cmd, "polib", mock_polib)
+        out = StringIO()
+        call_command("translate", "count", "fr", stdout=out)
+        assert "django.po" in out.getvalue()
+
+    def test_count_nonexistent_po_file_raises_error(self, mocker, tmp_path):
+        mocker.patch.object(translate_cmd, "polib", MagicMock())
+        po_path = tmp_path / "nonexistent.po"
+        with pytest.raises(CommandError, match="File not found"):
+            call_command("translate", "count", str(po_path))
+
+    def test_count_nonexistent_locale_code_raises_error(
+        self, mocker, locale_dir, monkeypatch
+    ):
+        monkeypatch.chdir(locale_dir.parent)
+        mocker.patch.object(translate_cmd, "polib", MagicMock())
+        with pytest.raises(CommandError, match="Not a .po file or locale directory"):
+            call_command("translate", "count", "xx")
+
+    def test_count_empty_resolved_locale_dir_raises_error(
+        self, mocker, tmp_path, monkeypatch
+    ):
+        mocker.patch.object(translate_cmd, "polib", MagicMock())
+        dir_path = tmp_path / "locale" / "xx"
+        dir_path.mkdir(parents=True)
+        monkeypatch.chdir(tmp_path)
+        with pytest.raises(CommandError, match="No .po files found"):
+            call_command("translate", "count", "xx")
+
+    def test_count_empty_locale_dir_raises_error(self, mocker, tmp_path):
+        mocker.patch.object(translate_cmd, "polib", MagicMock())
+        empty = tmp_path / "locale" / "xx" / "LC_MESSAGES"
+        empty.mkdir(parents=True)
+        with pytest.raises(CommandError, match="No .po files found"):
+            call_command("translate", "count", str(empty.parent.parent))

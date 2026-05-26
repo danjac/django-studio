@@ -40,8 +40,8 @@ terraform apply
 After `terraform apply`, get the values needed for your Helm secrets:
 
 ```bash
-terraform output bucket_name    # → HETZNER_STORAGE_BUCKET
-terraform output endpoint_url   # → HETZNER_STORAGE_ENDPOINT
+terraform output bucket_name    # → OBJECT_STORAGE_BUCKET
+terraform output endpoint_url   # → OBJECT_STORAGE_ENDPOINT
 ```
 
 Set these in `helm/site/values.secret.yaml` alongside the access key and secret key:

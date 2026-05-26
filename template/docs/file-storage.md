@@ -94,11 +94,11 @@ Once the bucket is provisioned, set these in the production environment:
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `USE_S3_STORAGE` | Enable S3 backend | `true` |
-| `HETZNER_STORAGE_ACCESS_KEY` | S3 access key | from Hetzner console |
-| `HETZNER_STORAGE_SECRET_KEY` | S3 secret key | from Hetzner console |
-| `HETZNER_STORAGE_BUCKET` | Bucket name | `{{ project_slug }}-media` |
-| `HETZNER_STORAGE_ENDPOINT` | S3 endpoint URL | `https://fsn1.your-objectstorage.com` |
-| `HETZNER_STORAGE_REGION` | Region name (default: `fsn1`) | `fsn1` |
+| `OBJECT_STORAGE_ACCESS_KEY` | S3 access key | from Hetzner console |
+| `OBJECT_STORAGE_SECRET_KEY` | S3 secret key | from Hetzner console |
+| `OBJECT_STORAGE_BUCKET` | Bucket name | `{{ project_slug }}-media` |
+| `OBJECT_STORAGE_ENDPOINT` | S3 endpoint URL | `https://fsn1.your-objectstorage.com` |
+| `OBJECT_STORAGE_REGION` | Region name (default: `fsn1`) | `fsn1` |
 
 ### Wiring into Helm
 
@@ -108,11 +108,11 @@ Fill in `helm/site/values.secret.yaml` after provisioning the bucket:
 ```yaml
 secrets:
   useS3Storage: "true"
-  hetznerStorageAccessKey: "<access-key>"
-  hetznerStorageSecretKey: "<secret-key>"
-  hetznerStorageBucket: "{{ project_slug }}-media"
-  hetznerStorageEndpoint: "https://fsn1.your-objectstorage.com"
-  hetznerStorageRegion: "fsn1"
+  objectStorageAccessKey: "<access-key>"
+  objectStorageSecretKey: "<secret-key>"
+  objectStorageBucket: "{{ project_slug }}-media"
+  objectStorageEndpoint: "https://fsn1.your-objectstorage.com"
+  objectStorageRegion: "fsn1"
 ```
 
 Then redeploy:
@@ -137,11 +137,11 @@ if env.bool("USE_S3_STORAGE", default=False):
             "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         },
     }
-    AWS_ACCESS_KEY_ID = env("HETZNER_STORAGE_ACCESS_KEY")
-    AWS_SECRET_ACCESS_KEY = env("HETZNER_STORAGE_SECRET_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("HETZNER_STORAGE_BUCKET")
-    AWS_S3_ENDPOINT_URL = env("HETZNER_STORAGE_ENDPOINT")
-    AWS_S3_REGION_NAME = env("HETZNER_STORAGE_REGION", default="fsn1")
+    AWS_ACCESS_KEY_ID = env("OBJECT_STORAGE_ACCESS_KEY")
+    AWS_SECRET_ACCESS_KEY = env("OBJECT_STORAGE_SECRET_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("OBJECT_STORAGE_BUCKET")
+    AWS_S3_ENDPOINT_URL = env("OBJECT_STORAGE_ENDPOINT")
+    AWS_S3_REGION_NAME = env("OBJECT_STORAGE_REGION", default="fsn1")
     AWS_DEFAULT_ACL = "public-read"
     MEDIA_URL = f"{AWS_S3_ENDPOINT_URL.rstrip('/')}/{AWS_STORAGE_BUCKET_NAME}/"
 ```

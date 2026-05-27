@@ -17,6 +17,7 @@ tables).
 - [Admin site customisation](#admin-site-customisation)
 - [Management commands](#management-commands)
 - [Testing](#testing)
+- [Helm configuration](#helm-configuration)
 - [First-deploy initialisation](#first-deploy-initialisation)
 - [Social authentication](#social-authentication)
 - [Gotchas](#gotchas)
@@ -447,6 +448,39 @@ def tenant_fixture(transactional_db, settings, _tenant_schema):
             qualified = ", ".join(f'"{TENANT_SCHEMA_NAME}"."{t}"' for t in tables)
             cursor.execute(f"TRUNCATE {qualified} CASCADE")
 ```
+
+---
+
+## Helm configuration
+
+When deploying a project that uses `django-tenants`, set `tenants.enabled: true`
+in `helm/site/values.yaml`:
+
+```yaml
+tenants:
+  enabled: true
+```
+
+This switches the Traefik ingress route in
+`helm/site/templates/ingress-route.yaml` from:
+
+```
+Host(`yourdomain.com`)
+```
+
+to:
+
+```
+PathPrefix(`/`)
+```
+
+Without this change, the ingress rule matches only the bare domain. Subdomain
+traffic (`acme.yourdomain.com`, `globex.yourdomain.com`) bypasses Django
+entirely, so `TenantMainMiddleware` never runs and tenant resolution fails.
+
+> **Note:** This setting defaults to `false` in the generated `values.yaml`.
+> Projects that add `django-tenants` after initial deployment must update this
+> manually — there is no automatic validation that the two are in sync.
 
 ---
 

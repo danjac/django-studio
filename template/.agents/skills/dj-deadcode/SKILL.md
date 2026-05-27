@@ -50,7 +50,7 @@ than proposing deletion.
 Run the bundled scanner:
 
 ```bash
-scripts/find-unused-urls.py
+.agents/skills/dj-deadcode/scripts/find-unused-urls.py
 ```
 
 It reads all `urls.py` files to collect named URL patterns, then scans every
@@ -68,7 +68,7 @@ if those are also unreferenced.
 Run the bundled scanner:
 
 ```bash
-scripts/find-unused-templates.py
+.agents/skills/dj-deadcode/scripts/find-unused-templates.py
 ```
 
 It walks every `.html` file under `templates/`, greps the path string across

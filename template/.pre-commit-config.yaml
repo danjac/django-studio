@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0
     hooks:
       - id: trailing-whitespace
         exclude: '^tailwind/daisyui.*\.mjs$'
@@ -34,25 +34,25 @@ repos:
         files: ^templates
         types_or: [html]
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.0
+    rev: 6eaad039603a4de39fddd1cf5f727391efe9974e  # v8.30.0
     hooks:
       - id: gitleaks
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.11.0.1
+    rev: 745eface02aef23e168a8afb6b5737818efbea95  # v0.11.0.1
     hooks:
       - id: shellcheck
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.15.4"
+    rev: a27a2e47c7751b639d2b5badf0ef6ff11fee893f  # v0.15.4
     hooks:
       - id: ruff-check
         args: ["--fix"]
       - id: ruff-format
   - repo: https://github.com/MarcoGorelli/absolufy-imports
-    rev: v0.3.1
+    rev: 2b275ea7e0241bf601527d8378dc68d6e31e03e0  # v0.3.1
     hooks:
       - id: absolufy-imports
   - repo: https://github.com/rtts/djhtml
-    rev: 3.0.10
+    rev: d34e543bfe7205129f8b60cccb35e2f903f29748  # 3.0.10
     hooks:
       - id: djhtml
         exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
@@ -61,50 +61,50 @@ repos:
       - id: djjs
         exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*|^tailwind/daisyui.*\.mjs$)
   - repo: https://github.com/adamchainz/djade-pre-commit
-    rev: 1.9.0
+    rev: b8bfd27da9514450edbc0fe5254bc3ba3d3032c6  # 1.9.0
     hooks:
       - id: djade
         args: [--target-version, "6.0"]
         exclude: ^helm/
   - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.36.4
+    rev: 9112cb64851c95a7802358af285d21ad8b7f6437  # v1.36.4
     hooks:
       - id: djlint-django
         args: ["--lint"]
         exclude: (^static/vendor|^helm/|(^|.*/)mocks/.*)
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.14.0
+    rev: 57e1618d78fd469a92c1e584e8c9313024656623  # v2.14.0
     hooks:
       - id: hadolint-docker
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.21.2
+    rev: 75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2
     hooks:
       - id: pyupgrade
         args: [--py314]
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: "1.30.0"
+    rev: 1db0cbd209d6c4dc78191593942e6269fae99e8d  # 1.30.0
     hooks:
       - id: django-upgrade
         args: [--target-version, "6.0"]
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.25
+    rev: 4b2e70d08cb2ccd26d1fba73588de41c7a5d50b7  # v0.25
     hooks:
       - id: validate-pyproject
   - repo: https://github.com/pysentry/pysentry-pre-commit
-    rev: v0.4.5
+    rev: 03d168fb782e8befa1b29179cb5f236a181dafbf  # v0.4.5
     hooks:
       - id: pysentry
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.25.2
+    rev: 9257c6050c0261b8c57e712f632dc4a8010109a9  # v1.25.2
     hooks:
       - id: zizmor
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.105.0
+    rev: d0e12caebb2ab0ee8bf98181c8bfe9702bca103d  # v1.105.0
     hooks:
       - id: terraform_fmt
       - id: terraform_validate
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.24.0
+    rev: 1f6454da22d006d5bb0d2e65c96c43c23c8a534f  # v9.24.0
     hooks:
       - id: commitlint
         stages: [commit-msg]

@@ -553,6 +553,12 @@ if env.bool("USE_DEBUG_TOOLBAR", default=False):
     # INTERNAL_IPS required for debug toolbar
     INTERNAL_IPS = env.list("INTERNAL_IPS", default=["127.0.0.1"])
 
+# Django removals
+# https://github.com/ambient-innovation/django-removals
+
+if env.bool("USE_REMOVALS", default=False):
+    INSTALLED_APPS += ["django_removals"]
+
 # PROJECT-SPECIFIC SETTINGS
 
 # Cookie used to check user accepts cookies

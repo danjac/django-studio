@@ -1,13 +1,11 @@
 import importlib
 import json
-import re
 import sys
 from io import StringIO
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import aiohttp
 import pytest
-from aioresponses import aioresponses
 from django.contrib.sites.models import Site
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -30,6 +28,18 @@ MOCK_VENDORS = {
         ],
     },
 }
+
+
+def _make_get_cm(mocker, *, status=200, json_data=None, body=b""):
+    """Return a mock async context manager for aiohttp.ClientSession.get."""
+    resp = AsyncMock()
+    resp.status = status
+    resp.json = AsyncMock(return_value=json_data)
+    resp.read = AsyncMock(return_value=body)
+    cm = MagicMock()
+    cm.__aenter__ = AsyncMock(return_value=resp)
+    cm.__aexit__ = AsyncMock(return_value=False)
+    return cm
 
 
 # ---------------------------------------------------------------------------
@@ -282,7 +292,7 @@ class TestSyncVendors:
         call_command("sync_vendors", "--check")
         assert "could not determine latest version" in capsys.readouterr().out
 
-    def test_github_version_resolved_from_url(self, tmp_path, settings, capsys):
+    def test_github_version_resolved_from_url(self, tmp_path, settings, capsys, mocker):
         """GitHub URL with no explicit repo: version resolved via regex + API call."""
         path = tmp_path / "vendors.json"
         path.write_text(
@@ -297,15 +307,14 @@ class TestSyncVendors:
             )
         )
         settings.VENDORS_FILE = path
-        with aioresponses() as m:
-            m.get(
-                "https://api.github.com/repos/owner/mylib/releases/latest",
-                payload={"tag_name": "v2.0.0"},
-            )
-            call_command("sync_vendors", "--check")
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            return_value=_make_get_cm(mocker, json_data={"tag_name": "v2.0.0"}),
+        )
+        call_command("sync_vendors", "--check")
         assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
 
-    def test_releases_api_404_falls_back_to_tags(self, tmp_path, settings, capsys):
+    def test_releases_api_404_falls_back_to_tags(self, tmp_path, settings, capsys, mocker):
         """404 from /releases/latest falls back to /tags to resolve version."""
         path = tmp_path / "vendors.json"
         path.write_text(
@@ -320,21 +329,18 @@ class TestSyncVendors:
             )
         )
         settings.VENDORS_FILE = path
-        with aioresponses() as m:
-            m.get(
-                "https://api.github.com/repos/owner/mylib/releases/latest",
-                status=404,
-                payload={"message": "Not Found"},
-            )
-            m.get(
-                "https://api.github.com/repos/owner/mylib/tags",
-                payload=[{"name": "v2.0.0"}],
-            )
-            call_command("sync_vendors", "--check")
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            side_effect=[
+                _make_get_cm(mocker, status=404, json_data={"message": "Not Found"}),
+                _make_get_cm(mocker, json_data=[{"name": "v2.0.0"}]),
+            ],
+        )
+        call_command("sync_vendors", "--check")
         assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
 
     def test_releases_api_error_warns_and_returns_none(
-        self, tmp_path, settings, capsys
+        self, tmp_path, settings, capsys, mocker
     ):
         """Non-404 API error (e.g., 403 rate limit) warns and continues."""
         path = tmp_path / "vendors.json"
@@ -350,16 +356,18 @@ class TestSyncVendors:
             )
         )
         settings.VENDORS_FILE = path
-        with aioresponses() as m:
-            m.get(
-                "https://api.github.com/repos/owner/mylib/releases/latest",
-                status=403,
-                payload={"message": "rate limit exceeded"},
-            )
-            call_command("sync_vendors", "--check")
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            return_value=_make_get_cm(
+                mocker, status=403, json_data={"message": "rate limit exceeded"}
+            ),
+        )
+        call_command("sync_vendors", "--check")
         assert "could not determine latest version" in capsys.readouterr().out
 
-    def test_releases_api_500_warns_and_returns_none(self, tmp_path, settings, capsys):
+    def test_releases_api_500_warns_and_returns_none(
+        self, tmp_path, settings, capsys, mocker
+    ):
         """500 server error warns and continues."""
         path = tmp_path / "vendors.json"
         path.write_text(
@@ -374,17 +382,17 @@ class TestSyncVendors:
             )
         )
         settings.VENDORS_FILE = path
-        with aioresponses() as m:
-            m.get(
-                "https://api.github.com/repos/owner/mylib/releases/latest",
-                status=500,
-                payload={"message": "Internal Server Error"},
-            )
-            call_command("sync_vendors", "--check")
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            return_value=_make_get_cm(
+                mocker, status=500, json_data={"message": "Internal Server Error"}
+            ),
+        )
+        call_command("sync_vendors", "--check")
         assert "could not determine latest version" in capsys.readouterr().out
 
     def test_releases_api_404_and_tags_http_error_returns_none(
-        self, tmp_path, settings, capsys
+        self, tmp_path, settings, capsys, mocker
     ):
         """404 from /releases/latest with non-OK /tags response returns None."""
         path = tmp_path / "vendors.json"
@@ -400,21 +408,17 @@ class TestSyncVendors:
             )
         )
         settings.VENDORS_FILE = path
-        with aioresponses() as m:
-            m.get(
-                "https://api.github.com/repos/owner/mylib/releases/latest",
-                status=404,
-                payload={"message": "Not Found"},
-            )
-            m.get(
-                "https://api.github.com/repos/owner/mylib/tags",
-                status=500,
-                payload={"message": "boom"},
-            )
-            call_command("sync_vendors", "--check")
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            side_effect=[
+                _make_get_cm(mocker, status=404, json_data={"message": "Not Found"}),
+                _make_get_cm(mocker, status=500, json_data={"message": "boom"}),
+            ],
+        )
+        call_command("sync_vendors", "--check")
         assert "could not determine latest version" in capsys.readouterr().out
 
-    def test_explicit_repo_used_for_lookup(self, tmp_path, settings, capsys):
+    def test_explicit_repo_used_for_lookup(self, tmp_path, settings, capsys, mocker):
         """Explicit `repo` config is used directly, bypassing URL regex extraction."""
         path = tmp_path / "vendors.json"
         path.write_text(
@@ -430,16 +434,15 @@ class TestSyncVendors:
             )
         )
         settings.VENDORS_FILE = path
-        with aioresponses() as m:
-            m.get(
-                "https://api.github.com/repos/explicit/repo/releases/latest",
-                payload={"tag_name": "v2.0.0"},
-            )
-            call_command("sync_vendors", "--check")
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            return_value=_make_get_cm(mocker, json_data={"tag_name": "v2.0.0"}),
+        )
+        call_command("sync_vendors", "--check")
         assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
 
     def test_releases_api_404_and_tags_empty_returns_none(
-        self, tmp_path, settings, capsys
+        self, tmp_path, settings, capsys, mocker
     ):
         """404 from /releases/latest with empty tags list returns None."""
         path = tmp_path / "vendors.json"
@@ -455,53 +458,46 @@ class TestSyncVendors:
             )
         )
         settings.VENDORS_FILE = path
-        with aioresponses() as m:
-            m.get(
-                "https://api.github.com/repos/owner/mylib/releases/latest",
-                status=404,
-                payload={"message": "Not Found"},
-            )
-            m.get(
-                "https://api.github.com/repos/owner/mylib/tags",
-                payload=[],
-            )
-            call_command("sync_vendors", "--check")
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            side_effect=[
+                _make_get_cm(mocker, status=404, json_data={"message": "Not Found"}),
+                _make_get_cm(mocker, json_data=[]),
+            ],
+        )
+        call_command("sync_vendors", "--check")
         assert "could not determine latest version" in capsys.readouterr().out
 
-    def test_download_file_writes_content(self, vendors_path, tmp_path):
+    def test_download_file_writes_content(self, vendors_path, tmp_path, mocker):
         """_download_file success path: HTTP response body written to dest file."""
         (tmp_path / "static" / "vendor").mkdir(parents=True)
         (tmp_path / "tailwind").mkdir(parents=True)
-        with aioresponses() as m:
-            m.get(
-                re.compile(r"https://api\.github\.com/.*"),
-                payload={"tag_name": "v2.0.8"},
-                repeat=True,
-            )
-            m.get(
-                re.compile(r"https://github\.com/.*"), body=b"fake content", repeat=True
-            )
-            call_command("sync_vendors", "--no-input")
-        assert (
-            tmp_path / "static" / "vendor" / "htmx.js"
-        ).read_bytes() == b"fake content"
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch(
+            "aiohttp.ClientSession.get",
+            return_value=_make_get_cm(mocker, body=b"fake content"),
+        )
+        call_command("sync_vendors", "--no-input")
+        assert (tmp_path / "static" / "vendor" / "htmx.js").read_bytes() == b"fake content"
         assert (tmp_path / "tailwind" / "daisyui.mjs").read_bytes() == b"fake content"
 
-    def test_download_http_error_raises_command_error(self, vendors_path):
+    def test_download_http_error_raises_command_error(self, vendors_path, mocker):
         """_download_file ClientError path: raises CommandError."""
-        with aioresponses() as m:
-            m.get(
-                re.compile(r"https://api\.github\.com/.*"),
-                payload={"tag_name": "v2.0.8"},
-                repeat=True,
-            )
-            m.get(
-                re.compile(r"https://github\.com/.*"),
-                exception=aiohttp.ClientError("connection refused"),
-                repeat=True,
-            )
-            with pytest.raises(CommandError, match="Failed to download"):
-                call_command("sync_vendors", "--no-input")
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        mock_cm = MagicMock()
+        mock_cm.__aenter__ = AsyncMock(
+            side_effect=aiohttp.ClientError("connection refused")
+        )
+        mock_cm.__aexit__ = AsyncMock(return_value=False)
+        mocker.patch("aiohttp.ClientSession.get", return_value=mock_cm)
+        with pytest.raises(CommandError, match="Failed to download"):
+            call_command("sync_vendors", "--no-input")
 
 
 # ---------------------------------------------------------------------------

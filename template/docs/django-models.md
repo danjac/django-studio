@@ -83,11 +83,11 @@ adding the comment.
 
 ## Full-Text Search
 
-Use the `search()` function from `my_package/db/search.py` for PostgreSQL full-text
+Use the `search()` function from `my_package/search.py` for PostgreSQL full-text
 search. It works with any queryset and defaults to the `search_vector` field:
 
 ```python
-from my_package.db.search import search
+from my_package.search import search
 
 
 # Default — searches search_vector
@@ -110,7 +110,7 @@ class Item(models.Model):
 In filter classes:
 
 ```python
-from my_package.db.search import search
+from my_package.search import search
 
 def filter_q(self, queryset, name, value):
     return search(queryset, value)

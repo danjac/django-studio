@@ -31,9 +31,7 @@ myproject/
 │   ├── context_processors.py
 │   ├── middleware.py
 │   ├── templatetags.py
-│   │
-│   ├── db/               # Database utilities
-│   │   └── search.py     # Full-text search mixin
+│   ├── search.py         # Full-text search
 │   │
 │   ├── http/             # HTTP utilities
 │   │   ├── request.py    # Typed request classes

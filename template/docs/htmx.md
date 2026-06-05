@@ -98,7 +98,7 @@ This project ships two utilities for the common HTMX view patterns. Prefer these
 
 ### `render_partial_response` - partial swap on target match
 
-`my_package.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
+`my_package.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering. htmx 4 sends `HX-Target` as `tagname#id` (e.g. `div#my-form`) — the implementation strips the tag prefix automatically, so `target="my-form"` still works.
 
 ```python
 from my_package.partials import render_partial_response
@@ -271,13 +271,18 @@ bloating the core library. Vendor them like any other frontend dependency.
 
 ### Adding an extension
 
+In htmx 4, SSE and WebSocket extensions ship inside the main `htmx.org` npm
+package. Always include `"repo": "bigskysoftware/htmx"` so `sync_vendors` can
+check for updates.
+
 1. Add an entry to `vendors.json` (see `docs/frontend-dependencies.md`):
 
    ```json
    "htmx-ext-sse": {
-       "version": "2.2.4",
-       "source": "https://cdn.jsdelivr.net/npm/htmx-ext-sse@{version}/sse.min.js",
-       "dest": "static/vendor/htmx-ext-sse.js"
+       "version": "4.0.0-beta3",
+       "repo": "bigskysoftware/htmx",
+       "source": "https://cdn.jsdelivr.net/npm/htmx.org@{version}/dist/ext/sse.js",
+       "dest": "static/vendor/hx-sse.js"
    }
    ```
 
@@ -294,14 +299,15 @@ bloating the core library. Vendor them like any other frontend dependency.
    ```html
    {% block scripts %}
      {{ block.super }}
-     <script src="{% static 'vendor/htmx-ext-sse.js' %}" defer></script>
+     <script src="{% static 'vendor/hx-sse.js' %}" defer></script>
    {% endblock scripts %}
    ```
 
-4. Activate the extension on the elements that use it with `hx-ext`:
+4. Use the extension's attribute API directly — no `hx-ext` declaration needed
+   in htmx 4:
 
    ```html
-   <div hx-ext="sse" sse-connect="/events/">
+   <div hx-sse:connect="{% url 'sse-notifications' %}">
        ...
    </div>
    ```
@@ -310,10 +316,13 @@ Do not load extensions globally in `base.html` unless every page needs them.
 
 ### Available extensions
 
-| Extension | Package | Use case | Docs |
-| --------- | ------- | -------- | ---- |
-| SSE | `htmx-ext-sse` | Server-Sent Events | `docs/sse.md` |
-| WebSocket | `htmx-ext-ws` | Bidirectional WebSockets | `docs/channels.md` |
+| Extension | `vendors.json` key | Source path | Use case | Docs |
+| --------- | ------------------ | ----------- | -------- | ---- |
+| SSE | `htmx-ext-sse` | `dist/ext/sse.js` | Server-Sent Events | `docs/sse.md` |
+| WebSocket | `htmx-ext-ws` | `dist/ext/ws.js` | Bidirectional WebSockets | `docs/channels.md` |
+
+All extensions share `"repo": "bigskysoftware/htmx"` and the same version as
+the main `htmx` entry.
 
 See [htmx.org/extensions](https://htmx.org/extensions/) for the full list.
 

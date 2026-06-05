@@ -37,7 +37,7 @@ class HtmxCacheMiddleware(BaseMiddleware):
 
 
 class HtmxMessagesMiddleware(BaseMiddleware):
-    """Appends Django messages to HTMX HTML responses as OOB swaps."""
+    """Prepends Django messages to HTMX HTML responses as OOB swaps."""
 
     _hx_redirect_headers: Final = frozenset(
         {
@@ -60,16 +60,15 @@ class HtmxMessagesMiddleware(BaseMiddleware):
             return response
 
         if messages := get_messages(request):
-            response.write(
-                render_to_string(
-                    "messages.html",
-                    {
-                        "messages": messages,
-                        "hx_oob": True,
-                    },
-                    request=request,
-                )
-            )
+            messages_html = render_to_string(
+                "messages.html",
+                {
+                    "messages": messages,
+                    "hx_oob": True,
+                },
+                request=request,
+            ).encode(response.charset)
+            response.content = messages_html + response.content
 
         return response
 

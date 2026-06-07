@@ -14,6 +14,20 @@ When the user corrects you or says 'stop', immediately stop, acknowledge the cor
 and re-examine the situation from scratch. Do not repeat the same approach or question the
 user's stated facts.
 
+**Debugging — confirm root cause before fixing.** Before proposing any fix, state the
+single most likely root cause and the specific evidence (file:line, ORM output, test
+failure message) that confirms it. Do not propose a fix based on a guess. Keep a mental
+list of hypotheses the user has already ruled out and never revisit them.
+
+**Refactors and renames — lock scope before touching anything.** Before any rename,
+move, or restructuring, list the exact file paths and symbol names you will change.
+Wait for explicit approval. Do not touch anything outside that list, even if adjacent
+code looks related.
+
+**TDD gate for bug fixes.** Do not edit implementation code before a failing test exists
+and you have run it and confirmed it fails for the right reason. Write the test, show the
+failure output, wait for confirmation, then fix.
+
 ## Testing
 
 Create a new project in `/tmp` using the Copier template:

@@ -2,6 +2,33 @@
 
 This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
 
+## General Rules
+
+STOP and ask before applying a fix. Before making any changes, state your hypothesis about
+the root cause and which files you plan to modify. Wait for confirmation before proceeding.
+If the user corrects you, re-read the relevant code/docs before responding.
+
+Do not make excessive or environment-specific changes beyond what was requested. If the
+user asks for a targeted edit, make only that edit. Ask before adding dev/staging/production
+variants.
+
+When the user corrects you or says 'stop', immediately stop, acknowledge the correction,
+and re-examine the situation from scratch. Do not repeat the same approach or question the
+user's stated facts.
+
+**Debugging — confirm root cause before fixing.** Before proposing any fix, state the
+single most likely root cause and the specific evidence (file:line, ORM output, test
+failure message) that confirms it. Do not propose a fix based on a guess. Keep a mental
+list of hypotheses the user has already ruled out and never revisit them.
+
+**Refactors and renames — lock scope before touching anything.** Before any rename,
+move, or restructuring, list the exact file paths and symbol names you will change.
+Wait for explicit approval. Do not touch anything outside that list, even if adjacent
+code looks related.
+
+**TDD gate for bug fixes.** Do not edit implementation code before a failing test exists
+and you have run it and confirmed it fails for the right reason. Write the test, show the
+failure output, wait for confirmation, then fix.
 
 ## Stack
 

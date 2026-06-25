@@ -90,10 +90,6 @@ repos:
     rev: 4b2e70d08cb2ccd26d1fba73588de41c7a5d50b7  # v0.25
     hooks:
       - id: validate-pyproject
-  - repo: https://github.com/pysentry/pysentry-pre-commit
-    rev: 03d168fb782e8befa1b29179cb5f236a181dafbf  # v0.4.5
-    hooks:
-      - id: pysentry
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     rev: 9257c6050c0261b8c57e712f632dc4a8010109a9  # v1.25.2
     hooks:

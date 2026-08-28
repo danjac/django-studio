@@ -136,7 +136,7 @@ my_package/my_app/
 └── tests/
     ├── __init__.py
     ├── fixtures.py      # Pytest fixtures
-    ├── factories.py    # factory-boy factories
+    ├── factories.py    # model-bakery recipes
     ├── test_models.py
     ├── test_views.py
     └── test_playwright.py  # E2E tests

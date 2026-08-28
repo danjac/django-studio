@@ -95,11 +95,11 @@ pytest_plugins = [
 ```python
 # my_package/tests/fixtures.py
 import pytest
-from my_package.users.tests.factories import UserFactory
+from my_package.users.tests.factories import UserRecipe
 
 @pytest.fixture
 def user():
-    return UserFactory()
+    return UserRecipe.make()
 ```
 
 ## E2E Fixtures
@@ -109,40 +109,97 @@ def user():
 import pytest
 from playwright.sync_api import Page
 
+from my_package.users.tests.factories import TEST_PASSWORD, make_verified_user
+
 @pytest.fixture
 def e2e_user(transactional_db):
     """Verified user for e2e tests."""
-    user = UserFactory()
-    EmailAddress.objects.create(user=user, email=user.email, verified=True)
-    return user
+    return make_verified_user()
 
 @pytest.fixture
 def auth_page(page: Page, e2e_user, live_server) -> Page:
     """Playwright page authenticated as e2e_user."""
     login_url = f"{live_server.url}{reverse('account_login')}"
     page.goto(login_url)
-    page.locator('[name="login"]').fill(e2e_user.username)
-    page.locator('[name="password"]').fill("testpass")
+    page.locator('[name="login"]').fill(e2e_user.email)
+    page.locator('[name="password"]').fill(TEST_PASSWORD)
     page.get_by_role("button", name="Sign In").click()
     return page
 ```
 
 ## Factories
 
+Test objects are built with [model-bakery](https://model-bakery.readthedocs.io/).
+Each app keeps its recipes in `<app>/tests/factories.py`.
+
 ```python
 # my_package/users/tests/factories.py
-from factory import django
-from factory.declarations import Sequence
+from django.contrib.auth.hashers import make_password
+from model_bakery.recipe import Recipe, seq
+
 from my_package.users.models import User
 
-class UserFactory(django.DjangoModelFactory):
-    class Meta:
-        model = User
+TEST_PASSWORD = "testpass"  # noqa: S105
 
-    username = Sequence(lambda n: f"user-{n}")
-    email = Sequence(lambda n: f"user-{n}@example.com")
-    password = django.Password("testpass")
+UserRecipe = Recipe(
+    User,
+    username=seq("user-"),
+    email=seq("user-", suffix="@example.com"),
+    password=lambda: make_password(TEST_PASSWORD),
+)
 ```
+
+```python
+UserRecipe.make()                    # one instance
+UserRecipe.make(3)                   # list of three
+UserRecipe.make(first_name="Alice")  # override a field
+UserRecipe.extend(is_staff=True)     # a named variant
+```
+
+**Only declare fields that carry meaning** — a uniqueness constraint, a semantic
+default, or a cross-field invariant. Model Bakery fills everything else in from
+the field type, so a recipe does not need a line per column.
+
+### Recipe declarations
+
+| Need | Declaration |
+|---|---|
+| Unique values | `seq("prefix-")`, `seq("prefix-", suffix="@example.com")` |
+| Foreign key / one-to-one | `foreign_key(OtherRecipe)`, `foreign_key(OtherRecipe, one_to_one=True)` |
+| Many-to-many | `related(OtherRecipe)`, or pass `make_m2m=True` |
+| Cycle through choices | any iterator — e.g. `cycle(Status.values)` |
+| Deferred value | a zero-argument callable, e.g. `lambda: timezone.now()` |
+| Named variant | `BaseRecipe.extend(**overrides)` |
+
+### Gotchas
+
+**Hash passwords lazily.** Test settings override `PASSWORD_HASHERS` to MD5. A
+digest built at import time uses the *default* hashers, and `check_password`
+then returns `False` under the test hashers — a silent login failure with no
+error. Always use `password=lambda: make_password(...)`, never a module-level
+`make_password(...)` call.
+
+**Callables receive no arguments.** Model Bakery calls a callable attribute as
+`value()`, so it cannot see the other fields being built. There is no
+`LazyAttribute` equivalent — derive cross-field values in a helper function
+instead:
+
+```python
+def make_verified_user(**kwargs: Any) -> User:
+    """Create a user with a verified email address."""
+    user = UserRecipe.make(**kwargs)
+    EmailAddress.objects.create(user=user, email=user.email, verified=True)
+    return user
+```
+
+**`seq()` counts rows, it does not count calls.** Sequence numbers depend on how
+many objects already exist, so they are unique but not contiguous or
+predictable. Never assert on a generated value — assert on the field you passed
+in explicitly.
+
+**Generated values are random, not realistic.** Model Bakery fills a `CharField`
+with a random string, not a plausible name. Where a test needs readable data,
+pass it explicitly or use `faker` in the recipe.
 
 ## Unit Tests
 
@@ -153,7 +210,7 @@ import pytest
 @pytest.mark.django_db
 class TestUser:
     def test_name_returns_first_name(self):
-        user = UserFactory(first_name="Alice")
+        user = UserRecipe.make(first_name="Alice")
         assert user.name == "Alice"
 ```
 

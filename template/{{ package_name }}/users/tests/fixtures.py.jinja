@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pytest
 from django.contrib.auth.models import AnonymousUser
 
-from {{ package_name }}.users.tests.factories import UserFactory
+from {{ package_name }}.users.tests.factories import UserRecipe
 
 if TYPE_CHECKING:
     from django.test import Client
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def user() -> User:
-    return UserFactory()
+    return UserRecipe.make()
 
 
 @pytest.fixture
@@ -29,6 +29,6 @@ def auth_user(client: Client, user: User) -> User:
 
 @pytest.fixture
 def staff_user(client: Client) -> User:
-    user = UserFactory(is_staff=True)
+    user = UserRecipe.make(is_staff=True)
     client.force_login(user)
     return user

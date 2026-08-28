@@ -28,7 +28,7 @@ Each key is the package name. Two layouts are supported:
 ```json
 {
   "htmx": {
-    "version": "2.0.7",
+    "version": "4.0.0",
     "repo": "bigskysoftware/htmx",
     "source": "https://cdn.jsdelivr.net/npm/htmx.org@{version}/dist/htmx.min.js",
     "dest": "static/vendor/htmx.js"

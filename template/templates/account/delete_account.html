@@ -13,17 +13,10 @@
         {% translate "Are you sure you want to continue?" %}
       </p>
       <div class="flex flex-wrap gap-3 items-center">
-        <button
-          type="button"
-          class="btn btn-error"
-          hx-delete="{% url 'users:delete_account' %}"
-          hx-confirm='{% translate "Delete your account permanently? This cannot be undone." %}'
-          hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'
-          hx-target="body"
-        >
+        <a href="{% url 'users:delete_account_confirm' %}" class="btn btn-error">
           {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}
           {% translate "Delete my account" %}
-        </button>
+        </a>
         <a href="{% url 'account_email' %}" class="btn btn-secondary">
           {% translate "Cancel" %}
         </a>

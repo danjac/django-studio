@@ -29,7 +29,11 @@ def render_partial_response(
         partial: Named partial within the template (e.g. ``"pagination"``).
         **response_kwargs: Passed through to ``TemplateResponse``.
     """
-    if target and request.htmx.target == target:
+    # htmx 4 sends "tagname#id" in HX-Target; extract just the id part
+    htmx_target = request.htmx.target or ""
+    if "#" in htmx_target:
+        htmx_target = htmx_target.split("#", 1)[1]
+    if target and htmx_target == target:
         template_name += f"#{partial}"
 
     return TemplateResponse(

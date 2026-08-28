@@ -228,7 +228,7 @@ def <model_lower>_delete(
         {% for field in form %}
           {{ field.as_field_group }}
         {% endfor %}
-        <button type="submit" class="btn btn-primary" hx-disabled-elt="this">Save</button>
+        <button type="submit" class="btn btn-primary" hx-disable="this">Save</button>
         <a href="{% url '<app_name>:<model_lower>_list' %}" class="btn btn-secondary">
           Cancel
         </a>

@@ -76,6 +76,9 @@ repos:
     rev: 57e1618d78fd469a92c1e584e8c9313024656623  # v2.14.0
     hooks:
       - id: hadolint-docker
+        # the upstream hook entry is untagged (:latest), so pin the image
+        # to match rev — otherwise new hadolint rules break CI unannounced
+        entry: ghcr.io/hadolint/hadolint:v2.14.0 hadolint
   - repo: https://github.com/asottile/pyupgrade
     rev: 75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2
     hooks:

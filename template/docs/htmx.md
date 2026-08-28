@@ -24,11 +24,24 @@ HTMX is configured via `HTMX_CONFIG` in settings, rendered as a `<meta>` tag by 
 ```python
 # config/settings.py
 HTMX_CONFIG = {
-    "globalViewTransitions": False,
-    "scrollBehavior": "instant",
-    "useTemplateFragments": True,
+    "transitions": False,
 }
 ```
+
+See the [htmx 4 config reference](https://four.htmx.org/reference/config/) for the full list of options. Note that several htmx 2 options were renamed or removed — `globalViewTransitions` is now `transitions`, and `scrollBehavior` / `useTemplateFragments` no longer exist.
+
+### Attribute inheritance
+
+In htmx 2 every attribute was inherited by descendants implicitly. In htmx 4 inheritance is explicit: add the `:inherited` suffix on the parent that holds the attribute.
+
+```html
+<div hx-target:inherited="#results" hx-headers:inherited='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+  <button hx-get="{% url 'search' %}">Search</button>
+  <button hx-post="{% url 'reset' %}">Reset</button>
+</div>
+```
+
+Only add `:inherited` where descendants actually rely on the value — an element that issues its own request and declares its own `hx-target` needs nothing.
 
 ## CSRF
 
@@ -49,10 +62,10 @@ Set `hx-headers` at the `<body>` level if most interactions on a page are HTMX-d
 
 ### 1. Add `hx-boost` to the body tag
 
-In `templates/base.html`, change the opening `<body>` tag:
+In `templates/base.html`, change the opening `<body>` tag. htmx 4 requires the `:inherited` suffix so the links and forms *inside* the body are boosted:
 
 ```html
-<body hx-boost="true">
+<body hx-boost:inherited="true">
 ```
 
 ### 2. Create `hx_base.html`
@@ -77,18 +90,9 @@ In each page template, extend from the appropriate base depending on whether the
 {% extends request.htmx|yesno:"hx_base.html,base.html" %}
 ```
 
-On a boosted navigation HTMX sends an XHR request with `HX-Request: true`, so `hx_base.html` is used (title + content, no chrome). On a full-page load `base.html` is used.
+On a boosted navigation HTMX sends a `fetch` request with `HX-Request: true`, so `hx_base.html` is used (title + content, no chrome). On a full-page load `base.html` is used.
 
-### 4. Add `scrollIntoViewOnBoost` to HTMX config
-
-In `config/settings.py`, add the option to `HTMX_CONFIG` so boosted navigation scrolls to the top:
-
-```python
-HTMX_CONFIG = {
-    ...
-    "scrollIntoViewOnBoost": False,
-}
-```
+htmx 4 scrolls boosted navigations to the top of the swapped content by default (the htmx 2 `scrollIntoViewOnBoost` config option no longer exists). Override per element with `hx-swap="innerHTML show:none"` if you do not want this.
 
 > For targeted partial updates (search results, forms, pagination), return a partial directly from the view — no `hx_base.html` needed.
 
@@ -98,7 +102,7 @@ This project ships two utilities for the common HTMX view patterns. Prefer these
 
 ### `render_partial_response` - partial swap on target match
 
-`my_package.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
+`my_package.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering. htmx 4 sends `HX-Target` as `tagname#id` (e.g. `div#my-form`) — the implementation strips the tag prefix automatically, so `target="my-form"` still works.
 
 ```python
 from my_package.partials import render_partial_response
@@ -147,11 +151,11 @@ Three custom middleware classes in `my_package/middleware.py` handle HTMX-specif
 
 ### `HtmxCacheMiddleware`
 
-Sets `Vary: HX-Request` on HTMX responses so caches serve the correct variant to HTMX vs normal requests. See [HTMX caching docs](https://htmx.org/docs/#caching).
+Sets `Vary: HX-Request` on HTMX responses so caches serve the correct variant to HTMX vs normal requests. See [HTMX caching docs](https://four.htmx.org/docs/#caching).
 
 ### `HtmxMessagesMiddleware`
 
-Appends pending Django messages to HTMX HTML responses as an [out-of-band swap](https://htmx.org/attributes/hx-swap-oob/) (`hx-swap-oob="true"`) targeting the `#messages` container in `base.html`. This means any view that calls `messages.success(...)` before a partial response will automatically display the toast — no extra template code required.
+Appends pending Django messages to HTMX HTML responses as an [out-of-band swap](https://four.htmx.org/reference/attributes/hx-swap-oob/) (`hx-swap-oob="true"`) targeting the `#messages` container in `base.html`. This means any view that calls `messages.success(...)` before a partial response will automatically display the toast — no extra template code required.
 
 The middleware skips responses that already carry an HTMX redirect header (`HX-Location`, `HX-Redirect`, `HX-Refresh`) because the browser is about to navigate away.
 
@@ -211,7 +215,7 @@ def my_form_view(request):
 
 ### hx-swap Patterns
 
-HTMX supports several swap strategies beyond the default `innerHTML`. See [hx-swap docs](https://htmx.org/attributes/hx-swap/) for the full list.
+HTMX supports several swap strategies beyond the default `innerHTML`. See [hx-swap docs](https://four.htmx.org/reference/attributes/hx-swap/) for the full list.
 
 #### Delete a list item in-place
 
@@ -271,13 +275,18 @@ bloating the core library. Vendor them like any other frontend dependency.
 
 ### Adding an extension
 
+In htmx 4, SSE and WebSocket extensions ship inside the main `htmx.org` npm
+package. Always include `"repo": "bigskysoftware/htmx"` so `sync_vendors` can
+check for updates.
+
 1. Add an entry to `vendors.json` (see `docs/frontend-dependencies.md`):
 
    ```json
    "htmx-ext-sse": {
-       "version": "2.2.4",
-       "source": "https://cdn.jsdelivr.net/npm/htmx-ext-sse@{version}/sse.min.js",
-       "dest": "static/vendor/htmx-ext-sse.js"
+       "version": "4.0.0",
+       "repo": "bigskysoftware/htmx",
+       "source": "https://cdn.jsdelivr.net/npm/htmx.org@{version}/dist/ext/hx-sse.js",
+       "dest": "static/vendor/hx-sse.js"
    }
    ```
 
@@ -294,14 +303,15 @@ bloating the core library. Vendor them like any other frontend dependency.
    ```html
    {% block scripts %}
      {{ block.super }}
-     <script src="{% static 'vendor/htmx-ext-sse.js' %}" defer></script>
+     <script src="{% static 'vendor/hx-sse.js' %}" defer></script>
    {% endblock scripts %}
    ```
 
-4. Activate the extension on the elements that use it with `hx-ext`:
+4. Use the extension's attribute API directly — no `hx-ext` declaration needed
+   in htmx 4:
 
    ```html
-   <div hx-ext="sse" sse-connect="/events/">
+   <div hx-sse:connect="{% url 'sse-notifications' %}">
        ...
    </div>
    ```
@@ -310,26 +320,30 @@ Do not load extensions globally in `base.html` unless every page needs them.
 
 ### Available extensions
 
-| Extension | Package | Use case | Docs |
-| --------- | ------- | -------- | ---- |
-| SSE | `htmx-ext-sse` | Server-Sent Events | `docs/sse.md` |
-| WebSocket | `htmx-ext-ws` | Bidirectional WebSockets | `docs/channels.md` |
+| Extension | `vendors.json` key | Source path | Use case | Docs |
+| --------- | ------------------ | ----------- | -------- | ---- |
+| SSE | `htmx-ext-sse` | `dist/ext/hx-sse.js` | Server-Sent Events | `docs/sse.md` |
+| WebSocket | `htmx-ext-ws` | `dist/ext/hx-ws.js` | Bidirectional WebSockets | `docs/channels.md` |
 
-See [htmx.org/extensions](https://htmx.org/extensions/) for the full list.
+All extensions share `"repo": "bigskysoftware/htmx"` and the same version as
+the main `htmx` entry.
+
+See [four.htmx.org/extensions](https://four.htmx.org/extensions/) for the full list.
 
 ## Best Practices
 
 1. Always include `hx-headers` with `{{ csrf_header }}` and `{{ csrf_token }}` on POST/PUT/DELETE requests.
 2. Use `hx-boost` + template switching only for full-page navigation (see "Bootstrap hx-boost" above). For element-level updates, return a partial directly.
-3. Use `hx-disabled-elt="this"` on submit buttons to prevent double-submission.
+3. Use `hx-disable="this"` on submit buttons to prevent double-submission (this was `hx-disabled-elt` in htmx 2; htmx 2's `hx-disable` is now `hx-ignore`).
 4. Debounce search inputs: `hx-trigger="keyup changed delay:300ms"`.
 5. Use `hx-swap="outerHTML"` to replace a form with its re-rendered self on validation errors.
 6. Use `hx-swap="delete"` to dismiss banners or remove list items after a destructive action.
 
 ## References
 
-- [HTMX Documentation](https://htmx.org/docs/)
-- [hx-swap](https://htmx.org/attributes/hx-swap/)
-- [hx-trigger](https://htmx.org/attributes/hx-trigger/)
-- [hx-boost](https://htmx.org/attributes/hx-boost/)
+- [HTMX Documentation](https://four.htmx.org/docs/)
+- [hx-swap](https://four.htmx.org/reference/attributes/hx-swap/)
+- [hx-trigger](https://four.htmx.org/reference/attributes/hx-trigger/)
+- [hx-boost](https://four.htmx.org/reference/attributes/hx-boost/)
+- [Migrating from htmx 2](https://four.htmx.org/docs/#migrating-from-htmx-2x-to-4x)
 - [django-htmx](https://django-htmx.readthedocs.io/)

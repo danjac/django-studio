@@ -13,4 +13,9 @@ app_name = "users"
 
 urlpatterns: list[URLPattern | URLResolver] = [
     path("account/delete/", views.delete_account, name="delete_account"),
+    path(
+        "account/delete/confirm/",
+        views.delete_account_confirm,
+        name="delete_account_confirm",
+    ),
 ]

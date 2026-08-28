@@ -123,8 +123,8 @@ def item_list(request: HttpRequest) -> TemplateResponse:
   <nav
     role="navigation"
     aria-label="{% translate "Pagination" %}"
-    hx-swap="outerHTML show:window:top"
-    hx-target="#{{ pagination_config.target }}"
+    hx-swap:inherited="outerHTML show:top"
+    hx-target:inherited="#{{ pagination_config.target }}"
   >
     <div class="join">
       {% if page.has_previous %}

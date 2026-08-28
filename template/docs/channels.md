@@ -230,63 +230,69 @@ Key points:
 Vendor the `htmx-ext-ws` extension (see `docs/htmx.md` → Extensions for how
 to vendor and load it; `vendors.json` key: `htmx-ext-ws`).
 
-Use `ws-connect` to open a connection and `ws-send` on a form to transmit data:
+In htmx 4, the WebSocket extension uses `hx-ws:connect` and `hx-ws:send`
+instead of `hx-ext="ws"` with `ws-connect` / `ws-send`:
 
 ```html
-<div hx-ext="ws" ws-connect="/ws/chat/lobby/">
+<div hx-ws:connect="/ws/chat/lobby/">
     <div id="chat-messages">
-        <!-- incoming messages swapped here by id -->
+        <!-- incoming messages swapped here -->
     </div>
-    <form ws-send>
+    <form hx-ws:send>
         <input name="message" type="text" autocomplete="off">
         <button type="submit">Send</button>
     </form>
 </div>
 ```
 
-The server must return HTML fragments with an `id` attribute — the extension
-swaps content by matching element IDs (out-of-band swap):
+The form's fields are serialised as a flat JSON object plus a `headers` key —
+`{"message": "hello", "headers": {...}}` — so the consumer reads
+`content["message"]` as before.
+
+The server sends messages as a JSON envelope — htmx 4 uses `{"content": html,
+"target": "#id", "swap": "..."}` instead of raw HTML with `hx-swap-oob`:
 
 ```python
 async def chat_message(self, event):
-    html = f'<div id="chat-messages" hx-swap-oob="beforeend"><p>{event["message"]}</p></div>'
-    await self.send(text_data=html)
+    await self.send_json({
+        "content": f"<p>{event['message']}</p>",
+        "target": "#chat-messages",
+        "swap": "beforeend",
+    })
 ```
 
-Customize the WebSocket constructor (e.g. to add subprotocols):
+Customize the connection (e.g. to add subprotocols) via config rather than the
+htmx 2 `htmx.createWebSocket` hook, which no longer exists:
 
 ```javascript
-htmx.createWebSocket = function(url) {
-    return new WebSocket(url, ["wss"]);
-};
+htmx.config.ws = { protocols: ["wss"] };
 ```
 
-### Clearing the input after send (Alpine + htmx-ext-ws)
+Per-element overrides go in `hx-config`, e.g.
+`hx-config='{ws: {reconnectDelay: 1000}}'`.
 
-After a `ws-send` form submits, use the `htmx:ws-after-send` event to clear
-the input. htmx dispatches events in both camelCase (`htmx:wsAfterSend`) and
-kebab-case (`htmx:ws-after-send`); use the kebab-case form with Alpine because
-the camelCase version contains a colon that confuses Alpine's `x-on:` directive
-parser.
+### Clearing the input after send (Alpine + hx-ws)
 
-Add `x-data` for Alpine scope and `@htmx:ws-after-send` on the form:
+After a `hx-ws:send` form submits, use the `htmx:ws:after:message:outgoing`
+event to clear the input (htmx 4 event names are colon-separated; this was
+`htmx:wsAfterSend` in htmx 2):
 
 ```html
 <form
   x-data
-  ws-send
-  @submit.prevent
-  @htmx:ws-after-send="$refs.input.value = ''"
+  hx-ws:send
+  @htmx:ws:after:message:outgoing="$refs.input.value = ''"
 >
   <input x-ref="input" type="text" name="text_data" autocomplete="off">
   <button type="submit">Send</button>
 </form>
 ```
 
-Do **not** clear the input on `@submit.prevent` — Alpine fires before htmx
-reads the form values, which sends an empty payload over the WebSocket.
+The extension calls `preventDefault()` on the form submit itself, so
+`@submit.prevent` is no longer needed. Do **not** clear the input on submit —
+that fires before htmx reads the form values and sends an empty payload.
 
 ### References
 
-- [HTMX WebSocket extension](https://htmx.org/extensions/ws/)
+- [HTMX WebSocket extension](https://four.htmx.org/extensions/hx-ws/)
 - [Django Channels docs](https://channels.readthedocs.io/)

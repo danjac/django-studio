@@ -1,0 +1,25 @@
+{% extends "account/base.html" %}
+{% load heroicons i18n %}
+
+{% block title %}{% title_tag _("Confirm Account Deletion") %}{% endblock %}
+
+{% block settings_content %}
+  {% include "header.html" with title=_("Confirm account deletion") %}
+  <div class="mt-6">
+      <p class="mb-8 text-sm text-base-content/60">
+        {% translate "Your account and all associated data will be permanently deleted. This cannot be undone." %}
+      </p>
+      <div class="flex flex-wrap gap-3 items-center">
+        <form method="post" action="{% url 'users:delete_account_confirm' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-error">
+            {% heroicon_mini "trash" class="size-4 shrink-0" aria_hidden="true" %}
+            {% translate "Yes, I'm sure" %}
+          </button>
+        </form>
+        <a href="{% url 'users:delete_account' %}" class="btn btn-secondary">
+          {% translate "No, cancel" %}
+        </a>
+      </div>
+  </div>
+{% endblock settings_content %}

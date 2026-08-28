@@ -6,7 +6,7 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = "==3.14.*"
 dependencies = [
-    "copier>=9.13.0",
+    "copier>=9.15.2",
 ]
 
 [dependency-groups]

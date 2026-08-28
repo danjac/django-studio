@@ -271,6 +271,10 @@ has to be maintained. A field earns a declaration only if it needs:
 
 Do not declare `auto_now`/`auto_now_add` timestamps — Django sets them.
 
+Generated values are random strings, not plausible ones. Do not add a fake-data
+library to make them realistic unless the user asks — if they do, `faker` is not
+installed by default (`uv add --dev faker`; see `docs/packages.md`).
+
 If a field's value must be derived from another field on the same instance,
 Model Bakery cannot express it (callables are invoked with no arguments). Add a
 module-level helper function next to the recipe instead:

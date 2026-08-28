@@ -60,6 +60,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 | HTML sanitization                                         | [`nh3`](https://pypi.org/project/nh3/) | `uv add nh3`              |
 | Complex authorization (code-defined rules)                | [`rules`](https://pypi.org/project/rules/) | `uv add rules`     |
 | Complex authorization (runtime per-object DB permissions) | [`django-guardian`](https://django-guardian.readthedocs.io/) | `uv add django-guardian`  |
+| Realistic fake data in test recipes                       | [`faker`](https://faker.readthedocs.io/) | `uv add --dev faker`      |
 
 ## Notes
 

@@ -198,8 +198,28 @@ predictable. Never assert on a generated value — assert on the field you passe
 in explicitly.
 
 **Generated values are random, not realistic.** Model Bakery fills a `CharField`
-with a random string, not a plausible name. Where a test needs readable data,
-pass it explicitly or use `faker` in the recipe.
+with a random string, not a plausible name. Pass the value explicitly where a
+test needs readable data. If you want plausible values throughout — for demo
+fixtures, screenshots, or seed data — add [`faker`](https://faker.readthedocs.io/)
+and call it from the recipe:
+
+```bash
+uv add --dev faker
+```
+
+```python
+from faker import Faker
+
+fake = Faker()
+
+CustomerRecipe = Recipe(
+    Customer,
+    name=fake.name,          # a zero-argument callable — Model Bakery calls it
+    email=seq("customer-", suffix="@example.com"),
+)
+```
+
+Prefer `seq()` over `faker` for anything `unique=True` — faker can repeat values.
 
 ## Unit Tests
 

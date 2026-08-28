@@ -6,7 +6,7 @@
           $watch('showMobileMenu', v => { if (v) showUserDropdown = false; });
           $watch('showUserDropdown', v => { if (v) showMobileMenu = false; });
          "
-  @htmx:before-request.window="showMobileMenu = false; showUserDropdown = false"
+  @htmx:before:request.window="showMobileMenu = false; showUserDropdown = false"
   @keyup.escape.window="showMobileMenu = false; showUserDropdown = false"
 >
   <div class="navbar-start">
@@ -58,7 +58,7 @@
               </a>
             </li>
           {% endif %}
-          <form id="logout-form" method="post" action="{% url 'account_logout' %}" hx-disable="true" hidden>
+          <form id="logout-form" method="post" action="{% url 'account_logout' %}" hx-ignore="true" hidden>
             {% csrf_token %}
           </form>
           <li role="menuitem">

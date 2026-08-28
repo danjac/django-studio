@@ -81,6 +81,7 @@ COPY --from=messages --chown=django:django /app/locale /app/locale
 # Copy application code with correct ownership
 COPY --chown=django:django . .
 
-USER django
+# numeric uid (matches the django user created above) so the host can resolve it
+USER 1000
 
 CMD ["./gunicorn.sh"]

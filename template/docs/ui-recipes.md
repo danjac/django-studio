@@ -30,11 +30,11 @@ Register it once in your base template's `{% block scripts %}` block:
         this._onDropdownOpen = this.onDropdownOpen.bind(this);
         this._close = this.close.bind(this);
         window.addEventListener("dropdown-open", this._onDropdownOpen);
-        window.addEventListener("htmx:beforeRequest", this._close);
+        window.addEventListener("htmx:before:request", this._close);
       },
       destroy() {
         window.removeEventListener("dropdown-open", this._onDropdownOpen);
-        window.removeEventListener("htmx:beforeRequest", this._close);
+        window.removeEventListener("htmx:before:request", this._close);
       },
       onDropdownOpen(e) {
         if (e.detail.id !== this._dropdownId) this.close();
@@ -105,7 +105,7 @@ Note the use of `$id('dropdown')` to generate a unique ID for each instance, whi
 
 When a dropdown item needs to submit a POST form (e.g. logout, language switch), do
 not nest the `<form>` inside the `x-show` list — place it with `hidden` outside the
-list and reference it from the button via `form="..."`. Add `hx-disable="true"` so
+list and reference it from the button via `form="..."`. Add `hx-ignore="true"` so
 HTMX does not intercept these full-page POSTs.
 
 ```html
@@ -114,7 +114,7 @@ HTMX does not intercept these full-page POSTs.
   id="my-action-form"
   method="post"
   action="{% url 'my:action' %}"
-  hx-disable="true"
+  hx-ignore="true"
   hidden
 >
   {% csrf_token %} {# any hidden inputs #}

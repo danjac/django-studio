@@ -174,56 +174,71 @@ class TestSseView:
 Vendor the `htmx-ext-sse` extension (see `docs/htmx.md` → Extensions for how
 to vendor and load it; `vendors.json` key: `htmx-ext-sse`).
 
-Use `sse-connect` and `sse-swap` to subscribe to server events and swap content
-into the DOM:
+In htmx 4 the extension uses `hx-sse:connect` — there is no `hx-ext` declaration,
+and `sse-swap` has been removed. The two remaining behaviours are:
+
+- **Unnamed messages** (`data:` with no `event:` line) are swapped into the
+  connecting element using its own `hx-target` / `hx-swap`.
+- **Named events** (`event: notification`) are dispatched as DOM events on the
+  connecting element, carrying `event.detail.data` and `event.detail.id`. They
+  are never swapped directly — use `hx-trigger` or `hx-on:` to react to them.
+
+### Swapping unnamed messages
 
 ```html
-<div hx-ext="sse" sse-connect="{% url 'sse-notifications' %}" sse-swap="notification">
-    <!-- replaced with each incoming event -->
+<div hx-sse:connect="{% url 'sse-notifications' %}"
+     hx-target="#notifications"
+     hx-swap="afterbegin">
+</div>
+
+<div id="notifications">
     <p>Waiting for notifications...</p>
 </div>
 ```
 
-The server must send events with a matching event name:
+The server sends the HTML fragment with no event name:
 
 ```
-event: notification
 data: <p>New comment on your post</p>
 
 ```
 
-Multiple event types on one connection:
+### Reacting to named events
+
+The view in "Async SSE view" above sends `event: notification`. Named events
+bubble from the connecting element, so a sibling can re-fetch a rendered
+partial when one arrives:
 
 ```html
-<div hx-ext="sse" sse-connect="{% url 'sse-feed' %}">
-    <div sse-swap="comment">No comments yet</div>
-    <div sse-swap="like">No likes yet</div>
+<div hx-sse:connect="{% url 'sse-feed' %}"></div>
+
+<div id="notifications"
+     hx-get="{% url 'notifications-list' %}"
+     hx-trigger="notification from:body"
+     hx-target="this">
 </div>
 ```
 
-Use `hx-trigger="sse:<event>"` to fire an HTTP request when an event arrives
-(instead of swapping the event data directly):
+This is usually the better pattern for anything non-trivial: the server pushes
+a bare signal and the markup is still rendered by a normal Django view.
+
+To handle the payload in JavaScript instead, use `hx-on:`:
 
 ```html
-<div hx-ext="sse" sse-connect="{% url 'sse-feed' %}">
-    <div hx-get="{% url 'notifications-list' %}"
-         hx-trigger="sse:refresh"
-         hx-target="#notifications">
-    </div>
+<div hx-sse:connect="{% url 'sse-progress' %}"
+     hx-on:progress="this.textContent = JSON.parse(event.detail.data).percent + '%'">
 </div>
 ```
 
 Close the connection when the server sends a specific event:
 
 ```html
-<div hx-ext="sse"
-     sse-connect="{% url 'sse-progress' %}"
-     sse-swap="progress"
-     sse-close="complete">
+<div hx-sse:connect="{% url 'sse-progress' %}"
+     hx-sse:close="complete">
 </div>
 ```
 
 ### References
 
-- [HTMX SSE extension](https://htmx.org/extensions/sse/)
+- [HTMX SSE extension](https://four.htmx.org/extensions/hx-sse/)
 - [psycopg NOTIFY docs](https://www.psycopg.org/psycopg3/docs/advanced/async.html#asynchronous-notifications)

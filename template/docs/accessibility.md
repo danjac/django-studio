@@ -24,7 +24,7 @@ component.
   checklist filtered by level and technique
 - [MDN ARIA Guide](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA)
   — ARIA roles, states, and properties
-- [HTMX Accessibility](https://htmx.org/docs/#accessibility) — HTMX-specific
+- [HTMX Accessibility](https://four.htmx.org/docs/#accessibility) — HTMX-specific
   patterns (focus management, `aria-busy`, live regions)
 - [AlpineJS Accessibility](https://alpinejs.dev/advanced/accessibility) —
   keyboard handling in Alpine components
@@ -121,7 +121,7 @@ HTMX swaps DOM content without a full page reload. Ensure:
   ```
 
 - **Loading indicators**: use `aria-busy="true"` on the target element during
-  requests (set via `htmx:beforeRequest` / `htmx:afterRequest` events or
+  requests (set via `htmx:before:request` / `htmx:finally:request` events or
   `hx-indicator`).
 - **Page title**: update `<title>` on full-page HTMX navigations
   (`hx-push-url`) so screen readers announce the new page.

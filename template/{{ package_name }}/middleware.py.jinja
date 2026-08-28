@@ -25,7 +25,7 @@ class BaseMiddleware:
 class HtmxCacheMiddleware(BaseMiddleware):
     """Sets the Vary header to include HX-Request for HTMX requests.
 
-    See https://htmx.org/docs/#caching. Place after HtmxMiddleware.
+    See https://four.htmx.org/docs/#caching. Place after HtmxMiddleware.
     """
 
     def __call__(self, request: HttpRequest) -> HttpResponse:

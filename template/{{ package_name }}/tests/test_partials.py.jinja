@@ -16,6 +16,31 @@ class TestRenderPartialResponse:
         )
         assert response.template_name == "template.html#partial"
 
+    def test_target_matches_tagname_prefix(self, rf):
+        # htmx 4 sends HX-Target as "tagname#id"
+        request = rf.get("/", HTTP_HX_TARGET="div#target", HTTP_HX_REQUEST="true")
+        request.htmx = HtmxDetails(request)
+
+        response = render_partial_response(
+            request,
+            "template.html",
+            target="target",
+            partial="partial",
+        )
+        assert response.template_name == "template.html#partial"
+
+    def test_target_not_matches_tagname_prefix(self, rf):
+        request = rf.get("/", HTTP_HX_TARGET="div#other", HTTP_HX_REQUEST="true")
+        request.htmx = HtmxDetails(request)
+
+        response = render_partial_response(
+            request,
+            "template.html",
+            target="target",
+            partial="partial",
+        )
+        assert response.template_name == "template.html"
+
     def test_target_not_matches(self, rf):
         request = rf.get("/", HTTP_HX_TARGET="other", HTTP_HX_REQUEST="true")
         request.htmx = HtmxDetails(request)

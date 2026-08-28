@@ -23,11 +23,11 @@
     {% block scripts %}
     <script src="{% static 'indicator.js' %}"></script>
     <script>
-      document.addEventListener('htmx:beforeRequest', (evt) => {
-        evt.detail.target?.setAttribute('aria-busy', 'true');
+      document.addEventListener('htmx:before:request', (evt) => {
+        evt.detail.ctx?.target?.setAttribute('aria-busy', 'true');
       });
-      document.addEventListener('htmx:afterRequest', (evt) => {
-        evt.detail.target?.removeAttribute('aria-busy');
+      document.addEventListener('htmx:finally:request', (evt) => {
+        evt.detail.ctx?.target?.removeAttribute('aria-busy');
       });
       if (typeof navigator.serviceWorker !== 'undefined') {
         navigator.serviceWorker.register('{% static "service-worker.js" %}')

@@ -65,7 +65,8 @@ class TestRenderPaginatedResponse:
         assert response.context_data["foo"] == "bar"
 
     def test_htmx_target_match_returns_partial(self, rf):
-        request = self._make_request(rf, htmx_target="pagination")
+        # htmx 4 sends HX-Target as "tagname#id"
+        request = self._make_request(rf, htmx_target="div#pagination")
         response = render_paginated_response(request, "template.html", [])
         assert response.template_name == "template.html#pagination"
 

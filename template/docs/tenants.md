@@ -400,15 +400,29 @@ def current_tenant(db, settings, _tenant_schema):
     ...
 ```
 
-### TenantFactory defaults to no schema creation
+### Build tenants with no schema creation by default
 
-`TenantFactory` overrides `_create` to set `auto_create_schema = False` by
-default. Pass `with_schema=True` when you genuinely need a new schema (e.g.
-`transactional_db` tests):
+`auto_create_schema` must be set on the instance *before* it is saved, and Model
+Bakery has no build hook to do that — a `Recipe` on its own always saves
+immediately. Wrap it in a helper that uses `prepare()` (which builds without
+saving), sets the flag, then saves:
 
 ```python
-TenantFactory()                      # fast — no schema creation
-TenantFactory(with_schema=True)      # slow — creates schema + runs migrations
+# my_package/tenants/tests/factories.py
+TenantRecipe = Recipe(Tenant, name=seq("tenant-"), schema_name=seq("tenant_"))
+
+
+def make_tenant(*, with_schema: bool = False, **kwargs: Any) -> Tenant:
+    """Create a tenant, skipping schema creation unless asked for."""
+    tenant = TenantRecipe.prepare(**kwargs)
+    tenant.auto_create_schema = with_schema
+    tenant.save()
+    return tenant
+```
+
+```python
+make_tenant()                    # fast — no schema creation
+make_tenant(with_schema=True)    # slow — creates schema + runs migrations
 ```
 
 ### Cross-schema FK constraints and transactional\_db

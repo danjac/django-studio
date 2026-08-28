@@ -290,10 +290,10 @@ urlpatterns = [
 
 **Fixture convention:** `dj-create-model` Step 6 creates a `<model_lower>` pytest
 fixture in `<package_name>/<app_name>/tests/fixtures.py`. Use it as a parameter
-in tests that need a single instance — do not call `<model_name>Factory()`
-directly for those cases. Only use `<model_name>Factory.create_batch()` (or
-direct factory calls) when you need multiple objects or need to control specific
-field values.
+in tests that need a single instance — do not call `<model_name>Recipe.make()`
+directly for those cases. Only call the recipe directly when you need multiple
+objects (`<model_name>Recipe.make(3)`) or need to control specific field
+values.
 
 Add to `<package_name>/<app_name>/tests/test_views.py`:
 
@@ -301,13 +301,13 @@ Add to `<package_name>/<app_name>/tests/test_views.py`:
 import pytest
 from django.urls import reverse
 
-from <package_name>.<app_name>.tests.factories import <model_name>Factory
+from <package_name>.<app_name>.tests.factories import <model_name>Recipe
 
 
 @pytest.mark.django_db
 class Test<model_name>List:
     def test_get(self, client, auth_user):
-        <model_name>Factory.create_batch(3)
+        <model_name>Recipe.make(3)
         response = client.get(reverse("<app_name>:<model_lower>_list"))
         assert response.status_code == 200
 
@@ -424,23 +424,24 @@ class Test<model_name>Delete:
         assert response.status_code == 302
 ```
 
-If `<model_name>Factory` does not already exist in
+If `<model_name>Recipe` does not already exist in
 `<package_name>/<app_name>/tests/factories.py` (e.g. because `dj-create-model`
 was not run), add a minimal one now:
 
 ```python
-import factory
-from factory.django import DjangoModelFactory
+from model_bakery.recipe import Recipe
 
 from <package_name>.<app_name>.models import <model_name>
 
 
-class <model_name>Factory(DjangoModelFactory):
-    class Meta:
-        model = <model_name>
+<model_name>Recipe = Recipe(<model_name>)
 ```
 
-If `dj-create-model` already created a factory with field declarations, use that
+Model Bakery fills fields in from their types, so a bare recipe is usually
+enough. Add declarations only for fields that are `unique=True` or that the
+tests depend on — see `docs/testing.md`.
+
+If `dj-create-model` already created a recipe with field declarations, use that
 — do not replace it with this stub.
 
 ---

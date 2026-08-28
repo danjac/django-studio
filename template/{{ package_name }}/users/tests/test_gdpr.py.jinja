@@ -8,13 +8,13 @@ from allauth.socialaccount.models import SocialAccount
 from django.urls import reverse
 
 from {{ package_name }}.users.gdpr import anonymise_user
-from {{ package_name }}.users.tests.factories import UserFactory
+from {{ package_name }}.users.tests.factories import UserRecipe
 
 
 @pytest.mark.django_db
 class TestAnonymiseUser:
     def test_pii_fields_cleared(self):
-        user = UserFactory(
+        user = UserRecipe.make(
             first_name="Alice",
             last_name="Smith",
         )
@@ -27,20 +27,20 @@ class TestAnonymiseUser:
         assert user.last_name == ""
 
     def test_account_deactivated(self):
-        user = UserFactory()
+        user = UserRecipe.make()
         anonymise_user(user)
         user.refresh_from_db()
         assert not user.is_active
         assert not user.has_usable_password()
 
     def test_email_addresses_deleted(self):
-        user = UserFactory()
+        user = UserRecipe.make()
         EmailAddress.objects.create(user=user, email=user.email, verified=True)
         anonymise_user(user)
         assert not EmailAddress.objects.filter(user=user).exists()
 
     def test_social_accounts_deleted(self):
-        user = UserFactory()
+        user = UserRecipe.make()
         SocialAccount.objects.create(user=user, provider="google", uid="123")
         anonymise_user(user)
         assert not SocialAccount.objects.filter(user=user).exists()

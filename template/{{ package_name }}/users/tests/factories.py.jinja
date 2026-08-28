@@ -1,23 +1,26 @@
+from typing import Any
+
 from allauth.account.models import EmailAddress
-from factory import django
-from factory.declarations import LazyAttribute, Sequence, SubFactory
+from django.contrib.auth.hashers import make_password
+from model_bakery.recipe import Recipe, seq
 
 from {{ package_name }}.users.models import User
 
+TEST_PASSWORD = "testpass"  # noqa: S105
 
-class UserFactory(django.DjangoModelFactory):
-    username = Sequence(lambda n: f"user-{n}")
-    email = Sequence(lambda n: f"user-{n}@example.com")
-    password = django.Password("testpass")
+UserRecipe = Recipe(
+    User,
+    username=seq("user-"),
+    email=seq("user-", suffix="@example.com"),
+    # Hashed lazily, not at import time: the test settings override
+    # PASSWORD_HASHERS, and a digest built under the default hashers fails
+    # verification under the test ones.
+    password=lambda: make_password(TEST_PASSWORD),
+)
 
-    class Meta:
-        model = User
 
-
-class EmailAddressFactory(django.DjangoModelFactory):
-    user = SubFactory(UserFactory)
-    email = LazyAttribute(lambda a: a.user.email)
-    verified = True
-
-    class Meta:
-        model = EmailAddress
+def make_verified_user(**kwargs: Any) -> User:
+    """Create a user with a verified email address."""
+    user = UserRecipe.make(**kwargs)
+    EmailAddress.objects.create(user=user, email=user.email, verified=True)
+    return user

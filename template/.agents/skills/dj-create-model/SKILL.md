@@ -1,8 +1,8 @@
 ---
-description: Design and write a Django model with factory, fixture, and model tests
+description: Design and write a Django model with recipe, fixture, and model tests
 ---
 
-Design and write a Django model with factory, fixture, and model tests.
+Design and write a Django model with recipe, fixture, and model tests.
 
 **IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
 
@@ -10,7 +10,7 @@ Design and write a Django model with factory, fixture, and model tests.
 
 - `docs/python-style-guide.md`
 - `<package_name>/<app_name>/models.py` — existing models and patterns
-- `<package_name>/<app_name>/tests/factories.py` — existing factories
+- `<package_name>/<app_name>/tests/factories.py` — existing recipes
 
 ---
 
@@ -242,27 +242,48 @@ empty lists rather than guessing.
 
 ---
 
-### Step 5 — Update the factory
+### Step 5 — Add the model to the factories module
 
-Edit `<package_name>/<app_name>/tests/factories.py`. Use `factory.Faker` matched
-to the field type — see `references/factory-reference.md` for the full mapping
-table and M2M pattern.
-
-Full factory example:
+Edit `<package_name>/<app_name>/tests/factories.py`:
 
 ```python
-import factory
-from factory.django import DjangoModelFactory
+from model_bakery.recipe import Recipe, foreign_key, seq
 
 from <package_name>.<app_name>.models import <model_name>
 
 
-class <model_name>Factory(DjangoModelFactory):
-    class Meta:
-        model = <model_name>
-
-    <field_name> = <declaration>
+<model_name>Recipe = Recipe(
+    <model_name>,
+    <field_name>=<declaration>,
+)
 ```
+
+**Declare only the fields that carry meaning.** Model Bakery fills every other
+field in from its type, so do not write a line per column — that is noise that
+has to be maintained. A field earns a declaration only if it needs:
+
+| Reason | Declaration |
+|---|---|
+| `unique=True` | `seq("<field>-")` |
+| Required FK / O2O | `foreign_key(<Target>Recipe)` — omit if any instance will do |
+| A specific default the tests rely on | the literal value |
+| A value derived from another field | see the helper-function note below |
+
+Do not declare `auto_now`/`auto_now_add` timestamps — Django sets them.
+
+If a field's value must be derived from another field on the same instance,
+Model Bakery cannot express it (callables are invoked with no arguments). Add a
+module-level helper function next to the recipe instead:
+
+```python
+def make_<model_lower>(**kwargs: Any) -> <model_name>:
+    """Create a <model_name> with <derived_field> derived from <source_field>."""
+    obj = <model_name>Recipe.make(**kwargs)
+    ...
+    return obj
+```
+
+See `docs/testing.md` for the full recipe reference and gotchas.
 
 ---
 
@@ -273,10 +294,10 @@ Add to `<package_name>/<app_name>/tests/fixtures.py`:
 ```python
 @pytest.fixture
 def <model_lower>() -> <model_name>:
-    return <model_name>Factory()
+    return <model_name>Recipe.make()
 ```
 
-Add the import for `<model_name>Factory` at the top if not already present.
+Add the import for `<model_name>Recipe` at the top if not already present.
 
 ---
 
@@ -287,17 +308,17 @@ Add to `<package_name>/<app_name>/tests/test_models.py`:
 ```python
 import pytest
 
-from <package_name>.<app_name>.tests.factories import <model_name>Factory
+from <package_name>.<app_name>.tests.factories import <model_name>Recipe
 
 
 @pytest.mark.django_db
 class Test<model_name>:
     def test_create(self):
-        obj = <model_name>Factory()
+        obj = <model_name>Recipe.make()
         assert obj.pk is not None
 
     def test_str(self):
-        obj = <model_name>Factory()
+        obj = <model_name>Recipe.make()
         assert str(obj)
 ```
 

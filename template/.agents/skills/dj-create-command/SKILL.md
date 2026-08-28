@@ -147,12 +147,12 @@ from __future__ import annotations
 import pytest
 from django.core.management import call_command
 
-from <package_name>.<app_name>.tests.factories import <ItemFactory>
+from <package_name>.<app_name>.tests.factories import <ItemRecipe>
 
 
 @pytest.mark.django_db
 def test_<command_name>_enqueues_tasks() -> None:
-    <ItemFactory>.create_batch(3)
+    <ItemRecipe>.make(3)
     call_command("<command_name>")
     # assert the task's side effect on all 3 items
 ```

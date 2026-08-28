@@ -126,7 +126,7 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-create-view`      | Add a view, template, and URL                                          |
 | `/dj-create-task`      | Add a `django-tasks-db` background task with correct async patterns    |
 | `/dj-create-command`   | Add a management command with tests                                    |
-| `/dj-create-model`     | Design and write a Django model with factory, fixture, and model tests |
+| `/dj-create-model`     | Design and write a Django model with recipe, fixture, and model tests |
 | `/dj-create-migration` | Create a data migration (Python or SQL)                                |
 | `/dj-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
 | `/dj-create-e2e`       | Write Playwright E2E test(s) for a described user interaction          |

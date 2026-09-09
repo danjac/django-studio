@@ -37,6 +37,17 @@ write_files:
 
 runcmd:
   - netplan apply
+%{ if tailscale_enabled ~}
+  - |
+    # Join the tailnet before installing k3s, so that a failed k3s install can
+    # still be debugged over Tailscale SSH even with admin_ips locked down.
+    curl -fsSL https://tailscale.com/install.sh | sh
+    tailscale up \
+      --auth-key="${tailscale_auth_key}?preauthorized=true&ephemeral=false" \
+      --advertise-tags=${tailscale_tag} \
+      --hostname=${tailscale_hostname} \
+      --ssh
+%{ endif ~}
   - |
     PUBLIC_IP="$(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4)"
     curl -sfL https://get.k3s.io | \
@@ -47,7 +58,7 @@ runcmd:
       --flannel-iface=enp7s0 \
       --advertise-address=${private_ip} \
       --tls-san=${private_ip} \
-      --tls-san="$PUBLIC_IP" \
+      --tls-san="$PUBLIC_IP" ${tailscale_tls_san} \
       --node-label=role=server ${workload_labels}
   - |
     # Copy kubeconfig for ubuntu user

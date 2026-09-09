@@ -36,7 +36,27 @@ postgres_volume_size = 50
 # Run /dj-deploy-observe later to provision it.
 create_monitor = false
 
+# Tailscale (optional) - see docs/infrastructure.md, or run /dj-tailscale.
+#
+# Leave the client secret empty to run without Tailscale. When set, every node
+# joins your tailnet at boot and the kubeconfig points at the server's MagicDNS
+# name instead of its public IP.
+#
+# Use an OAuth *client secret*, not an auth key: auth keys expire after at most
+# 90 days, and an expired key means nodes added later silently fail to join.
+# Create one at login.tailscale.com/admin/settings/oauth with the auth_keys
+# write scope and the tag below.
+#
+# tailscale_oauth_client_secret = "tskey-client-..."
+# tailscale_tailnet             = "tail1a2b3c.ts.net"
+# tailscale_tag                 = "tag:k8s"
+
 # Restrict SSH (22) and K3s API (6443) access to specific IPs.
+#
+# With Tailscale enabled and verified, lock these to the tailnet:
+#   admin_ips = ["100.64.0.0/10"]
+# Ports 80 and 443 stay open regardless - that is public web traffic.
+# Never tighten this before confirming every node is on the tailnet.
 # Set to your own IP or VPN exit IP, e.g. ["203.0.113.42/32"]
 # See docs/k3s-Hetzner-Cloudflare.md for VPN guidance.
 # Default is open (matches Hetzner's default) - restrict before first apply.

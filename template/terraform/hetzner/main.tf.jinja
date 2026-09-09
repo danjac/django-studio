@@ -1,5 +1,6 @@
 terraform {
-  required_version = ">= 1.0"
+  # 1.2+ for lifecycle preconditions
+  required_version = ">= 1.2"
 
   required_providers {
     hcloud = {
@@ -35,6 +36,23 @@ locals {
     var.create_database ? "" : "database=true",
   ])
   server_node_label_args = join(" ", [for label in local.server_workload_labels : "--node-label=${label}"])
+
+  # Tailscale (optional). An empty client secret means Tailscale is not enabled.
+  #
+  # Node MagicDNS names are pinned with `tailscale up --hostname` rather than
+  # left to Tailscale's own normalisation, because the k3s serving certificate
+  # must carry the server's MagicDNS name as a SAN at install time. Getting it
+  # wrong cannot be corrected later without regenerating the certificate and
+  # restarting k3s, so the name has to be predictable from Terraform.
+  #
+  # cluster_name may contain underscores, which are not valid in DNS labels.
+  # nonsensitive(): whether Tailscale is on is not itself a secret, and without
+  # this the flag taints every value derived from it - including the MagicDNS
+  # hostname, which get-kubeconfig.sh has to read.
+  tailscale_enabled     = nonsensitive(var.tailscale_oauth_client_secret != "")
+  tailscale_name_prefix = replace(var.cluster_name, "_", "-")
+  server_tailscale_host = local.tailscale_enabled ? "${local.tailscale_name_prefix}-server.${var.tailscale_tailnet}" : ""
+  tailscale_tls_san     = local.tailscale_enabled ? "--tls-san=${local.server_tailscale_host}" : ""
 }
 
 # Private network for internal communication
@@ -211,11 +229,16 @@ resource "hcloud_server" "server" {
   firewall_ids = [hcloud_firewall.server.id]
 
   user_data = templatefile("${path.module}/templates/cloud_init_server.tftpl", {
-    hostname        = "${var.cluster_name}-server"
-    private_ip      = local.server_private_ip
-    k3s_token       = var.k3s_token
-    ssh_public_key  = var.ssh_public_key
-    workload_labels = local.server_node_label_args
+    hostname           = "${var.cluster_name}-server"
+    private_ip         = local.server_private_ip
+    k3s_token          = var.k3s_token
+    ssh_public_key     = var.ssh_public_key
+    workload_labels    = local.server_node_label_args
+    tailscale_enabled  = local.tailscale_enabled
+    tailscale_auth_key = var.tailscale_oauth_client_secret
+    tailscale_tag      = var.tailscale_tag
+    tailscale_hostname = "${local.tailscale_name_prefix}-server"
+    tailscale_tls_san  = local.tailscale_tls_san
   })
 
   labels = {
@@ -237,6 +260,14 @@ resource "hcloud_server" "server" {
 
   lifecycle {
     ignore_changes = [user_data, ssh_keys]
+
+    # Caught at plan time because the consequence is silent: without a tailnet
+    # suffix the TLS SAN would be written as "<name>-server." and every
+    # connection over Tailscale would fail certificate verification.
+    precondition {
+      condition     = var.tailscale_oauth_client_secret == "" || var.tailscale_tailnet != ""
+      error_message = "tailscale_tailnet must be set when tailscale_oauth_client_secret is set (e.g. tail1a2b3c.ts.net)."
+    }
   }
 }
 
@@ -252,10 +283,14 @@ resource "hcloud_server" "database" {
   firewall_ids = [hcloud_firewall.agents.id]
 
   user_data = templatefile("${path.module}/templates/cloud_init_database.tftpl", {
-    hostname          = "${var.cluster_name}-database"
-    server_private_ip = local.server_private_ip
-    k3s_token         = var.k3s_token
-    ssh_public_key    = var.ssh_public_key
+    hostname           = "${var.cluster_name}-database"
+    server_private_ip  = local.server_private_ip
+    k3s_token          = var.k3s_token
+    ssh_public_key     = var.ssh_public_key
+    tailscale_enabled  = local.tailscale_enabled
+    tailscale_auth_key = var.tailscale_oauth_client_secret
+    tailscale_tag      = var.tailscale_tag
+    tailscale_hostname = "${local.tailscale_name_prefix}-database"
   })
 
   labels = {
@@ -300,12 +335,16 @@ resource "hcloud_server" "jobrunner" {
   firewall_ids = [hcloud_firewall.agents.id]
 
   user_data = templatefile("${path.module}/templates/cloud_init_agent.tftpl", {
-    hostname          = "${var.cluster_name}-jobrunner"
-    server_private_ip = local.server_private_ip
-    k3s_token         = var.k3s_token
-    ssh_public_key    = var.ssh_public_key
-    role              = "jobrunner"
-    workload_label    = "--node-label=jobrunner=true"
+    hostname           = "${var.cluster_name}-jobrunner"
+    server_private_ip  = local.server_private_ip
+    k3s_token          = var.k3s_token
+    ssh_public_key     = var.ssh_public_key
+    role               = "jobrunner"
+    workload_label     = "--node-label=jobrunner=true"
+    tailscale_enabled  = local.tailscale_enabled
+    tailscale_auth_key = var.tailscale_oauth_client_secret
+    tailscale_tag      = var.tailscale_tag
+    tailscale_hostname = "${local.tailscale_name_prefix}-jobrunner"
   })
 
   labels = {
@@ -341,12 +380,16 @@ resource "hcloud_server" "webapp" {
   firewall_ids = [hcloud_firewall.agents.id]
 
   user_data = templatefile("${path.module}/templates/cloud_init_agent.tftpl", {
-    hostname          = "${var.cluster_name}-webapp-${count.index + 1}"
-    server_private_ip = local.server_private_ip
-    k3s_token         = var.k3s_token
-    ssh_public_key    = var.ssh_public_key
-    role              = "webapp"
-    workload_label    = "--node-label=webapp=true"
+    hostname           = "${var.cluster_name}-webapp-${count.index + 1}"
+    server_private_ip  = local.server_private_ip
+    k3s_token          = var.k3s_token
+    ssh_public_key     = var.ssh_public_key
+    role               = "webapp"
+    workload_label     = "--node-label=webapp=true"
+    tailscale_enabled  = local.tailscale_enabled
+    tailscale_auth_key = var.tailscale_oauth_client_secret
+    tailscale_tag      = var.tailscale_tag
+    tailscale_hostname = "${local.tailscale_name_prefix}-webapp-${count.index + 1}"
   })
 
   labels = {
@@ -382,12 +425,16 @@ resource "hcloud_server" "monitor" {
   firewall_ids = [hcloud_firewall.monitor[0].id]
 
   user_data = templatefile("${path.module}/templates/cloud_init_agent.tftpl", {
-    hostname          = "${var.cluster_name}-monitor"
-    server_private_ip = local.server_private_ip
-    k3s_token         = var.k3s_token
-    ssh_public_key    = var.ssh_public_key
-    role              = "monitor"
-    workload_label    = ""
+    hostname           = "${var.cluster_name}-monitor"
+    server_private_ip  = local.server_private_ip
+    k3s_token          = var.k3s_token
+    ssh_public_key     = var.ssh_public_key
+    role               = "monitor"
+    workload_label     = ""
+    tailscale_enabled  = local.tailscale_enabled
+    tailscale_auth_key = var.tailscale_oauth_client_secret
+    tailscale_tag      = var.tailscale_tag
+    tailscale_hostname = "${local.tailscale_name_prefix}-monitor"
   })
 
   labels = {

@@ -399,6 +399,56 @@ class TestAlwaysIncludedFeatures:
             "? hcloud_server.database[0].id : hcloud_server.server.id"
         ) in content
 
+    def test_tailscale_variables_exist_and_default_to_disabled(self, project):
+        content = (project / "terraform" / "hetzner" / "variables.tf").read_text()
+        for name in (
+            "tailscale_oauth_client_secret",
+            "tailscale_tailnet",
+            "tailscale_tag",
+        ):
+            assert f'variable "{name}"' in content
+        start = content.index('variable "tailscale_oauth_client_secret"')
+        block = content[start : content.index("\n}", start)]
+        assert 'default     = ""' in block, "Tailscale must be off by default"
+        assert "sensitive   = true" in block
+
+    def test_tailscale_enabled_is_not_marked_sensitive(self, project):
+        """Sensitivity propagates from the OAuth secret; without nonsensitive()
+        it taints the MagicDNS host that get-kubeconfig.sh must read."""
+        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
+        assert "nonsensitive(var.tailscale_oauth_client_secret" in content, (
+            "tailscale_enabled must be unwrapped or the outputs fail to validate"
+        )
+
+    def test_tailscale_tailnet_required_when_enabled(self, project):
+        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
+        assert "precondition" in content
+        assert (
+            'var.tailscale_oauth_client_secret == "" || var.tailscale_tailnet != ""'
+            in content
+        )
+
+    def test_cloud_init_tailscale_block_is_conditional(self, project):
+        templates = project / "terraform" / "hetzner" / "templates"
+        for name in (
+            "cloud_init_server.tftpl",
+            "cloud_init_agent.tftpl",
+            "cloud_init_database.tftpl",
+        ):
+            content = (templates / name).read_text()
+            assert "%{ if tailscale_enabled ~}" in content, name
+            assert "tailscale up" in content, name
+            assert "--advertise-tags=${tailscale_tag}" in content, name
+            # hostname is pinned rather than left to Tailscale normalisation,
+            # because the server's TLS SAN is derived from it at install time
+            assert "--hostname=${tailscale_hostname}" in content, name
+
+    def test_server_cert_carries_the_tailnet_san(self, project):
+        content = (
+            project / "terraform" / "hetzner" / "templates" / "cloud_init_server.tftpl"
+        ).read_text()
+        assert '--tls-san="$PUBLIC_IP" ${tailscale_tls_san}' in content
+
     def test_cloud_init_emits_workload_labels(self, project):
         templates = project / "terraform" / "hetzner" / "templates"
         server = (templates / "cloud_init_server.tftpl").read_text()

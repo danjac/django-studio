@@ -4,6 +4,10 @@ description: Rotate auto-generated and third-party Helm secrets and redeploy
 
 Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 
+**Note:** `app.adminUrl` is non-secret config and lives in `helm/site/values.yaml`,
+which is tracked by git. Everything else this skill rotates is in
+`helm/site/values.secret.yaml`, which is gitignored.
+
 **IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
 
 ## Required reading
@@ -153,16 +157,24 @@ entirely — the observability stack has not been deployed.
 
 ## 5. Apply changes
 
-Write the updated values to `helm/site/values.secret.yaml` (and
-`helm/observability/values.secret.yaml` if Grafana password was changed),
-preserving all other keys unchanged. Each auto-generated value must have its own rotation comment
-immediately above it:
+Write `app.adminUrl` to `helm/site/values.yaml`, and every `secrets.*` value to
+`helm/site/values.secret.yaml` (and `helm/observability/values.secret.yaml` if the
+Grafana password was changed), preserving all other keys unchanged.
+
+`helm/site/values.yaml` is tracked by git — if `adminUrl` was rotated, tell the user to
+commit it.
+
+Each auto-generated value must have its own rotation comment immediately above it:
 
 ```yaml
+# helm/site/values.yaml
 app:
   # auto-generated — rotate with: /dj-rotate-secrets
   adminUrl: "<new-slug>/"
+```
 
+```yaml
+# helm/site/values.secret.yaml
 secrets:
   # auto-generated — rotate with: /dj-rotate-secrets
   postgresPassword: "<new-value>"

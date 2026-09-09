@@ -1,7 +1,11 @@
-# Application image - override with the actual image in values.secret.yaml
+# This file is committed to git and holds all non-secret configuration.
+# Secrets live in values.secret.yaml, which is gitignored.
+
+# Application image. Replace CHANGE_ME with your GitHub owner, then commit.
+# The deploy workflow overrides this with the built image via --set image=...
 image: ghcr.io/CHANGE_ME/{{ project_slug }}:main
 
-# Number of webapp replicas - override in values.secret.yaml.
+# Number of webapp replicas.
 # Default 1 suits the single-node topology; raise it once you split webapps
 # onto dedicated nodes (see docs/infrastructure.md).
 replicas: 1
@@ -10,7 +14,7 @@ replicas: 1
 postgres:
   image: postgres:18.1-bookworm
   storage: 30Gi
-  # Volume mount path - set in values.secret.yaml from:
+  # Volume mount path. Fill in after provisioning, then commit:
   # terraform -chdir=terraform/hetzner output -raw postgres_volume_mount_path
   volumePath: ""
   args:
@@ -78,8 +82,8 @@ resources:
       memory: 256Mi
       cpu: 200m
 
-# Application domain - set in values.secret.yaml
-domain: ""
+# Application domain
+domain: "{{ domain }}"
 
 # Multi-tenancy (django-tenants) - set to true to route all subdomains to Django
 tenants:
@@ -87,10 +91,14 @@ tenants:
 
 # Django application settings
 app:
+  # URL prefix for the Django admin - change from the default for security.
+  # Rotate with /dj-rotate-secrets.
   adminUrl: admin/
-  admins: ""
-  allowedHosts: "*"
-  contactEmail: ""
+  # Comma-separated list of admin email addresses
+  admins: "{{ author_email }}"
+  # Leading dot matches the root domain and all subdomains
+  allowedHosts: ".{{ domain }}"
+  contactEmail: "{{ author_email }}"
   connPool:
     maxIdle: 120
     maxLifetime: 1800
@@ -100,9 +108,9 @@ app:
     timeout: 20
   cspScriptWhitelist: "*.account.google.com,*.googleapis.com,*.cloudflareinsights.com"
   mailgunApiUrl: https://api.eu.mailgun.net/v3
-  mailgunSenderDomain: ""
-  metaAuthor: ""
-  metaDescription: ""
+  mailgunSenderDomain: "{{ domain }}"
+  metaAuthor: "{{ author }}"
+  metaDescription: "{{ description }}"
   metaKeywords: ""
   secureSslRedirect: true
 

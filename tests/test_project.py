@@ -485,6 +485,50 @@ class TestReferenceIntegrity:
         for key in sorted(consumed):
             assert f"{key}:" in values, f"values.yaml does not declare {key}"
 
+    def test_secret_values_example_holds_only_secrets(self, project):
+        """values.secret.yaml is gitignored; anything non-secret belongs in
+        values.yaml so it can be committed and tested."""
+        content = (project / "helm" / "site" / "values.secret.yaml.example").read_text()
+        top_level = {
+            line.split(":")[0]
+            for line in content.splitlines()
+            if line and not line.startswith((" ", "#"))
+        }
+        assert top_level == {"secrets"}, f"non-secret top-level keys: {top_level}"
+
+    def test_non_secret_config_defaults_come_from_copier_answers(self, project):
+        values = (project / "helm" / "site" / "values.yaml").read_text()
+        for key, expected in (
+            ("domain", "example.com"),
+            ("allowedHosts", ".example.com"),
+            ("admins", "test@example.com"),
+            ("contactEmail", "test@example.com"),
+            ("mailgunSenderDomain", "example.com"),
+            ("metaAuthor", "Test Author"),
+            ("metaDescription", "A test project"),
+        ):
+            assert f'{key}: "{expected}"' in values, (
+                f"{key} not defaulted in values.yaml"
+            )
+
+    def test_non_secret_config_is_not_in_the_secret_file(self, project):
+        content = (project / "helm" / "site" / "values.secret.yaml.example").read_text()
+        for key in (
+            "domain:",
+            "image:",
+            "replicas:",
+            "volumePath:",
+            "adminUrl:",
+            "admins:",
+            "allowedHosts:",
+            "contactEmail:",
+            "metaAuthor:",
+            "metaDescription:",
+            "mailgunSenderDomain:",
+            "secureSslRedirect:",
+        ):
+            assert key not in content, f"{key} should have moved to values.yaml"
+
     def test_no_references_to_the_wrong_object_storage_prefix(self, project):
         stale = [
             f"{path.relative_to(project)}:{i}"

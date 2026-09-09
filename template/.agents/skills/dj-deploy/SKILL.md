@@ -87,7 +87,7 @@ If the user chooses **2**, ask how many webapp nodes they want (default 2), then
 ```
 
 These values are written to `terraform/hetzner/terraform.tfvars`, except `<replicas>`,
-which goes in `helm/site/values.secret.yaml`.
+which goes in `helm/site/values.yaml`.
 
 Tell the user:
 > Starting single-node. See `docs/infrastructure.md` for the scaling path, or run
@@ -335,7 +335,7 @@ Ask:
 > Enter your full Mailgun sender domain (e.g. `mg.example.com`):
 
 Save the full sender domain (e.g. `mg.example.com`) for use in Step 4
-(`app.mailgunSenderDomain` in `values.secret.yaml`).
+(`app.mailgunSenderDomain` in `values.yaml`).
 
 Extract the subdomain prefix (everything before the first `.`) and set
 `mailgun_subdomain` in `terraform/cloudflare/terraform.tfvars`. For example,
@@ -461,17 +461,27 @@ just terraform storage apply -auto-approve
 
 ---
 
-## Step 4 — Helm secrets
+## Step 4 — Helm values
+
+There are two files, and it matters which value goes where:
+
+| File | Tracked by git? | Holds |
+| ---- | --------------- | ----- |
+| `helm/site/values.yaml` | **yes — commit your changes** | all non-secret config |
+| `helm/site/values.secret.yaml` | no, gitignored | secrets only (`secrets.*`) |
 
 **Check:** If `helm/site/values.secret.yaml` does not exist, copy it from the example:
 ```bash
 cp helm/site/values.secret.yaml.example helm/site/values.secret.yaml
 ```
 
-Read the current file. For each value below, skip if already set to a non-empty,
-non-`CHANGE_ME` value.
+`values.yaml` already ships with defaults filled in from the answers given when the
+project was generated. Read both files. For each value below, skip if already set to a
+non-empty, non-`CHANGE_ME` value.
 
 ### Auto-generated secrets
+
+→ `values.secret.yaml`
 
 Generate each with `openssl rand -hex 32` if not already set:
 - `secrets.postgresPassword`
@@ -481,10 +491,6 @@ Generate each with `openssl rand -hex 32` if not already set:
 Write each value with an individual comment immediately above it:
 
 ```yaml
-app:
-  # auto-generated — rotate with: /dj-rotate-secrets
-  adminUrl: "<generated-slug>/"
-
 secrets:
   # auto-generated — rotate with: /dj-rotate-secrets
   postgresPassword: "<generated>"
@@ -498,6 +504,8 @@ Tell the user these have been generated automatically.
 
 ### Webapp replicas
 
+→ `values.yaml`
+
 Set `replicas` to `<replicas>` (collected at the start of the wizard).
 
 Single-node topology uses `1`. In a split topology this must match `webapp_count` in
@@ -507,7 +515,10 @@ Single-node topology uses `1`. In a split topology this must match `webapp_count
 
 Fetch automatically — never prompt for these:
 
+→ `values.yaml`
 - `postgres.volumePath` ← `just terraform-value hetzner postgres_volume_mount_path`
+
+→ `values.secret.yaml`
 - `secrets.cloudflare.cert` ← `just terraform-value cloudflare origin_cert_pem`
 - `secrets.cloudflare.key` ← `just terraform-value cloudflare origin_key_pem`
 
@@ -533,30 +544,50 @@ If `terraform/storage/` exists:
 
 ### Domain values
 
-- `domain` ← use the domain confirmed in Step 2
+→ `values.yaml`
+
+These are pre-filled from the `domain` given at project generation. Only change them if
+the domain confirmed in Step 2 differs:
+
+- `domain` ← the domain confirmed in Step 2
 - `app.allowedHosts` ← `.` + domain (e.g. `.my_domain.com`)
 
 ### Image
 
-Set a placeholder for now — `just gh deploy` overrides this with the actual SHA tag via
-`--set image=...`, so the value here does not affect the first deploy:
+→ `values.yaml`
+
+Replace the `CHANGE_ME` owner placeholder. `just gh deploy` overrides this with the
+actual SHA tag via `--set image=...`, so the value here only affects a manual
+`just helm site`:
 - `image` ← `ghcr.io/<github_repo>:main`
+
+### Values already defaulted from the project answers
+
+→ `values.yaml`
+
+`app.admins`, `app.contactEmail`, `app.metaAuthor`, `app.metaDescription` and
+`app.mailgunSenderDomain` are pre-filled from the author, email, description and domain
+given when the project was generated. Show the current values and ask:
+
+> These are set in `helm/site/values.yaml`:
+> - admins: `<value>`
+> - contact email: `<value>`
+> - meta author: `<value>`
+> - meta description: `<value>`
+> - mailgun sender domain: `<value>`
+>
+> Change any of them? (y/n)
+
+If **n**, continue. If **y**, ask which and update only those.
+
+If the user provided a different Mailgun sender domain in Step 2e, set
+`app.mailgunSenderDomain` to that value (e.g. `mg.example.com`).
 
 ### Values requiring user input
 
 For each, only prompt if currently `CHANGE_ME` or empty:
 
-**Admins email** (comma-separated list of Django admin email addresses):
-> Enter admin email address(es), comma-separated (e.g. `you@example.com`):
-
-**Contact email:**
-> Enter the public contact email address:
-
-**Mailgun sender domain** — if the user provided a Mailgun sender domain in Step 2e,
-set `app.mailgunSenderDomain` to the full domain (e.g. `mg.example.com`). If Mailgun
-was not configured in Step 2e, skip.
-
-**Admin URL** — generate a random human-readable slug if the user skips:
+**Admin URL** (→ `values.yaml`) — generate a random human-readable slug if the user skips:
 
 ```bash
 slug=$(.agents/skills/scripts/random-slug.py)
@@ -577,7 +608,8 @@ Tell the user which URL was chosen — they will need this to access Django admi
 
 Save this as `<site_name>` for use in Step 6c.
 
-**Meta author, description, keywords** — prompt for each; the user can type **skip** to leave empty.
+**Meta keywords** (→ `values.yaml`) — comma-separated; the user can type **skip** to
+leave empty. Author and description are already defaulted above.
 
 ### Sentry DSN
 
@@ -600,10 +632,19 @@ If it is empty and the user wants email:
 
 If the user skips, leave it empty — outbound email will not work until this is set.
 
-### Write the file
+### Write the files
 
-Write all values to `helm/site/values.secret.yaml`, preserving any values that were
-already set and were not listed above as needing update.
+Write each value to the file marked above it, preserving any values that were already
+set and were not listed as needing update.
+
+`values.yaml` is tracked by git. Tell the user to review and commit it:
+
+```bash
+git diff helm/site/values.yaml
+```
+
+Never write a `secrets.*` value to `values.yaml`, and never write config to
+`values.secret.yaml` — the split is what keeps the tracked file safe to commit.
 
 ---
 
@@ -616,11 +657,13 @@ just gh-set-secrets
 This pushes `KUBECONFIG_BASE64` and `HELM_VALUES_SECRET` to the GitHub repository secrets.
 Tell the user what was pushed and confirm with `gh secret list`.
 
-> **After the initial deploy:** whenever you change a config value in
-> `values.secret.yaml` (e.g. admin email, feature flag), run `just deploy-config`
-> instead of `just gh-set-secrets` and `just helm site` separately. It pushes the
-> secrets to GitHub **and** applies the updated Helm chart to the cluster in one step,
-> keeping CI and the running cluster in sync.
+> **After the initial deploy:**
+> - Changed a **config** value in `helm/site/values.yaml` (admin email, meta tags,
+>   replicas)? Commit it, then run `just helm site`.
+> - Changed a **secret** in `helm/site/values.secret.yaml`? Run `just deploy-config`
+>   instead of `just gh-set-secrets` and `just helm site` separately. It pushes the
+>   secrets to GitHub **and** applies the updated chart in one step, keeping CI and the
+>   running cluster in sync.
 
 ---
 

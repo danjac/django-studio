@@ -61,10 +61,10 @@ Before provisioning infrastructure, ask the user:
 > How do you want to start?
 >
 > **1. Single node** (recommended) — one cx33 running the app, worker,
->    PostgreSQL and Redis. ~€15/month. You can split roles onto dedicated
->    nodes later without touching the Helm chart.
-> **2. Split** — dedicated nodes for database, jobrunner, and webapps.
->    ~€35/month.
+>    PostgreSQL and Redis. One server to pay for, and the cheapest option. You
+>    can split roles onto dedicated nodes later without touching the Helm chart.
+> **2. Split** — dedicated nodes for database, jobrunner, and webapps. One
+>    server per role, so at least four.
 >
 > (1/2, default: 1)
 

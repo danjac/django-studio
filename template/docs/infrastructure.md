@@ -23,7 +23,7 @@ This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudfla
 
 PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but build on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills.
 
-Hetzner has fixed, published pricing. A 3-node k3s cluster costs roughly €20/month regardless of traffic. There are no egress surprise charges, no per-request fees, no auto-scaling that runs away. The cost is predictable and budgetable.
+Hetzner has fixed, published pricing. You pay per server, so the bill is the same whether the app is idle or busy. There are no egress surprise charges, no per-request fees, no auto-scaling that runs away. The cost is predictable and budgetable.
 
 ### Why not Docker + systemd
 
@@ -102,7 +102,8 @@ Terraform applies each label to the server node unless a dedicated node claims i
 
 Each step is independent — take them in any order, as load demands.
 
-**Stage 1 — single node (default).** One `cx33`. Everything runs on it. ~€13/month.
+**Stage 1 — single node (default).** One `cx33`. Everything runs on it, and it is the
+cheapest the cluster gets.
 
 **Stage 2 — split the database.** PostgreSQL and Redis get their own node:
 
@@ -535,15 +536,20 @@ stored in a dedicated `backup-secret` and are never exposed to the app pods.
 
 ## Cost
 
-Default single-node topology:
+You pay per server, at Hetzner's published rates, regardless of traffic. What the
+topology costs is therefore just a count of what it provisions:
 
-| Item | Cost |
-| ---- | ---- |
-| 1x cx33 (4 vCPU, 8 GB) | ~€13/month |
-| 50 GB volume | ~€2/month |
-| DNS (Cloudflare) | Free |
-| **Total** | **~€15/month** |
+| Topology | What you pay for |
+| -------- | ---------------- |
+| Single node (default) | 1x `cx33` + the PostgreSQL volume |
+| Database split out | + 1 node |
+| Jobrunner split out | + 1 node |
+| N dedicated webapps | + N nodes |
+| Observability | + 1 node (the monitor) |
 
-Each split adds one node. A fully split cluster (server + database + jobrunner +
-2x webapp) runs roughly €35/month; adding the monitor node for the observability stack
-adds one more.
+Cloudflare DNS, CDN and SSL are free at the tier this template uses, and Tailscale's
+free tier covers 3 users and 100 devices.
+
+For current rates see [Hetzner Cloud pricing](https://www.hetzner.com/cloud/) - server
+types are set by `server_type`, `database_server_type` and `agent_server_type` in
+`terraform/hetzner/terraform.tfvars`.

@@ -187,7 +187,7 @@ See `docs/mcp.md` in the generated project for usage and security notes.
 
 [Hetzner Cloud](https://hetzner.com) is a very cost-effective, EU-based hosting provider. Cloudflare is currently the cheapest and most secure option for DNS, CDN, SSL, and DDoS protection. These solutions will be reviewed on a regular basis - if better options become available, they will be offered instead of or addition to these choices.
 
-Prices are subject to change, but the current hosting costs based on the default settings should range between 20-40 EUR per month.
+The point is that hosting is **low and fixed**. You pay per server, not per request, so the bill is the same whether the app is idle or busy - no egress charges, no per-request fees, no autoscaling that runs away. The default single-node topology is the cheapest option, and each role you split onto its own node adds exactly one server to the bill. See [Hetzner's pricing](https://www.hetzner.com/cloud/) for current rates.
 
 ### Private networking with Tailscale
 
@@ -218,5 +218,6 @@ Python 3.14 is managed automatically by `uv` - no separate install needed.
 | [Helm](https://helm.sh/docs/intro/install/)                    | Deploy Kubernetes workloads                         | See install docs |
 | [kubectl](https://kubernetes.io/docs/tasks/tools/)             | Kubernetes CLI                                      | See install docs |
 | [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                   | See install docs |
+| [tailscale](https://tailscale.com/download)                    | Only if Tailscale is enabled - required to reach the cluster | See install docs |
 
 See `docs/deployment.md` in the generated project for full deployment instructions.

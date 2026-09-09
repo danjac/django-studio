@@ -119,7 +119,7 @@ Check whether `helm/site/values.secret.yaml` exists (indicating the project has
 already been deployed to production).
 
 If it does not exist, no action needed here — the cron job will be created when
-the project is first deployed via `/dj-launch`.
+the project is first deployed via `/dj-deploy`.
 
 If it exists, check whether the management command is a **custom project command**
 or a **third-party command**:

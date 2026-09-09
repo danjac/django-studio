@@ -155,8 +155,8 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 | Command                    | Summary                                                                        |
 | -------------------------- | ------------------------------------------------------------------------------ |
-| `/dj-launch`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
-| `/dj-launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
+| `/dj-deploy`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `/dj-deploy-observe`       | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
 | `/dj-scale [n]`            | View or change the webapp replica count                                        |
 | `/dj-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
 | `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |

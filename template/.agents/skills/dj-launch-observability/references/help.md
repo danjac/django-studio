@@ -1,10 +1,9 @@
-**/dj-launch-observability**
+**/dj-launch-observability** — deprecated
 
-Deploys the observability stack (Grafana + Prometheus + Loki) to the cluster.
-Run this after `/dj-launch` once the main application is live.
+Renamed to `/dj-deploy-observe`. Running `/dj-launch-observability` still works: it
+switches to `/dj-deploy-observe` automatically with identical behaviour. Use the new name.
 
-Sets a Grafana admin password (auto-generated if not provided), then runs
-`just helm observability`.
+See `/dj-help dj-deploy-observe` for full documentation.
 
 Example:
-  /dj-launch-observability
+  /dj-deploy-observe

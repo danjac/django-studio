@@ -118,7 +118,7 @@ just rkube logs -f job/postgres-backup-test -c upload
 ```
 
 You should see the dump size and "Upload complete". Then verify the file appeared in
-the bucket by running `.agents/skills/dj-db-restore/bin/list-backups.sh`.
+the bucket by running `.agents/skills/dj-db-restore/scripts/list-backups.sh`.
 
 Clean up the test job:
 
@@ -145,13 +145,13 @@ Use `/dj-db-restore` for a guided restore. The steps below are for manual use.
 ### List available backups
 
 ```bash
-.agents/skills/dj-db-restore/bin/list-backups.sh
+.agents/skills/dj-db-restore/scripts/list-backups.sh
 ```
 
 ### Run the restore
 
 ```bash
-.agents/skills/dj-db-restore/bin/db-restore.sh backup-20240103-030000.sql.gz
+.agents/skills/dj-db-restore/scripts/db-restore.sh backup-20240103-030000.sql.gz
 ```
 
 The script handles the full lifecycle: suspend CronJobs, scale down app/worker, safety

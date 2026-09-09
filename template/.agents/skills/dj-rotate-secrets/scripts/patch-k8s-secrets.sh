@@ -12,7 +12,7 @@
 #
 # Usage:
 #   NEW_POSTGRES_PASSWORD=... NEW_REDIS_PASSWORD=... NAMESPACE=... \
-#     .agents/skills/dj-rotate-secrets/bin/patch-k8s-secrets.sh
+#     .agents/skills/dj-rotate-secrets/scripts/patch-k8s-secrets.sh
 set -euo pipefail
 
 : "${NEW_POSTGRES_PASSWORD:?NEW_POSTGRES_PASSWORD is required}"

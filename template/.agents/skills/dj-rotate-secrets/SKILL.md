@@ -239,7 +239,7 @@ call (`KUBECONFIG` is already exported from step 5a):
 NEW_POSTGRES_PASSWORD="$new_postgres" \
 NEW_REDIS_PASSWORD="$new_redis" \
 NAMESPACE="$namespace" \
-  .agents/skills/dj-rotate-secrets/bin/patch-k8s-secrets.sh
+  .agents/skills/dj-rotate-secrets/scripts/patch-k8s-secrets.sh
 ```
 
 Replace `$namespace` with the Helm release namespace (the same namespace the

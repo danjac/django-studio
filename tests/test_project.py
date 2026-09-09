@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import py_compile
+import re
 import subprocess
 
 
@@ -438,6 +439,37 @@ class TestAlwaysIncludedFeatures:
         assert "USE_I18N = True" in settings_content
         assert (project / "terraform" / "storage" / "main.tf").exists()
         assert (project / "locale").is_dir()
+
+
+class TestReferenceIntegrity:
+    """Docs and skills must point at files and value keys that actually exist."""
+
+    @staticmethod
+    def _text_files(project):
+        for pattern in ("*.md", "*.sh"):
+            for path in project.rglob(pattern):
+                if ".git" not in path.parts and ".venv" not in path.parts:
+                    yield path
+
+    def test_no_references_to_the_old_bin_script_directory(self, project):
+        """Skill scripts live in scripts/; bin/ is a leftover from the rename."""
+        stale = [
+            f"{path.relative_to(project)}:{i}"
+            for path in self._text_files(project)
+            for i, line in enumerate(path.read_text().splitlines(), 1)
+            if re.search(r"skills/[\w-]+/bin/", line)
+        ]
+        assert not stale, "references to skills/<name>/bin/: " + ", ".join(stale)
+
+    def test_every_referenced_skill_script_exists(self, project):
+        missing = []
+        for path in self._text_files(project):
+            for ref in re.findall(
+                r"\.agents/skills/[\w./-]+\.(?:sh|py)", path.read_text()
+            ):
+                if not (project / ref).exists():
+                    missing.append(f"{path.relative_to(project)} -> {ref}")
+        assert not missing, "referenced scripts do not exist: " + ", ".join(missing)
 
 
 class TestClaudeHooksInstallation:

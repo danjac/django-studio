@@ -5,7 +5,7 @@
 # aws-cli pod to list all objects in the backup bucket, sorted by date.
 #
 # Usage:
-#   .agents/skills/dj-db-restore/bin/list-backups.sh
+#   .agents/skills/dj-db-restore/scripts/list-backups.sh
 set -euo pipefail
 
 # Resolve the kubeconfig path the same way the justfile does.

@@ -15,7 +15,7 @@ No arguments — the skill walks you through every step interactively.
 1. Checks that backup credentials are configured in the cluster (`backup-secret`).
 2. Lists available backups from Object Storage and asks you to select one (default: most recent). Offers date filtering.
 3. Asks for confirmation before overwriting the database.
-4. Runs `.agents/skills/dj-db-restore/bin/db-restore.sh <filename>` — suspends CronJobs, scales down app and worker, takes a safety backup, restores in-cluster, scales back up, resumes CronJobs (even if interrupted).
+4. Runs `.agents/skills/dj-db-restore/scripts/db-restore.sh <filename>` — suspends CronJobs, scales down app and worker, takes a safety backup, restores in-cluster, scales back up, resumes CronJobs (even if interrupted).
 5. Runs `just rdj migrate` to verify the restored database is consistent.
 
 **Prerequisites**

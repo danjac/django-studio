@@ -88,7 +88,7 @@ just --yes rdj migrate             # run manage.py on production
 ```
 
 Skills that need kubectl beyond these two recipes should call `kubectl` directly.
-Skill scripts (e.g. `.agents/skills/dj-db-restore/bin/`) handle kubeconfig resolution
+Skill scripts (e.g. `.agents/skills/dj-db-restore/scripts/`) handle kubeconfig resolution
 internally.
 
 Human-invoked commands (typed directly in the terminal) do not need `--yes` — the

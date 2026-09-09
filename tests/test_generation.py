@@ -74,14 +74,15 @@ class TestDomainPrefill:
         assert 'domain = "example.com"' in content
 
     def test_helm_site_values_has_domain(self, output_dir):
+        """domain is non-secret config, so it lives in the git-tracked values.yaml."""
         project = render(output_dir, {**DEFAULT_CONTEXT, "domain": "myapp.example.org"})
-        content = (project / "helm" / "site" / "values.secret.yaml.example").read_text()
+        content = (project / "helm" / "site" / "values.yaml").read_text()
         assert 'domain: "myapp.example.org"' in content
         assert 'allowedHosts: ".myapp.example.org"' in content
 
     def test_helm_site_values_no_change_me_for_domain(self, output_dir):
         project = render(output_dir, {**DEFAULT_CONTEXT, "domain": "myapp.example.org"})
-        content = (project / "helm" / "site" / "values.secret.yaml.example").read_text()
+        content = (project / "helm" / "site" / "values.yaml").read_text()
         lines = {line.strip() for line in content.splitlines()}
         assert not any(
             "CHANGE_ME" in line

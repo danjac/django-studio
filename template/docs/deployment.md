@@ -126,7 +126,18 @@ just helm site
 just helm observability
 ```
 
-### Secrets
+### Configuration and secrets
+
+The chart splits its values across two files:
+
+| File | Tracked by git? | Holds |
+| ---- | --------------- | ----- |
+| `helm/site/values.yaml` | **yes** | all non-secret config — domain, image, replicas, admin addresses, meta tags, volume path, resource limits |
+| `helm/site/values.secret.yaml` | no, gitignored | secrets only — every key under `secrets.*` |
+
+`values.yaml` ships with defaults filled in from the answers given when the project was
+generated (domain, author, email, description), so most of it needs no editing. Change a
+value, commit it, and run `just helm site`.
 
 Copy and fill in the secrets file:
 
@@ -134,10 +145,14 @@ Copy and fill in the secrets file:
 cp helm/site/values.secret.yaml.example helm/site/values.secret.yaml
 ```
 
-`values.secret.yaml` is gitignored — never commit it.
+`values.secret.yaml` is gitignored — never commit it. Backing it up is your
+responsibility; store it in a password manager.
 
-The `postgres.volumePath` value must match the Hetzner volume mount path provisioned by
-Terraform:
+Two values in `values.yaml` need a per-deployment edit before the first deploy. Neither
+is secret, so commit them:
+
+- `image` — replace the `CHANGE_ME` owner with your GitHub owner
+- `postgres.volumePath` — the Hetzner volume mount path from Terraform:
 
 ```bash
 terraform -chdir=terraform/hetzner output -raw postgres_volume_mount_path
@@ -149,8 +164,8 @@ workload shares one `cx33` (4 vCPU, 8 GB RAM). Total requests come to roughly 2.
 leaving headroom for k3s itself.
 
 If you change `server_type` in `terraform.tfvars`, or split roles onto dedicated nodes
-(see [Topology and scaling](infrastructure.md#topology-and-scaling)), override the
-corresponding resource values in `values.secret.yaml`.
+(see [Topology and scaling](infrastructure.md#topology-and-scaling)), update the
+corresponding resource values in `values.yaml` and commit them.
 
 ## CI/CD Pipeline
 
@@ -277,7 +292,7 @@ just get-kubeconfig
 
 ### Upgrade PostgreSQL major version
 
-Set the upgrade flags in `helm/site/values.secret.yaml` before running `just helm site`:
+Set the upgrade flags in `helm/site/values.yaml` before running `just helm site`:
 
 ```yaml
 pgUpgrade:

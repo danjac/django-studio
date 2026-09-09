@@ -16,8 +16,8 @@ Parse `$ARGUMENTS` as: `[n]` (optional target replica count).
 
 ## No arguments — show current replica count
 
-Read `replicas` from `helm/site/values.secret.yaml` (falls back to
-`helm/site/values.yaml` if the secret file does not exist).
+Read `replicas` from `helm/site/values.yaml` (it is non-secret config, so it lives
+in the git-tracked values file).
 
 Also read `webapp_count`, `create_jobrunner` and `create_database` from
 `terraform/hetzner/terraform.tfvars` to determine the current topology.
@@ -131,14 +131,16 @@ without changing node count (user accepts the ongoing cost).
 
 ### Step 3 — Update replicas
 
-Set `replicas: <n>` in `helm/site/values.secret.yaml`.
+Set `replicas: <n>` in `helm/site/values.yaml`.
 
-If `values.secret.yaml` does not exist, set it in `helm/site/values.yaml` instead.
+That file is tracked by git — remind the user to commit the change.
 
 ### Step 4 — Deploy
 
+`replicas` is non-secret config, so no secrets need pushing to GitHub:
+
 ```bash
-just deploy-config
+just helm site
 ```
 
 ### Step 4b — Deprovision idle nodes (scale-down only)

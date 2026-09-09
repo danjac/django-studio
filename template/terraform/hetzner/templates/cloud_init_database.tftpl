@@ -58,6 +58,15 @@ write_files:
 
 runcmd:
   - netplan apply
+%{ if tailscale_enabled ~}
+  - |
+    curl -fsSL https://tailscale.com/install.sh | sh
+    tailscale up \
+      --auth-key="${tailscale_auth_key}?preauthorized=true&ephemeral=false" \
+      --advertise-tags=${tailscale_tag} \
+      --hostname=${tailscale_hostname} \
+      --ssh
+%{ endif ~}
   - |
     # Start volume permission setter in background (volume arrives after cloud-init)
     nohup /usr/local/bin/postgres-volume-perms.sh \

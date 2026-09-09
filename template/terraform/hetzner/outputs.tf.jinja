@@ -63,6 +63,16 @@ output "postgres_volume_mount_path" {
   value       = "/mnt/HC_Volume_${hcloud_volume.postgres.id}"
 }
 
+output "tailscale_enabled" {
+  description = "Whether nodes join a tailnet at boot"
+  value       = local.tailscale_enabled
+}
+
+output "server_tailscale_host" {
+  description = "MagicDNS name of the server node, or null when Tailscale is not enabled. Used as the kubeconfig API address so kubectl traffic stays on the tailnet."
+  value       = local.tailscale_enabled ? local.server_tailscale_host : null
+}
+
 output "network_id" {
   description = "ID of the private network"
   value       = hcloud_network.private_network.id

@@ -37,6 +37,15 @@ write_files:
 
 runcmd:
   - netplan apply
+%{ if tailscale_enabled ~}
+  - |
+    curl -fsSL https://tailscale.com/install.sh | sh
+    tailscale up \
+      --auth-key="${tailscale_auth_key}?preauthorized=true&ephemeral=false" \
+      --advertise-tags=${tailscale_tag} \
+      --hostname=${tailscale_hostname} \
+      --ssh
+%{ endif ~}
   - |
     # Wait for K3s server to be reachable (up to 10 minutes)
     for i in $(seq 1 60); do

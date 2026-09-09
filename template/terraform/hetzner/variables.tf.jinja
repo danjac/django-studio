@@ -104,3 +104,22 @@ variable "create_monitor" {
   type        = bool
   default     = false
 }
+
+variable "tailscale_oauth_client_secret" {
+  description = "Tailscale OAuth client secret (tskey-client-...). Leave empty to run without Tailscale. OAuth client secrets do not expire, unlike auth keys - which matters because nodes added later must still be able to join. See docs/infrastructure.md."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "tailscale_tailnet" {
+  description = "MagicDNS suffix of your tailnet, e.g. tail1a2b3c.ts.net. Required when tailscale_oauth_client_secret is set: the k3s TLS certificate needs the server's MagicDNS name at install time, so it cannot be discovered afterwards."
+  type        = string
+  default     = ""
+}
+
+variable "tailscale_tag" {
+  description = "ACL tag applied to nodes when they join the tailnet. Must be listed in tagOwners and pre-authorized for the OAuth client."
+  type        = string
+  default     = "tag:k8s"
+}

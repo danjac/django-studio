@@ -126,7 +126,7 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-create-view`      | Add a view, template, and URL                                          |
 | `/dj-create-task`      | Add a `django-tasks-db` background task with correct async patterns    |
 | `/dj-create-command`   | Add a management command with tests                                    |
-| `/dj-create-model`     | Design and write a Django model with recipe, fixture, and model tests |
+| `/dj-create-model`     | Design and write a Django model with recipe, fixture, and model tests  |
 | `/dj-create-migration` | Create a data migration (Python or SQL)                                |
 | `/dj-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
 | `/dj-create-e2e`       | Write Playwright E2E test(s) for a described user interaction          |
@@ -163,6 +163,12 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-db-backup`            | Trigger an immediate database backup without waiting for the daily cron        |
 | `/dj-db-restore`           | Guided production database restore from Object Storage backup                  |
 | `/dj-deploy-cron`          | Schedule a management command as a Kubernetes cron job                         |
+
+### Feedback Loop
+
+Two skills in particular are designed to help you provide feedback on the template itself: `dj-sync` and `dj-feedback`. The first allows you to pull in the latest template changes and resolve any merge conflicts interactively, while the second lets you report bugs or suggest improvements directly from your project.
+
+This alleviates a common issue with template projects: once a project is generated, it can be difficult to keep it up to date with the latest improvements and fixes. By providing these skills, we aim to create a feedback loop that benefits both the template maintainers and the developers using it. As more developers use `django-studio`, we expect to receive valuable feedback that will help us refine the template and make it even more useful for the community.
 
 ## MCP Servers
 

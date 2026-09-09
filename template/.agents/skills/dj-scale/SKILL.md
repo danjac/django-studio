@@ -19,12 +19,22 @@ Parse `$ARGUMENTS` as: `[n]` (optional target replica count).
 Read `replicas` from `helm/site/values.secret.yaml` (falls back to
 `helm/site/values.yaml` if the secret file does not exist).
 
-Also read `webapp_count` from `terraform/hetzner/terraform.tfvars` to show the
-current Hetzner node count.
+Also read `webapp_count`, `create_jobrunner` and `create_database` from
+`terraform/hetzner/terraform.tfvars` to determine the current topology.
 
-Display:
+If `webapp_count` is `0`, display:
 
-> **Current deployment:**
+> **Current deployment:** single-node topology
+> - Webapp replicas: `<replicas>` (running on the server node)
+> - Dedicated jobrunner node: `<create_jobrunner>`
+> - Dedicated database node: `<create_database>`
+>
+> All webapp replicas share the server node with PostgreSQL, Redis and the
+> worker. See `docs/infrastructure.md` for the scaling path.
+
+Otherwise display:
+
+> **Current deployment:** split topology
 > - Webapp replicas: `<replicas>`
 > - Hetzner nodes (webapp): `<webapp_count>`
 
@@ -62,6 +72,24 @@ Wait for confirmation. If no, stop.
 ### Step 2 — Check node capacity (scale-up and scale-down)
 
 Read `webapp_count` from `terraform/hetzner/terraform.tfvars`.
+
+**Single-node topology (`webapp_count` is 0):** the webapp shares the server node
+with PostgreSQL, Redis and the worker. Extra replicas on the same box add
+resilience against a pod crash but no extra CPU or memory. If `<n>` > 1, advise:
+
+> You are on the single-node topology, so all `<n>` replicas will run on the
+> server node alongside PostgreSQL, Redis and the worker. That guards against a
+> pod crash but does not add capacity — and each replica requests ~1 GB.
+>
+> To add real capacity, move the webapp to dedicated nodes by setting
+> `webapp_count = <n>` in `terraform/hetzner/terraform.tfvars`
+> (see `docs/infrastructure.md`).
+>
+> Options: [1] add replicas on the server node  [2] provision `<n>` dedicated
+> webapp nodes  [3] cancel
+
+If **2**, set `webapp_count` to `<n>` and follow the scale-up flow below.
+If **3**, stop. If **1**, skip to Step 3.
 
 **Scale-up:** If `<n>` > `webapp_count`, advise:
 

@@ -48,7 +48,7 @@ runcmd:
       --advertise-address=${private_ip} \
       --tls-san=${private_ip} \
       --tls-san="$PUBLIC_IP" \
-      --node-label=role=server
+      --node-label=role=server ${workload_labels}
   - |
     # Copy kubeconfig for ubuntu user
     mkdir -p /home/ubuntu/.kube

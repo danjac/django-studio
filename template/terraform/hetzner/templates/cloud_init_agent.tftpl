@@ -53,4 +53,4 @@ runcmd:
       sh -s - agent \
       --node-name=${hostname} \
       --flannel-iface=enp7s0 \
-      --node-label=role=${role}
+      --node-label=role=${role} ${workload_label}

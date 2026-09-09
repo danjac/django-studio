@@ -360,6 +360,78 @@ class TestAlwaysIncludedFeatures:
     def test_backup_docs_exist(self, project):
         assert (project / "docs" / "database-backups.md").exists()
 
+    def test_single_node_topology_is_the_default(self, project):
+        content = (
+            project / "terraform" / "hetzner" / "terraform.tfvars.example"
+        ).read_text()
+        assert "create_database  = false" in content
+        assert "create_jobrunner = false" in content
+        assert "webapp_count     = 0" in content
+        assert "create_monitor = false" in content
+
+    def test_hetzner_topology_variables_exist(self, project):
+        content = (project / "terraform" / "hetzner" / "variables.tf").read_text()
+        for name in ("create_database", "create_jobrunner", "webapp_count"):
+            assert f'variable "{name}"' in content
+
+    def test_server_node_type_sized_for_single_node(self, project):
+        content = (project / "terraform" / "hetzner" / "variables.tf").read_text()
+        start = content.index('variable "server_type"')
+        assert '"cx33"' in content[start : content.index("\n}", start)]
+
+    def test_server_node_takes_unclaimed_workload_labels(self, project):
+        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
+        assert "server_workload_labels" in content
+        assert 'var.webapp_count == 0 ? "webapp=true" : ""' in content
+        assert 'var.create_jobrunner ? "" : "jobrunner=true"' in content
+        assert 'var.create_database ? "" : "database=true"' in content
+
+    def test_optional_nodes_are_conditional(self, project):
+        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
+        assert "count        = var.create_database ? 1 : 0" in content
+        assert "count        = var.create_jobrunner ? 1 : 0" in content
+
+    def test_postgres_volume_follows_the_database(self, project):
+        content = (project / "terraform" / "hetzner" / "main.tf").read_text()
+        assert (
+            "server_id = var.create_database "
+            "? hcloud_server.database[0].id : hcloud_server.server.id"
+        ) in content
+
+    def test_cloud_init_emits_workload_labels(self, project):
+        templates = project / "terraform" / "hetzner" / "templates"
+        server = (templates / "cloud_init_server.tftpl").read_text()
+        assert "--node-label=role=server ${workload_labels}" in server
+        agent = (templates / "cloud_init_agent.tftpl").read_text()
+        assert "--node-label=role=${role} ${workload_label}" in agent
+        database = (templates / "cloud_init_database.tftpl").read_text()
+        assert "--node-label=database=true" in database
+
+    def test_workloads_select_boolean_labels_not_roles(self, project):
+        """A node carries one role= but can carry all three booleans, so the
+        chart is identical single-node and split."""
+        expected = {
+            "django-deployment.yaml": 'webapp: "true"',
+            "django-worker-deployment.yaml": 'jobrunner: "true"',
+            "cronjobs.yaml": 'jobrunner: "true"',
+            "release-job.yaml": 'jobrunner: "true"',
+            "postgres-backup-cronjob.yaml": 'jobrunner: "true"',
+            "postgres-statefulset.yaml": 'database: "true"',
+            "postgres-upgrade.yaml": 'database: "true"',
+            "redis-deployment.yaml": 'database: "true"',
+        }
+        for name, selector in expected.items():
+            content = (project / "helm" / "site" / "templates" / name).read_text()
+            assert selector in content, name
+            assert "role: " not in content, name
+
+    def test_single_node_resource_requests_fit_one_cx33(self, project):
+        """~2.6 GB requested of 8 GB, leaving room for k3s itself."""
+        content = (project / "helm" / "site" / "values.yaml").read_text()
+        assert "replicas: 1" in content
+        for request in ("memory: 1024Mi", "memory: 768Mi", "memory: 64Mi"):
+            assert request in content
+
     def test_i18n_and_storage_coexist(self, project):
         settings_content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" in settings_content

@@ -525,10 +525,10 @@ The output must be `/tmp/origin_cert.pem: OK`. If verification fails, re-read th
 from terraform output and write it again — do not proceed until it verifies.
 
 If `terraform/storage/` exists:
-- `secrets.hetznerStorageBucket` ← `just terraform-value storage bucket_name`
-- `secrets.hetznerStorageEndpoint` ← `just terraform-value storage endpoint_url`
-- `secrets.hetznerStorageAccessKey` ← read from `terraform/storage/terraform.tfvars` (do not print)
-- `secrets.hetznerStorageSecretKey` ← read from `terraform/storage/terraform.tfvars` (do not print)
+- `secrets.objectStorageBucket` ← `just terraform-value storage bucket_name`
+- `secrets.objectStorageEndpoint` ← `just terraform-value storage endpoint_url`
+- `secrets.objectStorageAccessKey` ← read from `terraform/storage/terraform.tfvars` (do not print)
+- `secrets.objectStorageSecretKey` ← read from `terraform/storage/terraform.tfvars` (do not print)
 - `secrets.useS3Storage` ← set to `"true"`
 
 ### Domain values

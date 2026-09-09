@@ -471,6 +471,32 @@ class TestReferenceIntegrity:
                     missing.append(f"{path.relative_to(project)} -> {ref}")
         assert not missing, "referenced scripts do not exist: " + ", ".join(missing)
 
+    def test_object_storage_keys_match_the_chart(self, project):
+        """templates/secret.yaml reads secrets.objectStorage*, so that is the
+        canonical name - values.yaml must declare the same keys."""
+        secret_tmpl = (
+            project / "helm" / "site" / "templates" / "secret.yaml"
+        ).read_text()
+        values = (project / "helm" / "site" / "values.yaml").read_text()
+        consumed = set(
+            re.findall(r"\.Values\.secrets\.(objectStorage\w+)", secret_tmpl)
+        )
+        assert consumed, "expected secret.yaml to read objectStorage* keys"
+        for key in sorted(consumed):
+            assert f"{key}:" in values, f"values.yaml does not declare {key}"
+
+    def test_no_references_to_the_wrong_object_storage_prefix(self, project):
+        stale = [
+            f"{path.relative_to(project)}:{i}"
+            for path in self._text_files(project)
+            for i, line in enumerate(path.read_text().splitlines(), 1)
+            if "hetznerStorage" in line
+        ]
+        values = project / "helm" / "site" / "values.yaml"
+        if "hetznerStorage" in values.read_text():
+            stale.append(str(values.relative_to(project)))
+        assert not stale, "stale hetznerStorage* references: " + ", ".join(stale)
+
 
 class TestClaudeHooksInstallation:
     """Verify that .claude/ hooks are written by the post-gen hook."""

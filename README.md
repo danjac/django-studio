@@ -189,6 +189,14 @@ See `docs/mcp.md` in the generated project for usage and security notes.
 
 Prices are subject to change, but the current hosting costs based on the default settings should range between 20-40 EUR per month.
 
+### Private networking with Tailscale
+
+[Tailscale](https://tailscale.com) is supported as an optional extra. When enabled, every node joins a private WireGuard mesh and SSH and the Kubernetes API travel over the tailnet instead of the public internet, so ports 22 and 6443 can be closed to everyone else. Ports 80 and 443 stay open for web traffic via Cloudflare.
+
+It is **off by default** - there is no Copier question for it. Set `tailscale_oauth_client_secret` in `terraform/hetzner/terraform.tfvars`, or run `/dj-tailscale enable`, which handles both a fresh deploy and retrofitting a cluster that is already running.
+
+Tailscale's free tier covers 3 users and 100 devices, so for solo projects and small teams this adds no cost. See `docs/infrastructure.md` in the generated project for the full setup.
+
 ## Requirements
 
 ### Development

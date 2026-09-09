@@ -104,8 +104,8 @@ proposed summary (truncated to first 8 chars + `…`).
 |--------------------------|---------------------------|
 | `secrets.mailgunApiKey` | mailgun.com → Sending → Domains → API Keys |
 | `secrets.sentryUrl` | Sentry → Project → Settings → Client Keys → DSN |
-| `secrets.hetznerStorageAccessKey` | Hetzner → Security → S3 credentials |
-| `secrets.hetznerStorageSecretKey` | Hetzner → Security → S3 credentials |
+| `secrets.objectStorageAccessKey` | Hetzner → Security → S3 credentials |
+| `secrets.objectStorageSecretKey` | Hetzner → Security → S3 credentials |
 | `secrets.backupAccessKey` | Hetzner → Security → S3 credentials |
 | `secrets.backupSecretKey` | Hetzner → Security → S3 credentials |
 

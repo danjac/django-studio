@@ -115,6 +115,27 @@ If **n**: tell the user:
 
 ---
 
+## Tailscale (private networking)
+
+Ask the user:
+
+> Do you want to put the cluster on a **Tailscale** tailnet? SSH and the
+> Kubernetes API then travel over WireGuard instead of the public internet,
+> and ports 22 and 6443 can be closed to everyone else. Requires a Tailscale
+> account. (y/n)
+
+If **y**: tell the user to run `/dj-tailscale enable` **after** this wizard
+finishes, and continue. Enabling it now would mean collecting Tailscale
+credentials before the cluster exists, and the firewall must not be locked down
+until `kubectl` has been verified over the tailnet — `/dj-tailscale` sequences
+that correctly.
+
+If **n**: continue. SSH and the Kubernetes API stay reachable over the public
+internet, protected by SSH keys and the K3s token. Mention that
+`/dj-tailscale enable` can retrofit a running cluster later.
+
+---
+
 ## Pre-flight checks
 
 Run all of the following before proceeding. If any fail, tell the user what to install

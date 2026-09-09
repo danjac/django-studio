@@ -483,6 +483,42 @@ class TestAlwaysIncludedFeatures:
         for request in ("memory: 1024Mi", "memory: 768Mi", "memory: 64Mi"):
             assert request in content
 
+    def test_tailscale_skill_is_installed(self, project):
+        skill = project / ".agents" / "skills" / "dj-tailscale"
+        assert (skill / "SKILL.md").exists()
+        assert (skill / "references" / "help.md").exists()
+        script = skill / "scripts" / "join-nodes.sh"
+        assert script.exists()
+        assert script.stat().st_mode & 0o111, "join-nodes.sh must be executable"
+
+    def test_tailscale_skill_files_contain_no_jinja(self, project):
+        """.agents/ is copied verbatim, so unrendered braces would ship as-is."""
+        skill = project / ".agents" / "skills" / "dj-tailscale"
+        for path in skill.rglob("*"):
+            if path.is_file():
+                content = path.read_text()
+                assert "{{" not in content, path
+                assert "{%" not in content, path
+
+    def test_kubeconfig_prefers_the_tailnet_address(self, project):
+        content = (project / "just" / "get-kubeconfig.sh").read_text()
+        assert "server_tailscale_host" in content
+        assert 'API_HOST="${TAILSCALE_HOST:-$SERVER_IP}"' in content
+
+    def test_deploy_workflow_joins_tailnet_conditionally(self, project):
+        content = (project / ".github" / "workflows" / "deploy.yml").read_text()
+        assert "tailscale/github-action@" in content
+        assert "if: ${{ secrets.TS_OAUTH_CLIENT_ID != '' }}" in content
+        # the runner must be on the tailnet before helm tries to reach the API
+        assert content.index("Connect to Tailscale") < content.index(
+            "Deploy to Kubernetes"
+        )
+
+    def test_tailscale_documented_in_all_command_tables(self, project):
+        """AGENTS.md requires the skill tables stay in lockstep."""
+        for rel in ("AGENTS.md", "README.md"):
+            assert "/dj-tailscale" in (project / rel).read_text(), rel
+
     def test_i18n_and_storage_coexist(self, project):
         settings_content = (project / "config" / "settings.py").read_text()
         assert "S3Boto3Storage" in settings_content

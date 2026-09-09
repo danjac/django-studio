@@ -68,6 +68,11 @@ output "tailscale_enabled" {
   value       = local.tailscale_enabled
 }
 
+output "tailscale_name_prefix" {
+  description = "MagicDNS hostname prefix for nodes (cluster_name with underscores replaced by hyphens). The retrofit join script reads this so the hostnames it sets match what cloud-init would have set."
+  value       = local.tailscale_name_prefix
+}
+
 output "server_tailscale_host" {
   description = "MagicDNS name of the server node, or null when Tailscale is not enabled. Used as the kubeconfig API address so kubectl traffic stays on the tailnet."
   value       = local.tailscale_enabled ? local.server_tailscale_host : null

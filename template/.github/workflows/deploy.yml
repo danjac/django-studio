@@ -35,6 +35,17 @@ jobs:
         uses: azure/setup-kubectl@776406bce94f63e41d621b960d78ee25c8b76ede  # v4
       - name: Set up Helm
         uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4  # v4
+      # Only runs when Tailscale is configured. With it enabled the kubeconfig
+      # points at the server's MagicDNS name, so the runner has to be on the
+      # tailnet before helm can reach the cluster. The node is ephemeral and
+      # tagged, so runners do not accumulate in the device list.
+      - name: Connect to Tailscale
+        if: ${{ secrets.TS_OAUTH_CLIENT_ID != '' }}
+        uses: tailscale/github-action@780049a30b6ff5c378a9e7b389d15ece7a204888  # v4.1.3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
       - name: Write kubeconfig
         env:
           KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}

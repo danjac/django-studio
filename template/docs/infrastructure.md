@@ -371,26 +371,98 @@ and pragmatic default. The attack surface is small and well-understood.
 
 ### Tailscale (recommended for stricter access control or team use)
 
-If you need tighter network-level security, or you are collaborating with others,
-[Tailscale](https://tailscale.com) is the cleanest upgrade path. It creates a private
-WireGuard mesh between your machines, so you can lock `admin_ips` to Tailscale's CGNAT
-range (`100.64.0.0/10`) and remove the server from the public internet entirely for
-administrative access.
+[Tailscale](https://tailscale.com) puts every node on a private WireGuard mesh, so SSH
+and the Kubernetes API travel over the tailnet instead of the public internet and
+`admin_ips` can be locked to the CGNAT range (`100.64.0.0/10`). Ports 80 and 443 stay
+open — that is public web traffic via Cloudflare.
 
-High-level steps to add Tailscale:
+It ships with the template but is **off by default**. The quickest way to turn it on is
+`/dj-tailscale enable`, which handles both a fresh deploy and an existing cluster. What
+follows is what that skill automates.
 
-1. **Install Tailscale on the K3s node** via cloud-init in `terraform/hetzner/main.tf`,
-   alongside the K3s install script.
-2. **Authenticate the node** with a reusable auth key from the Tailscale admin console
-   (store it in `terraform.tfvars` as a secret, never commit it).
-3. **Lock down `admin_ips`** in `terraform.tfvars` to `["100.64.0.0/10"]` once the node
-   is visible on your Tailnet.
-4. **CI access**: use the official
-   [tailscale/github-action](https://github.com/tailscale/github-action) in your deploy
-   workflow to connect the GitHub Actions runner to your Tailnet before running `helm
-upgrade`. Store the OAuth client credentials as repository secrets.
-5. **Team access**: add team members to your Tailnet and use ACLs to restrict who can
-   reach which ports (e.g. engineers get 6443, ops gets 22).
+#### Setting up
+
+In the Tailscale admin console:
+
+1. Add `tag:k8s` and `tag:ci` to `tagOwners` under Access Controls.
+2. Create an **OAuth client** (Settings → OAuth clients) with the `auth_keys` write
+   scope and both tags.
+3. Note your tailnet name, e.g. `tail1a2b3c.ts.net`.
+
+Then in `terraform/hetzner/terraform.tfvars`:
+
+```hcl
+tailscale_oauth_client_secret = "tskey-client-..."
+tailscale_tailnet             = "tail1a2b3c.ts.net"
+```
+
+**Use an OAuth client, not an auth key.** Auth keys expire after at most 90 days. Because
+adding a node is a routine operation here, an expired key means nodes provisioned later
+silently never reach the tailnet.
+
+#### What happens on apply
+
+Every node installs Tailscale during cloud-init and joins with a pinned hostname
+(`<cluster>-server`, `<cluster>-webapp-1`, …). The server additionally gets its MagicDNS
+name added to the k3s serving certificate as a TLS SAN, and `just get-kubeconfig` writes
+that name as the API address instead of the public IP.
+
+The hostname is pinned rather than left to Tailscale's own normalisation because the TLS
+SAN has to be known at install time — the name cannot be corrected later without
+regenerating the certificate.
+
+#### Adding Tailscale to a cluster that is already running
+
+Cloud-init only runs at node creation, and all servers set
+`lifecycle { ignore_changes = [user_data] }`, so setting the variables is not enough for
+an existing cluster. Two things have to happen on the running nodes:
+
+```bash
+TAILSCALE_OAUTH_CLIENT_SECRET=tskey-client-... \
+TAILSCALE_TAILNET=tail1a2b3c.ts.net \
+  .agents/skills/dj-tailscale/scripts/join-nodes.sh
+```
+
+This installs Tailscale on each node, and on the server writes a
+`/etc/rancher/k3s/config.yaml.d/10-tailscale.yaml` drop-in with the new TLS SAN, clears
+the cached serving certificate and **restarts k3s**. The Kubernetes API is briefly
+unavailable during the restart; running pods are unaffected. The script then checks the
+certificate actually carries the SAN and fails loudly if it does not.
+
+Pass `--dry-run` first to see which nodes it would touch.
+
+#### Locking the firewall — order matters
+
+```hcl
+admin_ips = ["100.64.0.0/10"]
+```
+
+**Never apply this until `kubectl get nodes` has worked over the tailnet.** If any node
+is not on the tailnet when you close port 22, the only way back in is the Hetzner web
+console. Verify first:
+
+```bash
+just get-kubeconfig
+just --yes rkube get nodes
+```
+
+#### CI
+
+The deploy workflow has a Tailscale step that activates only when
+`TS_OAUTH_CLIENT_ID` is set as a repository secret:
+
+```bash
+gh secret set TS_OAUTH_CLIENT_ID
+gh secret set TS_OAUTH_SECRET
+just gh-set-secrets     # re-push the kubeconfig, which now uses the MagicDNS name
+```
+
+Runners join as ephemeral `tag:ci` nodes, so they do not accumulate in your device list.
+
+#### Team access
+
+Add team members to your tailnet and use ACLs to restrict who reaches which ports — for
+example engineers get 6443, ops also gets 22.
 
 ### Secrets
 

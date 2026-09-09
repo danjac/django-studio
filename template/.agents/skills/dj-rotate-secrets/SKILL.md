@@ -23,7 +23,7 @@ variable name, not value. Truncate displayed values to first 8 chars + `…`.
 ## 1. Pre-flight
 
 Check that `helm/site/values.secret.yaml` exists. If it does not, tell the user:
-> `helm/site/values.secret.yaml` not found. Run `/dj-launch` first to set
+> `helm/site/values.secret.yaml` not found. Run `/dj-deploy` first to set
 > up your deployment secrets.
 
 Stop.

@@ -1,8 +1,10 @@
 # Application image - override with the actual image in values.secret.yaml
 image: ghcr.io/CHANGE_ME/{{ project_slug }}:main
 
-# Number of webapp replicas - override in values.secret.yaml
-replicas: 2
+# Number of webapp replicas - override in values.secret.yaml.
+# Default 1 suits the single-node topology; raise it once you split webapps
+# onto dedicated nodes (see docs/infrastructure.md).
+replicas: 1
 
 # PostgreSQL configuration
 postgres:
@@ -32,23 +34,28 @@ postgres:
 redis:
   image: redis:8.2.2-bookworm
 
-# Resource requests/limits - defaults tuned for cx23 (2 vCPU, 4 GB RAM).
-# Override per-workload in values.secret.yaml if using a different server type.
+# Resource requests/limits - defaults tuned for the single-node topology, where
+# every workload shares one cx33 (4 vCPU, 8 GB RAM). Total requests ~2.6 GB,
+# leaving headroom for k3s itself and for bursts.
+#
+# When you split roles onto dedicated nodes (see docs/infrastructure.md), each
+# workload gets a node to itself and these can be raised - override per-workload
+# in values.secret.yaml.
 resources:
   app:
     requests:
-      memory: 1536Mi
-      cpu: 700m
+      memory: 1024Mi
+      cpu: 400m
     limits:
-      memory: 3072Mi
-      cpu: 1600m
+      memory: 2048Mi
+      cpu: 1500m
   worker:
     requests:
-      memory: 1536Mi
-      cpu: 700m
+      memory: 768Mi
+      cpu: 300m
     limits:
-      memory: 3072Mi
-      cpu: 1600m
+      memory: 1536Mi
+      cpu: 1000m
   cronjob:
     requests:
       memory: 512Mi
@@ -58,11 +65,11 @@ resources:
       cpu: 800m
   postgres:
     requests:
-      memory: 1024Mi
-      cpu: 400m
+      memory: 768Mi
+      cpu: 300m
     limits:
-      memory: 2816Mi
-      cpu: 1600m
+      memory: 2048Mi
+      cpu: 1500m
   redis:
     requests:
       memory: 64Mi

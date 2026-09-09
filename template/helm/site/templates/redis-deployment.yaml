@@ -13,7 +13,7 @@ spec:
         app: redis
     spec:
       nodeSelector:
-        role: database
+        database: "true"
       containers:
         - name: redis
           image: {{ .Values.redis.image }}

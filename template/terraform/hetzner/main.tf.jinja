@@ -20,6 +20,21 @@ locals {
   jobrunner_private_ip = cidrhost(var.subnet_ip_range, 4) # 10.0.0.4
   webapp_private_ips   = [for i in range(var.webapp_count) : cidrhost(var.subnet_ip_range, 5 + i)]
   monitor_private_ip   = cidrhost(var.subnet_ip_range, 10) # 10.0.0.10
+
+  # Workload placement labels.
+  #
+  # App workloads select on a boolean label (webapp/jobrunner/database) rather
+  # than on the node's role, because a node can only carry one role= value but
+  # can carry all three booleans. That keeps the Helm chart identical whether
+  # everything runs on one node or each role has its own.
+  #
+  # Any role without a dedicated node has its label applied to the server node.
+  server_workload_labels = compact([
+    var.webapp_count == 0 ? "webapp=true" : "",
+    var.create_jobrunner ? "" : "jobrunner=true",
+    var.create_database ? "" : "database=true",
+  ])
+  server_node_label_args = join(" ", [for label in local.server_workload_labels : "--node-label=${label}"])
 }
 
 # Private network for internal communication
@@ -196,10 +211,11 @@ resource "hcloud_server" "server" {
   firewall_ids = [hcloud_firewall.server.id]
 
   user_data = templatefile("${path.module}/templates/cloud_init_server.tftpl", {
-    hostname       = "${var.cluster_name}-server"
-    private_ip     = local.server_private_ip
-    k3s_token      = var.k3s_token
-    ssh_public_key = var.ssh_public_key
+    hostname        = "${var.cluster_name}-server"
+    private_ip      = local.server_private_ip
+    k3s_token       = var.k3s_token
+    ssh_public_key  = var.ssh_public_key
+    workload_labels = local.server_node_label_args
   })
 
   labels = {
@@ -225,7 +241,9 @@ resource "hcloud_server" "server" {
 }
 
 # Database node (PostgreSQL + Redis)
+# Optional - when create_database is false these workloads run on the server node.
 resource "hcloud_server" "database" {
+  count        = var.create_database ? 1 : 0
   name         = "${var.cluster_name}-database"
   server_type  = var.database_server_type
   image        = var.server_image
@@ -262,14 +280,18 @@ resource "hcloud_server" "database" {
   }
 }
 
+# The volume follows PostgreSQL: it attaches to the dedicated database node when
+# one exists, otherwise to the server node.
 resource "hcloud_volume_attachment" "postgres_attachment" {
   volume_id = hcloud_volume.postgres.id
-  server_id = hcloud_server.database.id
+  server_id = var.create_database ? hcloud_server.database[0].id : hcloud_server.server.id
   automount = true
 }
 
 # Job runner node (for cron jobs and background workers)
+# Optional - when create_jobrunner is false these workloads run on the server node.
 resource "hcloud_server" "jobrunner" {
+  count        = var.create_jobrunner ? 1 : 0
   name         = "${var.cluster_name}-jobrunner"
   server_type  = var.agent_server_type
   image        = var.server_image
@@ -283,6 +305,7 @@ resource "hcloud_server" "jobrunner" {
     k3s_token         = var.k3s_token
     ssh_public_key    = var.ssh_public_key
     role              = "jobrunner"
+    workload_label    = "--node-label=jobrunner=true"
   })
 
   labels = {
@@ -323,6 +346,7 @@ resource "hcloud_server" "webapp" {
     k3s_token         = var.k3s_token
     ssh_public_key    = var.ssh_public_key
     role              = "webapp"
+    workload_label    = "--node-label=webapp=true"
   })
 
   labels = {
@@ -363,6 +387,7 @@ resource "hcloud_server" "monitor" {
     k3s_token         = var.k3s_token
     ssh_public_key    = var.ssh_public_key
     role              = "monitor"
+    workload_label    = ""
   })
 
   labels = {

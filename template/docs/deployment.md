@@ -144,8 +144,12 @@ terraform -chdir=terraform/hetzner output -raw postgres_volume_mount_path
 # e.g. /mnt/HC_Volume_12345678
 ```
 
-Both charts ship resource defaults tuned for the Terraform default server type (`cx23`:
-2 vCPU, 4 GB RAM). If you change `server_type` in `terraform.tfvars`, override the
+Both charts ship resource defaults tuned for the default single-node topology, where every
+workload shares one `cx33` (4 vCPU, 8 GB RAM). Total requests come to roughly 2.6 GB,
+leaving headroom for k3s itself.
+
+If you change `server_type` in `terraform.tfvars`, or split roles onto dedicated nodes
+(see [Topology and scaling](infrastructure.md#topology-and-scaling)), override the
 corresponding resource values in `values.secret.yaml`.
 
 ## CI/CD Pipeline

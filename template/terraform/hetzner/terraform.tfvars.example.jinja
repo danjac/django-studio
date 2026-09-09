@@ -14,19 +14,27 @@ cluster_name = "{{ project_slug }}"
 location = "nbg1"
 
 # Server types (cx11-cpx51, ccx13-ccx63, cax11-cax41)
-server_type          = "cx23"  # k3s control plane + Traefik
-database_server_type = "cx23"  # PostgreSQL + Redis
-agent_server_type    = "cx23"  # Jobrunner + Webapps
+server_type          = "cx33"  # k3s control plane + Traefik (+ all workloads by default)
+database_server_type = "cx23"  # PostgreSQL + Redis, when create_database = true
+agent_server_type    = "cx23"  # Jobrunner + Webapps, when split out
 
-# Number of webapp instances
-webapp_count = 2
+# Topology. The defaults below run everything on the single server node, which
+# is the cheapest way to start. Split roles onto dedicated nodes as you grow -
+# the Helm chart is identical either way. See docs/infrastructure.md.
+#
+#   create_database  = true   # move PostgreSQL + Redis to their own node
+#   create_jobrunner = true   # move workers + CronJobs to their own node
+#   webapp_count     = 2      # move gunicorn to N dedicated nodes
+create_database  = false
+create_jobrunner = false
+webapp_count     = 0
 
 # PostgreSQL volume size in GB
 postgres_volume_size = 50
 
 # Provision a monitor node for the observability stack (Grafana + Prometheus + Loki)
-# Set to false to skip now; run /dj-deploy-observe later to provision it.
-create_monitor = true
+# Run /dj-deploy-observe later to provision it.
+create_monitor = false
 
 # Restrict SSH (22) and K3s API (6443) access to specific IPs.
 # Set to your own IP or VPN exit IP, e.g. ["203.0.113.42/32"]

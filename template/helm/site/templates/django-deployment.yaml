@@ -21,7 +21,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       nodeSelector:
-        role: webapp
+        webapp: "true"
       containers:
         - name: django
           image: {{ .Values.image }}

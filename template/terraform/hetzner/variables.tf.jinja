@@ -46,9 +46,9 @@ variable "server_image" {
 }
 
 variable "server_type" {
-  description = "Server type for k3s server node"
+  description = "Server type for the k3s server node. Defaults to cx33 because in the default single-node topology this node also runs the app, worker, PostgreSQL and Redis. cx23 is enough once those are split onto dedicated nodes."
   type        = string
-  default     = "cx23" # 2 vCPU, 4 GB RAM
+  default     = "cx33" # 4 vCPU, 8 GB RAM
 }
 
 variable "database_server_type" {
@@ -64,9 +64,21 @@ variable "agent_server_type" {
 }
 
 variable "webapp_count" {
-  description = "Number of webapp instances to create"
+  description = "Number of dedicated webapp nodes. 0 (default) runs the webapp on the server node - see docs/infrastructure.md for the scaling path."
   type        = number
-  default     = 2
+  default     = 0
+}
+
+variable "create_database" {
+  description = "Provision a dedicated database node. When false (default) PostgreSQL and Redis run on the server node."
+  type        = bool
+  default     = false
+}
+
+variable "create_jobrunner" {
+  description = "Provision a dedicated jobrunner node. When false (default) workers and CronJobs run on the server node."
+  type        = bool
+  default     = false
 }
 
 variable "postgres_volume_size" {
@@ -90,5 +102,5 @@ variable "admin_ips" {
 variable "create_monitor" {
   description = "Whether to provision the monitor node (Grafana + Prometheus + Loki observability stack)"
   type        = bool
-  default     = true
+  default     = false
 }

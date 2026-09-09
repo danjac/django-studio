@@ -42,7 +42,7 @@ spec:
         app: postgres-upgrade
     spec:
       nodeSelector:
-        role: database
+        database: "true"
       containers:
         - name: postgres
           image: {{ .Values.pgUpgrade.newImage }}

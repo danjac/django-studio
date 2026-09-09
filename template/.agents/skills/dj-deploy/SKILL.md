@@ -54,19 +54,46 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 
 ---
 
-## Webapp replica count
+## Topology
 
 Before provisioning infrastructure, ask the user:
 
-> How many webapp instances do you want? (default: 2)
+> How do you want to start?
+>
+> **1. Single node** (recommended) — one cx33 running the app, worker,
+>    PostgreSQL and Redis. ~€15/month. You can split roles onto dedicated
+>    nodes later without touching the Helm chart.
+> **2. Split** — dedicated nodes for database, jobrunner, and webapps.
+>    ~€35/month.
+>
+> (1/2, default: 1)
 
-Accept a positive integer. If the user presses Enter or says "default", use **2**.
+If the user presses Enter or chooses **1**, set:
 
-Save the answer as `<webapp_count>`. This value is used in two places:
-- `webapp_count` in `terraform/hetzner/terraform.tfvars` (number of Hetzner nodes)
-- `replicas` in `helm/site/values.secret.yaml` (number of Kubernetes pods)
+```
+<create_database>  = false
+<create_jobrunner> = false
+<webapp_count>     = 0
+<replicas>         = 1
+```
 
-Both must match so the cluster has enough nodes to schedule the requested replicas.
+If the user chooses **2**, ask how many webapp nodes they want (default 2), then set:
+
+```
+<create_database>  = true
+<create_jobrunner> = true
+<webapp_count>     = <their answer>
+<replicas>         = <their answer>
+```
+
+These values are written to `terraform/hetzner/terraform.tfvars`, except `<replicas>`,
+which goes in `helm/site/values.secret.yaml`.
+
+Tell the user:
+> Starting single-node. See `docs/infrastructure.md` for the scaling path, or run
+> `/dj-scale` when you need more capacity.
+
+(Only say this if they chose option 1.)
 
 ---
 
@@ -188,15 +215,17 @@ If `location` is not already set, ask:
 
 Set `location`.
 
-### 1e. Webapp count
+### 1e. Topology
 
-Set `webapp_count` to `<webapp_count>` (collected earlier). This determines how many
-Hetzner nodes are created for webapp pods.
+Set `create_database`, `create_jobrunner` and `webapp_count` to the values collected
+earlier. These determine which roles get dedicated Hetzner nodes; anything left `false`
+or `0` runs on the server node.
 
 ### 1f. Write terraform.tfvars and apply
 
 Write `terraform/hetzner/terraform.tfvars` with all collected values (including
-`webapp_count` and `create_monitor`), preserving any existing values that were already set.
+`create_database`, `create_jobrunner`, `webapp_count` and `create_monitor`), preserving
+any existing values that were already set.
 
 Then:
 ```bash
@@ -469,9 +498,10 @@ Tell the user these have been generated automatically.
 
 ### Webapp replicas
 
-Set `replicas` to `<webapp_count>` (collected at the start of the wizard). This must
-match the `webapp_count` in `terraform/hetzner/terraform.tfvars` so each replica has
-a dedicated node.
+Set `replicas` to `<replicas>` (collected at the start of the wizard).
+
+Single-node topology uses `1`. In a split topology this must match `webapp_count` in
+`terraform/hetzner/terraform.tfvars` so each replica has a dedicated node.
 
 ### Values from Terraform outputs
 

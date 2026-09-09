@@ -11,7 +11,7 @@ spec:
     spec:
       restartPolicy: Never
       nodeSelector:
-        role: jobrunner
+        jobrunner: "true"
       containers:
         - name: django-release
           image: {{ .Values.image }}

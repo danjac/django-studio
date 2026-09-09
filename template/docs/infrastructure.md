@@ -6,6 +6,7 @@ This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudfla
 
 - [Why This Stack](#why-this-stack)
 - [Architecture](#architecture)
+- [Topology and scaling](#topology-and-scaling)
 - [Components](#components)
 - [Deployment](#deployment)
 - [Services](#services)
@@ -41,31 +42,108 @@ Full Kubernetes (kubeadm, EKS, GKE) is operationally heavy for a single develope
 
 ## Architecture
 
+The default topology is a **single k3s node** running everything. Roles are split onto
+dedicated nodes as you grow — see [Topology and scaling](#topology-and-scaling).
+
 ```
-┌─────────────────────────────────────────────────────────┐
-│                     Cloudflare                              │
-│  ┌─────────────┐  ┌─────────────┐  ┌───────────────┐    │
-│  │    DNS      │  │    CDN      │  │    SSL/TLS    │    │
-│  └──────┬──────┘  └──────┬──────┘  └───────┬───────┘    │
-└──────────┼────────────────┼────────────────┼──────────────┘
-           │                │                │
-           ▼                ▼                ▼
-┌─────────────────────────────────────────────────────────┐
-│                   Hetzner Cloud                            │
-│  ┌─────────────────────────────────────────────────┐     │
-│  │                  K3s Cluster                      │     │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐   │     │
-│  │  │  Server 1 │  │  Server 2 │  │  Server 3 │   │     │
-│  │  │ (control) │  │  (worker) │  │  (worker) │   │     │
-│  │  └──────────┘  └──────────┘  └──────────┘   │     │
-│  └─────────────────────────────────────────────────┘     │
-│                                                          │
-│  ┌─────────────┐  ┌─────────────┐                      │
-│  │ PostgreSQL  │  │    Redis    │                      │
-│  │  (volume)   │  │             │                      │
-│  └─────────────┘  └─────────────┘                      │
-└─────────────────────────────────────────────────────────┘
+                       Cloudflare
+              DNS  ·  CDN  ·  SSL/TLS
+                           │
+                           ▼
+┌──────────────────────────────────────────────────┐
+│                  Hetzner Cloud                   │
+│  ┌────────────────────────────────────────────┐  │
+│  │  server node  (k3s control plane, cx33)    │  │
+│  │                                            │  │
+│  │   Traefik ingress                          │  │
+│  │   django-app        [webapp=true]          │  │
+│  │   django-worker     [jobrunner=true]       │  │
+│  │   CronJobs          [jobrunner=true]       │  │
+│  │   PostgreSQL        [database=true] ──┐    │  │
+│  │   Redis             [database=true]   │    │  │
+│  └───────────────────────────────────────┼────┘  │
+│                                          ▼       │
+│                                  ┌──────────────┐│
+│                                  │ Hetzner vol. ││
+│                                  │  (pg data)   ││
+│                                  └──────────────┘│
+└──────────────────────────────────────────────────┘
 ```
+
+## Topology and scaling
+
+### How placement works
+
+Every app workload selects a node with a **boolean label** rather than a role name:
+
+| Workload | `nodeSelector` |
+| -------- | -------------- |
+| `django-app` | `webapp: "true"` |
+| `django-worker`, CronJobs, release job | `jobrunner: "true"` |
+| PostgreSQL, Redis | `database: "true"` |
+
+A node can only carry one `role=` value, but it can carry all three booleans. So the
+single server node is labelled `webapp=true jobrunner=true database=true` and runs
+everything, while a split cluster gives each node exactly one of those labels.
+
+**The Helm chart is byte-for-byte identical in both cases.** Scaling is a Terraform
+change plus a redeploy — you never edit the chart.
+
+Terraform applies each label to the server node unless a dedicated node claims it:
+
+| Variable | Default | When set |
+| -------- | ------- | -------- |
+| `webapp_count` | `0` | `N` dedicated webapp nodes take `webapp=true` |
+| `create_jobrunner` | `false` | dedicated jobrunner node takes `jobrunner=true` |
+| `create_database` | `false` | dedicated database node takes `database=true` |
+| `create_monitor` | `false` | separate observability node (see `/dj-deploy-observe`) |
+
+### The scaling path
+
+Each step is independent — take them in any order, as load demands.
+
+**Stage 1 — single node (default).** One `cx33`. Everything runs on it. ~€13/month.
+
+**Stage 2 — split the database.** PostgreSQL and Redis get their own node:
+
+```hcl
+create_database = true
+```
+
+⚠️ **This moves the Hetzner volume between servers.** Terraform will detach it from the
+server node and reattach it to the new database node, so PostgreSQL is down for the
+duration. Take a backup first (`/dj-db-backup`), and expect a short outage.
+
+**Stage 3 — split the workers.** Background tasks and CronJobs stop competing with web
+requests for CPU:
+
+```hcl
+create_jobrunner = true
+```
+
+**Stage 4 — split the webapps.** Dedicated gunicorn nodes:
+
+```hcl
+webapp_count = 2
+```
+
+Then raise `replicas` in `helm/site/values.secret.yaml` to match, and raise the `app`
+resource requests — a dedicated node has the whole box to itself. Or just run `/dj-scale`.
+
+After any stage: `just terraform hetzner apply`, then `just helm site`.
+
+### Migrating an existing cluster
+
+Clusters provisioned before boolean labels existed have nodes labelled only `role=<name>`,
+so pods will not schedule after upgrading the chart. Relabel the existing nodes once:
+
+```bash
+kubectl label node <webapp-node>    webapp=true
+kubectl label node <jobrunner-node> jobrunner=true
+kubectl label node <database-node>  database=true
+```
+
+New nodes get the labels from cloud-init automatically.
 
 ## Components
 
@@ -363,9 +441,15 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 
 ## Scaling
 
-1. Edit `terraform/hetzner/terraform.tfvars` (e.g. increase `webapp_count`)
-2. Run `terraform apply` - new nodes join the cluster automatically via cloud-init
-3. Run `just helm site` to apply the updated replica count
+See [Topology and scaling](#topology-and-scaling) for the full path from one node to five.
+
+In brief:
+
+1. Edit `terraform/hetzner/terraform.tfvars` (e.g. set `create_database = true`, or
+   increase `webapp_count`)
+2. Run `just terraform hetzner apply` - new nodes join the cluster automatically via
+   cloud-init and pick up their workload label
+3. Run `just helm site` to reschedule onto them
 
 ## Backup
 
@@ -379,7 +463,15 @@ stored in a dedicated `backup-secret` and are never exposed to the app pods.
 
 ## Cost
 
-- 3x CPX11 servers: ~€15/month
-- Volume: ~€4/month
-- DNS: Free
-- Total: ~€20/month
+Default single-node topology:
+
+| Item | Cost |
+| ---- | ---- |
+| 1x cx33 (4 vCPU, 8 GB) | ~€13/month |
+| 50 GB volume | ~€2/month |
+| DNS (Cloudflare) | Free |
+| **Total** | **~€15/month** |
+
+Each split adds one node. A fully split cluster (server + database + jobrunner +
+2x webapp) runs roughly €35/month; adding the monitor node for the observability stack
+adds one more.

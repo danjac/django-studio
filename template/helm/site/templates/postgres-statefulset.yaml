@@ -14,7 +14,7 @@ spec:
         app: postgres
     spec:
       nodeSelector:
-        role: database
+        database: "true"
       containers:
         - name: postgres
           image: {{ .Values.postgres.image }}

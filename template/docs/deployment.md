@@ -175,9 +175,23 @@ The `deploy` GitHub Actions workflow:
 2. Builds and pushes Docker image (`docker.yml`)
 3. Runs `helm upgrade --rollback-on-failure` with the new image
 
+### Tailscale
+
+If Tailscale is enabled (see
+[Tailscale](infrastructure.md#tailscale-recommended-for-stricter-access-control-or-team-use)),
+`just get-kubeconfig` writes the server's MagicDNS name as the API address rather than
+its public IP. Two consequences:
+
+- **You must be on the tailnet** for `just helm site`, `just rkube` and `just rdj` to work.
+- **CI must join the tailnet too.** Set `TS_OAUTH_CLIENT_ID` and `TS_OAUTH_SECRET` as
+  repository secrets; the deploy workflow's Tailscale step activates automatically when
+  they are present. Re-run `just gh-set-secrets` afterwards so `KUBECONFIG_BASE64`
+  carries the MagicDNS address.
+
 ### GitHub Actions secrets
 
-Two secrets must be set in **GitHub → Settings → Secrets and variables → Actions**:
+Two secrets must be set in **GitHub → Settings → Secrets and variables → Actions**
+(plus two more if using Tailscale, above):
 
 | Secret | What it is | Where it comes from |
 |--------|-----------|---------------------|

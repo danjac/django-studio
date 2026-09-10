@@ -27,8 +27,6 @@ This project is intended for experienced developers who are comfortable with the
 
 This project provides AI-related features for those who wish to use LLMs as part of their workflow, but this is not a requirement and the project can be used without these features. You should always be comfortable taking the wheel and reviewing and modifying the code by hand as needed.
 
-If you want to change any of the fundamental building-blocks of the stack - for example, switching from HTMX to React, or deploying to AWS instead of Hetzner - you are encouraged to make the changes you need in your project or fork this repository. The goal is to provide a solid starting point, not to lock you into a specific stack or workflow that does not suit your needs.
-
 ## Getting Started
 
 ```bash
@@ -97,6 +95,8 @@ The focus of this project is a simple and robust foundation for both user and de
 [K3s](https://k3s.io) is a lightweight Kubernetes distribution that allows for easy deployment and scaling of applications. By using K3s, we can ensure that our application is production-ready and can handle increased traffic as needed. Helm Charts have been provided to deploy your project along with Grafana dashboards for monitoring. Full Github Actions CI/CD pipelines are included for testing and deployment.
 
 This stack will be assessed constantly to ensure it remains the best choice for the target audience and use cases. If better tools or libraries become available, they will be evaluated and potentially integrated into the template in addition to or in place of the current choices.
+
+If you want to change any of the fundamental building-blocks of the stack - for example, switching from HTMX to React, or deploying to AWS instead of Hetzner - you are encouraged to make the changes you need in your project or fork this repository. The goal is to provide a solid starting point, not to lock you into a specific stack or workflow that does not suit your needs.
 
 ## Design system
 

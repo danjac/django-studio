@@ -27,6 +27,8 @@ This project is intended for experienced developers who are comfortable with the
 
 This project provides AI-related features for those who wish to use LLMs as part of their workflow, but this is not a requirement and the project can be used without these features. You should always be comfortable taking the wheel and reviewing and modifying the code by hand as needed.
 
+If you want to change any of the fundamental building-blocks of the stack - for example, switching from HTMX to React, or deploying to AWS instead of Hetzner - you are encouraged to make the changes you need in your project or fork this repository. The goal is to provide a solid starting point, not to lock you into a specific stack or workflow that does not suit your needs.
+
 ## Getting Started
 
 ```bash
@@ -153,17 +155,17 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 **Deployment**
 
-| Command                    | Summary                                                                        |
-| -------------------------- | ------------------------------------------------------------------------------ |
-| `/dj-deploy`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
-| `/dj-deploy-observe`       | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
-| `/dj-tailscale [cmd]`      | Enable, check or disable Tailscale private networking for the cluster         |
-| `/dj-scale [n]`            | View or change the webapp replica count                                        |
-| `/dj-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
-| `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
-| `/dj-db-backup`            | Trigger an immediate database backup without waiting for the daily cron        |
-| `/dj-db-restore`           | Guided production database restore from Object Storage backup                  |
-| `/dj-deploy-cron`          | Schedule a management command as a Kubernetes cron job                         |
+| Command                 | Summary                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| `/dj-deploy`            | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `/dj-deploy-observe`    | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
+| `/dj-tailscale [cmd]`   | Enable, check or disable Tailscale private networking for the cluster          |
+| `/dj-scale [n]`         | View or change the webapp replica count                                        |
+| `/dj-rotate-secrets`    | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| `/dj-enable-db-backups` | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
+| `/dj-db-backup`         | Trigger an immediate database backup without waiting for the daily cron        |
+| `/dj-db-restore`        | Guided production database restore from Object Storage backup                  |
+| `/dj-deploy-cron`       | Schedule a management command as a Kubernetes cron job                         |
 
 ### Feedback Loop
 
@@ -212,12 +214,12 @@ Python 3.14 is managed automatically by `uv` - no separate install needed.
 
 ### Deployment
 
-| Tool                                                           | Purpose                                             | Install          |
-| -------------------------------------------------------------- | --------------------------------------------------- | ---------------- |
-| [Terraform](https://developer.hashicorp.com/terraform/install) | Provision Hetzner infrastructure and Cloudflare DNS | See install docs |
-| [Helm](https://helm.sh/docs/intro/install/)                    | Deploy Kubernetes workloads                         | See install docs |
-| [kubectl](https://kubernetes.io/docs/tasks/tools/)             | Kubernetes CLI                                      | See install docs |
-| [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                   | See install docs |
+| Tool                                                           | Purpose                                                      | Install          |
+| -------------------------------------------------------------- | ------------------------------------------------------------ | ---------------- |
+| [Terraform](https://developer.hashicorp.com/terraform/install) | Provision Hetzner infrastructure and Cloudflare DNS          | See install docs |
+| [Helm](https://helm.sh/docs/intro/install/)                    | Deploy Kubernetes workloads                                  | See install docs |
+| [kubectl](https://kubernetes.io/docs/tasks/tools/)             | Kubernetes CLI                                               | See install docs |
+| [hcloud](https://github.com/hetznercloud/cli)                  | Hetzner Cloud CLI                                            | See install docs |
 | [tailscale](https://tailscale.com/download)                    | Only if Tailscale is enabled - required to reach the cluster | See install docs |
 
 See `docs/deployment.md` in the generated project for full deployment instructions.

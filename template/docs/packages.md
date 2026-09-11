@@ -28,7 +28,7 @@ If your need isn't covered above, research before recommending. Check in order:
 Recommend a package only if it passes all of:
 
 - Active maintenance: meaningful commits within the last 12 months
-- Compatible with Python 3.14 and Django 6.0
+- Compatible with Python 3.14 and Django 6.1
 - Open issues are acknowledged, not silently accumulating
 - Licence is compatible (MIT, BSD, Apache 2.0)
 

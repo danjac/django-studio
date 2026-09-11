@@ -43,7 +43,7 @@ The `{% block scripts %}` block is rendered just before `</body>` — use it for
 
 ## partialdef / partial
 
-`partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders a previously defined fragment by name. This is the primary mechanism for HTMX partial swaps.
+`partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.1/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders a previously defined fragment by name. This is the primary mechanism for HTMX partial swaps.
 
 **`{% partial %}` takes exactly one argument — the partial name. It does NOT support `with`.**
 Pass context via `{% with %}` before the call instead:

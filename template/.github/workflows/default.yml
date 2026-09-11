@@ -9,4 +9,4 @@ permissions:
   contents: read
 jobs:
   run_checks:
-    uses: ./.github/workflows/checks.yml
+    uses: $/.github/workflows/checks.yml

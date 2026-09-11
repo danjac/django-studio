@@ -37,20 +37,21 @@ just precommit run --all-files  # Run all hooks manually
 repos:
   # Python
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.15.2"
+    rev: "v0.16.7"
     hooks:
       - id: ruff-check
         args: [--fix]
       - id: ruff-format
+        types_or: [python, pyi, jupyter]  # skip Markdown code blocks
 
   # Django templates
   - repo: https://github.com/adamchainz/djade-pre-commit
-    rev: "1.8.0"
+    rev: "1.9.0"
     hooks:
       - id: djade
 
   - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.36.4
+    rev: v1.46.1
     hooks:
       - id: djlint-django
 
@@ -72,7 +73,7 @@ repos:
 
   # Docker
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.14.0
+    rev: v2.15.1
     hooks:
       - id: hadolint-docker
 
@@ -91,20 +92,14 @@ repos:
 
   # Django upgrades
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: "1.30.0"
+    rev: "1.32.0"
     hooks:
       - id: django-upgrade
-        args: [--target-version, "6.0"]
-
-  # Imports
-  - repo: https://github.com/MarcoGorelli/absolufy-imports
-    rev: v0.3.1
-    hooks:
-      - id: absolufy-imports
+        args: [--target-version, "6.1"]
 
   # Commits
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.24.0
+    rev: v9.26.0
     hooks:
       - id: commitlint
         stages: [commit-msg]

@@ -8,6 +8,7 @@
 - [Full-Text Search](#full-text-search)
 - [Choices](#choices)
 - [Relationships](#relationships)
+- [Fetch modes](#fetch-modes)
 - [Migrations](#migrations)
 
 ## Custom QuerySet
@@ -203,6 +204,50 @@ created_by = models.ForeignKey(
     related_name="+",  # reverse not needed
 )
 ```
+
+## Fetch modes
+
+Django 6.1 [fetch modes](https://docs.djangoproject.com/en/6.1/topics/db/fetch-modes/)
+control what happens when code accesses a field the original query did not load.
+Set them per queryset with `QuerySet.fetch_mode()`:
+
+| Mode | On access to an unloaded field |
+| --- | --- |
+| `models.FETCH_ONE` (default) | Fetches it for that instance only — 1+N queries in a loop |
+| `models.FETCH_PEERS` | Fetches it for every instance from the same queryset — 2 queries in a loop |
+| `models.FETCH_RAISE` | Raises `FieldFetchBlocked` |
+
+Fetch modes apply to `ForeignKey` and `OneToOneField` access (including reverse
+one-to-one), fields deferred with `defer()` / `only()`, and generic relations.
+The mode is copied to fetched related objects, so it covers the whole
+relationship tree. **They do not apply to many-to-many or reverse `ForeignKey`
+managers** (`post.tags.all()`, `user.orders.all()`) — those still need
+`prefetch_related()`.
+
+```python
+from django.db import models
+
+# Known relations: explicit is still best — one JOINed query
+Order.objects.select_related("user")
+
+# Relations accessed conditionally or across several partials: no field list
+# to maintain, 2 queries instead of 1+N
+Order.objects.fetch_mode(models.FETCH_PEERS)
+
+# Performance-critical path: any lazy load is a bug
+Order.objects.select_related("user").fetch_mode(models.FETCH_RAISE)
+```
+
+Guidelines:
+
+- Prefer `select_related()` / `prefetch_related()` when the view knows exactly
+  which relations the template uses.
+- Reach for `FETCH_PEERS` on list querysets where the accessed relations vary
+  (conditional template branches, shared partials, polymorphic rendering).
+- Use `FETCH_RAISE` to lock down hot paths; a `FieldFetchBlocked` in tests
+  points at the missing `select_related()` or `only()` field.
+- Do not call `select_related()` with no arguments — it is deprecated in
+  Django 6.1. Name the relations.
 
 ## Migrations
 

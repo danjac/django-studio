@@ -16,14 +16,35 @@ Work through each section below. Read every referenced file; do not skip section
 
 Scan all `views.py` and `models.py` files under `<package_name>/`.
 
+See `docs/django-models.md` (Fetch modes) for Django 6.1 fetch modes.
+
 Flag as **CRITICAL** any queryset that:
-- Iterates over a queryset in a template or view and accesses a related object
-  without a `select_related` or `prefetch_related` call
+- Iterates over a queryset in a template or view and accesses a `ForeignKey`,
+  `OneToOneField`, or deferred field without `select_related`, `only()`
+  covering the field, or `.fetch_mode(models.FETCH_PEERS)`
+- Iterates over a queryset and accesses a many-to-many or reverse `ForeignKey`
+  manager without `prefetch_related` — `FETCH_PEERS` does **not** cover these
 - Calls `.count()`, `.exists()`, or `.all()` inside a loop
 
 Flag as **WARNING** any queryset that:
 - Returns all rows from a table with no `.values()`, `.only()`, or field limiting —
   especially if the model has large text/binary fields
+- Calls `select_related()` with no arguments — deprecated in Django 6.1, and it
+  follows every non-null FK whether or not the template needs it
+
+Flag as **ADVISORY**:
+- A list queryset whose `select_related()` list is long, frequently edited, or
+  still misses relations used by conditional template branches or shared
+  partials — suggest `.fetch_mode(models.FETCH_PEERS)` instead
+- A performance-critical view (high-traffic list, feed, API endpoint) whose
+  queryset already loads everything it needs — suggest
+  `.fetch_mode(models.FETCH_RAISE)` so a future lazy load fails loudly
+  (`FieldFetchBlocked`) instead of silently adding queries
+
+Do not flag a relation access on a queryset that already uses `FETCH_PEERS` as
+an N+1 — it costs one extra query per relation, not one per row. Do not
+recommend replacing an accurate `select_related()` with `FETCH_PEERS`: a JOIN is
+one query, `FETCH_PEERS` is two.
 
 Common patterns to flag:
 ```python
@@ -31,15 +52,24 @@ Common patterns to flag:
 for order in Order.objects.all():
     print(order.user.email)  # hits DB once per order
 
-# FIX: use select_related
+# FIX: use select_related (known relations — one query)
 Order.objects.select_related("user")
 
-# CRITICAL: N+1 on M2M
+# FIX: or fetch peers on demand (varying relations — two queries)
+Order.objects.fetch_mode(models.FETCH_PEERS)
+
+# CRITICAL: N+1 on M2M (fetch modes do not help here)
 for post in Post.objects.all():
     print(post.tags.all())  # hits DB once per post
 
 # FIX: use prefetch_related
 Post.objects.prefetch_related("tags")
+
+# WARNING: deprecated, over-fetches
+Order.objects.select_related()
+
+# ADVISORY: hot path — block accidental lazy loads
+Order.objects.select_related("user").fetch_mode(models.FETCH_RAISE)
 ```
 
 ### 1b. Missing database indexes

@@ -3,7 +3,7 @@
 This project uses Redis as the cache backend via `django-redis`.
 
 References:
-- [Django cache framework](https://docs.djangoproject.com/en/6.0/topics/cache/)
+- [Django cache framework](https://docs.djangoproject.com/en/6.1/topics/cache/)
 - [django-redis documentation](https://github.com/jazzband/django-redis)
 
 ---

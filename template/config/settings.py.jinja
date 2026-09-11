@@ -185,36 +185,55 @@ SESSION_COOKIE_SECURE = USE_HTTPS
 
 
 # Email configuration
+# https://docs.djangoproject.com/en/6.1/ref/settings/#mailers
 
 # Mailgun
-# https://anymail.dev/en/v9.0/esps/mailgun/
+# https://anymail.dev/en/stable/esps/mailgun/
 
 if MAILGUN_API_KEY := env("MAILGUN_API_KEY", default=None):
     INSTALLED_APPS += ["anymail"]
 
-    EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-
     # For European domains: https://api.eu.mailgun.net/v3
     MAILGUN_API_URL = env("MAILGUN_API_URL", default="https://api.mailgun.net/v3")
-    MAILGUN_SENDER_DOMAIN = EMAIL_HOST = env("MAILGUN_SENDER_DOMAIN")
+    MAILGUN_SENDER_DOMAIN = EMAIL_DOMAIN = env("MAILGUN_SENDER_DOMAIN")
 
     ANYMAIL = {
         "MAILGUN_API_KEY": MAILGUN_API_KEY,
         "MAILGUN_API_URL": MAILGUN_API_URL,
         "MAILGUN_SENDER_DOMAIN": MAILGUN_SENDER_DOMAIN,
     }
+
+    MAILERS = {
+        "default": {
+            "BACKEND": "anymail.backends.mailgun.EmailBackend",
+        },
+    }
 else:
     EMAIL_CONFIG = env.dj_email_url("EMAIL_URL", default="smtp://localhost:1025")
+    EMAIL_DOMAIN = EMAIL_CONFIG["EMAIL_HOST"]
 
-    EMAIL_BACKEND = EMAIL_CONFIG["EMAIL_BACKEND"]
-    EMAIL_FILE_PATH = EMAIL_CONFIG["EMAIL_FILE_PATH"]
-    EMAIL_HOST = EMAIL_CONFIG["EMAIL_HOST"]
-    EMAIL_HOST_PASSWORD = EMAIL_CONFIG["EMAIL_HOST_PASSWORD"]
-    EMAIL_HOST_USER = EMAIL_CONFIG["EMAIL_HOST_USER"]
-    EMAIL_PORT = EMAIL_CONFIG["EMAIL_PORT"]
-    EMAIL_TIMEOUT = EMAIL_CONFIG["EMAIL_TIMEOUT"]
-    EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
-    EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+    MAILERS = {
+        "default": {
+            "BACKEND": EMAIL_CONFIG.get(
+                "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
+            ),
+            # Only pass options set in EMAIL_URL: backends reject unknown options
+            "OPTIONS": {
+                option: value
+                for option, value in {
+                    "file_path": EMAIL_CONFIG["EMAIL_FILE_PATH"],
+                    "host": EMAIL_CONFIG["EMAIL_HOST"],
+                    "password": EMAIL_CONFIG["EMAIL_HOST_PASSWORD"],
+                    "port": EMAIL_CONFIG["EMAIL_PORT"],
+                    "timeout": EMAIL_CONFIG["EMAIL_TIMEOUT"],
+                    "use_ssl": env.bool("EMAIL_USE_SSL", default=False),
+                    "use_tls": env.bool("EMAIL_USE_TLS", default=False),
+                    "username": EMAIL_CONFIG["EMAIL_HOST_USER"],
+                }.items()
+                if value
+            },
+        },
+    }
 
 ADMINS = getaddresses([admins]) if (admins := env("ADMINS", default="")) else []
 
@@ -222,7 +241,7 @@ MANAGERS = (
     getaddresses([managers]) if (managers := env("MANAGERS", default="")) else ADMINS
 )
 
-SERVER_EMAIL = env("SERVER_EMAIL", default=f"no-reply@{EMAIL_HOST}")
+SERVER_EMAIL = env("SERVER_EMAIL", default=f"no-reply@{EMAIL_DOMAIN}")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=SERVER_EMAIL)
 CONTACT_EMAIL = env("CONTACT_EMAIL", default=SERVER_EMAIL)
 
@@ -395,7 +414,7 @@ SECURE_CSP = {
 }
 
 # Tasks
-# https://docs.djangoproject.com/en/6.0/topics/tasks/
+# https://docs.djangoproject.com/en/6.1/topics/tasks/
 # https://pypi.org/project/django-tasks-db/
 
 TASKS = {

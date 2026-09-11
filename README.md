@@ -79,11 +79,11 @@ The generated `README.md` will include instructions to get started with developm
 
 ## Stack
 
-- Python 3.14, Django 6.0, PostgreSQL 18, Redis 8
+- Python 3.14, Django 6.1, PostgreSQL 18, Redis 8
 - [HTMX](https://htmx.org) + [Alpine.js](https://alpinejs.dev) + [Tailwind CSS](https://tailwindcss.com) (no JS build step)
 - [uv](https://docs.astral.sh/uv/) for dependency management
 - [just](https://just.systems/man/en/) for task running
-- [Django tasks](https://docs.djangoproject.com/en/6.0/topics/tasks/) for background tasks (instead of Celery)
+- [Django tasks](https://docs.djangoproject.com/en/6.1/topics/tasks/) for background tasks (instead of Celery)
 - [django-allauth](https://docs.allauth.org/en/latest/) for authentication
 - [pre-commit](https://pre-commit.com) hooks for linting
 - [Cloudflare](https://cloudflare.com) for DNS, CDN, SSL, and DDoS protection

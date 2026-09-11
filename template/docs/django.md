@@ -29,7 +29,7 @@ implementation patterns, see the focused docs:
 
 ## Django Version
 
-Django 6.0+ with Python 3.14.
+Django 6.1+ with Python 3.14.
 
 ## Settings
 

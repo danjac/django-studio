@@ -5,7 +5,7 @@ Django 6 ships a built-in background task protocol — `django-tasks-db` is the
 database-backed implementation.
 
 References:
-- [Django background tasks documentation](https://docs.djangoproject.com/en/6.0/topics/db/background-tasks/)
+- [Django background tasks documentation](https://docs.djangoproject.com/en/6.1/topics/db/background-tasks/)
 - [django-tasks-db on PyPI](https://pypi.org/project/django-tasks-db/)
 
 ## Contents

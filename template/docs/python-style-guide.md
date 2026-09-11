@@ -1,7 +1,7 @@
 # Python Style Guide
 
-Code style is enforced automatically by pre-commit (ruff, pyupgrade, django-upgrade,
-absolufy-imports). See `docs/precommit-linting.md` for toolchain configuration.
+Code style is enforced automatically by pre-commit (ruff, pyupgrade, django-upgrade).
+See `docs/precommit-linting.md` for toolchain configuration.
 This doc covers conventions and gotchas that tools cannot enforce.
 
 ## Contents
@@ -137,7 +137,7 @@ class DownloadOptions:
 
 ## Imports
 
-- **Absolute imports only** — `absolufy-imports` enforces this; no relative imports.
+- **Absolute imports only** — ruff (`TID252`, `ban-relative-imports = "all"`) enforces this; no relative imports.
 - **isort** — profile `black`, run automatically by ruff. No manual sorting needed.
 
 ## Internationalisation

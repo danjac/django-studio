@@ -96,6 +96,9 @@ testpaths = ["{{ package_name }}", "templates"]
 env = [
   "COVERAGE_CORE=sysmon",
   "DJANGO_ALLOW_ASYNC_UNSAFE=true",
+  # settings.py requires SECRET_KEY. Placeholder so tests run without a .env
+  # (e.g. in CI). Not a secret: test-only value.
+  "SECRET_KEY=django-insecure-test-only",
   "USE_CONNECTION_POOL=false",
   "USE_COLLECTSTATIC=false",
   "USE_HTTPS=false",

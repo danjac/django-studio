@@ -3,8 +3,11 @@ DJANGO_SETTINGS_MODULE = config.settings
 asyncio_mode = auto
 addopts = -v -x --tb=short -p no:warnings --browser chromium -m e2e
 testpaths = {{ package_name }}
+# settings.py requires SECRET_KEY. The SECRET_KEY below is a placeholder so E2E
+# tests run without a .env (e.g. in CI). Not a secret: test-only value.
 env =
     DJANGO_ALLOW_ASYNC_UNSAFE=true
+    SECRET_KEY=django-insecure-test-only
     USE_CONNECTION_POOL=false
     USE_COLLECTSTATIC=false
     USE_HTTPS=false

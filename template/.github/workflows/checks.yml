@@ -69,4 +69,7 @@ jobs:
       - run: uv sync --frozen --all-extras --no-install-project
       - run: uv run playwright install --with-deps chromium
       - run: uv run python manage.py tailwind build
+        env:
+          # settings.py requires SECRET_KEY. Placeholder for CI only, not a secret.
+          SECRET_KEY: django-insecure-ci-only
       - run: uv run pytest -c playwright.ini

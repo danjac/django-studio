@@ -41,8 +41,7 @@ myproject/
 │   ├── management/       # Project-wide management commands
 │   │   └── commands/
 │   │       ├── set_default_site.py
-│   │       ├── sync_vendors.py
-│   │       └── translate.py
+│   │       └── sync_vendors.py
 │   │
 │   ├── users/            # User app
 │   │   ├── models.py

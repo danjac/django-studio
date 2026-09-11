@@ -577,6 +577,15 @@ if env.bool("USE_DEBUG_TOOLBAR", default=False):
 if env.bool("USE_REMOVALS", default=False):
     INSTALLED_APPS += ["django_removals"]
 
+# TranslateBot
+# https://github.com/gettranslatebot/translatebot-django
+
+if env.bool("USE_TRANSLATEBOT", default=False):
+    INSTALLED_APPS += ["translatebot_django"]
+
+    TRANSLATEBOT_API_KEY = env("TRANSLATEBOT_API_KEY", default="")
+    TRANSLATEBOT_MODEL = env("TRANSLATEBOT_MODEL", default="anthropic/claude-sonnet-5")
+
 # PROJECT-SPECIFIC SETTINGS
 
 # Cookie used to check user accepts cookies

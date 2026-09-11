@@ -1,9 +1,10 @@
 ---
-description: Add localization formats, extract strings, translate using agent, compile .mo catalogue
+description: Add locale formats, extract strings, translate with TranslateBot, compile .mo
 ---
 
-Extract all translatable strings, translate them using the agent, and compile the
-message catalogue for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
+Extract all translatable strings, translate them with
+[TranslateBot](https://translatebot.dev/docs/), and compile the message catalogue
+for the given locale (e.g. `fr`, `fr_CA`, `de`, `es`, `nl`).
 
 If no locale is given, **first ask the user** whether they want a full audit of
 untranslated strings in the source code, or whether to skip straight to
@@ -14,18 +15,47 @@ Read `docs/localization.md` for details on managing i18n/l10n in Django.
 
 **Prerequisites:**
 
-`gettext` binaries (`xgettext`, `msgfmt`) must be installed.
+1. `gettext` binaries (`xgettext`, `msgfmt`) must be installed.
 
-```bash
-# Debian/Ubuntu
-sudo apt install gettext
-# Fedora/RHEL
-sudo dnf install gettext
-# macOS
-brew install gettext
-```
+   ```bash
+   # Debian/Ubuntu
+   sudo apt install gettext
+   # Fedora/RHEL
+   sudo dnf install gettext
+   # macOS
+   brew install gettext
+   ```
 
-If `gettext` is not available, stop and tell the user to install it first.
+   If `gettext` is not available, stop and tell the user to install it first.
+
+2. TranslateBot must be enabled in `.env`. The package ships as a dev
+   dependency but is **disabled by default** — it is never installed or
+   configured in production.
+
+   Read `.env` and check for `USE_TRANSLATEBOT=true` and a non-empty
+   `TRANSLATEBOT_API_KEY`. **Never print, echo, or log the key.**
+
+   **If `USE_TRANSLATEBOT` is missing or `false`** — offer to enable it:
+
+   > TranslateBot is disabled. Shall I set `USE_TRANSLATEBOT=true` in `.env`?
+
+   If the user agrees, set it (uncommenting the line if needed).
+
+   **If `TRANSLATEBOT_API_KEY` is empty or missing** — you cannot add the key
+   yourself. Ask the user to add it:
+
+   > TranslateBot needs an API key for the LLM provider. Add it to `.env` as
+   > `TRANSLATEBOT_API_KEY=<key>`, then tell me to continue. The default model
+   > is `anthropic/claude-sonnet-5`, so an Anthropic API key works out of the
+   > box — set `TRANSLATEBOT_MODEL` to use a different provider.
+
+   Wait for confirmation, re-read `.env` to verify the key is set, and only
+   then continue. If the user declines, stop — do not translate `.po` files by
+   hand as a fallback.
+
+   `TRANSLATEBOT_MODEL` accepts any
+   [LiteLLM model name](https://docs.litellm.ai/docs/providers); the API key
+   must match that model's provider.
 
 ---
 
@@ -128,50 +158,46 @@ and stop.
 
 ### C — Run the single-locale pipeline for each locale
 
-For every locale detected in step B, run steps 1 through 5 from the
-single-locale flow below (treating each as an existing locale — skip step 2
-and steps 2b and 2c). Work through them sequentially, one locale at a time.
+For every locale detected in step B, run the single-locale steps below,
+treating each as an existing locale (skip steps 2–4). Work through them
+sequentially, one locale at a time.
 
 ---
 
-**Steps (single-locale mode):**
+## Single-locale mode
 
 ### 0 — Detect existing locale
 
-Check whether `locale/<locale>/LC_MESSAGES/django.po` already exists (and any
-other `.po` files like `djangojs.po` under the same directory).
+Check whether `locale/<locale>/LC_MESSAGES/django.po` already exists.
 
-- **New locale** — the file does not exist. Run all steps below (1 through 5).
+- **New locale** — the file does not exist. Run all steps below.
 - **Existing locale** — the file already exists. This is a re-run to pick up
-  new or changed strings. Skip step 2 (LANGUAGES is already set). In step 3,
-  only translate entries where `msgstr` is still empty **or** the entry is
-  marked `#, fuzzy` — do not re-translate entries that already have a
-  translation.
+  new or changed strings. Skip steps 2–4.
 
 ---
 
 ### 1 — Run `makemessages`
 
 ```bash
-just dj makemessages -l <locale> --no-wrap
+just dj makemessages -l <locale>
 ```
 
 This creates or updates `locale/<locale>/LC_MESSAGES/django.po`. Django marks
 strings that were previously translated but whose source has since changed as
-`#, fuzzy`; brand-new strings get an empty `msgstr`. If the directory does not
-exist, Django creates it automatically.
+`#, fuzzy`; brand-new strings get an empty `msgstr`.
 
-If your project uses JavaScript files with translatable strings, also run:
+Do not pass `--no-wrap`: TranslateBot rewrites `.po` files with a 79-character
+wrap width, so unwrapped output causes noisy diffs on every run.
+
+If the project has JavaScript files with translatable strings, also run:
 
 ```bash
-just dj makemessages -l <locale> -d djangojs --no-wrap
+just dj makemessages -l <locale> -d djangojs
 ```
-
-This creates or updates `djangojs.po` alongside `django.po`.
 
 ---
 
-### 2 — Add locale to LANGUAGES _(new locale only — skip if re-running)_
+### 2 — Add locale to LANGUAGES _(new locale only)_
 
 Open `config/settings.py` and find the `LANGUAGES` list. If `<locale>` is not
 already present, add it using the **native name** of the language:
@@ -190,28 +216,7 @@ Common native names: `fr` → Français, `fr_CA` → Français (Canada),
 
 ---
 
-### 2b — django-modeltranslation schema _(new locale only, if modeltranslation is installed)_
-
-Check whether `"modeltranslation"` is in `INSTALLED_APPS` in `config/settings.py`.
-
-If it is, `django-modeltranslation` will generate migrations that add the new
-language columns (e.g. `title_fr`, `body_fr`) when it detects a new entry in
-`LANGUAGES`. Run:
-
-```bash
-just dj makemigrations
-just dj migrate
-```
-
-This works for both standard and `django-tenants` projects — `migrate` applies
-the new migrations to every tenant schema automatically. No custom sync command
-is needed.
-
-If `"modeltranslation"` is not in `INSTALLED_APPS`, skip this step.
-
----
-
-### 2c — Create locale format file _(new locale only — skip if re-running)_
+### 3 — Create locale format file _(new locale only)_
 
 Check whether `config/formats/<locale>/` exists.
 
@@ -243,154 +248,118 @@ full list of available variables.
 
 ---
 
-### 2c — Migrate model translation fields _(new locale only — skip if re-running)_
+### 4 — django-modeltranslation schema _(new locale only, if installed)_
 
-If `django-modeltranslation` is installed (check `INSTALLED_APPS` for
-`modeltranslation`), run migrations to add the new language columns:
+Check whether `"modeltranslation"` is in `INSTALLED_APPS` in `config/settings.py`.
+If it is not, skip this step.
+
+`django-modeltranslation` generates migrations for the new `_<locale>` columns
+(e.g. `title_fr`, `body_fr`) when it detects a new entry in `LANGUAGES`:
 
 ```bash
 just dj makemigrations
 just dj migrate
 ```
 
-`django-modeltranslation` generates migrations for the new `_<locale>` columns.
 `migrate` applies them to every schema automatically (including all tenant
 schemas in `django-tenants` projects).
 
-After migrations, populate the new language fields with translated content.
-For each `modeltranslation`-registered model:
+---
 
-1. Query records where the new language field is null/empty.
-2. Translate each field value from the source language (`en`) into `<locale>`.
-3. Write the translated values back in chunks of ≤100 records at a time using
-   `queryset.iterator()` + `Model.objects.bulk_update(records, fields)` to
-   avoid loading all records into memory.
+### 5 — Translation context file
 
-Report progress to the user after each model is complete.
+TranslateBot reads `TRANSLATING.md` from the project root (and optionally from
+individual app directories) and sends it to the LLM as context on every run.
+
+If `TRANSLATING.md` does not exist, create it from the project name and
+description in `README.md`:
+
+```markdown
+# Translation context
+
+<Project name> — <one-line description>.
+
+## Tone
+
+<e.g. Friendly and concise. Use the informal "you" form where the language has one.>
+
+## Terminology
+
+- Keep "<Project name>" untranslated.
+- <term>: <preferred translation or "do not translate">
+```
+
+Show the file to the user and ask whether to adjust tone or terminology before
+translating. Commit it — it keeps translations consistent across runs.
 
 ---
 
-### 3 — Translate the `.po` file
+### 6 — Translate the `.po` files
 
-> **Recommended:** use the `translate` management command instead of editing the
-> `.po` file directly. It handles multi-line strings, escaped characters, and
-> fuzzy markers correctly via `polib`.
->
-> ```bash
-> # Requires polib — install once per project:
-> uv add --dev polib
->
-> # 0. Check how many entries need translation — accepts a file, locale dir, or locale code
-> just dj translate count locale/<locale>/LC_MESSAGES/django.po   # single file
-> just dj translate count locale/<locale>                          # all .po files for that locale
-> just dj translate count <locale>                                 # resolve locale code from cwd
->
-> # 1. Dump all entries needing translation to JSON (single .po file only)
-> just dj translate extract locale/<locale>/LC_MESSAGES/django.po > /tmp/untranslated.json
-> # Same for djangojs.po or any other .po file under the locale
-> just dj translate extract locale/<locale>/LC_MESSAGES/djangojs.po > /tmp/untranslated-js.json
->
-> # 2. Fill in msgstr values in the JSON files (LLM does this step)
->
-> # 3. Apply completed translations back to the .po files
-> just dj translate apply locale/<locale>/LC_MESSAGES/django.po /tmp/untranslated.json
-> just dj translate apply locale/<locale>/LC_MESSAGES/djangojs.po /tmp/untranslated-js.json
-> ```
->
-> The `apply` subcommand also strips `#, fuzzy` markers automatically.
-> Fall back to direct file editing only if `polib` is unavailable.
-
-Read `locale/<locale>/LC_MESSAGES/django.po`.
-
-**Check the `Plural-Forms` header.** If it is still the default
-`nplurals=INTEGER; plural=EXPRESSION;` placeholder, replace it with the
-correct rule for `<locale>`. See `references/plural-forms.md` for the full
-reference table. For any locale not listed there, use the GNU gettext manual.
-
-**Translate every entry where `msgstr` is empty** (and any marked `#, fuzzy`).
-Use the project name and description (from `cookiecutter.json` or README) as
-context so proper nouns and app-specific terminology are translated consistently.
-
-For simple strings:
-
-```
-msgid "Save changes"
-msgstr "Enregistrer les modifications"
+```bash
+just dj translate --target-lang <locale>
 ```
 
-For plural strings, fill in all `msgstr[n]` forms:
+TranslateBot translates only entries with an empty `msgstr` or a `#, fuzzy`
+flag, clears the fuzzy flag, and preserves placeholders (`%(name)s`, `{0}`,
+`%s`) and HTML tags. It processes both `django.po` and `djangojs.po` for every
+locale path. Existing translations are never replaced unless `--overwrite` is
+passed — only use `--overwrite` if the user explicitly asks to re-translate.
+
+In no-locale mode, omit `--target-lang` to translate every language in
+`LANGUAGES` in one run:
+
+```bash
+just dj translate
+```
+
+If the command fails with an API key or provider error, stop and report it to
+the user — do not fall back to translating the `.po` file by hand.
+
+---
+
+### 7 — Review plural forms
+
+Read the `Plural-Forms` header of `locale/<locale>/LC_MESSAGES/django.po`.
+
+If it is still the default `nplurals=INTEGER; plural=EXPRESSION;` placeholder,
+replace it with the correct rule for `<locale>`. See
+`references/plural-forms.md` for the full reference table. For any locale not
+listed there, use the GNU gettext manual.
+
+**If `nplurals` is greater than 2** (e.g. `pl`, `ru`, `uk`, `cs`, `ar`),
+TranslateBot fills every `msgstr[n]` for `n ≥ 1` with the same plural form,
+which is grammatically wrong for these languages. For every entry with a
+`msgid_plural`, rewrite `msgstr[1]` … `msgstr[n]` with the correct form for
+each plural category:
 
 ```
 msgid "%(count)s item"
 msgid_plural "%(count)s items"
-msgstr[0] "%(count)s élément"
-msgstr[1] "%(count)s éléments"
+msgstr[0] "%(count)s element"
+msgstr[1] "%(count)s elementy"
+msgstr[2] "%(count)s elementów"
 ```
 
-Remove the `#, fuzzy` flag after translating a fuzzy entry.
-
-#### Large .po files — chunk approach
-
-If `locale/<locale>/LC_MESSAGES/django.po` is **larger than ~500 lines**, do
-not attempt to read and rewrite the entire file in one pass — the context
-window cannot hold it reliably. Instead:
-
-1. **Split** the file into numbered chunks of ≤500 lines each:
-
-   ```bash
-   cd locale/<locale>/LC_MESSAGES
-   split -l 500 django.po django- \
-     --numeric-suffixes=1 --suffix-length=1 --additional-suffix=.po
-   ```
-
-   This produces `django-1.po`, `django-2.po`, … in the same directory.
-
-2. **Translate one chunk at a time**, sequentially:
-   - Read the chunk file.
-   - Fill in all empty `msgstr` values (preserving any entries that already
-     have translations).
-   - Write the translated chunk back.
-   - **Report to the user** when each chunk is finished before moving to the next.
-
-   > Note: the split may cut across a `msgid`/`msgstr` pair. The first line of
-   > a later chunk may be an orphan `msgstr ""`. Leave these boundary lines as-is
-   > in each chunk file — they will be correct once the file is reassembled.
-
-3. **Reassemble** once all chunks are translated:
-
-   ```bash
-   cat django-1.po django-2.po ... django-N.po > django.po
-   rm django-1.po django-2.po ... django-N.po
-   ```
-
-   Use the exact chunk filenames produced by `split` — do not add a separate
-   header; `django-1.po` already contains the original file header.
-
-4. Continue to step 4 (compile).
-
-Write the updated `.po` file back.
-
-#### Large files — chunked translation
-
-If the file contains more than ~100 untranslated entries (empty `msgstr` or
-`#, fuzzy`), translate in batches of 50–100 entries rather than all at once.
-This avoids hitting context/token limits and makes the session resumable:
-
-1. Collect all entries that need translation.
-2. Split them into batches of 50–100 entries each.
-3. For each batch:
-   a. Translate the entries.
-   b. Write the translated `msgstr` values back into the `.po` file immediately.
-   c. Print a progress line: `Translated batch N/M (X entries)`.
-4. After all batches are done, continue to step 4 (compilemessages).
-
-Because each batch is written back before the next starts, interrupting and
-resuming is safe — already-translated entries have a non-empty `msgstr` and
-are skipped on the next run.
+If `nplurals` is 1 or 2, no review is needed.
 
 ---
 
-### 4 — Compile
+### 8 — Translate model fields _(if modeltranslation is installed)_
+
+If `"modeltranslation"` is not in `INSTALLED_APPS`, skip this step.
+
+```bash
+just dj translate --target-lang <locale> --models
+```
+
+TranslateBot discovers every model registered with `django-modeltranslation`,
+translates only fields that are empty in `<locale>`, and applies all updates in
+a single transaction.
+
+---
+
+### 9 — Compile
 
 ```bash
 just dj compilemessages
@@ -400,61 +369,30 @@ This generates `locale/<locale>/LC_MESSAGES/django.mo`.
 
 ---
 
-### 5 — Report
+### 10 — Report
+
+Check the catalogue status:
+
+```bash
+just dj check_translations
+```
+
+This prints untranslated and fuzzy counts for every `.po` file and exits
+non-zero if any are incomplete. It is a reporting tool only — it is not part
+of `just check-all`.
 
 Print a summary:
 
 ```
-Translated: <N> strings  (X new, Y fuzzy updated, Z already had translations)
 Locale:     <locale>
 Catalogue:  locale/<locale>/LC_MESSAGES/django.mo
+Status:     <output of check_translations for this locale>
+Plurals:    <reviewed N entries | no review needed>
+Models:     <translated | skipped>
 ```
 
-For a re-run, if N is 0 (no new or fuzzy strings were found), say:
+For a re-run where TranslateBot found nothing to translate, say:
 
 ```
 No new or changed strings found for <locale>. Catalogue is up to date.
 ```
-
-If any `msgid` contained Python format specifiers (`%(var)s`, `{var}`), remind
-the user to verify that the translated strings preserve them exactly.
-
----
-
-### 6 — Populate modeltranslation fields _(new locale only, if modeltranslation is installed)_
-
-Check whether `"modeltranslation"` is in `INSTALLED_APPS`. If it is not, skip
-this step entirely.
-
-For each model registered in any `<app>/translation.py`, populate the new
-language columns for existing records:
-
-1. **Discover registered models and their translatable fields.** Read every
-   `translation.py` file in the project and collect the model class and the
-   fields listed in each `TranslationOptions.fields`.
-
-2. **Query records with empty new-language fields.** For each registered model,
-   build a queryset that filters for rows where the new locale's field is null
-   or empty — e.g. `Model.objects.filter(title_<locale>__isnull=True)`.
-   Use `.iterator()` to avoid loading all records into memory at once.
-
-3. **Translate field values in chunks.** Process 50–100 records per batch:
-   - Translate each field value from the source language (English) to
-     `<locale>`.
-   - Set the translated value on the new-language field attribute
-     (e.g. `obj.title_<locale> = translated_value`).
-   - Collect the batch into a list and call `Model.objects.bulk_update(batch,
-     ["title_<locale>", ...])`  once per batch.
-   - Print a progress line: `Populated batch N (X records)`.
-
-4. **Report.** After all models are processed, print a summary:
-   ```
-   modeltranslation sync
-   =====================
-   MyModel  title, body   42 records populated
-   OtherModel  name        7 records populated
-   ```
-   If all fields were already populated (no null rows found), say:
-   ```
-   All modeltranslation fields already populated for <locale>.
-   ```

@@ -109,10 +109,13 @@ inner apps. It holds everything that is project-wide rather than tied to one dom
 
 - HTTP types, responses and decorators (`http/`)
 - Middleware, context processors and template tags
-- Pagination and partial rendering helpers
+- Pagination, partial renderers, and other utilities
 - Site-wide views (home page, error pages, etc.)
 - Shared test fixtures (`tests/`)
 - Management commands (`management/commands/`)
+
+The outer app should not define models. Models are domain objects by definition, so they
+belong in an inner app.
 
 ### Inner apps (`my_package/<app>/`)
 
@@ -136,8 +139,10 @@ my_package/my_app/
   (`http/request.py` does this for `User`). This keeps circular imports out of the project.
 - **No `core`/`common`/`utils` app.** Shared code has one obvious home that is already
   namespaced under the project package, instead of a catch-all sibling app.
-- **Inner apps stay independent.** Avoid importing one inner app from another. If two domains
-  need the same code, move it out into the outer app.
+- **Inner apps can depend on each other, but not in cycles.** For example, a `cart` app will
+  naturally depend on a `products` app, and many apps will have a `ForeignKey` to
+  `users.User`. Keep those dependencies one-directional: `cart` imports from `products`, but
+  `products` should not import from `cart`. Generic helpers that aren't domain logic belong in the outer app.
 - **Domain apps are easy to add or remove.** A new domain is a new inner app; nothing in the
   outer layer needs to change beyond URL and `INSTALLED_APPS` wiring.
 

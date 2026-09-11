@@ -21,7 +21,7 @@ Register it once in your base template's `{% block scripts %}` block:
 
 ```html
 {% block scripts %} {{ block.super }}
-<script>
+<script nonce="{{ csp_nonce }}">
   document.addEventListener("alpine:init", () => {
     Alpine.data("dropdown", () => ({
       open: false,
@@ -209,7 +209,7 @@ Place in `{% block scripts %}` (no `defer`):
 
 ```html
 {% block scripts %} {{ block.super }}
-<script>
+<script nonce="{{ csp_nonce }}">
   document.addEventListener("alpine:init", () => {
     Alpine.data("lightbox", (photos) => ({
       open: false,
@@ -370,7 +370,7 @@ action URL are passed as constructor arguments so the component stays reusable.
 
 ```html
 {% block scripts %} {{ block.super }}
-<script>
+<script nonce="{{ csp_nonce }}">
   document.addEventListener("alpine:init", () => {
     Alpine.data("dragDrop", (csrfHeader, csrfToken, actionUrl) => ({
       dragging: null,
@@ -463,7 +463,7 @@ across pages:
 
 ```html
 {% block scripts %} {{ block.super }}
-<script>
+<script nonce="{{ csp_nonce }}">
   document.addEventListener("alpine:init", () => {
     Alpine.data("fileUpload", () => ({
       files: [],

@@ -75,6 +75,14 @@ class TestProjectContent:
         content = (project / "config" / "settings.py").read_text()
         assert '"test_project",' in content
 
+    def test_csp_script_src_uses_nonce_not_unsafe_inline(self, project):
+        content = (project / "config" / "settings.py").read_text()
+        script_src = content[content.index("SCRIPT_SCP = [") :]
+        script_src = script_src[: script_src.index("]")]
+        assert "CSP.NONCE" in script_src
+        assert "CSP.UNSAFE_INLINE" not in script_src
+        assert '"django.template.context_processors.csp",' in content
+
     def test_gha_build_workflow_has_project_slug(self, project):
         content = (project / ".github" / "workflows" / "build.yml").read_text()
         assert "test_project" in content

@@ -75,7 +75,7 @@ The generated `README.md` will include instructions to get started with developm
 - Grafana dashboards for OpenTelemetry monitoring
 - Terraform IaC scripts for provisioning Hetzner Cloud infrastructure and Cloudflare DNS
 - Design system with reusable components
-- AI-assisted development with agent documentation, agentic hooks, and project Skills
+- AI-assisted development with agent documentation, agentic hooks, project Skills, and [MCP servers](#mcp-servers) (PostgreSQL, Playwright, Django shell)
 
 ## Stack
 

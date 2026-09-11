@@ -448,4 +448,5 @@ inline script (the `csp` context processor provides `csp_nonce`):
 
 `'unsafe-eval'` stays in `script-src`: the standard Alpine build evaluates
 directive expressions at runtime, as do htmx's `hx-on:*`, trigger filters and
-`js:` values.
+`js:` values. For what that costs and how to remove it (Alpine CSP build,
+htmx `hx-csp`), see `docs/content-security-policy.md`.

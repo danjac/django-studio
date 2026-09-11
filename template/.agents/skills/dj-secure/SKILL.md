@@ -69,7 +69,14 @@ If `terraform/cloudflare/` does not exist, apply the standard WARNING check.
 
 **Note on CSP `'unsafe-eval'`:** `'unsafe-eval'` in `script-src` is expected — the
 standard Alpine build and htmx `hx-on:*` / trigger filters / `js:` values need it.
-Do not flag it. Do flag as **WARNING** any inline `<script>` in `templates/`
+Report it as **ADVISORY** only, and do not recommend removing it on its own:
+it requires the Alpine CSP build plus either dropping htmx eval features or the
+`hx-csp` extension (with `hx-nonce` on every htmx element). Read
+`docs/content-security-policy.md` and summarise that cost if the user asks.
+Separately, flag as **CRITICAL** any user-controlled data rendered inside Alpine
+or htmx expression attributes (`x-data`, `x-init`, `@...`, `hx-on:*`, `js:`
+values) — with `'unsafe-eval'` allowed, these execute.
+Also flag as **WARNING** any inline `<script>` in `templates/`
 without `nonce="{{ csp_nonce }}"` — it is blocked by the policy and will not run.
 
 **Note on `SECRET_KEY` with a `django-insecure-*` default:** A pattern like

@@ -23,7 +23,7 @@ Run `makemessages` to scan the project for translatable strings and update (or c
 the `.po` catalogue for a given locale:
 
 ```bash
-just dj makemessages -l <locale> --no-wrap
+just dj makemessages -l <locale>
 ```
 
 Common locale codes: `fr`, `fr_CA`, `de`, `es`, `nl`, `pt`, `it`, `pl`, `sv`, `da`,
@@ -31,6 +31,35 @@ Common locale codes: `fr`, `fr_CA`, `de`, `es`, `nl`, `pt`, `it`, `pl`, `sv`, `d
 
 This creates or updates `locale/<locale>/LC_MESSAGES/django.po`. Run it whenever you
 add or change translatable strings in templates, views, or models.
+
+### Translating strings
+
+[TranslateBot](https://translatebot.dev/docs/) (`translatebot-django`) translates
+`.po` files with an LLM. It is a **development-only** tool: it lives in the `dev`
+dependency group and is only added to `INSTALLED_APPS` when enabled in `.env`:
+
+```bash
+USE_TRANSLATEBOT=true
+TRANSLATEBOT_API_KEY=<provider API key>
+# Optional — any LiteLLM model name; defaults to anthropic/claude-sonnet-5
+# TRANSLATEBOT_MODEL=anthropic/claude-sonnet-5
+```
+
+```bash
+just dj translate --target-lang <locale>   # one locale
+just dj translate                          # every locale in LANGUAGES
+just dj translate --target-lang <locale> --models  # django-modeltranslation fields
+just dj check_translations                 # report untranslated/fuzzy entries
+```
+
+Only empty and `#, fuzzy` entries are translated; existing translations are kept unless
+`--overwrite` is passed. Add a `TRANSLATING.md` file at the project root to give the
+LLM terminology and tone guidance.
+
+TranslateBot rewrites `.po` files with a 79-character wrap width, so don't pass
+`--no-wrap` to `makemessages`. For languages with more than two plural forms
+(e.g. `pl`, `ru`, `cs`), review `msgstr[n]` entries by hand — TranslateBot uses the
+same plural form for every `n ≥ 1`.
 
 ### Compiling messages
 

@@ -110,6 +110,10 @@ where the template goes, and where the URL is wired.
 
 2. **Create the template** at the path from the table above.
    For HTMX partials, use Django 6 named partial blocks. Use DaisyUI classes for all components.
+   The Content-Security-Policy blocks inline scripts without a nonce: any inline
+   `<script>` must carry `nonce="{{ csp_nonce }}"`, and user data must never go
+   inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`).
+   See `docs/content-security-policy.md`.
 
 3. **Wire the URL** in the file from the table above:
    ```python

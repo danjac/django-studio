@@ -115,7 +115,7 @@ SECURE_CSP = {
 `nonce="{{ csp_nonce }}"` (provided by the `django.template.context_processors.csp`
 context processor). `'unsafe-eval'` is kept because Alpine expressions and htmx
 `hx-on:*` / trigger filters / `js:` values are evaluated at runtime. See
-`docs/alpine.md#content-security-policy`.
+`docs/content-security-policy.md` for the trade-off and how to remove it.
 
 ```python
 

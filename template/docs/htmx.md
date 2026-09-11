@@ -15,6 +15,7 @@ HTMX is vendored into `static/vendor/`. To update it or add new JS dependencies,
 - [Loading Indicator CSS](#loading-indicator-css)
 - [Extensions](#extensions)
 - [Best Practices](#best-practices)
+- [Content Security Policy](#content-security-policy)
 - [References](#references)
 
 ## Configuration
@@ -338,6 +339,15 @@ See [four.htmx.org/extensions](https://four.htmx.org/extensions/) for the full l
 4. Debounce search inputs: `hx-trigger="keyup changed delay:300ms"`.
 5. Use `hx-swap="outerHTML"` to replace a form with its re-rendered self on validation errors.
 6. Use `hx-swap="delete"` to dismiss banners or remove list items after a destructive action.
+
+## Content Security Policy
+
+`hx-on:*` handlers, trigger filters (`hx-trigger="click[shiftKey]"`) and `js:` /
+`javascript:` values are compiled at runtime with `Function`, so they depend on
+`'unsafe-eval'` in `script-src`. The project's policy allows it. Removing it
+requires either dropping these features or adopting the `hx-csp` extension,
+which needs `hx-nonce` on every htmx element — see
+`docs/content-security-policy.md` before changing the policy.
 
 ## References
 

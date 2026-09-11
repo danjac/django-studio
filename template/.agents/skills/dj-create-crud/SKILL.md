@@ -172,6 +172,11 @@ def <model_lower>_delete(
 
 ### 3. Templates
 
+The Content-Security-Policy blocks inline scripts without a nonce. If a template
+needs an inline `<script>`, add `nonce="{{ csp_nonce }}"`, and never put user data
+inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
+`docs/content-security-policy.md`.
+
 **`templates/<app_name>/<model_lower>_list.html`**
 
 ```html

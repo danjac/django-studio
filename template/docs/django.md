@@ -43,7 +43,7 @@ env = Env()
 env.read_env()
 
 DEBUG = env.bool("DEBUG", default=False)
-SECRET_KEY = env("SECRET_KEY", default="...")
+SECRET_KEY = env("SECRET_KEY")
 ```
 
 ### Database with Connection Pooling

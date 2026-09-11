@@ -30,13 +30,18 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends gettext=0.21-12 \
   && rm -rf /var/lib/apt/lists/*
 
+# settings.py requires SECRET_KEY. This placeholder is not a secret: it is only
+# used by build-time management commands and never reaches the final image.
+# The real key is supplied at runtime via the environment (Helm secret).
 RUN --mount=type=cache,target=/root/.cache/uv \
-  uv run python manage.py compilemessages
+  SECRET_KEY=django-insecure-build-only uv run python manage.py compilemessages
 
 # Build static assets
 FROM python-base AS staticfiles
 COPY . .
+# Build-only SECRET_KEY placeholder (not a secret) - see messages stage above.
 RUN --mount=type=cache,target=/root/.cache/uv \
+  export SECRET_KEY=django-insecure-build-only && \
   uv run python manage.py tailwind build && \
   uv run python manage.py tailwind remove_cli && \
   uv run python manage.py collectstatic --no-input

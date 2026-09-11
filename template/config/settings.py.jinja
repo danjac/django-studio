@@ -27,10 +27,7 @@ env.read_env()
 
 DEBUG = env.bool("DEBUG", default=False)
 
-SECRET_KEY = env(
-    "SECRET_KEY",
-    default="django-insecure-change-me-in-production",
-)
+SECRET_KEY = env("SECRET_KEY")
 
 SECRET_KEY_FALLBACKS = env.list("SECRET_KEY_FALLBACKS", default=[])
 

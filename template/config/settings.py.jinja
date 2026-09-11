@@ -143,6 +143,7 @@ TEMPLATES = [
             ],
             "debug": env.bool("TEMPLATE_DEBUG", default=DEBUG),
             "context_processors": [
+                "django.template.context_processors.csp",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -391,11 +392,12 @@ PERMISSIONS_POLICY: dict[str, list] = {
 
 CSP_SCRIPT_WHITELIST = env.list("CSP_SCRIPT_WHITELIST", default=[])
 
-# NOTE: HTMX and Alpine require 'unsafe-inline' and 'unsafe-eval'
+# Inline <script> tags must set their nonce attribute from the csp_nonce template variable.
+# NOTE: 'unsafe-eval' is required by Alpine expressions and htmx hx-on/filters/js:
 SCRIPT_SCP = [
     CSP.SELF,
+    CSP.NONCE,
     CSP.UNSAFE_EVAL,
-    CSP.UNSAFE_INLINE,
     *CSP_SCRIPT_WHITELIST,
 ]
 

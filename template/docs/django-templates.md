@@ -28,12 +28,12 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 {% endblock content %}
 ```
 
-The `{% block scripts %}` block is rendered just before `</body>` — use it for per-page JavaScript:
+The `{% block scripts %}` block is rendered just before `</body>` — use it for per-page JavaScript. Inline scripts must carry the CSP nonce (see `docs/alpine.md`):
 
 ```html
 {% block scripts %}
   {{ block.super }}
-  <script>
+  <script nonce="{{ csp_nonce }}">
     document.addEventListener('alpine:init', () => {
       Alpine.data('myComponent', () => ({ ... }));
     });

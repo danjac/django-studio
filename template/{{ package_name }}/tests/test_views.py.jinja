@@ -11,6 +11,30 @@ class TestIndex:
 
 
 @pytest.mark.django_db
+class TestContentSecurityPolicy:
+    def _script_src(self, response):
+        directives = (
+            directive.strip().split()
+            for directive in response.headers["Content-Security-Policy"].split(";")
+        )
+        return next(values for name, *values in directives if name == "script-src")
+
+    def test_script_src_has_no_unsafe_inline(self, client):
+        response = client.get(reverse("index"))
+        assert "'unsafe-inline'" not in self._script_src(response)
+
+    def test_inline_script_nonce_matches_header(self, client):
+        response = client.get(reverse("index"))
+        nonces = [
+            value.removeprefix("'nonce-").removesuffix("'")
+            for value in self._script_src(response)
+            if value.startswith("'nonce-")
+        ]
+        assert len(nonces) == 1
+        assert f'nonce="{nonces[0]}"'.encode() in response.content
+
+
+@pytest.mark.django_db
 class TestAbout:
     def test_get(self, client):
         response = client.get(reverse("about"))

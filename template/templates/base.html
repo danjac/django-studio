@@ -22,7 +22,7 @@
     {% cookie_banner %}
     {% block scripts %}
     <script src="{% static 'indicator.js' %}"></script>
-    <script>
+    <script nonce="{{ csp_nonce }}">
       document.addEventListener('htmx:before:request', (evt) => {
         evt.detail.ctx?.target?.setAttribute('aria-busy', 'true');
       });

@@ -16,6 +16,7 @@ Alpine.js provides reactive JavaScript behavior without writing JavaScript files
 - [Array and Counter Mutations](#array-and-counter-mutations)
 - [Best Practices](#best-practices)
 - [Script Loading Order](#script-loading-order)
+- [Content Security Policy](#content-security-policy)
 
 ## Installation
 
@@ -318,12 +319,13 @@ Follow this progression based on component complexity:
 ```
 
 **2. Complex logic** — move to `Alpine.data()` in a `<script>` tag inside the
-page's `{% block scripts %}` block (rendered in the footer, before `</body>`):
+page's `{% block scripts %}` block (rendered in the footer, before `</body>`).
+Inline scripts need the CSP nonce (see [Content Security Policy](#content-security-policy)):
 
 ```html
 {% block scripts %}
   {{ block.super }}
-  <script>
+  <script nonce="{{ csp_nonce }}">
     document.addEventListener('alpine:init', () => {
       Alpine.data('myComponent', (param) => ({
         value: param,
@@ -426,3 +428,24 @@ onDrop() {
 
 This keeps all URL knowledge in the template layer where Django's `{% url %}` tag
 can reverse them correctly, and avoids breakage when URL patterns change.
+
+## Content Security Policy
+
+`script-src` does not allow `'unsafe-inline'`, so the browser blocks any inline
+`<script>` without the per-request nonce. Add `nonce="{{ csp_nonce }}"` to every
+inline script (the `csp` context processor provides `csp_nonce`):
+
+```html
+<script nonce="{{ csp_nonce }}">
+  document.addEventListener('alpine:init', () => { ... });
+</script>
+```
+
+- Scripts loaded with `<script src="{% static '...' %}">` need no nonce.
+- `{{ data|json_script:"id" }}` output is not executed, so it needs no nonce.
+- Inline event handler attributes (`onclick="..."`) are blocked — use Alpine
+  directives (`@click`) instead.
+
+`'unsafe-eval'` stays in `script-src`: the standard Alpine build evaluates
+directive expressions at runtime, as do htmx's `hx-on:*`, trigger filters and
+`js:` values.

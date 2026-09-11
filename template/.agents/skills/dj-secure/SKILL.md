@@ -49,6 +49,7 @@ For each setting, apply this decision tree:
 | `X_FRAME_OPTIONS` | `"DENY"` or `"SAMEORIGIN"` | WARNING |
 | `SECURE_HSTS_INCLUDE_SUBDOMAINS` | `True` | ADVISORY |
 | CSP headers | middleware or header present | WARNING |
+| `SECURE_CSP` `script-src` | no `'unsafe-inline'` (inline scripts use `CSP.NONCE`) | WARNING |
 | Django admin URL | not `"admin/"` | ADVISORY |
 | `DEBUG_TOOLBAR` in `INSTALLED_APPS` | guarded by `DEBUG` check | WARNING |
 
@@ -65,6 +66,11 @@ ADVISORY: [settings] SECURE_HSTS_SECONDS not set — not applicable, HSTS is han
 ```
 
 If `terraform/cloudflare/` does not exist, apply the standard WARNING check.
+
+**Note on CSP `'unsafe-eval'`:** `'unsafe-eval'` in `script-src` is expected — the
+standard Alpine build and htmx `hx-on:*` / trigger filters / `js:` values need it.
+Do not flag it. Do flag as **WARNING** any inline `<script>` in `templates/`
+without `nonce="{{ csp_nonce }}"` — it is blocked by the policy and will not run.
 
 **Note on `SECRET_KEY` with a `django-insecure-*` default:** A pattern like
 `SECRET_KEY = env("SECRET_KEY", default="django-insecure-...")` is **not CRITICAL**.

@@ -94,8 +94,8 @@ CSP_SCRIPT_WHITELIST = env.list("CSP_SCRIPT_WHITELIST", default=[])
 
 SCRIPT_SRC = [
     CSP.SELF,
+    CSP.NONCE,
     CSP.UNSAFE_EVAL,
-    CSP.UNSAFE_INLINE,
     *CSP_SCRIPT_WHITELIST,
 ]
 
@@ -109,6 +109,15 @@ SECURE_CSP = {
     "img-src": [CSP.SELF, CSP_DATA],  # add "blob:" for instant-preview file upload widgets
     "media-src": ["*"],
 }
+```
+
+`script-src` has no `'unsafe-inline'`: inline `<script>` tags must carry
+`nonce="{{ csp_nonce }}"` (provided by the `django.template.context_processors.csp`
+context processor). `'unsafe-eval'` is kept because Alpine expressions and htmx
+`hx-on:*` / trigger filters / `js:` values are evaluated at runtime. See
+`docs/alpine.md#content-security-policy`.
+
+```python
 
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=USE_HTTPS)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("SECURE_HSTS_INCLUDE_SUBDOMAINS", default=False)

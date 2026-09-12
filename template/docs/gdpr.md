@@ -82,6 +82,45 @@ When anonymising:
 Provide an account deletion view that calls `anonymise_user` and logs the
 request. Do not silently hard-delete without the user's explicit confirmation.
 
+### Anonymisation signals
+
+`anonymise_user()` sends two signals, defined in `users/signals.py`. Apps that
+hold their own PII should hook these rather than adding calls to `gdpr.py`:
+
+| Signal | When | Use it for |
+| --- | --- | --- |
+| `pre_anonymise_user` | Before any field is overwritten | Cleanup that needs the original PII |
+| `post_anonymise_user` | After the user and allauth records are cleaned up | Work that does not need PII |
+
+Both receive the `User` class as `sender` and the instance as `user`.
+
+Use `pre_anonymise_user` when the receiver has to read the original values —
+unsubscribing an email address from a mailing list, deleting files named after
+the username, or clearing rows keyed on the old email. Once the pre-signal has
+returned, those values are gone for good.
+
+```python
+from django.dispatch import receiver
+
+from my_app.users.signals import post_anonymise_user, pre_anonymise_user
+
+
+@receiver(pre_anonymise_user)
+def unsubscribe_from_newsletter(sender, user, **kwargs):
+    # user.email is still the real address here
+    newsletter.unsubscribe(user.email)
+
+
+@receiver(post_anonymise_user)
+def clear_order_addresses(sender, user, **kwargs):
+    Order.objects.filter(user=user).update(shipping_address="")
+```
+
+Both signals are sent inside the anonymisation transaction, so a receiver's
+cleanup is committed atomically with the user record — and a receiver that
+raises rolls the entire anonymisation back. Connect receivers in the app's
+`AppConfig.ready()`.
+
 ---
 
 ## Data export — right of access

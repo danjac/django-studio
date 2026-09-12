@@ -14,6 +14,8 @@ from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount
 from django.db import transaction
 
+from {{ package_name }}.users.signals import post_anonymise_user, pre_anonymise_user
+
 if TYPE_CHECKING:
     from {{ package_name }}.users.models import User
 
@@ -27,6 +29,8 @@ def anonymise_user(user: User) -> None:
 
     Add project-specific PII cleanup below the allauth block.
     """
+    pre_anonymise_user.send(sender=user.__class__, user=user)
+
     anon_id = f"deleted-{user.pk}"
 
     user.username = anon_id
@@ -48,3 +52,5 @@ def anonymise_user(user: User) -> None:
 
     EmailAddress.objects.filter(user=user).delete()
     SocialAccount.objects.filter(user=user).delete()
+
+    post_anonymise_user.send(sender=user.__class__, user=user)

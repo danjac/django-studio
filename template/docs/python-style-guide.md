@@ -78,9 +78,16 @@ my_package/notifications/
 my_package/payments/
 ```
 
-Django's own names are fine because developers look for them by habit: `models.py`,
-`views.py`, `forms.py`, `urls.py`, `admin.py`, `apps.py`, `tasks.py`, `signals.py`,
-`context_processors.py`, `middleware.py`, `templatetags.py`.
+Two kinds of standard name are exempt:
+
+- **Required names.** Django, or a third-party package, looks these up by name, so
+  autodiscovery breaks if you rename them: `models.py`, `admin.py`, `apps.py`,
+  `migrations/`, `management/commands/`, `templatetags/` (for `{% load %}` libraries),
+  and package-specific ones such as `tasks.py` for Celery.
+- **Conventional names.** Nothing requires these, since they are referenced by import
+  or dotted path, but developers look for them by habit: `views.py`, `forms.py`,
+  `urls.py`, `signals.py`, `context_processors.py`, `middleware.py`. Keep to them unless
+  there is a good reason not to.
 
 ### Where logic goes
 

@@ -8,7 +8,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.urls import reverse
 
 from {{ package_name }}.users.gdpr import anonymise_user
-from {{ package_name }}.users.tests.factories import UserRecipe
+from {{ package_name }}.users.tests.recipes import UserRecipe
 
 
 @pytest.mark.django_db

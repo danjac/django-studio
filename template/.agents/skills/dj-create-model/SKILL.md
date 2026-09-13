@@ -10,7 +10,7 @@ Design and write a Django model with recipe, fixture, and model tests.
 
 - `docs/python-style-guide.md`
 - `<package_name>/<app_name>/models.py` — existing models and patterns
-- `<package_name>/<app_name>/tests/factories.py` — existing recipes
+- `<package_name>/<app_name>/tests/recipes.py` — existing recipes
 
 ---
 
@@ -242,9 +242,9 @@ empty lists rather than guessing.
 
 ---
 
-### Step 5 — Add the model to the factories module
+### Step 5 — Add the model to the recipes module
 
-Edit `<package_name>/<app_name>/tests/factories.py`:
+Edit `<package_name>/<app_name>/tests/recipes.py`:
 
 ```python
 from model_bakery.recipe import Recipe, foreign_key, seq
@@ -312,7 +312,7 @@ Add to `<package_name>/<app_name>/tests/test_models.py`:
 ```python
 import pytest
 
-from <package_name>.<app_name>.tests.factories import <model_name>Recipe
+from <package_name>.<app_name>.tests.recipes import <model_name>Recipe
 
 
 @pytest.mark.django_db

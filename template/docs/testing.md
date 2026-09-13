@@ -10,7 +10,7 @@ This project uses pytest with pytest-django for unit tests and Playwright for E2
 - [Root conftest.py](#root-conftestpy)
 - [Unit Test Fixtures](#unit-test-fixtures)
 - [E2E Fixtures](#e2e-fixtures)
-- [Factories](#factories)
+- [Recipes](#recipes)
 - [Unit Tests](#unit-tests)
 - [View Tests with HTMX](#view-tests-with-htmx)
 - [E2E Tests](#e2e-tests)
@@ -73,7 +73,7 @@ my_package/
         tests/
             __init__.py
             fixtures.py
-            factories.py
+            recipes.py
             test_models.py
             test_views.py
             test_playwright.py
@@ -95,7 +95,7 @@ pytest_plugins = [
 ```python
 # my_package/tests/fixtures.py
 import pytest
-from my_package.users.tests.factories import UserRecipe
+from my_package.users.tests.recipes import UserRecipe
 
 @pytest.fixture
 def user():
@@ -109,7 +109,7 @@ def user():
 import pytest
 from playwright.sync_api import Page
 
-from my_package.users.tests.factories import TEST_PASSWORD, make_verified_user
+from my_package.users.tests.recipes import TEST_PASSWORD, make_verified_user
 
 @pytest.fixture
 def e2e_user(transactional_db):
@@ -127,13 +127,13 @@ def auth_page(page: Page, e2e_user, live_server) -> Page:
     return page
 ```
 
-## Factories
+## Recipes
 
 Test objects are built with [model-bakery](https://model-bakery.readthedocs.io/).
-Each app keeps its recipes in `<app>/tests/factories.py`.
+Each app keeps its recipes in `<app>/tests/recipes.py`.
 
 ```python
-# my_package/users/tests/factories.py
+# my_package/users/tests/recipes.py
 from django.contrib.auth.hashers import make_password
 from model_bakery.recipe import Recipe, seq
 

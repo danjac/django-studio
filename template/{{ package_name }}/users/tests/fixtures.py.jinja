@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pytest
 from django.contrib.auth.models import AnonymousUser
 
-from {{ package_name }}.users.tests.factories import UserRecipe
+from {{ package_name }}.users.tests.recipes import UserRecipe
 
 if TYPE_CHECKING:
     from django.test import Client

@@ -147,7 +147,7 @@ from __future__ import annotations
 import pytest
 from django.core.management import call_command
 
-from <package_name>.<app_name>.tests.factories import <ItemRecipe>
+from <package_name>.<app_name>.tests.recipes import <ItemRecipe>
 
 
 @pytest.mark.django_db

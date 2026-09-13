@@ -306,7 +306,7 @@ Add to `<package_name>/<app_name>/tests/test_views.py`:
 import pytest
 from django.urls import reverse
 
-from <package_name>.<app_name>.tests.factories import <model_name>Recipe
+from <package_name>.<app_name>.tests.recipes import <model_name>Recipe
 
 
 @pytest.mark.django_db
@@ -430,7 +430,7 @@ class Test<model_name>Delete:
 ```
 
 If `<model_name>Recipe` does not already exist in
-`<package_name>/<app_name>/tests/factories.py` (e.g. because `dj-create-model`
+`<package_name>/<app_name>/tests/recipes.py` (e.g. because `dj-create-model`
 was not run), add a minimal one now:
 
 ```python

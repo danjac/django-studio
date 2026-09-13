@@ -408,7 +408,7 @@ immediately. Wrap it in a helper that uses `prepare()` (which builds without
 saving), sets the flag, then saves:
 
 ```python
-# my_package/tenants/tests/factories.py
+# my_package/tenants/tests/recipes.py
 TenantRecipe = Recipe(Tenant, name=seq("tenant-"), schema_name=seq("tenant_"))
 
 

@@ -159,7 +159,6 @@ installed app. Because the outer package is a registered app, project-wide comma
 |---------|---------|
 | `set_default_site` | Set the domain and name of the default `Site` |
 | `sync_vendors` | Update vendored frontend dependencies defined in `vendors.json` |
-| `translate` | Extract, count or apply translations in `.po` files |
 
 Run them with `just dj <command>`. Commands that belong to a single domain go in that inner
 app's own `management/commands/` directory instead. Tests for all management commands live in

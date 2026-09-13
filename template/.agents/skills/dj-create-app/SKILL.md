@@ -21,7 +21,7 @@ Create a basic Django app with the standard file structure for this project.
    admin.py
    tests/
        __init__.py      (empty)
-       factories.py
+       recipes.py
        fixtures.py
        test_models.py
        test_views.py
@@ -63,7 +63,7 @@ Create a basic Django app with the standard file structure for this project.
 
 6. **admin.py** — `from django.contrib import admin`
 
-7. **tests/factories.py** — import stub only (no placeholder factories)
+7. **tests/recipes.py** — import stub only (no placeholder recipes)
 
 8. **tests/fixtures.py** — `import pytest` stub
 

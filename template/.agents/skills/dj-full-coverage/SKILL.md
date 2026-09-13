@@ -74,7 +74,7 @@ Work through each uncovered file. For each gap:
   external APIs) using `aioresponses`, `pytest-mock`, or `unittest.mock`.
   See `docs/testing.md` — Mocking section.
 - One logical scenario per test function.
-- Use existing factories and fixtures from `conftest.py` and
+- Use existing recipes and fixtures from `conftest.py` and
   `tests/fixtures.py` before creating new ones.
 
 After adding tests for each file, re-run to confirm the gap is closed:

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pytest
 from django.urls import reverse
 
-from {{ package_name }}.users.tests.factories import TEST_PASSWORD, make_verified_user
+from {{ package_name }}.users.tests.recipes import TEST_PASSWORD, make_verified_user
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page

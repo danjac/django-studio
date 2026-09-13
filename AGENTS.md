@@ -113,7 +113,8 @@ These docs describe the patterns, types, and conventions the generated project u
 
 **Naming convention:** all files under `template/docs/` and `template/.agents/skills/*/references/` use lower-kebab-case (e.g. `django-views.md`, `help.md`). New docs and reference files must follow the same pattern.
 
-After any change to `template/`, regenerate the project and verify all checks pass before committing:
+After any change to `template/`, regenerate the project and verify all checks pass before committing
+(documentation-only changes are exempt; see Git Workflow):
 
 ```bash
 cd /tmp && trash my_app && find /tmp/.Trash-1000 -mindepth 1 -delete
@@ -243,10 +244,14 @@ See [pyright#10546](https://github.com/microsoft/pyright/issues/10546) for upstr
 
 ## Git Workflow
 
-When the user requests any change — feature, bug fix, documentation update, or
-otherwise — **always create a new branch**, commit the change there, push, and
-open a pull request. Do **not** commit directly to `main` unless the user
-explicitly instructs you to do so.
+When the user requests any change — feature, bug fix, or otherwise — **always
+create a new branch**, commit the change there, push, and open a pull request.
+Do **not** commit directly to `main` unless the user explicitly instructs you to
+do so.
+
+**Documentation-only changes:** tasks that only change documentation (Markdown
+docs, `AGENTS.md`, READMEs, skill prose) do not normally require running tests
+or creating a branch/PR, unless the user requests it.
 
 Before creating a new branch, ensure you are on `main`. If you are not:
 

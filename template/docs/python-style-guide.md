@@ -56,24 +56,50 @@ This applies to both module-level functions and class methods.
 
 ## Module Naming
 
-Avoid generic module or package names like `utils.py`, `helpers.py`, or `services.py`. Instead use specific names that describe what the module or package does:
+Name modules after what they do, not after an architectural layer. Avoid generic
+names like `utils.py`, `helpers.py`, `services.py`, `selectors.py` or `logic.py`,
+which become catch-alls for unrelated code:
 
 ```
 # Bad
 my_package/utils.py
 my_package/helpers.py
-my_package/services.py
+my_package/appointments/services.py
+my_package/appointments/selectors.py
 
 # Good — modules
 my_package/geocoding.py
-my_package/notifications.py
-my_package/pdf_export.py
+my_package/users/gdpr.py              # user anonymisation
+my_package/appointments/scheduler.py
 
 # Good — packages (when functionality is large enough to split)
 my_package/geocoding/
 my_package/notifications/
 my_package/payments/
 ```
+
+Django's own names are fine because developers look for them by habit: `models.py`,
+`views.py`, `forms.py`, `urls.py`, `admin.py`, `apps.py`, `tasks.py`, `signals.py`,
+`context_processors.py`, `middleware.py`, `templatetags.py`.
+
+### Where logic goes
+
+There is no hard rule here; it's a matter of judgement. Some guiding questions:
+
+- **Does it describe the object itself, or is it a simple reusable filter?** Put it on
+  the model or its QuerySet: `Appointment.is_overdue`, `AppointmentQuerySet.active()`.
+- **Does it run a workflow or answer a question for one feature?** Put it in a
+  module named after that feature, even if it mostly touches one model. Booking an
+  appointment, or fetching a user's appointments between two dates, belongs in
+  `appointments/scheduler.py`, not on `Appointment`.
+- **Can you name the module without a generic word?** If not, the code probably
+  isn't cohesive yet.
+
+Don't make models "fat" for the sake of it. A model with booking, cancellation,
+reminder and conflict-detection methods is as much a junk drawer as `services.py`.
+
+**Tie-breaker:** when unsure, start in the feature module. Move a query to the
+QuerySet only when a second feature needs it.
 
 ## Caching
 

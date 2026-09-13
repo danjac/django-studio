@@ -122,13 +122,17 @@ Each inner app covers one logical domain (e.g. `users`) and should be self-conta
 
 ```
 my_package/my_app/
-├── models.py         # Core business logic
+├── models.py         # Models, fields, QuerySets
 ├── views.py          # Request handlers (function-based)
 ├── urls.py           # URL routes for this app
 ├── tasks.py         # Background tasks
 ├── admin.py          # Admin interface
+├── gdpr.py           # Feature module, named for its purpose (e.g. users/gdpr.py)
 └── tests/            # Colocated tests
 ```
+
+Workflow logic lives in modules named after the feature, not in `services.py` or on the
+model. See "Module Naming" in `docs/python-style-guide.md`.
 
 ### Why outer/inner?
 

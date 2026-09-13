@@ -49,6 +49,12 @@ class Item(models.Model):
 the correct place — they chain correctly and receive `self` as a `QuerySet`,
 not the model class.
 
+**QuerySets hold reusable filters, not every query.** Methods like `active()` or
+`published()` that many features use belong on the QuerySet. A query that only one
+feature needs (e.g. a user's appointments between two dates) lives in that feature's
+module, such as `appointments/scheduler.py`. Move it to the QuerySet once a second
+feature needs it. See "Module Naming" in `docs/python-style-guide.md`.
+
 **No `Meta.ordering` by default.** Do not add `ordering` to `Meta` unless the
 user explicitly requests it. Default ordering adds an `ORDER BY` clause to
 every query, including ones that don't need it, and can mask missing indexes.

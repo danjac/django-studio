@@ -17,6 +17,11 @@ def user() -> User:
 
 
 @pytest.fixture
+def staff_user() -> User:
+    return UserRecipe.make(is_staff=True)
+
+
+@pytest.fixture
 def anonymous_user() -> AnonymousUser:
     return AnonymousUser()
 
@@ -28,7 +33,6 @@ def auth_user(client: Client, user: User) -> User:
 
 
 @pytest.fixture
-def staff_user(client: Client) -> User:
-    user = UserRecipe.make(is_staff=True)
-    client.force_login(user)
-    return user
+def auth_staff_user(client: Client, staff_user: User) -> User:
+    client.force_login(staff_user)
+    return staff_user

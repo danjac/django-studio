@@ -17,6 +17,7 @@ tables).
 - [Admin site customisation](#admin-site-customisation)
 - [Management commands](#management-commands)
 - [Testing](#testing)
+- [Speeding up deploy migrations](#speeding-up-deploy-migrations)
 - [Helm configuration](#helm-configuration)
 - [First-deploy initialisation](#first-deploy-initialisation)
 - [Social authentication](#social-authentication)
@@ -462,6 +463,51 @@ def tenant_fixture(transactional_db, settings, _tenant_schema):
             qualified = ", ".join(f'"{TENANT_SCHEMA_NAME}"."{t}"' for t in tables)
             cursor.execute(f"TRUNCATE {qualified} CASCADE")
 ```
+
+---
+
+## Speeding up deploy migrations
+
+django-tenants runs `migrate` once for the public schema and once per tenant
+schema. Each run repeats Django's checks and rebuilds the in-memory migration
+state, so the cost grows linearly with the number of tenants.
+
+### Deploys: migrate schemas in parallel
+
+django-tenants ships a multiprocessing executor that migrates several schemas at
+once:
+
+```bash
+# release.sh
+$MANAGE migrate --noinput --executor=multiprocessing --traceback
+```
+
+```python
+# config/settings.py
+TENANT_MULTIPROCESSING_MAX_PROCESSES = 4  # default 2
+```
+
+Each process opens its own database connection — keep the process count well
+below the database's connection limit.
+
+### Deploys: skip schemas with nothing to apply
+
+Even when no migrations are pending, `migrate` still does its checks and state
+work in every schema. [`django-tenants-smart-executor`](https://pypi.org/project/django-tenants-smart-executor/)
+compares the migration recorder with the migrations on disk and short-circuits
+when there is nothing to apply (the `schema_migrated` signal still fires):
+
+```bash
+uv add django-tenants-smart-executor
+```
+
+```python
+# config/settings.py
+GET_EXECUTOR_FUNCTION = "django_tenants_smart_executor.load_executor"
+```
+
+It wraps both the standard and multiprocessing executors, but **not** the
+subprocess executor added in django-tenants 3.12.
 
 ---
 

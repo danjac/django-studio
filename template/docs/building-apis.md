@@ -3,7 +3,8 @@
 Patterns for exposing this project's own JSON API — to external clients (mobile apps,
 partner integrations, scripts) or to in-page JavaScript where HTMX is not a good fit.
 
-For **consuming** third-party APIs and webhooks, see `docs/integrating-apis-and-webhooks.md`.
+For **consuming** third-party APIs, see `docs/integrating-apis.md`; for receiving
+third-party webhooks, see `docs/webhooks.md`.
 For HTML views, see `docs/django-views.md` and `docs/htmx.md`.
 
 ## Contents
@@ -53,11 +54,17 @@ Install Pydantic and configure ruff as described in `docs/packages.md`:
 uv add pydantic
 ```
 
-**Do not add an API framework** (Django REST Framework, django-ninja). This project
-is not an API-only product: its APIs sit alongside a server-rendered app, and plain
-Django + `JsonResponse` + Pydantic covers them with far less machinery. Small,
-single-purpose packages are fine when a specific need arises — CORS, rate limiting,
-OAuth2 — and are called out in the relevant sections below. Ask before adding any.
+**Start without an API framework.** For a handful of endpoints alongside a
+server-rendered app, plain Django + `JsonResponse` + Pydantic covers the need with far
+less machinery than Django REST Framework or django-ninja. Small, single-purpose
+packages are fine when a specific need arises — CORS, rate limiting, OAuth2 — and are
+called out in the relevant sections below.
+
+A framework starts to earn its place as the API grows: many resources with repetitive
+CRUD, generated OpenAPI docs for external consumers, content negotiation, or
+built-in throttling and filtering. When that point comes, django-ninja is the closer
+fit — it is Pydantic-native, so the schemas described here carry over. Treat it as a
+deliberate decision and ask before adding one.
 
 ## Layout and URLs
 

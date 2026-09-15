@@ -1,8 +1,9 @@
-# API Integration
+# Integrating APIs
 
-Patterns for validating data from external HTTP APIs and third-party services.
+Patterns for calling third-party HTTP APIs and validating their responses.
 For HTML form input validation, see `docs/django-forms.md`.
 For raw request parameter validation in views, see `docs/django-views.md`.
+For receiving webhooks from third-party services, see `docs/webhooks.md`.
 For exposing this project's own JSON API, see `docs/building-apis.md`.
 
 ## Contents

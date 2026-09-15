@@ -3,6 +3,7 @@
 Patterns for validating data from external HTTP APIs and third-party services.
 For HTML form input validation, see `docs/django-forms.md`.
 For raw request parameter validation in views, see `docs/django-views.md`.
+For exposing this project's own JSON API, see `docs/building-apis.md`.
 
 ## Contents
 

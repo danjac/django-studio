@@ -10,7 +10,8 @@ implementation patterns, see the focused docs:
 | Models, querysets, full-text search, choices, relationships | `docs/django-models.md`       |
 | Templates, partials, fragments, pagination                  | `docs/django-templates.md`    |
 | Forms, widgets, form rendering                              | `docs/django-forms.md` |
-| External API validation (pydantic)                          | `docs/api-integration.md` |
+| External API validation (pydantic)                          | `docs/integrating-apis-and-webhooks.md` |
+| Building our own JSON API                                   | `docs/building-apis.md` |
 | Adding a new package                                        | `docs/packages.md`     |
 | Migrations and linear-migrations                            | `docs/django-models.md`       |
 | Background tasks                                            | `docs/django-tasks.md` |

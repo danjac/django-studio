@@ -177,6 +177,9 @@ Rules:
   use `HttpResponseBadRequest` for routine bad input.
 - Use `Http404` only when the param identifies a resource that doesn't exist.
 
+For JSON API endpoints, validate with Pydantic schemas instead — see
+`docs/building-apis.md`.
+
 ## HTMX View Pattern
 
 Use `render_partial_response` for views with HTMX inline swaps — returns the
@@ -242,7 +245,7 @@ async def search_items(request: HttpRequest) -> TemplateResponse:
 - Template rendering
 - Most typical Django views
 
-For the HTTP client, error handling, and testing patterns, see `docs/api-integration.md`.
+For the HTTP client, error handling, and testing patterns, see `docs/integrating-apis-and-webhooks.md`.
 
 ## Internationalisation in Views
 

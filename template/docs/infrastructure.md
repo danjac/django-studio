@@ -5,6 +5,7 @@ This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudfla
 ## Contents
 
 - [Why This Stack](#why-this-stack)
+  - [No vendor lock-in](#no-vendor-lock-in)
 - [Architecture](#architecture)
 - [Topology and scaling](#topology-and-scaling)
 - [Components](#components)
@@ -21,9 +22,21 @@ This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudfla
 
 ### Cost predictability
 
-PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but build on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills.
+PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but are built on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills.
 
-Hetzner has fixed, published pricing. You pay per server, so the bill is the same whether the app is idle or busy. There are no egress surprise charges, no per-request fees, no auto-scaling that runs away. The cost is predictable and budgetable.
+VM providers such as Hetzner, OVHcloud, DigitalOcean and Scaleway have fixed, published pricing. You pay per server, so the bill is the same whether the app is idle or busy. There are no surprise egress charges, no per-request fees, and no auto-scaling that runs away. The cost is predictable and budgetable. The template targets Hetzner out of the box, but it should be straightforward to move to another provider with minimal changes.
+
+### No vendor lock-in
+
+Kubernetes is an open source, vendor-neutral standard. Your workloads are described in Helm charts and plain manifests, not in a provider's proprietary services (ECS task definitions, Lambda functions, Cloud Run configs). The same chart runs on any conforming cluster.
+
+That leaves you free to act on how the project evolves:
+
+- **Expand in place** — add nodes with your current provider as load grows (see [Topology and scaling](#topology-and-scaling)).
+- **Move to a better fit** — migrate to another provider for price, region, compliance or hardware, by provisioning a new cluster there and redeploying the same chart.
+- **Mix providers** — run workloads across more than one provider if you need to.
+
+Compare this with building directly on AWS or GCP managed services, where moving elsewhere means rewriting your deployment around a different set of proprietary APIs.
 
 ### Why not Docker + systemd
 

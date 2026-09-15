@@ -111,6 +111,12 @@ Before adding or modifying any code under `template/`, read the generated projec
 
 These docs describe the patterns, types, and conventions the generated project uses. Code that ignores them will be wrong.
 
+**Locality of Behaviour:** template code and docs follow the principle described in
+`template/docs/project-structure.md#locality-of-behaviour`. When adding to `template/`,
+place code beside its caller (in the owning app or feature package) rather than in new
+shared modules, and keep behaviour in `hx-*`/`x-data` attributes rather than separate
+JavaScript. Doc examples must model this layout.
+
 **Naming convention:** all files under `template/docs/` and `template/.agents/skills/*/references/` use lower-kebab-case (e.g. `django-views.md`, `help.md`). New docs and reference files must follow the same pattern.
 
 After any change to `template/`, regenerate the project and verify all checks pass before committing

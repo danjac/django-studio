@@ -2,6 +2,11 @@
 
 HTMX provides dynamic page behavior without writing JavaScript. This project uses `django-htmx` for seamless integration.
 
+HTMX applies [Locality of Behaviour](project-structure.md#locality-of-behaviour) to
+markup: an element's `hx-*` attributes say what it does, so a reader does not have to
+hunt through separate JavaScript files. Keep behaviour in those attributes rather than
+wiring it up from external scripts.
+
 HTMX is vendored into `static/vendor/`. To update it or add new JS dependencies, see `docs/frontend-dependencies.md`.
 
 ## Contents

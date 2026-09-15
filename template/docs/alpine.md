@@ -2,6 +2,11 @@
 
 Alpine.js provides reactive JavaScript behavior without writing JavaScript files.
 
+Alpine applies [Locality of Behaviour](project-structure.md#locality-of-behaviour) to
+client-side state: `x-data`, `x-on` and friends sit on the element they control. Keep
+small components inline in the template; extract to `Alpine.data()` only when the same
+component is reused or the logic outgrows a readable attribute.
+
 ## Contents
 
 - [Installation](#installation)

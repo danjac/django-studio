@@ -12,6 +12,7 @@ This project follows a Django project layout with a clear separation of concerns
 - [Tests](#tests)
 - [Key Files](#key-files)
 - [Best Practices](#best-practices)
+- [Locality of Behaviour](#locality-of-behaviour)
 
 ## Directory Structure
 
@@ -234,3 +235,39 @@ Local development services:
 4. Keep templates organized by app
 5. Use custom management commands for tasks (project-wide ones in `my_package/management/commands/`)
 6. Use django-tasks for background jobs
+7. Follow Locality of Behaviour (below)
+
+## Locality of Behaviour
+
+> "The behaviour of a unit of code should be as obvious as possible by looking only at
+> that unit of code." — Carson Gross,
+> [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/)
+
+Put code where a reader looking at a feature will find it. Prefer code that is obvious
+in place over code that is abstracted away, even at the cost of some repetition.
+
+How the project applies it:
+
+| Area | Local | Not |
+| ---- | ----- | --- |
+| Tests | `<app>/tests/` beside the modules they test | A top-level `tests/` tree mirroring the package |
+| Feature code | `<app>/api/`, `<app>/webhooks/` packages inside the owning app | Project-wide `api/views.py` collecting every app's endpoints |
+| Helpers | A private function in the module of its only caller | A new `utils.py` "in case it's needed elsewhere" |
+| Templates | `templates/<app>/`, partials defined with `{% partialdef %}` in the page that uses them | One-off include files scattered across shared directories |
+| Front-end behaviour | `hx-*` and `x-data` attributes on the element (see `docs/htmx.md`, `docs/alpine.md`) | Event listeners attached from a separate JavaScript file |
+| Permissions | Named rules in `<app>/rules.py`, checked where the decision is made (see `docs/authorization.md`) | Access logic re-implemented inline in each view |
+
+Rules of thumb:
+
+- **Extract on the second caller, not the first.** Duplication is cheaper than the
+  wrong abstraction. When a second app needs the same helper, move it to the shared
+  package (`my_package/http/`, `my_package/db/`, a top-level app such as `api/`).
+- **Reuse what already exists.** Locality does not mean re-implementing shared
+  utilities — search `my_package/http/`, `my_package/db/`, `partials.py` and
+  `paginator.py` first.
+- **Locality is not "everything in one file".** Separate concerns (views, schemas,
+  URLs) into modules, but keep those modules together in the package that owns the
+  feature.
+- **Cross-cutting infrastructure is the exception.** Middleware, settings, auth
+  backends, and shared API plumbing are genuinely used everywhere and belong in
+  shared locations.

@@ -92,6 +92,15 @@ The generated `README.md` will include instructions to get started with developm
 
 The focus of this project is a simple and robust foundation for both user and developer experience. Django is a tried and tested framework with a strong emphasis on convention and best practices, making it an ideal choice for the backend. For the frontend, HTMX and Alpine.js provide a powerful combination for building dynamic interfaces without the complexity of a full JavaScript framework, while Tailwind CSS offers a utility-first approach to styling that promotes consistency and rapid development.
 
+A guiding principle throughout is [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/): the behaviour of a piece of code should be obvious from looking at that code. HTMX, Alpine.js and Tailwind all put behaviour and styling directly on the element, and the generated project applies the same idea to its Python code - tests live beside the modules they test, feature code (such as an app's API or webhooks) lives in the app that owns it, and shared abstractions are extracted only once they are genuinely shared. See [`template/docs/project-structure.md`](template/docs/project-structure.md#locality-of-behaviour) for details.
+
+Further reading:
+
+- [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/) - Carson Gross, the htmx essay that names the principle
+- [Colocation](https://kentcdodds.com/blog/colocation) - Kent C. Dodds on keeping code, tests and styles close to where they are used
+- [The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) - Sandi Metz on why duplication is cheaper than a premature abstraction
+- [CSS Utility Classes and "Separation of Concerns"](https://adamwathan.me/css-utility-classes-and-separation-of-concerns/) - Adam Wathan, creator of Tailwind CSS, on styling at the element
+
 [K3s](https://k3s.io) is a lightweight Kubernetes distribution that allows for easy deployment and scaling of applications. By using K3s, we can ensure that our application is production-ready and can handle increased traffic as needed. Helm Charts have been provided to deploy your project along with Grafana dashboards for monitoring. Full Github Actions CI/CD pipelines are included for testing and deployment.
 
 This stack will be assessed constantly to ensure it remains the best choice for the target audience and use cases. If better tools or libraries become available, they will be evaluated and potentially integrated into the template in addition to or in place of the current choices.

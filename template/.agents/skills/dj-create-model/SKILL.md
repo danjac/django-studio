@@ -368,3 +368,8 @@ Once tests pass, ask:
 > (`/dj-create-crud <app_name> <model_name>`)
 
 Wait for the user's answer. Do not run `dj-create-crud` automatically.
+
+If the user declines (or once CRUD generation is finished), remind them:
+
+> Run `/dj-doc <app_name>` to record `<model_name>`'s business rules and lifecycle in
+> the app README.

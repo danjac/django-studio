@@ -40,7 +40,10 @@ helm
 justfile
 LICENSE
 Makefile
-# Markdown is documentation only; re-include specific files with !path/to/file.md
+# Markdown is documentation only. To include a specific file (e.g. an LLM system
+# prompt), add a ! exception BELOW this line (last match wins). Paths are relative
+# to the build context root:
+#   !my_package/prompts/system.md
 **/*.md
 conftest.py
 playwright.ini

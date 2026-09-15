@@ -456,3 +456,14 @@ If `dj-create-model` already created a recipe with field declarations, use that
 ```bash
 just check-all
 ```
+
+---
+
+### 7. Documentation
+
+Once checks pass, remind the user:
+
+> Run `/dj-doc <app_name>` to add the new views and any permission rules to the app
+> README.
+
+Do not run `/dj-doc` automatically.

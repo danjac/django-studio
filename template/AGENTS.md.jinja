@@ -147,6 +147,11 @@ user's stated facts.
 installed apps, middleware order, settings conventions, admin patterns, and
 migrations. It also indexes the focused docs below.
 
+**Read `docs/this-project.md` and the `README.md` of any app you are changing.**
+They describe this project's domain, business rules, APIs and integrations — the
+context the generic docs below cannot give. If they contradict the code or are still
+stubs, say so; `/dj-doc` creates and updates them.
+
 **Before starting any task, look up your task type in the table below and read
 the listed doc(s) before writing any code.** The table is a lookup — use it
 actively, not as background reading.
@@ -216,6 +221,7 @@ Available in Claude Code and OpenCode as `/dj-<command>`.
 | `/dj-help` | List all dj-* commands or show help for a specific command |
 | `/dj-sync` | Pull latest template changes via Copier and resolve merge conflicts |
 | `/dj-feedback` | File a GitHub issue against the django-studio repo |
+| `/dj-doc [<app_name>]` | Create or update project-specific docs (`docs/this-project.md`, app READMEs) |
 
 **Generators**
 

@@ -86,3 +86,11 @@ Create a basic Django app with the standard file structure for this project.
     ```
 
 13. Verify: `just check-all`
+
+14. Once checks pass, ask:
+
+    > `<app_name>` is ready. Would you like to document it? (`/dj-doc <app_name>`
+    > creates `<package_name>/<app_name>/README.md` and adds the app to
+    > `docs/this-project.md`.)
+
+    Wait for the user's answer. Do not run `/dj-doc` automatically.

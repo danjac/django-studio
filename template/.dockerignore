@@ -32,9 +32,7 @@ opencode.json
 .gitignore
 .gitattributes
 .dockerignore
-AGENTS.md
 vendors.json
-CLAUDE.md
 commitlint.config.js
 design
 docs
@@ -42,8 +40,8 @@ helm
 justfile
 LICENSE
 Makefile
-README.md
-SECURITY.md
+# Markdown is documentation only; re-include specific files with !path/to/file.md
+**/*.md
 conftest.py
 playwright.ini
 docker-compose.yml

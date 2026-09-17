@@ -175,6 +175,27 @@ class Item(models.Model):
 
 ## Relationships
 
+### `on_delete`
+
+**The project default is `on_delete=models.PROTECT`.** Records are archived, not
+deleted: `PROTECT` makes a delete that would destroy referencing rows fail loudly
+instead of silently removing data nobody asked it to remove.
+
+`CASCADE` and `SET_NULL` are both legitimate, but each is a data-loss decision
+and must carry a comment saying why it is safe here:
+
+- **`CASCADE`** — only for a genuinely owned child whose existence has no meaning
+  without its parent (a token belonging to a user, a line item belonging to an
+  order). Deleting the parent is *supposed* to take the child with it.
+- **`SET_NULL`** — for a nullable, informational reference where the row outlives
+  the thing it points at (an audit `created_by`, a claimed invite). Requires
+  `null=True`.
+
+`/dj-remove-slop` flags any `CASCADE` or `SET_NULL` without a justification
+comment, so write the comment when you write the field.
+
+### `related_name`
+
 Always define `related_name` explicitly on every `ForeignKey` and
 `ManyToManyField`. Django's default reverse accessor (`<model>_set`) is fragile
 — it breaks on model renames and is unclear at the call site:
@@ -183,12 +204,12 @@ Always define `related_name` explicitly on every `ForeignKey` and
 class Subscription(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="subscriptions",
     )
     podcast = models.ForeignKey(
         "podcasts.Podcast",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="subscriptions",
     )
 
@@ -205,6 +226,7 @@ Use `related_name="+"` only when the reverse relation is genuinely never needed:
 ```python
 created_by = models.ForeignKey(
     settings.AUTH_USER_MODEL,
+    # SET_NULL: audit field — the record outlives the author's account
     on_delete=models.SET_NULL,
     null=True,
     related_name="+",  # reverse not needed

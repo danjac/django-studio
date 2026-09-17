@@ -532,6 +532,7 @@ class ApiToken(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_l("user"),
+        # CASCADE: a token is owned by its user and is meaningless without them
         on_delete=models.CASCADE,
         related_name="api_tokens",
     )

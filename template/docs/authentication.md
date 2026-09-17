@@ -130,6 +130,7 @@ class Invite(models.Model):
         verbose_name=_l("user"),
         null=True,
         blank=True,
+        # SET_NULL: the invite record is kept for audit after the account goes
         on_delete=models.SET_NULL,
         related_name="invites",
     )

@@ -73,6 +73,13 @@ class TestSecurity:
 
 
 @pytest.mark.django_db
+class TestWellKnownChangePassword:
+    def test_get(self, client):
+        response = client.get("/.well-known/change-password")
+        assert response.url == reverse("account_change_password")
+
+
+@pytest.mark.django_db
 class TestAcceptCookies:
     def test_post(self, client):
         response = client.post(reverse("accept_cookies"))

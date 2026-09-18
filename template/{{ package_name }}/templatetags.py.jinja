@@ -38,7 +38,7 @@ def title_tag(context: RequestContext, *elements: "StrOrPromise", divider: str =
     """Renders <title> content including the site name.
 
     Example:
-        {% raw %}{% title_tag "About Us" %}{% endraw %}
+        {% raw %}{% title_tag _("About Us") %}{% endraw %}
     Results in:
         <title>My Site | About Us</title>
     """

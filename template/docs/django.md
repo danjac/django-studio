@@ -204,7 +204,7 @@ All tags in `templatetags.py` are registered as builtins — no `{% load %}` req
 
 | Tag                                              | Description                                                   |
 | ------------------------------------------------ | ------------------------------------------------------------- |
-| `{% title_tag "Page" %}`                         | Renders `<title>Site Name \| Page</title>`                    |
+| `{% title_tag _("Page") %}`                      | Renders `<title>Site Name \| Page</title>`                    |
 | `{% meta_tags %}`                                | Renders META tags including HTMX config                       |
 | `{% cookie_banner %}`                            | Renders the GDPR cookie consent banner                        |
 | `{% absolute_uri site path %}`                   | Returns an absolute URI for a path                            |

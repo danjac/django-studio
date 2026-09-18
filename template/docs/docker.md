@@ -42,8 +42,16 @@ COPY --from=messages     --chown=django:django /app/locale      /app/locale
 ### UV for Dependencies
 
 ```dockerfile
-COPY --from=ghcr.io/astral-sh/uv:0.9.8 /uv /usr/local/bin/uv
+ARG UV_VERSION=0.12.6
+
+FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
+...
+COPY --from=uv /uv /usr/local/bin/uv
 ```
+
+Bump `UV_VERSION` at the top of the `Dockerfile` to upgrade uv. `COPY --from` does not
+expand build args, so the uv image is pulled in as a named stage. CI pins the same version
+via `UV_VERSION` in `.github/workflows/checks.yml` — keep the two in sync.
 
 All dep installs use `--mount=type=cache,target=/root/.cache/uv` for layer caching.
 

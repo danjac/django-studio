@@ -1,5 +1,8 @@
 
 ARG PYTHON_IMAGE=3.14.2-slim-bookworm
+ARG UV_VERSION=0.12.6
+
+FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
 # Install Python dependencies
 FROM python:${PYTHON_IMAGE} AS python-base
@@ -16,7 +19,7 @@ ENV LC_CTYPE=C.utf8 \
 WORKDIR /app
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.9.8 /uv /usr/local/bin/uv
+COPY --from=uv /uv /usr/local/bin/uv
 
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \

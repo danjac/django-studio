@@ -1,5 +1,7 @@
 name: PROJECT_SLUG:checks
 on: workflow_call
+env:
+  UV_VERSION: "0.12.6"
 jobs:
   precommit:
     runs-on: ubuntu-latest
@@ -33,7 +35,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39  # v3
         with:
-          version: "0.9.8"
+          version: ${{ env.UV_VERSION }}
           enable-cache: true
           cache-dependency-glob: |
             **/uv.lock
@@ -60,7 +62,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39  # v3
         with:
-          version: "0.9.8"
+          version: ${{ env.UV_VERSION }}
           enable-cache: true
           cache-dependency-glob: |
             **/uv.lock

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import RedirectView
 from health_check.views import HealthCheckView
 
 from {{ package_name }} import views
@@ -14,6 +15,11 @@ urlpatterns = [
     path(".well-known/security.txt", views.security, name="security"),
     path("manifest.json", views.manifest, name="manifest"),
     path(".well-known/assetlinks.json", views.assetlinks, name="assetlinks"),
+    path(
+        ".well-known/change-password",
+        RedirectView.as_view(pattern_name="account_change_password"),
+        name="well_known_change_password",
+    ),
     path("accept-cookies/", views.accept_cookies, name="accept_cookies"),
     path("i18n/", include("django.conf.urls.i18n")),
     path("", include("{{ package_name }}.users.urls")),

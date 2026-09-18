@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Email Verification") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Enter Email Verification Code") %}
     <div class="mt-6">
       <p class="mb-4 text-sm text-base-content/60">
@@ -51,4 +51,4 @@
         </details>
       {% endif %}
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

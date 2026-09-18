@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Account Connections") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
   {% include "header.html" with title=_("Account Connections") %}
   <div class="mt-6">
       {% if form.accounts %}
@@ -46,4 +46,4 @@
       {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
       {% include "socialaccount/snippets/login_extra.html" %}
   </div>
-{% endblock settings_content %}
+{% endblock account_content %}

@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Verify Your Email Address") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Verify Your Email Address") %}
     <div class="mt-6">
       {% url 'account_email' as email_url %}
@@ -17,4 +17,4 @@
         {% blocktranslate %}<strong>Note:</strong> you can still <a class="underline" href="{{ email_url }}">change your email address</a>.{% endblocktranslate %}
       </p>
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

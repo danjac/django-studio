@@ -9,7 +9,7 @@
   {% endif %}
 {% endblock title %}
 
-{% block settings_content %}
+{% block account_content %}
     {% if process == "connect" %}
       {% blocktranslate with provider=provider.name asvar title %}Connect {{ provider }}{% endblocktranslate %}
     {% else %}
@@ -32,4 +32,4 @@
         {% endfragment %}
       {% endfragment %}
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

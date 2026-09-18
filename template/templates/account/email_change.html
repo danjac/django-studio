@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Change Email") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
   {% include "header.html" with title=_("Change Email") %}
   <div class="mt-6">
       {% if current_emailaddress %}
@@ -44,4 +44,4 @@
         {% endfragment %}
       {% endfragment %}
   </div>
-{% endblock settings_content %}
+{% endblock account_content %}

@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Sign In") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Sign In with Code") %}
     <div class="mt-6">
       <p class="mb-4 text-sm text-base-content/60">
@@ -21,4 +21,4 @@
         <a href="{% url 'account_login' %}" class="underline">{% translate "Other sign-in options" %}</a>
       </p>
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

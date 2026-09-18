@@ -3,11 +3,11 @@
 
 {% block title %}{% title_tag _("Third-Party Login Failure") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Third-Party Login Failure") %}
     <div class="mt-6">
       <p class="text-sm text-base-content/60">
         {% translate "An error occurred while attempting to login via your third-party account." %}
       </p>
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

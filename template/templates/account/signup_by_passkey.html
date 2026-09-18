@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Sign Up") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Passkey Sign Up") %}
     <div class="mt-6">
       <p class="mb-4 text-sm text-base-content/60">
@@ -21,4 +21,4 @@
         <a href="{{ signup_url }}" class="underline">{% translate "Other sign-up options" %}</a>
       </p>
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

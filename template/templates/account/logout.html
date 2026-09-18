@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Sign Out") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Sign Out") %}
     <div class="mt-6">
       <p class="mb-6 text-sm text-base-content/60">
@@ -15,4 +15,4 @@
         <button type="submit" class="btn btn-primary">{% translate "Sign Out" %}</button>
       </form>
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

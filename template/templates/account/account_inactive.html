@@ -3,11 +3,11 @@
 
 {% block title %}{% title_tag _("Account Inactive") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Account Inactive") %}
     <div class="mt-6">
       <p class="text-sm text-base-content/60">
         {% translate "This account is inactive." %}
       </p>
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

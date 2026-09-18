@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Email Addresses") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
   {% include "header.html" with title=_("Email Addresses") %}
   <div class="mt-6">
       {% url 'account_email' as form_action %}
@@ -84,4 +84,4 @@
         {% endfragment %}
       {% endif %}
   </div>
-{% endblock settings_content %}
+{% endblock account_content %}

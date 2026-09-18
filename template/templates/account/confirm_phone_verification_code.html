@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Phone Verification") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
     {% include "header.html" with title=_("Enter Phone Verification Code") %}
     <div class="mt-6">
       {% if phone %}
@@ -48,4 +48,4 @@
         </div>
       {% endif %}
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Change Phone") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
   {% include "header.html" with title=_("Change Phone Number") %}
   <div class="mt-6">
       {% if phone %}
@@ -40,4 +40,4 @@
         {% endfragment %}
       {% endfragment %}
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

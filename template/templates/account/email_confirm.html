@@ -3,7 +3,7 @@
 
 {% block title %}{% title_tag _("Confirm Email Address") %}{% endblock %}
 
-{% block settings_content %}
+{% block account_content %}
   {% include "header.html" with title=_("Confirm Email Address") %}
   <div class="mt-6">
       {% if confirmation %}
@@ -37,4 +37,4 @@
         </p>
       {% endif %}
     </div>
-{% endblock settings_content %}
+{% endblock account_content %}

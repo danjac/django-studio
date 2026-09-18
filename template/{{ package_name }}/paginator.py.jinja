@@ -35,6 +35,7 @@ def render_paginated_response(
     object_list: ObjectList,
     extra_context: dict | None = None,
     config: PaginationConfig | None = None,
+    **response_kwargs,
 ) -> TemplateResponse:
     """Render a paginated template response.
 
@@ -66,4 +67,5 @@ def render_paginated_response(
         | (extra_context or {}),
         target=config.target,
         partial=config.partial,
+        **response_kwargs,
     )

@@ -10,6 +10,11 @@ changing a skill or the docs a skill relies on. It does not run in CI.
 
 Requirements: Docker, `just`, `uv`, and the `claude` CLI logged in.
 
+`just eval` keeps the machine awake for the run (`systemd-inhibit` on Linux,
+`caffeinate` on macOS). A suspend mid-run pauses the containers and the agent, and
+the runner's timeouts do not count time spent asleep, so a run would otherwise stall
+until the machine wakes. If you call `evals/run.py` directly, inhibit sleep yourself.
+
 ```bash
 just eval              # every case
 just eval 01 03        # cases whose file name starts with 01 or 03

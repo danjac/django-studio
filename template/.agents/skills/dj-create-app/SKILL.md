@@ -38,11 +38,10 @@ Create a basic Django app with the standard file structure for this project.
        name = "<package_name>.<app_name>"
    ```
 
-3. **models.py** — empty module, just `from __future__ import annotations`
+3. **models.py** — empty module
 
 4. **views.py** — typed request import only:
    ```python
-   from __future__ import annotations
    from typing import TYPE_CHECKING
 
    if TYPE_CHECKING:
@@ -51,7 +50,6 @@ Create a basic Django app with the standard file structure for this project.
 
 5. **urls.py**
    ```python
-   from __future__ import annotations
    from typing import TYPE_CHECKING
 
    if TYPE_CHECKING:
@@ -67,8 +65,8 @@ Create a basic Django app with the standard file structure for this project.
 
 8. **tests/fixtures.py** — `import pytest` stub
 
-9. **tests/test_models.py** and **tests/test_views.py** — `from __future__ import annotations`
-   (empty stubs; coverage passes because source files are also empty)
+9. **tests/test_models.py** and **tests/test_views.py** — empty stubs
+   (coverage passes because source files are also empty)
 
 10. Add to `config/settings.py` under `# Local apps`:
     ```python

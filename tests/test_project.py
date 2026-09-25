@@ -93,6 +93,16 @@ class TestProjectContent:
         assert "test_project" in content
         assert "PROJECT_SLUG" not in content
 
+    def test_no_future_annotations_import(self, project):
+        # pyupgrade --py314 strips the import, so pre-commit would rewrite the file.
+        offenders = [
+            str(path.relative_to(project))
+            for path in project.rglob("*.py")
+            if ".venv" not in path.parts
+            and "from __future__ import annotations" in path.read_text()
+        ]
+        assert not offenders, offenders
+
 
 class TestTerraformRendering:
     """Verify Terraform files are processed correctly."""

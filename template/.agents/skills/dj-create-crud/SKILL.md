@@ -41,8 +41,6 @@ Do not proceed to the CRUD steps until both are in place.
 Create `<package_name>/<app_name>/forms.py`:
 
 ```python
-from __future__ import annotations
-
 from django import forms
 
 from <package_name>.<app_name>.models import <model_name>
@@ -64,8 +62,6 @@ For numbered pagination, infinite scroll, or custom `PaginationConfig` options s
 Add to `<package_name>/<app_name>/views.py`:
 
 ```python
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from django.contrib import messages

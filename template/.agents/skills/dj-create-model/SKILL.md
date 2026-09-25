@@ -184,7 +184,6 @@ ordering: ClassVar[list[str]] = ["-created"]
 Append to `<package_name>/<app_name>/models.py`. Do not touch existing models.
 
 Conventions:
-- `from __future__ import annotations` at the top of the file
 - Use `models.TextChoices` / `models.IntegerChoices` for enums, as inner classes
 - Always define `__str__`; only reference fields on the model itself — never FK
   relations (e.g. use `self.event_id`, not `self.event`)
@@ -195,8 +194,6 @@ Conventions:
   `ClassVar` annotation needed; see `docs/python-style-guide.md`
 
 ```python
-from __future__ import annotations
-
 from django.db import models
 
 

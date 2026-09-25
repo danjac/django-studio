@@ -15,6 +15,7 @@ This project uses pytest with pytest-django for unit tests and Playwright for E2
 - [View Tests with HTMX](#view-tests-with-htmx)
 - [E2E Tests](#e2e-tests)
 - [Test Settings](#test-settings)
+- [N+1 Detection](#n1-detection)
 - [Mocking](#mocking)
 - [Coverage](#coverage)
 - [E2E Selector Rules](#e2e-selector-rules)
@@ -284,6 +285,37 @@ def _settings_overrides(settings):
     settings.ALLOWED_HOSTS = ["testserver", "localhost"]
     settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 ```
+
+## N+1 Detection
+
+[django-zeal](https://github.com/taobojlen/django-zeal) detects a relation loaded once per
+row. The pytest env (unit and E2E) sets `USE_ZEAL=true` and `ZEAL_RAISE=true`, so an N+1
+fails the test with `NPlusOneError`. `.env.example` sets only `USE_ZEAL=true`, so under
+`just serve` an N+1 logs a warning with the file and line instead of breaking the page.
+The autouse `_zeal` fixture in `my_package/tests/fixtures.py` also covers ORM code
+outside requests (model methods, tasks, management commands).
+
+Fix the query rather than silencing the error:
+
+```python
+Book.objects.select_related("author")          # ForeignKey / OneToOneField
+Book.objects.prefetch_related("tags")          # ManyToMany / reverse ForeignKey
+Book.objects.fetch_mode(models.FETCH_PEERS)    # varying relations; see docs/django-models.md
+```
+
+For a deliberate per-row lookup, ignore that one relation:
+
+```python
+from zeal import zeal_ignore
+
+with zeal_ignore([{"model": "books.Book", "field": "tags"}]):
+    ...
+```
+
+Zeal also reports a `.get()` repeated from the same line. Django and allauth do this a
+fixed number of times per request (session and email address lookups during login), so
+those are listed in `ZEAL_ALLOWLIST` in `config/settings.py`. Add an entry there only for
+a lookup inside a third-party package; fix N+1s in project code.
 
 ## Mocking
 

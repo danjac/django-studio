@@ -252,6 +252,7 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
       <button
         class="btn btn-danger"
         hx-delete="{% url '<app_name>:<model_lower>_delete' <model_lower>.pk %}"
+        hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'
         hx-confirm="This cannot be undone."
         hx-target="body"
         hx-push-url="{% url '<app_name>:<model_lower>_list' %}"

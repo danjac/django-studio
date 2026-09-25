@@ -10,6 +10,9 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Added
 
+- A placeholder favicon: the site name's initial in the PWA colours, served at
+  `/favicon.svg` and `/favicon.ico`, linked from `base.html` and listed in
+  `manifest.json`. Customise it in `templates/favicon.svg` (see `docs/design.md`).
 - `/dj-sync` shows the changelog entries since your project's template commit
   before running `copier update`.
 

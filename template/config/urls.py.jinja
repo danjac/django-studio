@@ -14,6 +14,8 @@ urlpatterns = [
     path("robots.txt", views.robots, name="robots"),
     path(".well-known/security.txt", views.security, name="security"),
     path("manifest.json", views.manifest, name="manifest"),
+    path("favicon.svg", views.favicon, name="favicon"),
+    path("favicon.ico", views.favicon),
     path(".well-known/assetlinks.json", views.assetlinks, name="assetlinks"),
     path(
         ".well-known/change-password",

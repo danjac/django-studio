@@ -19,6 +19,9 @@ _CACHE_TIMEOUT: Final = 60 * 60 * 24 * 365
 _cache_control = cache_control(max_age=_CACHE_TIMEOUT, immutable=True, public=True)
 _cache_page = cache_page(_CACHE_TIMEOUT)
 
+# The favicon is meant to be replaced, so cache it for a day rather than a year.
+_FAVICON_CACHE_TIMEOUT: Final = 60 * 60 * 24
+
 
 @require_safe
 def index(request: HttpRequest) -> TemplateResponse:
@@ -114,7 +117,28 @@ def manifest(request: HttpRequest) -> JsonResponse:
             "short_name": request.site.name[:12],
             "start_url": reverse("index"),
             "theme_color": pwa["theme_color"],
+            "icons": [
+                {"src": reverse("favicon"), "sizes": "any", "type": "image/svg+xml"},
+            ],
         }
+    )
+
+
+@require_safe
+@cache_control(max_age=_FAVICON_CACHE_TIMEOUT, public=True)
+@cache_page(_FAVICON_CACHE_TIMEOUT)
+def favicon(request: HttpRequest) -> TemplateResponse:
+    """Serve the SVG favicon: the site name's initial in the PWA colours."""
+    pwa = settings.PWA_CONFIG
+    return TemplateResponse(
+        request,
+        "favicon.svg",
+        {
+            "background_color": pwa["background_color"],
+            "initial": request.site.name[:1].upper(),
+            "theme_color": pwa["theme_color"],
+        },
+        content_type="image/svg+xml",
     )
 
 

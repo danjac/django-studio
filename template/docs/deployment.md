@@ -311,6 +311,9 @@ Set the upgrade flags in `helm/site/values.yaml` before running `just helm site`
 ```yaml
 pgUpgrade:
   enabled: true
-  newImage: postgres:17
+  newImage: postgres:<new-major>-bookworm
   newVolumePath: /mnt/HC_Volume_<new-volume-id>
 ```
+
+Once the upgrade has completed, bump every PostgreSQL pin listed in
+[Version Pins](conventions.md#version-pins) to the new major version.

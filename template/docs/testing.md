@@ -289,9 +289,10 @@ def _settings_overrides(settings):
 ## N+1 Detection
 
 [django-zeal](https://github.com/taobojlen/django-zeal) detects a relation loaded once per
-row. The pytest env (unit and E2E) sets `USE_ZEAL=true` and `ZEAL_RAISE=true`, so an N+1
-fails the test with `NPlusOneError`. `.env.example` sets only `USE_ZEAL=true`, so under
-`just serve` an N+1 logs a warning with the file and line instead of breaking the page.
+row. The unit test env in `pyproject.toml` sets `USE_ZEAL=true` and `ZEAL_RAISE=true`, so
+an N+1 fails the test with `NPlusOneError`. E2E tests (`playwright.ini`) run with
+`USE_ZEAL=false`. `.env.example` sets only `USE_ZEAL=true`, so under `just serve` an N+1
+logs a warning with the file and line instead of breaking the page.
 The autouse `_zeal` fixture in `my_package/tests/fixtures.py` also covers ORM code
 outside requests (model methods, tasks, management commands).
 

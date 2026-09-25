@@ -92,6 +92,20 @@ ADVISORY: [settings] SECRET_KEY uses a django-insecure-* default — ensure
 Only flag as CRITICAL if `SECRET_KEY` is hardcoded to a real secret with no env
 override mechanism at all.
 
+**Note on `DATABASE_URL` with a local default:** A pattern like
+`env.dj_db_url("DATABASE_URL", default="postgresql://postgres:password@127.0.0.1:5432/postgres")`
+is **not CRITICAL**. The default only reaches a local database with a
+development placeholder password, and production sets `DATABASE_URL` from the
+environment. Treat it as **ADVISORY**:
+
+```
+ADVISORY: [settings] DATABASE_URL defaults to a local database with a
+  placeholder password — ensure production sets DATABASE_URL via the environment
+```
+
+Only flag as CRITICAL if the default points at a non-local host, contains a
+real credential, or the database password is hardcoded with no env override.
+
 ---
 
 ### 2. View security
@@ -312,6 +326,9 @@ CRITICAL, MEDIUM → WARNING, LOW → ADVISORY).
 ---
 
 ### Report format
+
+Cite code findings as `file:function`. Add a line number only if you read it
+from the file; never estimate one.
 
 ```
 CRITICAL:

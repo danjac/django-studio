@@ -33,3 +33,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Evals
+evals/logs/

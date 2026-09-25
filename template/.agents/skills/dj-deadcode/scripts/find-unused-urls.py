@@ -40,7 +40,9 @@ for pattern in ("**/*.html", "**/*.py"):
         for ref in re.findall(r"""\{%[-\s]*url\s+['"]([^'"]+)['"]""", content):
             referenced.add(ref.rsplit(":", 1)[-1])
         # reverse and redirect calls
-        for ref in re.findall(r"""(?:reverse|redirect)\s*\(\s*['"]([^'"]+)['"]""", content):
+        for ref in re.findall(
+            r"""(?:reverse|redirect)\s*\(\s*['"]([^'"]+)['"]""", content
+        ):
             referenced.add(ref.rsplit(":", 1)[-1])
 
 # Report unreferenced

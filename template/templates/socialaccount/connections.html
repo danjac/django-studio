@@ -6,44 +6,44 @@
 {% block account_content %}
   {% include "header.html" with title=_("Account Connections") %}
   <div class="mt-6">
-      {% if form.accounts %}
-        <p class="mb-4 text-sm text-base-content/60">
-          {% translate "You can sign in to your account using any of the following third-party accounts:" %}
-        </p>
-        {% url 'socialaccount_connections' as form_action %}
-        {% fragment "form.html" action=form_action %}
-          <div class="space-y-2">
-            {% for account_choice in form.fields.account.choices %}
-              {% with account=account_choice.0.instance.get_provider_account %}
-                <div class="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    name="account"
-                    value="{{ account.account.pk }}"
-                    id="id_account_{{ account.account.pk }}"
-                    class="w-4 h-4 accent-primary"
-                  />
-                  <label
-                    for="id_account_{{ account.account.pk }}"
-                    class="text-sm text-base-content/70"
-                  >{{ account }}</label>
-                </div>
-              {% endwith %}
-            {% endfor %}
-          </div>
-          {% fragment "form.html#buttons" %}
-            <button type="submit" class="btn btn-error">{% translate "Remove" %}</button>
-          {% endfragment %}
+    {% if form.accounts %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% translate "You can sign in to your account using any of the following third-party accounts:" %}
+      </p>
+      {% url 'socialaccount_connections' as form_action %}
+      {% fragment "form.html" action=form_action %}
+        <div class="space-y-2">
+          {% for account_choice in form.fields.account.choices %}
+            {% with account=account_choice.0.instance.get_provider_account %}
+              <div class="flex items-center space-x-3">
+                <input
+                  type="radio"
+                  name="account"
+                  value="{{ account.account.pk }}"
+                  id="id_account_{{ account.account.pk }}"
+                  class="w-4 h-4 accent-primary"
+                />
+                <label
+                  for="id_account_{{ account.account.pk }}"
+                  class="text-sm text-base-content/70"
+                >{{ account }}</label>
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+        {% fragment "form.html#buttons" %}
+          <button type="submit" class="btn btn-error">{% translate "Remove" %}</button>
         {% endfragment %}
-      {% else %}
-        <p class="mb-6 text-sm text-base-content/60">
-          {% translate "You currently have no third-party accounts connected to this account." %}
-        </p>
-      {% endif %}
-      <h2 class="mt-8 mb-4 text-xl font-semibold text-base-content">
-        {% translate "Add a Third-Party Account" %}
-      </h2>
-      {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
-      {% include "socialaccount/snippets/login_extra.html" %}
+      {% endfragment %}
+    {% else %}
+      <p class="mb-6 text-sm text-base-content/60">
+        {% translate "You currently have no third-party accounts connected to this account." %}
+      </p>
+    {% endif %}
+    <h2 class="mt-8 mb-4 text-xl font-semibold text-base-content">
+      {% translate "Add a Third-Party Account" %}
+    </h2>
+    {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
+    {% include "socialaccount/snippets/login_extra.html" %}
   </div>
 {% endblock account_content %}

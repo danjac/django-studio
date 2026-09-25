@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 def render_partial_response(
-    request: "HttpRequest",
+    request: HttpRequest,
     template_name: str,
     context: dict | None = None,
     *,

@@ -80,7 +80,7 @@
 
 {# Checkbox #}
 {% partialdef checkboxinput %}
-  <label class="label cursor-pointer gap-3">
+  <label class="gap-3 cursor-pointer label">
     {% render_field field class="checkbox" %}
     <span class="label-text{% if field.errors %} text-error{% endif %}">
       {{ field.label }}
@@ -106,11 +106,11 @@
       type="button"
       x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';"
       aria-label="{% translate "Toggle password visibility" %}"
-      class="absolute inset-y-0 right-0 flex items-center justify-center px-3"
+      class="flex absolute inset-y-0 right-0 justify-center items-center px-3"
       tabindex="-1"
     >
-      {% heroicon_mini "eye" class="size-5 opacity-50" x_show="show" %}
-      {% heroicon_mini "eye-slash" class="size-5 opacity-50" x_show="!show" %}
+      {% heroicon_mini "eye" class="opacity-50 size-5" x_show="show" %}
+      {% heroicon_mini "eye-slash" class="opacity-50 size-5" x_show="!show" %}
     </button>
   </div>
 {% endpartialdef passwordinput %}

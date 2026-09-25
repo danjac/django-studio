@@ -14,24 +14,8 @@ class TestRenderedPreCommitChecks:
         # — unreliable in a test context (network, disk quota). All other hooks
         # including terraform_fmt and helm-lint are exercised here.
         env = {"SKIP": "terraform_validate"}
-        # Run twice to let auto-fixers (pyupgrade, ruff-format, etc.) reach idempotency
-        for _ in range(2):
-            subprocess.run(
-                [
-                    "uv",
-                    "run",
-                    "--with",
-                    "pre-commit-uv",
-                    "pre-commit",
-                    "run",
-                    "--all-files",
-                ],
-                cwd=str(project_with_deps),
-                capture_output=True,
-                text=True,
-                env={**os.environ, **env},
-            )
-        # Third run must be fully clean
+        # The first run must be clean: template sources are already formatted,
+        # so no auto-fixer (pyupgrade, ruff-format, djhtml, etc.) may modify a file.
         result = subprocess.run(
             [
                 "uv",
@@ -48,7 +32,7 @@ class TestRenderedPreCommitChecks:
             env={**os.environ, **env},
         )
         assert result.returncode == 0, (
-            f"pre-commit failed after auto-fix passes:\n{result.stdout}\n{result.stderr}"
+            f"pre-commit failed on the first run:\n{result.stdout}\n{result.stderr}"
         )
 
 

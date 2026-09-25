@@ -8,7 +8,7 @@
       {{ label }}
     </a>
   </li>
-{% endpartialdef %}
+{% endpartialdef menu_item %}
 
 {% partialdef menu_items %}
   {% with active_class="menu-active" %}
@@ -37,7 +37,7 @@
       {% partial menu_item %}
     {% endwith %}
   {% endwith %}
-{% endpartialdef %}
+{% endpartialdef menu_items %}
 
 {% block content %}
   {% if user.is_authenticated %}
@@ -45,7 +45,7 @@
     <div class="mb-6 lg:hidden" x-data="{ open: false }">
       <button
         type="button"
-        class="btn btn-ghost w-full justify-between"
+        class="justify-between w-full btn btn-ghost"
         @click="open = !open"
         :aria-expanded="open"
       >
@@ -54,7 +54,7 @@
         {% heroicon_mini "chevron-down" class="ml-auto size-4 shrink-0" aria_hidden="true" %}
       </button>
       <ul
-        class="menu mt-1 w-full rounded-lg border border-base-200 bg-base-100"
+        class="mt-1 w-full rounded-lg border menu border-base-200 bg-base-100"
         x-show="open"
         x-cloak
         x-transition
@@ -80,7 +80,7 @@
   {% endblock account_content %}
 
   {% if user.is_authenticated %}
-      </div>
+    </div>
     </div>
   {% else %}
     </div>

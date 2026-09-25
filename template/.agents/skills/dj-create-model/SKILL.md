@@ -23,7 +23,8 @@ proceed to the next. Do not bundle questions together.
 
 #### 1a — Primary key
 
-Read `DEFAULT_AUTO_FIELD` from the project's `settings.py`. Also check
+Read `DEFAULT_AUTO_FIELD` from the project's `settings.py`; if it is not set,
+the default is `django.db.models.BigAutoField` (Django 6). Also check
 `<package_name>/<app_name>/apps.py` for a `default_auto_field` override — the
 app-level setting takes precedence.
 

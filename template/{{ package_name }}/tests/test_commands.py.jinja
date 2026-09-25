@@ -190,7 +190,9 @@ class TestSyncVendors:
             "{{ package_name }}.management.commands.sync_vendors.Command._latest_github_version",
             return_value="2.0.8",
         )
-        mocker.patch("{{ package_name }}.management.commands.sync_vendors.Command._download_file")
+        mocker.patch(
+            "{{ package_name }}.management.commands.sync_vendors.Command._download_file",
+        )
         call_command("sync_vendors", "--no-input")
         updated = json.loads(vendors_path.read_text())
         assert updated["htmx"]["version"] == "2.0.8"
@@ -310,7 +312,9 @@ class TestSyncVendors:
         call_command("sync_vendors", "--check")
         assert "1.0.0 -> 2.0.0" in capsys.readouterr().out
 
-    def test_releases_api_404_falls_back_to_tags(self, tmp_path, settings, capsys, mocker):
+    def test_releases_api_404_falls_back_to_tags(
+        self, tmp_path, settings, capsys, mocker
+    ):
         """404 from /releases/latest falls back to /tags to resolve version."""
         path = tmp_path / "vendors.json"
         path.write_text(
@@ -477,7 +481,9 @@ class TestSyncVendors:
             return_value=_make_get_cm(mocker, body=b"fake content"),
         )
         call_command("sync_vendors", "--no-input")
-        assert (tmp_path / "static" / "vendor" / "htmx.js").read_bytes() == b"fake content"
+        assert (
+            tmp_path / "static" / "vendor" / "htmx.js"
+        ).read_bytes() == b"fake content"
         assert (tmp_path / "tailwind" / "daisyui.mjs").read_bytes() == b"fake content"
 
     def test_download_http_error_raises_command_error(self, vendors_path, mocker):

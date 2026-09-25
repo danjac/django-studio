@@ -136,11 +136,15 @@ class TestReActiveUrl:
         assert result.css_class == "menu-active"
 
     def test_active_on_second_pattern_match(self):
-        result = re_active_url(_nav_context(path="/account/password/set/"), "password/(change|set)")
+        result = re_active_url(
+            _nav_context(path="/account/password/set/"), "password/(change|set)"
+        )
         assert result.is_active is True
 
     def test_inactive_when_no_match(self):
-        result = re_active_url(_nav_context(path="/account/email/"), "password/(change|set)")
+        result = re_active_url(
+            _nav_context(path="/account/email/"), "password/(change|set)"
+        )
         assert result.is_active is False
         assert result.css_class == ""
 

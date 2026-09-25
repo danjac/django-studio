@@ -4,48 +4,48 @@
 {% block title %}{% title_tag _("Phone Verification") %}{% endblock %}
 
 {% block account_content %}
-    {% include "header.html" with title=_("Enter Phone Verification Code") %}
-    <div class="mt-6">
-      {% if phone %}
-        <p class="mb-4 text-sm text-base-content/60">
-          {% blocktranslate %}We sent a verification code to <strong>{{ phone }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
-        </p>
-      {% endif %}
-      {% url 'account_verify_phone' as form_action %}
-      {% fragment "form.html" action=form_action %}
-        {{ verify_form }}
+  {% include "header.html" with title=_("Enter Phone Verification Code") %}
+  <div class="mt-6">
+    {% if phone %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% blocktranslate %}We sent a verification code to <strong>{{ phone }}</strong>. The code expires shortly — enter it below.{% endblocktranslate %}
+      </p>
+    {% endif %}
+    {% url 'account_verify_phone' as form_action %}
+    {% fragment "form.html" action=form_action %}
+      {{ verify_form }}
+      {{ redirect_field }}
+      <div class="flex flex-wrap gap-3">
+        <button type="submit" class="btn btn-primary">{% translate "Verify" %}</button>
+        {% if can_resend %}
+          <button type="submit" form="resend-form" class="btn btn-secondary">
+            {% translate "Request new code" %}
+          </button>
+        {% endif %}
+      </div>
+    {% endfragment %}
+    {% if can_resend %}
+      <form id="resend-form" method="post" action="{% url 'account_verify_phone' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="resend" />
         {{ redirect_field }}
-        <div class="flex flex-wrap gap-3">
-          <button type="submit" class="btn btn-primary">{% translate "Verify" %}</button>
-          {% if can_resend %}
-            <button type="submit" form="resend-form" class="btn btn-secondary">
-              {% translate "Request new code" %}
-            </button>
-          {% endif %}
-        </div>
-      {% endfragment %}
-      {% if can_resend %}
-        <form id="resend-form" method="post" action="{% url 'account_verify_phone' %}">
-          {% csrf_token %}
-          <input type="hidden" name="action" value="resend" />
+      </form>
+    {% endif %}
+    {% if change_form %}
+      <div class="mt-8">
+        <h2 class="mb-4 text-lg font-semibold text-base-content">
+          {% translate "Use a different phone number" %}
+        </h2>
+        {% fragment "form.html" action=form_action %}
+          {{ change_form }}
           {{ redirect_field }}
-        </form>
-      {% endif %}
-      {% if change_form %}
-        <div class="mt-8">
-          <h2 class="mb-4 text-lg font-semibold text-base-content">
-            {% translate "Use a different phone number" %}
-          </h2>
-          {% fragment "form.html" action=form_action %}
-            {{ change_form }}
-            {{ redirect_field }}
-            {% fragment "form.html#buttons" %}
-              <button type="submit" name="action" value="change" class="btn btn-secondary">
-                {% translate "Change" %}
-              </button>
-            {% endfragment %}
+          {% fragment "form.html#buttons" %}
+            <button type="submit" name="action" value="change" class="btn btn-secondary">
+              {% translate "Change" %}
+            </button>
           {% endfragment %}
-        </div>
-      {% endif %}
-    </div>
+        {% endfragment %}
+      </div>
+    {% endif %}
+  </div>
 {% endblock account_content %}

@@ -2,8 +2,6 @@
 # ruff: noqa: T201
 """Look up help for skills in .agents/skills/."""
 
-from __future__ import annotations
-
 import sys
 from pathlib import Path
 

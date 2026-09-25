@@ -80,8 +80,6 @@ Create `<package_name>/<app_name>/management/commands/<command_name>.py`.
 **Command that does work inline** (short, low-risk, no retry needed):
 
 ```python
-from __future__ import annotations
-
 from django.core.management import BaseCommand
 
 
@@ -96,8 +94,6 @@ class Command(BaseCommand):
 **Command that enqueues tasks** (long-running or parallel):
 
 ```python
-from __future__ import annotations
-
 from django.core.management import BaseCommand
 
 from <package_name>.<app_name> import tasks
@@ -126,8 +122,6 @@ Create or append to `<package_name>/<app_name>/tests/test_commands.py`.
 **Inline command** (assert side effects):
 
 ```python
-from __future__ import annotations
-
 import pytest
 from django.core.management import call_command
 
@@ -142,8 +136,6 @@ def test_<command_name>() -> None:
 already active — task runs synchronously, so assert its effects):
 
 ```python
-from __future__ import annotations
-
 import pytest
 from django.core.management import call_command
 

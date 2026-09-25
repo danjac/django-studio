@@ -99,7 +99,7 @@ repos:
 
   # Lockfile: fails when uv.lock is out of date with pyproject.toml
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: "0.12.6"
+    rev: <uv version>  # must match UV_VERSION; see docs/conventions.md#version-pins
     hooks:
       - id: uv-lock
 

@@ -35,31 +35,9 @@ just serve
 
 ## Docker Compose Services
 
-```yaml
-# docker-compose.yml
-services:
-  postgres:
-    image: postgres:18.1-bookworm
-    environment:
-      POSTGRES_PASSWORD: password
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-
-  redis:
-    image: redis:8.2.2-bookworm
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-
-  mailpit:
-    image: axllent/mailpit:v1.27
-    ports:
-      - "${MAILPIT_WEB_PORT:-8025}:8025"  # Web UI
-      - "${MAILPIT_SMTP_PORT:-1025}:1025"  # SMTP
-```
+`docker-compose.yml` runs three services: `postgres`, `redis` and `mailpit` (web UI on
+8025, SMTP on 1025). Image versions, service names and default ports are listed in
+[Conventions](conventions.md). `docker-compose.yml` holds the exact image tags.
 
 ## Running Several Checkouts
 

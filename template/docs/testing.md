@@ -24,32 +24,10 @@ This project uses pytest with pytest-django for unit tests and Playwright for E2
 
 ## Test Configuration
 
-```ini
-# playwright.ini (for E2E tests)
-[pytest]
-DJANGO_SETTINGS_MODULE = config.settings
-asyncio_mode = auto
-addopts = -v -x --tb=short -p no:warnings --browser chromium -m e2e
-testpaths = my_package
-env =
-    DJANGO_ALLOW_ASYNC_UNSAFE=true
-    USE_CONNECTION_POOL=false
-    USE_COLLECTSTATIC=false
-    USE_HTTPS=false
-    USE_X_FORWARDED_HOST=false
-```
-
-```python
-# pyproject.toml
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings"
-asyncio_mode = "auto"
-addopts = [
-    "-v", "-x", "-p no:warnings", "--ff",
-    "--cov", "--reuse-db", "--cov-fail-under=100",
-]
-markers = ["e2e: end-to-end browser tests with Playwright"]
-```
+Unit tests are configured under `[tool.pytest.ini_options]` in `pyproject.toml`. E2E tests
+use `playwright.ini`. Both use `config.settings`, and there is no separate test settings
+module. See [Test Settings](conventions.md#test-settings) for how each run is selected
+and which environment overrides E2E tests apply.
 
 ## Running Tests
 

@@ -32,13 +32,13 @@ failure output, wait for confirmation, then fix.
 
 ## Stack
 
-- **Python 3.14**, **Django 6.1**, **PostgreSQL 18**, **Redis 8**
+- **Python**, **Django**, **PostgreSQL**, **Redis** (versions: see the files listed in `docs/conventions.md#version-pins`)
 - **Frontend**: HTMX + AlpineJS + Tailwind CSS (no JS build step; Tailwind compiled via `django-tailwind-cli`)
 - **Package manager**: `uv` (not pip/poetry)
 - **Task runner**: `just` (run `just` with no arguments to list all commands)
 - **Background tasks**: Django Tasks (`django-tasks-db`), not Celery
 
-**NOTE**: Python 3.14 and Django 6.1 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
+**NOTE**: This project may use Python and Django releases newer than your training data. Check `pyproject.toml` for the versions in use, and do not flag their syntax or features as errors based on knowledge cutoff assumptions.
 
 
 ## Project Layout
@@ -147,6 +147,11 @@ user's stated facts.
 installed apps, middleware order, settings conventions, admin patterns, and
 migrations. It also indexes the focused docs below.
 
+**Read `docs/conventions.md` before changing anything shared across files** —
+version pins, environment variables, Redis databases, service names, or test settings.
+It lists which files must change together. If another doc disagrees with it,
+`docs/conventions.md` wins.
+
 **Read `docs/this-project.md` and the `README.md` of any app you are changing.**
 They describe this project's domain, business rules, APIs and integrations — the
 context the generic docs below cannot give. If they contradict the code or are still
@@ -192,6 +197,7 @@ actively, not as background reading.
 | Custom template tag or filter   | `docs/django-templates.md` |
 | Sending email (transactional / dev) | `docs/sending-emails.md` |
 | Testing patterns                | `docs/testing.md` |
+| Bumping a version, adding an env var, Redis DB or service | `docs/conventions.md` |
 | Any of the above                | `docs/project-structure.md` |
 | MCP servers (postgres, django shell, Playwright, k8s) | `docs/mcp.md` |
 

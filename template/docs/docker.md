@@ -17,10 +17,13 @@ The build uses four stages:
 
 | Stage | Base | Purpose |
 |-------|------|---------|
-| `python-base` | `python:3.14-slim-bookworm` | Install Python deps via uv |
+| `python-base` | `python:${PYTHON_IMAGE}` | Install Python deps via uv |
 | `messages` | `python-base` | Install `gettext`, run `compilemessages` |
 | `staticfiles` | `python-base` | Build Tailwind CSS, run `collectstatic` |
-| `webapp` | `python:3.14-slim-bookworm` | Final minimal image |
+| `webapp` | `python:${PYTHON_IMAGE}` | Final minimal image |
+
+`PYTHON_IMAGE` is set by `ARG PYTHON_IMAGE` at the top of the `Dockerfile`. See
+[Version Pins](conventions.md#version-pins) for the other files to change with it.
 
 The final image copies compiled artefacts from all three build stages:
 
@@ -42,23 +45,22 @@ COPY --from=messages     --chown=django:django /app/locale      /app/locale
 ### UV for Dependencies
 
 ```dockerfile
-ARG UV_VERSION=0.12.6
+ARG UV_VERSION=<version>
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 ...
 COPY --from=uv /uv /usr/local/bin/uv
 ```
 
-Bump `UV_VERSION` at the top of the `Dockerfile` to upgrade uv. `COPY --from` does not
-expand build args, so the uv image is pulled in as a named stage. CI pins the same version
-via `UV_VERSION` in `.github/workflows/checks.yml`, and the `uv-lock` pre-commit hook pins
-the matching `astral-sh/uv-pre-commit` tag in `.pre-commit-config.yaml` — keep all three in sync.
+`COPY --from` does not expand build args, so the uv image is pulled in as a named stage.
+To upgrade uv, bump `UV_VERSION` and the other files listed in
+[Version Pins](conventions.md#version-pins).
 
 All dep installs use `--mount=type=cache,target=/root/.cache/uv` for layer caching.
 
 ### PostgreSQL Client
 
-The `webapp` stage installs `postgresql-client-${POSTGRES_MAJOR}` from the official PGDG apt repo, version-matched to the production database (default: 18). This enables `manage.py dbshell` inside the container.
+The `webapp` stage installs `postgresql-client-${POSTGRES_MAJOR}` from the official PGDG apt repo, version-matched to the production database via `ARG POSTGRES_MAJOR` (see [Version Pins](conventions.md#version-pins)). This enables `manage.py dbshell` inside the container.
 
 ### Security
 

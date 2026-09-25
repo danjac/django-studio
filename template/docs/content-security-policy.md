@@ -149,7 +149,7 @@ There are two choices:
 - **Stop using the eval features:** no `hx-on:*`, no trigger filters, no `js:`
   values. Handle htmx events with Alpine listeners
   (`@htmx:after:swap="..."`) or code in a registered component. Nothing else
-  changes. Practical only if a project genuinely does not need them.
+  changes. Practical only if a project does not need them.
 - **Use htmx's `hx-csp` extension** with `safeEval`, which runs those
   expressions through nonced `<script>` injection instead of `Function`. It
   ships in the `htmx.org` package.

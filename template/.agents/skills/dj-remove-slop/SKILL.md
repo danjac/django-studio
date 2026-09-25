@@ -16,7 +16,7 @@ making any changes. Wait for user confirmation before touching anything.
 
 A `# noqa` comment on a line means the developer silenced a tool rather than
 fixing the code. The only accepted exception is a genuine circular import at
-module load time that truly cannot be resolved by restructuring — and even
+module load time that cannot be resolved by restructuring — and even
 then a comment explaining the circular dependency is mandatory.
 
 Common offenders:
@@ -35,10 +35,10 @@ rg "# noqa" --type py
 For each hit:
 
 1. Identify the suppressed rule(s).
-2. Determine whether the suppression is genuinely justified (unavoidable
+2. Determine whether the suppression is justified (unavoidable
    circular import with an explanatory comment — rare).
 3. Flag everything that is not justified. For inline imports (`PLC0415`),
-   determine whether a circular import genuinely prevents moving it to the
+   determine whether a circular import prevents moving it to the
    top of the file. If not, it must be moved.
 
 ---
@@ -127,7 +127,7 @@ which ones should be included explicitly.
 `Meta.ordering` silently appends `ORDER BY` to **every** queryset for the
 model — including `COUNT`, `EXISTS`, and subqueries that don't need it. This
 degrades performance, makes query plans harder to read, and hides the sort
-intent at the query site where it actually matters.
+intent at the query site where it matters.
 
 ```bash
 rg "^\s+ordering\s*=" --type py
@@ -143,7 +143,7 @@ For each hit inside a `Meta` class:
 
 **Exception:** through-model intermediary tables with a natural sort key
 (e.g. `position` on a drag-and-drop ordering model) *may* keep `ordering`
-if the sort is truly universal — flag these as **advisory** rather than
+if the sort is universal — flag these as **advisory** rather than
 **required** and let the user decide.
 
 ---

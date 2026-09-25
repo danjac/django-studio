@@ -132,7 +132,7 @@ Flag as **WARNING** any view that:
   project is **secure by default**: every view requires authentication unless
   it explicitly opts out with `@login_not_required`. In this case, do not flag
   missing `@login_required` decorators — the middleware covers them. Instead,
-  audit `@login_not_required` views: verify each one is genuinely intended to
+  audit `@login_not_required` views: verify each one is intended to
   be public (login page, signup, public landing pages, etc.).
 
 - If `LoginRequiredMiddleware` is **not** present, audit each view individually.

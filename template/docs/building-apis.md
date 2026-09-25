@@ -838,7 +838,7 @@ Always cover, per endpoint:
 
 ## Checklist
 
-- [ ] Endpoint is genuinely needed — HTMX partial would not do.
+- [ ] Endpoint is needed — HTMX partial would not do.
 - [ ] Routes under `/api/v1/`, separate `app_name`.
 - [ ] Input schema with `extra="forbid"`; separate output schema.
 - [ ] `require_http_methods` + auth decorator + `api`.

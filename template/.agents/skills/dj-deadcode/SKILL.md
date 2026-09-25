@@ -116,7 +116,7 @@ uvx deptry .
 ```
 
 Flag any package reported as unused. Cross-check against `config/settings.py`
-`INSTALLED_APPS` and any `TYPE_CHECKING` imports before confirming it is truly
+`INSTALLED_APPS` and any `TYPE_CHECKING` imports before confirming it is
 unused.
 
 ---

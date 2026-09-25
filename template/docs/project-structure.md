@@ -147,7 +147,7 @@ model. See "Module Naming" in `docs/python-style-guide.md`.
   naturally depend on a `products` app, and many apps will have a `ForeignKey` to
   `users.User`. Keep those dependencies one-directional: `cart` imports from `products`, but
   `products` should not import from `cart`. Generic helpers that aren't domain logic belong in the outer app.
-- **Domain apps are easy to add or remove.** A new domain is a new inner app; nothing in the
+- **Adding or removing a domain app is local.** A new domain is a new inner app; nothing in the
   outer layer needs to change beyond URL and `INSTALLED_APPS` wiring.
 
 ### Management commands
@@ -269,5 +269,5 @@ Rules of thumb:
   URLs) into modules, but keep those modules together in the package that owns the
   feature.
 - **Cross-cutting infrastructure is the exception.** Middleware, settings, auth
-  backends, and shared API plumbing are genuinely used everywhere and belong in
+  backends, and shared API plumbing are used everywhere and belong in
   shared locations.

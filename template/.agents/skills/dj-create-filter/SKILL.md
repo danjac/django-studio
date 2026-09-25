@@ -94,7 +94,7 @@ is ambiguous, clarify:
    - Root: `<package_name>/tests/test_template_tags.py`
 
    Import and call the filter function directly — do not instantiate `Template`/`Context`
-   unless the test genuinely requires full template rendering:
+   unless the test requires full template rendering:
    ```python
    from <package_name>.<app_name>.templatetags.<app_name> import <filter_name>
 

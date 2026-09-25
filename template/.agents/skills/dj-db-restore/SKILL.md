@@ -56,7 +56,7 @@ Wait for the user to confirm their selection.
 
 ## Step 3 — Confirm restore
 
-Warn the user clearly before proceeding:
+Warn the user before proceeding:
 
 > ⚠️ This will restore the database to `<selected-filename>`.
 > The current database will be overwritten. A safety backup will be taken first.

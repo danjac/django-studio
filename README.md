@@ -23,7 +23,7 @@ and small SaaS applications. It encodes one person's proven defaults (stack choi
 hosting provider, deployment topology) rather than aiming to be a general-purpose
 starter kit.
 
-This project is intended for experienced developers who are comfortable with the stack choices and general web development concepts. It is not a tutorial or learning resource for beginners, but rather a practical tool to jumpstart new projects with a solid foundation.
+This project is intended for experienced developers who are comfortable with the stack choices and general web development concepts. It gives new projects a working foundation and assumes you already know the stack.
 
 This project provides AI-related features for those who wish to use LLMs as part of their workflow, but this is not a requirement and the project can be used without these features. You should always be comfortable taking the wheel and reviewing and modifying the code by hand as needed.
 
@@ -90,9 +90,9 @@ The generated `README.md` will include instructions to get started with developm
 - [Hetzner Cloud](https://hetzner.com) for hosting (K3s) and object storage
 - Full test coverage ([pytest](https://docs.pytest.org/en/stable/) + [Playwright](https://playwright.dev/python/))
 
-The focus of this project is a simple and robust foundation for both user and developer experience. Django is a tried and tested framework with a strong emphasis on convention and best practices, making it an ideal choice for the backend. For the frontend, HTMX and Alpine.js provide a powerful combination for building dynamic interfaces without the complexity of a full JavaScript framework, while Tailwind CSS offers a utility-first approach to styling that promotes consistency and rapid development.
+The goal is a simple foundation, both for the people using the app and for the developers building it. Django is a tried and tested framework with a strong emphasis on convention and best practices, making it an ideal choice for the backend. For the frontend, HTMX and Alpine.js provide a powerful combination for building dynamic interfaces without the complexity of a full JavaScript framework, while Tailwind CSS offers a utility-first approach to styling that promotes consistency and rapid development.
 
-A guiding principle throughout is [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/): the behaviour of a piece of code should be obvious from looking at that code. HTMX, Alpine.js and Tailwind all put behaviour and styling directly on the element, and the generated project applies the same idea to its Python code - tests live beside the modules they test, feature code (such as an app's API or webhooks) lives in the app that owns it, and shared abstractions are extracted only once they are genuinely shared. See [`template/docs/project-structure.md`](template/docs/project-structure.md#locality-of-behaviour) for details.
+A guiding principle throughout is [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/): the behaviour of a piece of code should be obvious from looking at that code. HTMX, Alpine.js and Tailwind all put behaviour and styling directly on the element, and the generated project applies the same idea to its Python code - tests live beside the modules they test, feature code (such as an app's API or webhooks) lives in the app that owns it, and shared abstractions are extracted only once more than one app uses them. See [`template/docs/project-structure.md`](template/docs/project-structure.md#locality-of-behaviour) for details.
 
 Further reading:
 
@@ -197,7 +197,7 @@ See `docs/mcp.md` in the generated project for usage and security notes.
 
 ## Hosting
 
-[Hetzner Cloud](https://hetzner.com) is a very cost-effective, EU-based hosting provider. Cloudflare is currently the cheapest and most secure option for DNS, CDN, SSL, and DDoS protection. These solutions will be reviewed on a regular basis - if better options become available, they will be offered instead of or addition to these choices.
+[Hetzner Cloud](https://hetzner.com) is a cost-effective, EU-based hosting provider. Cloudflare is currently the cheapest and most secure option for DNS, CDN, SSL, and DDoS protection. These solutions will be reviewed on a regular basis - if better options become available, they will be offered instead of or addition to these choices.
 
 The point is that hosting is **low and fixed**. You pay per server, not per request, so the bill is the same whether the app is idle or busy - no egress charges, no per-request fees, no autoscaling that runs away. The default single-node topology is the cheapest option, and each role you split onto its own node adds exactly one server to the bill. See [Hetzner's pricing](https://www.hetzner.com/cloud/) for current rates.
 

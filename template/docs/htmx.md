@@ -1,6 +1,6 @@
 # HTMX
 
-HTMX provides dynamic page behavior without writing JavaScript. This project uses `django-htmx` for seamless integration.
+HTMX provides dynamic page behavior without writing JavaScript. This project uses `django-htmx` for request helpers and response classes.
 
 HTMX applies [Locality of Behaviour](project-structure.md#locality-of-behaviour) to
 markup: an element's `hx-*` attributes say what it does, so a reader does not have to
@@ -47,7 +47,7 @@ In htmx 2 every attribute was inherited by descendants implicitly. In htmx 4 inh
 </div>
 ```
 
-Only add `:inherited` where descendants actually rely on the value — an element that issues its own request and declares its own `hx-target` needs nothing.
+Only add `:inherited` where descendants rely on the value — an element that issues its own request and declares its own `hx-target` needs nothing.
 
 ## CSRF
 

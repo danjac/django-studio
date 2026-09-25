@@ -158,6 +158,23 @@ a cached `/tmp/my_app` hides.
 
 **Jinja2 processing:** Only files with a `.jinja` suffix are processed by Copier's Jinja2 engine; all other files are copied verbatim. Files that contain conflicting `{{ }}` syntax (e.g. `justfile` uses `{{ args }}`, GitHub Actions workflows use `${{ }}`) must remain plain files and use `PROJECT_SLUG` as a plain-text placeholder, substituted by the hook.
 
+## Writing Docs and Skills
+
+Agents copy `template/docs/` and skill files closely, so their wording ends up in
+generated code and agent behaviour. When writing or editing them:
+
+- **Show the correct example, and drop the matching "don't" line.** A `Wrong` block
+  earns its place only when the mistake is common and the correct example alone
+  doesn't prevent it.
+- **Give one reason, not a list of alternatives.** State the rule and why it holds.
+- **Describe the current path only.** History and migration notes go in
+  `CHANGELOG.md`.
+- **Cross-reference instead of duplicating.** Link to the doc or section that owns
+  the topic.
+- **Cut filler.** Drop intensifiers ("genuinely", "truly", "actually", "very") and
+  puffery ("robust", "seamless", "production-ready"). Say what the code does, or what
+  a task takes, instead of calling it easy or straightforward.
+
 ## UI Components
 
 The template uses [DaisyUI](https://daisyui.com/components/) for component styling (vendored as `.mjs` files in `template/tailwind/` — no npm). Project-specific patterns (forms, pagination, navigation, messages) are documented in `template/docs/django-templates.md`. Component classes, icons, dark mode, and Tailwind configuration are in `template/docs/design.md`.
@@ -235,7 +252,7 @@ Invoke them directly — no `uv run python` prefix needed:
 This ensures the script runs in the project's virtual environment via uv.
 
 **Ruff header for standalone scripts** — scripts with a shebang don't need `INP001`
-(ruff recognises them as scripts, not package files). Only suppress what's actually used.
+(ruff recognises them as scripts, not package files). Only suppress what's used.
 See `template/.agents/skills/scripts/random-slug.py` as the canonical example:
 
 ```python

@@ -43,7 +43,7 @@ When in doubt, treat it as personal data.
 ## Data minimisation
 
 Only collect what is strictly necessary for the feature. Before adding a model
-field that stores personal data, ask: do we actually need this, or is an
+field that stores personal data, ask: do we need this, or is an
 aggregate or anonymous value sufficient?
 
 ---

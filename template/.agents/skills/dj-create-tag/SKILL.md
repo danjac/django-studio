@@ -31,7 +31,7 @@ Pick the simplest type that fits — in this order of preference:
 If the tag needs to wrap or inject content, reach for `simple_block_tag` before considering
 a custom `Node`. The built-in `fragment` tag in `<package_name>/templatetags.py` is a
 working example: it wraps a block of content and renders it inside an include template.
-Only escalate to a custom `Node` if `simple_block_tag` genuinely cannot express the logic.
+Only escalate to a custom `Node` if `simple_block_tag` cannot express the logic.
 
 If the description suggests a custom `Node` subclass is needed, **stop and discuss** the
 approach with the user before writing any code.
@@ -114,7 +114,7 @@ approach with the user before writing any code.
    - Root: `<package_name>/tests/test_template_tags.py`
 
    Test the tag function directly — do not instantiate `Template`/`Context` unless the test
-   genuinely requires full template rendering:
+   requires full template rendering:
    ```python
    from <package_name>.<app_name>.templatetags.<app_name> import <tag_name>
 

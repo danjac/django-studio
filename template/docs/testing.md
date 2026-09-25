@@ -304,7 +304,7 @@ Mock at system boundaries only — never mock private methods.
 details. If you need to control behaviour inside a private method, either:
 
 - Intercept the external call the private method makes (HTTP, filesystem, DB), or
-- Refactor the private method/function into a public one if it genuinely needs independent testing.
+- Refactor the private method/function into a public one if it needs independent testing.
 
 | Boundary type          | Tool                           |
 | ---------------------- | ------------------------------ |
@@ -361,9 +361,9 @@ than the one you intend. This makes tests fragile and hard to debug.
 2. **Prefer semantic selectors.** Use `get_by_role` with a `name`, `get_by_label`,
    or `get_by_text` rather than CSS class paths.
 
-3. **Avoid `.first()` and `.nth()` unless the element is genuinely a sequence.**
+3. **Avoid `.first()` and `.nth()` unless the element is a sequence.**
    If you reach for `.first()` to disambiguate, it means your selector is too broad
-   — add a scope ancestor instead. When `.first()` is genuinely appropriate (e.g.
+   — add a scope ancestor instead. When `.first()` is appropriate (e.g.
    the first item in a list), add a comment explaining why.
 
 ```python

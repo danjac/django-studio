@@ -97,10 +97,37 @@ class TestManifest:
         response = client.get(reverse("manifest"))
         assert response.status_code == 200
         assert response.json()["start_url"] == "/"
+        assert response.json()["icons"][0]["src"] == reverse("favicon")
 
     @pytest.mark.django_db
     def test_post_not_allowed(self, client):
         response = client.post(reverse("manifest"))
+        assert response.status_code == 405
+
+
+@pytest.mark.django_db
+class TestFavicon:
+    def test_get(self, client, site):
+        site.name = "example"
+        site.save()
+        response = client.get(reverse("favicon"))
+        assert response.status_code == 200
+        assert response["Content-Type"] == "image/svg+xml"
+        assert b">E</text>" in response.content
+
+    def test_favicon_ico(self, client):
+        response = client.get("/favicon.ico")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "image/svg+xml"
+
+    def test_escapes_site_name(self, client, site):
+        site.name = "<script>"
+        site.save()
+        response = client.get(reverse("favicon"))
+        assert b"<script>" not in response.content
+
+    def test_post_not_allowed(self, client):
+        response = client.post(reverse("favicon"))
         assert response.status_code == 405
 
 

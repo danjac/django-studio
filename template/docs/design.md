@@ -6,6 +6,7 @@ This project uses DaisyUI (on Tailwind CSS v4) for component styling, AlpineJS f
 
 - [Component Library](#component-library)
 - [Icons](#icons)
+- [Favicon](#favicon)
 - [Forms](#forms)
 - [Responsive Design](#responsive-design)
 - [Accessibility](#accessibility)
@@ -67,6 +68,25 @@ Use [`heroicons`](https://heroicons.com/) via `heroicons[django]` for all icons:
 - Never use character entities (`&times;`, `&#9998;`) or emoji as icons.
 - Decorative icons (next to visible text) get `aria-hidden="true"`.
 - Standalone icons (icon-only buttons) need `aria-label` on the parent button.
+
+## Favicon
+
+The placeholder favicon is the first letter of the site name on a rounded square, in
+the PWA colours (`PWA_THEME_COLOR` background, `PWA_BACKGROUND_COLOR` letter). The
+`favicon` view in `<package_name>/views.py` renders `templates/favicon.svg` and serves
+it at `/favicon.svg` and `/favicon.ico`. `base.html` links it, and `manifest.json`
+lists it as the app icon.
+
+To use your own design, replace the markup in `templates/favicon.svg` with your logo's
+SVG. The view caches the response for a day, so browsers pick up a new icon within
+a day of deploying it.
+
+iOS ignores SVG icons for home-screen shortcuts. To support them, add a 180×180 PNG
+under `static/` and link it in `base.html`:
+
+```html
+<link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
+```
 
 ## Forms
 

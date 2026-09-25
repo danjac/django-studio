@@ -18,6 +18,9 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
+- Wording-only edits across `docs/` and the skills: filler words ("genuinely",
+  "truly", "actually") and puffery removed. If you edited those files, expect small
+  conflicts on sync.
 - `config/settings.py` no longer sets `DEFAULT_AUTO_FIELD`; `BigAutoField` is the
   Django 6 default.
 - Template sources are formatted by the generated project's own pre-commit hooks,

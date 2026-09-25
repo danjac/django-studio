@@ -85,7 +85,7 @@ Focus on strings that will be shown to end users:
 - String literals returned in HTTP responses or passed to `render()` context
   that look like display text (not variable names, URLs, or format keys)
 
-Ignore: string literals that are clearly internal (log messages, variable
+Ignore: string literals that are internal (log messages, variable
 names, URL patterns, settings values, migration strings, `__str__` format
 strings that are not display labels).
 

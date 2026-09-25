@@ -114,7 +114,7 @@ Scan all templates for `<img>` tags.
 | Check | Severity if failing |
 |---|---|
 | `alt` attribute absent entirely | VIOLATION (WCAG 1.1.1) |
-| Content image with `alt=""` (empty) | VIOLATION — empty alt means decorative; verify it is genuinely decorative |
+| Content image with `alt=""` (empty) | VIOLATION — empty alt means decorative; verify it is decorative |
 | `alt` value is the filename or contains "image of" | WARNING |
 | `width` attribute absent | WARNING — causes layout shift (CLS) |
 | `height` attribute absent | WARNING — causes layout shift (CLS) |

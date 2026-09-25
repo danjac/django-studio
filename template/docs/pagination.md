@@ -82,7 +82,7 @@ def item_list(request: HttpRequest) -> TemplateResponse:
     )
 ```
 
-For very large unfiltered tables where `COUNT(*)` is slow, see
+For large unfiltered tables where `COUNT(*)` is slow, see
 [FastCountPaginator](#fastcountpaginator--estimated-counts-for-numbered-pagination).
 
 ---

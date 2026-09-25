@@ -172,7 +172,7 @@ Rules:
 - Wrap type conversions (`int()`, `uuid.UUID()`, etc.) in `try/except`.
 - For optional params, use a safe default silently.
 - For required params, both `HttpResponseBadRequest` (returns 400) and
-  `SuspiciousOperation` (also 400, additionally logs a security WARNING) are valid.
+  `SuspiciousOperation` (also 400, and logs a security WARNING) are valid.
   Use `SuspiciousOperation` when the malformed input warrants a security audit trail;
   use `HttpResponseBadRequest` for routine bad input.
 - Use `Http404` only when the param identifies a resource that doesn't exist.

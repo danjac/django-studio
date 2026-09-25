@@ -110,7 +110,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Enqueued {enqueued} <items>.")
 ```
 
-Add `def add_arguments(self, parser)` only if the command genuinely needs CLI
+Add `def add_arguments(self, parser)` only if the command needs CLI
 flags. Do not add arguments speculatively.
 
 ---

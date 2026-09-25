@@ -376,7 +376,7 @@ string externally (e.g. with a library like `nh3`) or via `conditional_escape` i
 ### Testing
 
 Test the function directly — do not instantiate `Template`/`Context` unless full
-rendering is genuinely required:
+rendering is required:
 
 ```python
 from my_package.templatetags import my_filter

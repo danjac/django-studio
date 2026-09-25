@@ -24,7 +24,7 @@ This project deploys to a self-hosted K3s cluster on Hetzner Cloud with Cloudfla
 
 PaaS providers (Railway, Fly.io, Render, Heroku) are convenient but are built on top of AWS or GCP, which means costs scale with usage in ways that are hard to cap. A solo developer running multiple side projects can easily accumulate unexpected bills.
 
-VM providers such as Hetzner, OVHcloud, DigitalOcean and Scaleway have fixed, published pricing. You pay per server, so the bill is the same whether the app is idle or busy. There are no surprise egress charges, no per-request fees, and no auto-scaling that runs away. The cost is predictable and budgetable. The template targets Hetzner out of the box, but it should be straightforward to move to another provider with minimal changes.
+VM providers such as Hetzner, OVHcloud, DigitalOcean and Scaleway have fixed, published pricing. You pay per server, so the bill is the same whether the app is idle or busy. There are no surprise egress charges, no per-request fees, and no auto-scaling that runs away. The cost is predictable and budgetable. The template targets Hetzner; moving to another provider means provisioning a cluster there and redeploying the same chart (see [No vendor lock-in](#no-vendor-lock-in)).
 
 ### No vendor lock-in
 
@@ -417,7 +417,7 @@ silently never reach the tailnet.
 #### What happens on apply
 
 Every node installs Tailscale during cloud-init and joins with a pinned hostname
-(`<cluster>-server`, `<cluster>-webapp-1`, …). The server additionally gets its MagicDNS
+(`<cluster>-server`, `<cluster>-webapp-1`, …). The server also gets its MagicDNS
 name added to the k3s serving certificate as a TLS SAN, and `just get-kubeconfig` writes
 that name as the API address instead of the public IP.
 
@@ -441,7 +441,7 @@ This installs Tailscale on each node, and on the server writes a
 `/etc/rancher/k3s/config.yaml.d/10-tailscale.yaml` drop-in with the new TLS SAN, clears
 the cached serving certificate and **restarts k3s**. The Kubernetes API is briefly
 unavailable during the restart; running pods are unaffected. The script then checks the
-certificate actually carries the SAN and fails loudly if it does not.
+certificate carries the SAN and fails loudly if it does not.
 
 Pass `--dry-run` first to see which nodes it would touch.
 

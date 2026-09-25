@@ -85,7 +85,7 @@ logging — any place that calls `str()` on a queryset without `select_related`.
 
 Do not add `# noqa: ...`, `# type: ignore`, or similar inline bypass comments
 without first asking the user. In most cases a code change avoids the bypass
-entirely. If there is truly no alternative, state the reason and ask before
+entirely. If there is no alternative, state the reason and ask before
 adding the comment.
 
 ## Full-Text Search
@@ -184,7 +184,7 @@ instead of silently removing data nobody asked it to remove.
 `CASCADE` and `SET_NULL` are both legitimate, but each is a data-loss decision
 and must carry a comment saying why it is safe here:
 
-- **`CASCADE`** — only for a genuinely owned child whose existence has no meaning
+- **`CASCADE`** — only for an owned child whose existence has no meaning
   without its parent (a token belonging to a user, a line item belonging to an
   order). Deleting the parent is *supposed* to take the child with it.
 - **`SET_NULL`** — for a nullable, informational reference where the row outlives
@@ -221,7 +221,7 @@ class Post(models.Model):
     )
 ```
 
-Use `related_name="+"` only when the reverse relation is genuinely never needed:
+Use `related_name="+"` only when the reverse relation is never needed:
 
 ```python
 created_by = models.ForeignKey(

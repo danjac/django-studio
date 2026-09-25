@@ -268,5 +268,5 @@ if _backup_dir.exists():
 install_claude_hooks()
 install_mcp_config()
 
-# Generate uv.lock so CI's `uv sync --frozen` works without a manual step
+# Generate uv.lock so CI's `uv sync --locked` works without a manual step
 subprocess.run(["uv", "lock"], check=True)

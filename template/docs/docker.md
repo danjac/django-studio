@@ -51,7 +51,8 @@ COPY --from=uv /uv /usr/local/bin/uv
 
 Bump `UV_VERSION` at the top of the `Dockerfile` to upgrade uv. `COPY --from` does not
 expand build args, so the uv image is pulled in as a named stage. CI pins the same version
-via `UV_VERSION` in `.github/workflows/checks.yml` — keep the two in sync.
+via `UV_VERSION` in `.github/workflows/checks.yml`, and the `uv-lock` pre-commit hook pins
+the matching `astral-sh/uv-pre-commit` tag in `.pre-commit-config.yaml` — keep all three in sync.
 
 All dep installs use `--mount=type=cache,target=/root/.cache/uv` for layer caching.
 

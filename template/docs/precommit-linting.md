@@ -97,6 +97,12 @@ repos:
       - id: django-upgrade
         args: [--target-version, "6.1"]
 
+  # Lockfile: fails when uv.lock is out of date with pyproject.toml
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: "0.12.6"
+    hooks:
+      - id: uv-lock
+
   # Commits
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.26.0

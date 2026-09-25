@@ -38,17 +38,14 @@ PVC names. A major version change is an upgrade, not a pin bump: follow
 `config/settings.py` is the authority for which variables exist and their defaults.
 `.env.example` lists the ones used in local development.
 
-Connection URLs:
+Connection URLs (`DATABASE_URL`, `REDIS_URL`, `EMAIL_URL`):
 
-| Variable | Local default | Production value (built in `helm/site/templates/secret.yaml`) |
-|----------|---------------|------------------------------------------------------------|
-| `DATABASE_URL` | `postgresql://postgres:password@127.0.0.1:5432/postgres` | `postgresql://postgres:<password>@postgres.<namespace>.svc.cluster.local:5432/postgres` |
-| `REDIS_URL` | `redis://127.0.0.1:6379/0` | `redis://default:<password>@redis.<namespace>.svc.cluster.local:6379/0` |
-| `EMAIL_URL` | `smtp://localhost:1025` | not set; production sends through Mailgun (`MAILGUN_API_KEY`) |
-
-The production URL formats are also rebuilt by
-`.agents/skills/dj-rotate-secrets/scripts/patch-k8s-secrets.sh`. Keep it in step with
-`secret.yaml`.
+- Local values are in `.env.example`.
+- Production `DATABASE_URL` and `REDIS_URL` are built in
+  `helm/site/templates/secret.yaml` and rebuilt by
+  `.agents/skills/dj-rotate-secrets/scripts/patch-k8s-secrets.sh` when secrets are
+  rotated. If you change the URL format in one, change it in the other.
+- Production does not set `EMAIL_URL`; email goes through Mailgun (`MAILGUN_*`).
 
 Naming rules:
 
@@ -74,18 +71,19 @@ To give a new consumer its own database, use the next free number and add a row 
 
 ## Service Names
 
-The same names are used in Docker Compose (local) and in Kubernetes (production), so
-connection URLs differ only by host.
+The same names are used in Docker Compose (local) and in Kubernetes (production).
 
-| Service | Compose service | Kubernetes resources | Port |
-|---------|-----------------|----------------------|------|
-| PostgreSQL | `postgres` | StatefulSet and Service `postgres` | 5432 |
-| Redis | `redis` | Deployment and Service `redis` | 6379 |
-| Mailpit (dev only) | `mailpit` | none | 8025 (web), 1025 (SMTP) |
-| Web app | none (`just serve`) | Deployment `django-app`, Service `django` | 8000 |
-| Task worker | none (`just dj db_worker`) | Deployment `django-worker` | none |
-| Release (migrations) | none | Job `django-release` | none |
-| Database backups | none | CronJob `postgres-backup` | none |
+| Service | Compose service | Kubernetes resources |
+|---------|-----------------|----------------------|
+| PostgreSQL | `postgres` | StatefulSet and Service `postgres` |
+| Redis | `redis` | Deployment and Service `redis` |
+| Mailpit (dev only) | `mailpit` | none |
+| Web app | none (`just serve`) | Deployment `django-app`, Service `django` |
+| Task worker | none (`just dj db_worker`) | Deployment `django-worker` |
+| Release (migrations) | none | Job `django-release` |
+| Database backups | none | CronJob `postgres-backup` |
+
+Ports are defined in `docker-compose.yml` and the Helm service templates.
 
 Inside the cluster, services are reached at `<service>.<namespace>.svc.cluster.local`.
 

@@ -35,9 +35,9 @@ just serve
 
 ## Docker Compose Services
 
-`docker-compose.yml` runs three services: `postgres`, `redis` and `mailpit` (web UI on
-8025, SMTP on 1025). Image versions, service names and default ports are listed in
-[Conventions](conventions.md). `docker-compose.yml` holds the exact image tags.
+`docker-compose.yml` runs three services: `postgres`, `redis` and `mailpit`. It holds
+the image tags and ports. See [Conventions](conventions.md) for the files that must
+change with it.
 
 ## Running Several Checkouts
 

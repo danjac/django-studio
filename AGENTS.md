@@ -102,6 +102,23 @@ Run pre-commit hooks on all files in the cookiecutter project to ensure all chec
 git init && git commit -A && pre-commit run --all-files
 ```
 
+## Skill Evals
+
+`tests/` checks the generated scaffold. `evals/` checks that the `dj-*` skills produce
+working code: each case renders a fresh project, runs a skill headless with
+`claude -p`, runs a shell check, and has an independent read-only `claude -p`
+review the result.
+
+```bash
+just eval              # every case
+just eval 02           # one case (file name prefix)
+just eval --keep 02    # keep the generated project to inspect it
+```
+
+Evals cost tokens and take several minutes per case, so they are not part of
+`just check` or CI. Run the affected cases when you change a skill, or a doc that a
+skill tells the agent to read. Case format and rules: `evals/README.md`.
+
 ## Working on the Template
 
 Before adding or modifying any code under `template/`, read the generated project's documentation first:

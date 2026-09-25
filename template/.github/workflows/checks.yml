@@ -41,7 +41,7 @@ jobs:
             **/uv.lock
             **/pyproject.toml
       - run: uv python install 3.14.0
-      - run: uv sync --frozen --all-extras --no-install-project
+      - run: uv sync --locked --all-extras --no-install-project
       - run: uv run basedpyright
       - run: uv run pytest
   e2etests:
@@ -68,7 +68,7 @@ jobs:
             **/uv.lock
             **/pyproject.toml
       - run: uv python install 3.14.0
-      - run: uv sync --frozen --all-extras --no-install-project
+      - run: uv sync --locked --all-extras --no-install-project
       - run: uv run playwright install --with-deps chromium
       - run: uv run python manage.py tailwind build
         env:

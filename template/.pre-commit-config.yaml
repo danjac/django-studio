@@ -88,6 +88,11 @@ repos:
     hooks:
       - id: django-upgrade
         args: [--target-version, "6.1"]
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 856f55170f70dc7523c45a215ecdedc44709e2a6  # 0.12.6
+    hooks:
+      # Fail when uv.lock is out of date with pyproject.toml (CI runs `uv sync --locked`)
+      - id: uv-lock
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: 17e12779811926f000bdfa1795f9e3735dd71ac3  # v0.26
     hooks:

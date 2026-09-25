@@ -1,5 +1,5 @@
 ---
-description: Pull latest template changes via Copier and resolve merge conflicts
+description: Preview the changelog, pull template changes via Copier, resolve conflicts
 ---
 
 Pull the latest django-studio template changes into this project and resolve
@@ -7,7 +7,22 @@ any merge conflicts interactively.
 
 ## Steps
 
-### 1. Run Copier update
+### 1. Review what's changed
+
+Show the template changelog entries added since this project's last sync:
+
+```bash
+.agents/skills/dj-sync/scripts/changelog-since.py
+```
+
+Summarise the entries for the user. Call out any **Changed** or **Removed**
+entry that touches files the project has customised, since those are where
+conflicts are likely. Ask whether to continue with the update.
+
+If the script cannot reach the template or find the project's commit, say so and
+ask whether to continue anyway.
+
+### 2. Run Copier update
 
 ```bash
 uvx copier update --trust
@@ -17,9 +32,9 @@ The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,
 and `opencode.json` to `.django_studio/backups/<n>/` (incrementing integer) before regenerating them.
 
 This pulls the latest template into the project and stages the merged files.
-If there are no conflicts, skip to Step 3.
+If there are no conflicts, skip to Step 4.
 
-### 2. Detect and resolve conflicts
+### 3. Detect and resolve conflicts
 
 Check for merge conflicts introduced by the update:
 
@@ -51,7 +66,7 @@ For every conflicted file:
 
 Repeat until no conflict markers remain.
 
-### 3. Restore local overrides in generated files
+### 4. Restore local overrides in generated files
 
 Diff each backed-up file against its current counterpart in the project root:
 
@@ -72,7 +87,7 @@ For each file with a non-empty diff:
 
 If `get-backup-dir.py` prints nothing (no backups yet), skip this step.
 
-### 4. Verify
+### 5. Verify
 
 After all conflicts are resolved:
 
@@ -84,7 +99,7 @@ Fix any issues before continuing.
 
 ---
 
-### 5. Commit
+### 6. Commit
 
 Stage all resolved files and commit:
 

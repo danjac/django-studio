@@ -1,6 +1,6 @@
 {% load heroicons i18n %}
 <header
-  class="navbar sticky top-0 z-10 border-b border-base-300 bg-base-100/80 backdrop-blur-lg"
+  class="sticky top-0 z-10 border-b navbar border-base-300 bg-base-100/80 backdrop-blur-lg"
   x-data="{ showMobileMenu: false, showUserDropdown: false }"
   x-init="
           $watch('showMobileMenu', v => { if (v) showUserDropdown = false; });
@@ -12,12 +12,12 @@
   <div class="navbar-start">
     <a
       href="{% url 'index' %}"
-      class="btn btn-ghost text-lg font-semibold"
+      class="text-lg font-semibold btn btn-ghost"
     >
       {{ request.site.name }}
     </a>
   </div>
-  <div class="navbar-end gap-1">
+  <div class="gap-1 navbar-end">
     {% if user.is_authenticated %}
       <div
         class="relative"
@@ -25,7 +25,7 @@
       >
         <button
           type="button"
-          class="btn btn-ghost gap-2"
+          class="gap-2 btn btn-ghost"
           :aria-expanded="showUserDropdown.toString()"
           @click="showUserDropdown = !showUserDropdown"
         >
@@ -34,7 +34,7 @@
           {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
         </button>
         <ul
-          class="menu bg-base-100 rounded-box absolute right-0 z-20 mt-1 w-56 border border-base-300 p-2 shadow-xl"
+          class="absolute right-0 z-20 p-2 mt-1 w-56 border shadow-xl menu bg-base-100 rounded-box border-base-300"
           x-cloak
           x-show="showUserDropdown"
           x-transition.scale.origin.top
@@ -79,7 +79,7 @@
     {% endif %}
     <button
       type="button"
-      class="btn btn-ghost btn-square md:hidden"
+      class="md:hidden btn btn-ghost btn-square"
       :aria-expanded="showMobileMenu.toString()"
       aria-label="{% translate "Toggle navigation menu" %}"
       @click="showMobileMenu = !showMobileMenu"
@@ -94,7 +94,7 @@
   </div>
   {% if user.is_authenticated %}
     <nav
-      class="absolute left-0 top-full z-50 w-full border-b border-base-300 bg-base-100 p-4 shadow-xl md:hidden"
+      class="absolute left-0 top-full z-50 p-4 w-full border-b shadow-xl md:hidden border-base-300 bg-base-100"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
@@ -110,7 +110,7 @@
     </nav>
   {% else %}
     <nav
-      class="absolute left-0 top-full z-50 w-full border-b border-base-300 bg-base-100 p-4 shadow-xl md:hidden"
+      class="absolute left-0 top-full z-50 p-4 w-full border-b shadow-xl md:hidden border-base-300 bg-base-100"
       aria-label="{% translate "Mobile navigation" %}"
       x-cloak
       x-show="showMobileMenu"
@@ -124,12 +124,12 @@
     >
       <ul class="flex flex-col gap-2">
         <li>
-          <a href="{% url 'account_login' %}" class="btn btn-ghost btn-block justify-center">
+          <a href="{% url 'account_login' %}" class="justify-center btn btn-ghost btn-block">
             {% translate "Sign in" %}
           </a>
         </li>
         <li>
-          <a href="{% url 'account_signup' %}" class="btn btn-primary btn-block justify-center">
+          <a href="{% url 'account_signup' %}" class="justify-center btn btn-primary btn-block">
             {% translate "Sign up" %}
           </a>
         </li>

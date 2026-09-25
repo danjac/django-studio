@@ -6,35 +6,35 @@
 {% block account_content %}
   {% include "header.html" with title=_("Confirm Email Address") %}
   <div class="mt-6">
-      {% if confirmation %}
-        {% user_display confirmation.email_address.user as user_display %}
-        {% if can_confirm %}
-          <p class="mb-6 text-sm text-base-content/60">
-            {% blocktranslate with email=confirmation.email_address.email %}
-              Please confirm that <a class="underline" href="mailto:{{ email }}">{{ email }}</a>
-              is an email address for user {{ user_display }}.
-            {% endblocktranslate %}
-          </p>
-          {% url 'account_confirm_email' confirmation.key as form_action %}
-          {% fragment "form.html" action=form_action %}
-            {{ redirect_field }}
-            <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
-          {% endfragment %}
-        {% else %}
-          <p class="text-sm text-base-content/60">
-            {% blocktranslate with email=confirmation.email_address.email %}
-              Unable to confirm {{ email }} because it is already confirmed by a different account.
-            {% endblocktranslate %}
-          </p>
-        {% endif %}
+    {% if confirmation %}
+      {% user_display confirmation.email_address.user as user_display %}
+      {% if can_confirm %}
+        <p class="mb-6 text-sm text-base-content/60">
+          {% blocktranslate with email=confirmation.email_address.email %}
+            Please confirm that <a class="underline" href="mailto:{{ email }}">{{ email }}</a>
+            is an email address for user {{ user_display }}.
+          {% endblocktranslate %}
+        </p>
+        {% url 'account_confirm_email' confirmation.key as form_action %}
+        {% fragment "form.html" action=form_action %}
+          {{ redirect_field }}
+          <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
+        {% endfragment %}
       {% else %}
-        {% url 'account_email' as email_url %}
         <p class="text-sm text-base-content/60">
-          {% blocktranslate %}
-            This email confirmation link expired or is invalid.
-            Please <a class="underline" href="{{ email_url }}">issue a new email confirmation request</a>.
+          {% blocktranslate with email=confirmation.email_address.email %}
+            Unable to confirm {{ email }} because it is already confirmed by a different account.
           {% endblocktranslate %}
         </p>
       {% endif %}
-    </div>
+    {% else %}
+      {% url 'account_email' as email_url %}
+      <p class="text-sm text-base-content/60">
+        {% blocktranslate %}
+          This email confirmation link expired or is invalid.
+          Please <a class="underline" href="{{ email_url }}">issue a new email confirmation request</a>.
+        {% endblocktranslate %}
+      </p>
+    {% endif %}
+  </div>
 {% endblock account_content %}

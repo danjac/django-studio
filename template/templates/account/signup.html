@@ -4,23 +4,23 @@
 {% block title %}{% title_tag _("Sign Up") %}{% endblock %}
 
 {% block account_content %}
-    {% include "header.html" with title=_("Sign Up") %}
-    <div class="mt-6">
-      <p class="mb-4 text-sm text-base-content/60">
-        {% blocktranslate with url=login_url %}Already have an account? <a class="link link-primary" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
-      </p>
-      {% fragment "form.html" %}
-        {{ form.phone_number.as_hidden }}
-        {% if redirect_field_value %}
-          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
-        {{ form.username.as_field_group }}
-        {{ form.email.as_field_group }}
-        {{ form.password1.as_field_group }}
-        {{ form.password2.as_field_group }}
-        {% fragment "form.html#buttons" %}
-          <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>
-        {% endfragment %}
+  {% include "header.html" with title=_("Sign Up") %}
+  <div class="mt-6">
+    <p class="mb-4 text-sm text-base-content/60">
+      {% blocktranslate with url=login_url %}Already have an account? <a class="link link-primary" href="{{ url }}">Sign in</a>.{% endblocktranslate %}
+    </p>
+    {% fragment "form.html" %}
+      {{ form.phone_number.as_hidden }}
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      {{ form.username.as_field_group }}
+      {{ form.email.as_field_group }}
+      {{ form.password1.as_field_group }}
+      {{ form.password2.as_field_group }}
+      {% fragment "form.html#buttons" %}
+        <button type="submit" class="btn btn-primary">{% translate "Sign Up" %}</button>
       {% endfragment %}
-    </div>
+    {% endfragment %}
+  </div>
 {% endblock account_content %}

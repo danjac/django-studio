@@ -10,26 +10,26 @@
 {% endblock title %}
 
 {% block account_content %}
+  {% if process == "connect" %}
+    {% blocktranslate with provider=provider.name asvar title %}Connect {{ provider }}{% endblocktranslate %}
+  {% else %}
+    {% blocktranslate with provider=provider.name asvar title %}Sign In Via {{ provider }}{% endblocktranslate %}
+  {% endif %}
+  {% include "header.html" with title=title %}
+  <div class="mt-6">
     {% if process == "connect" %}
-      {% blocktranslate with provider=provider.name asvar title %}Connect {{ provider }}{% endblocktranslate %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% blocktranslate with provider=provider.name %}You are about to connect a new third-party account from {{ provider }}.{% endblocktranslate %}
+      </p>
     {% else %}
-      {% blocktranslate with provider=provider.name asvar title %}Sign In Via {{ provider }}{% endblocktranslate %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% blocktranslate with provider=provider.name %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktranslate %}
+      </p>
     {% endif %}
-    {% include "header.html" with title=title %}
-    <div class="mt-6">
-      {% if process == "connect" %}
-        <p class="mb-4 text-sm text-base-content/60">
-          {% blocktranslate with provider=provider.name %}You are about to connect a new third-party account from {{ provider }}.{% endblocktranslate %}
-        </p>
-      {% else %}
-        <p class="mb-4 text-sm text-base-content/60">
-          {% blocktranslate with provider=provider.name %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktranslate %}
-        </p>
-      {% endif %}
-      {% fragment "form.html" %}
-        {% fragment "form.html#buttons" %}
-          <button type="submit" class="btn btn-primary">{% translate "Continue" %}</button>
-        {% endfragment %}
+    {% fragment "form.html" %}
+      {% fragment "form.html#buttons" %}
+        <button type="submit" class="btn btn-primary">{% translate "Continue" %}</button>
       {% endfragment %}
-    </div>
+    {% endfragment %}
+  </div>
 {% endblock account_content %}

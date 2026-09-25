@@ -6,82 +6,82 @@
 {% block account_content %}
   {% include "header.html" with title=_("Email Addresses") %}
   <div class="mt-6">
-      {% url 'account_email' as form_action %}
-      {% if emailaddresses %}
-        <p class="mb-4 text-sm text-base-content/60">
-          {% translate "The following email addresses are associated with your account:" %}
-        </p>
-        {% fragment "form.html" action=form_action %}
-          <div
-            class="space-y-2"
-            x-data="{
-              selected: '{% for radio in emailaddress_radios %}{% if radio.checked %}{{ radio.emailaddress.email|escapejs }}{% endif %}{% endfor %}',
-              primaryEmail: '{% for radio in emailaddress_radios %}{% if radio.emailaddress.primary %}{{ radio.emailaddress.email|escapejs }}{% endif %}{% endfor %}'
-            }"
-          >
-            {% for radio in emailaddress_radios %}
-              {% with emailaddress=radio.emailaddress %}
-                <div class="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    name="email"
-                    value="{{ emailaddress.email }}"
-                    id="{{ radio.id }}"
-                    {% if radio.checked %}checked{% endif %}
-                    class="w-4 h-4 accent-primary"
-                    @change="selected = $event.target.value"
-                  />
-                  <label for="{{ radio.id }}" class="text-sm text-base-content/70">
-                    {{ emailaddress.email }}
-                    {% if emailaddress.verified %}
-                      <span class="badge badge-success badge-sm">{% translate "Verified" %}</span>
-                    {% else %}
-                      <span class="badge badge-error badge-sm">{% translate "Unverified" %}</span>
-                    {% endif %}
-                    {% if emailaddress.primary %}
-                      <span class="badge badge-primary badge-sm">{% translate "Primary" %}</span>
-                    {% endif %}
-                  </label>
-                </div>
-              {% endwith %}
-            {% endfor %}
-          </div>
-          <div class="flex flex-wrap gap-3">
-            <button type="submit" name="action_primary" class="btn btn-primary">
-              {% translate "Make Primary" %}
+    {% url 'account_email' as form_action %}
+    {% if emailaddresses %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% translate "The following email addresses are associated with your account:" %}
+      </p>
+      {% fragment "form.html" action=form_action %}
+        <div
+          class="space-y-2"
+          x-data="{
+                  selected: '{% for radio in emailaddress_radios %}{% if radio.checked %}{{ radio.emailaddress.email|escapejs }}{% endif %}{% endfor %}',
+                  primaryEmail: '{% for radio in emailaddress_radios %}{% if radio.emailaddress.primary %}{{ radio.emailaddress.email|escapejs }}{% endif %}{% endfor %}'
+                  }"
+        >
+          {% for radio in emailaddress_radios %}
+            {% with emailaddress=radio.emailaddress %}
+              <div class="flex items-center space-x-3">
+                <input
+                  type="radio"
+                  name="email"
+                  value="{{ emailaddress.email }}"
+                  id="{{ radio.id }}"
+                  {% if radio.checked %}checked{% endif %}
+                  class="w-4 h-4 accent-primary"
+                  @change="selected = $event.target.value"
+                />
+                <label for="{{ radio.id }}" class="text-sm text-base-content/70">
+                  {{ emailaddress.email }}
+                  {% if emailaddress.verified %}
+                    <span class="badge badge-success badge-sm">{% translate "Verified" %}</span>
+                  {% else %}
+                    <span class="badge badge-error badge-sm">{% translate "Unverified" %}</span>
+                  {% endif %}
+                  {% if emailaddress.primary %}
+                    <span class="badge badge-primary badge-sm">{% translate "Primary" %}</span>
+                  {% endif %}
+                </label>
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button type="submit" name="action_primary" class="btn btn-primary">
+            {% translate "Make Primary" %}
+          </button>
+          <button type="submit" name="action_send" class="btn btn-secondary">
+            {% translate "Re-send Verification" %}
+          </button>
+          {% if emailaddresses|length > 1 %}
+            <button
+              type="submit"
+              name="action_remove"
+              class="btn btn-error"
+              :disabled="selected === primaryEmail"
+            >
+              {% translate "Remove" %}
             </button>
-            <button type="submit" name="action_send" class="btn btn-secondary">
-              {% translate "Re-send Verification" %}
-            </button>
-            {% if emailaddresses|length > 1 %}
-              <button
-                type="submit"
-                name="action_remove"
-                class="btn btn-error"
-                :disabled="selected === primaryEmail"
-              >
-                {% translate "Remove" %}
-              </button>
-            {% endif %}
-          </div>
+          {% endif %}
+        </div>
+      {% endfragment %}
+    {% else %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% translate "You have no email addresses associated with your account." %}
+      </p>
+    {% endif %}
+    {% if can_add_email %}
+      <h2 class="mt-8 mb-4 text-xl font-semibold text-base-content">
+        {% translate "Add Email Address" %}
+      </h2>
+      {% fragment "form.html" action=form_action %}
+        {{ form }}
+        {% fragment "form.html#buttons" %}
+          <button type="submit" name="action_add" class="btn btn-primary">
+            {% translate "Add Email" %}
+          </button>
         {% endfragment %}
-      {% else %}
-        <p class="mb-4 text-sm text-base-content/60">
-          {% translate "You have no email addresses associated with your account." %}
-        </p>
-      {% endif %}
-      {% if can_add_email %}
-        <h2 class="mt-8 mb-4 text-xl font-semibold text-base-content">
-          {% translate "Add Email Address" %}
-        </h2>
-        {% fragment "form.html" action=form_action %}
-          {{ form }}
-          {% fragment "form.html#buttons" %}
-            <button type="submit" name="action_add" class="btn btn-primary">
-              {% translate "Add Email" %}
-            </button>
-          {% endfragment %}
-        {% endfragment %}
-      {% endif %}
+      {% endfragment %}
+    {% endif %}
   </div>
 {% endblock account_content %}

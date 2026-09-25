@@ -6,38 +6,38 @@
 {% block account_content %}
   {% include "header.html" with title=_("Change Phone Number") %}
   <div class="mt-6">
-      {% if phone %}
-        <p class="mb-4 text-sm text-base-content/60">
-          {% blocktranslate %}
-            Your current phone number is <strong>{{ phone }}</strong>.
-          {% endblocktranslate %}
-          {% if not phone_verified %}
-            <span class="ml-1 text-error">
-              {% translate "(unverified)" %}
-            </span>
-          {% endif %}
-        </p>
+    {% if phone %}
+      <p class="mb-4 text-sm text-base-content/60">
+        {% blocktranslate %}
+          Your current phone number is <strong>{{ phone }}</strong>.
+        {% endblocktranslate %}
         {% if not phone_verified %}
-          <div class="p-4 mb-6 text-sm rounded border alert alert-error alert-soft">
-            {% translate "Your phone number is still pending verification." %}
-            <form id="verify-phone" method="post" action="{% url 'account_change_phone' %}" class="mt-2">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="verify" />
-              <button type="submit" class="btn btn-secondary">
-                {% translate "Re-send Verification" %}
-              </button>
-            </form>
-          </div>
+          <span class="ml-1 text-error">
+            {% translate "(unverified)" %}
+          </span>
         {% endif %}
+      </p>
+      {% if not phone_verified %}
+        <div class="p-4 mb-6 text-sm rounded border alert alert-error alert-soft">
+          {% translate "Your phone number is still pending verification." %}
+          <form id="verify-phone" method="post" action="{% url 'account_change_phone' %}" class="mt-2">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="verify" />
+            <button type="submit" class="btn btn-secondary">
+              {% translate "Re-send Verification" %}
+            </button>
+          </form>
+        </div>
       {% endif %}
-      {% url 'account_change_phone' as form_action %}
-      {% fragment "form.html" action=form_action %}
-        {{ form }}
-        {% fragment "form.html#buttons" %}
-          <button type="submit" name="action_add" class="btn btn-primary">
-            {% translate "Change Phone Number" %}
-          </button>
-        {% endfragment %}
+    {% endif %}
+    {% url 'account_change_phone' as form_action %}
+    {% fragment "form.html" action=form_action %}
+      {{ form }}
+      {% fragment "form.html#buttons" %}
+        <button type="submit" name="action_add" class="btn btn-primary">
+          {% translate "Change Phone Number" %}
+        </button>
       {% endfragment %}
-    </div>
+    {% endfragment %}
+  </div>
 {% endblock account_content %}

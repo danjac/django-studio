@@ -23,7 +23,7 @@ register = template.Library()
 
 
 @register.inclusion_tag("cookie_banner.html", takes_context=True)
-def cookie_banner(context: "RequestContext") -> dict:
+def cookie_banner(context: RequestContext) -> dict:
     """Render the GDPR cookie consent banner.
 
     Passes ``cookies_accepted`` into the template based on whether the
@@ -34,7 +34,9 @@ def cookie_banner(context: "RequestContext") -> dict:
 
 
 @register.simple_tag(takes_context=True)
-def title_tag(context: RequestContext, *elements: "StrOrPromise", divider: str = " | ") -> str:
+def title_tag(
+    context: RequestContext, *elements: StrOrPromise, divider: str = " | "
+) -> str:
     """Renders <title> content including the site name.
 
     Example:
@@ -51,10 +53,7 @@ def title_tag(context: RequestContext, *elements: "StrOrPromise", divider: str =
 def meta_tags() -> str:
     """Renders META tags from settings including HTMX config."""
     tags = [
-        *[
-            {"name": key, "content": value}
-            for key, value in settings.META_TAGS.items()
-        ],
+        *[{"name": key, "content": value} for key, value in settings.META_TAGS.items()],
         {
             "name": "htmx-config",
             "content": json.dumps(settings.HTMX_CONFIG),
@@ -84,7 +83,6 @@ def absolute_uri(site: Site, path: str, *args, **kwargs) -> str:
     return f"{scheme}://{site.domain}{url}"
 
 
-
 @dataclass(frozen=True, kw_only=True)
 class ActiveUrl:
     """Result of ``active_url`` and ``re_active_url`` template tags.
@@ -105,10 +103,9 @@ class ActiveUrl:
         return self.active_class if self.is_active else self.inactive_class
 
 
-
 @register.simple_tag(takes_context=True)
 def active_url(
-    context: "RequestContext",
+    context: RequestContext,
     viewname: str,
     *args: Any,
     active_class: str = "",
@@ -127,12 +124,17 @@ def active_url(
     """
     url = _resolve_url(viewname, args, url_kwargs)
     is_active = bool(url) and context.request.path == url
-    return ActiveUrl(url=url, is_active=is_active, active_class=active_class, inactive_class=inactive_class)
+    return ActiveUrl(
+        url=url,
+        is_active=is_active,
+        active_class=active_class,
+        inactive_class=inactive_class,
+    )
 
 
 @register.simple_tag(takes_context=True)
 def re_active_url(
-    context: "RequestContext",
+    context: RequestContext,
     pattern: str,
     viewname: str = "",
     *args: Any,
@@ -153,7 +155,12 @@ def re_active_url(
     """
     url = _resolve_url(viewname, args, url_kwargs)
     is_active = bool(re.search(pattern, context.request.path))
-    return ActiveUrl(url=url, is_active=is_active, active_class=active_class, inactive_class=inactive_class)
+    return ActiveUrl(
+        url=url,
+        is_active=is_active,
+        active_class=active_class,
+        inactive_class=inactive_class,
+    )
 
 
 @register.simple_block_tag(takes_context=True)
@@ -194,7 +201,7 @@ def fragment(
 
 @register.simple_tag(takes_context=True)
 def try_include(
-    context: "Context", template_name: str, fallback: str, **extra_context
+    context: Context, template_name: str, fallback: str, **extra_context
 ) -> str:
     """Include a template, falling back to ``fallback`` if not found.
 

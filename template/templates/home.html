@@ -9,7 +9,7 @@
     <p class="mt-4 text-lg text-base-content/60">
       {{ request.site.name }}
     </p>
-    <div class="mt-8 flex justify-center gap-4">
+    <div class="flex gap-4 justify-center mt-8">
       {% if user.is_authenticated %}
         <a href="{% url 'account_email' %}" class="btn btn-primary">{% translate "My Account" %}</a>
       {% else %}

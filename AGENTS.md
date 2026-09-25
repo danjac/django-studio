@@ -59,9 +59,10 @@ just test-e2e                   # run Playwright E2E tests
 just stop                       # stop Docker services
 ```
 
-**Pre-commit must report no lint errors** on the generated project. Auto-formatters
-(ruff-format, DjHTML, DjCSS, Djade) modifying files is expected and fine. Actual
-lint errors (`ruff check`, `djlint --lint`) must be zero. Run after install:
+**Pre-commit must pass on the first run** on the generated project: no lint errors,
+and no auto-formatter (ruff-format, pyupgrade, django-upgrade, DjHTML, Djade,
+rustywind) may modify a file. If a hook rewrites a file, format the template source
+to match; `tests/test_quality.py` enforces this. Run after install:
 
 ```bash
 cd /tmp/my_app && uv run pre-commit run --all-files
@@ -144,8 +145,7 @@ cd /tmp && trash my_app && find /tmp/.Trash-1000 -mindepth 1 -delete
 uvx copier copy --trust --defaults --data project_name="My App" . /tmp/my_app
 cd /tmp/my_app
 git init && git add -A
-uv run pre-commit run --all-files   # run twice if hooks auto-fix files
-uv run pre-commit run --all-files
+uv run pre-commit run --all-files   # must pass first time; no files modified
 just typecheck
 ```
 

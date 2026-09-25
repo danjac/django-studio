@@ -4,51 +4,51 @@
 {% block title %}{% title_tag _("Email Verification") %}{% endblock %}
 
 {% block account_content %}
-    {% include "header.html" with title=_("Enter Email Verification Code") %}
-    <div class="mt-6">
-      <p class="mb-4 text-sm text-base-content/60">
-        {% blocktranslate with email=email %}We've sent a code to <a class="underline" href="mailto:{{ email }}">{{ email }}</a>. The code expires shortly, so please enter it soon.{% endblocktranslate %}
-      </p>
-      {% url 'account_email_verification_sent' as form_action %}
-      {% fragment "form.html" action=form_action %}
-        {{ verify_form }}
-        {{ redirect_field }}
-        <div class="flex flex-wrap gap-3">
-          <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
-          {% if can_resend %}
-            <button type="submit" form="resend" class="btn btn-secondary">{% translate "Request new code" %}</button>
-          {% endif %}
-          {% if cancel_url %}
-            <a href="{{ cancel_url }}" class="btn btn-secondary">{% translate "Cancel" %}</a>
-          {% else %}
-            <button type="submit" form="logout-from-stage" class="btn btn-secondary">{% translate "Cancel" %}</button>
-          {% endif %}
-        </div>
-      {% endfragment %}
-      <form id="resend" method="post" action="{% url 'account_email_verification_sent' %}">
-        <input type="hidden" name="action" value="resend" />
-        {{ redirect_field }}
+  {% include "header.html" with title=_("Enter Email Verification Code") %}
+  <div class="mt-6">
+    <p class="mb-4 text-sm text-base-content/60">
+      {% blocktranslate with email=email %}We've sent a code to <a class="underline" href="mailto:{{ email }}">{{ email }}</a>. The code expires shortly, so please enter it soon.{% endblocktranslate %}
+    </p>
+    {% url 'account_email_verification_sent' as form_action %}
+    {% fragment "form.html" action=form_action %}
+      {{ verify_form }}
+      {{ redirect_field }}
+      <div class="flex flex-wrap gap-3">
+        <button type="submit" class="btn btn-primary">{% translate "Confirm" %}</button>
+        {% if can_resend %}
+          <button type="submit" form="resend" class="btn btn-secondary">{% translate "Request new code" %}</button>
+        {% endif %}
+        {% if cancel_url %}
+          <a href="{{ cancel_url }}" class="btn btn-secondary">{% translate "Cancel" %}</a>
+        {% else %}
+          <button type="submit" form="logout-from-stage" class="btn btn-secondary">{% translate "Cancel" %}</button>
+        {% endif %}
+      </div>
+    {% endfragment %}
+    <form id="resend" method="post" action="{% url 'account_email_verification_sent' %}">
+      <input type="hidden" name="action" value="resend" />
+      {{ redirect_field }}
+      {% csrf_token %}
+    </form>
+    {% if not cancel_url %}
+      <form id="logout-from-stage" method="post" action="{% url 'account_logout' %}">
+        <input type="hidden" name="next" value="{% url 'account_login' %}" />
         {% csrf_token %}
       </form>
-      {% if not cancel_url %}
-        <form id="logout-from-stage" method="post" action="{% url 'account_logout' %}">
-          <input type="hidden" name="next" value="{% url 'account_login' %}" />
-          {% csrf_token %}
-        </form>
-      {% endif %}
-      {% if can_change %}
-        <details class="mt-8" {% if change_form.errors %}open{% endif %}>
-          <summary class="text-sm font-medium cursor-pointer text-base-content/70">
-            {% translate "Use a different email address" %}
-          </summary>
-          {% fragment "form.html" action=form_action class="mt-4 space-y-4" %}
-            {{ change_form }}
-            {{ redirect_field }}
-            {% fragment "form.html#buttons" %}
-              <button type="submit" name="action" value="change" class="btn btn-primary">{% translate "Change" %}</button>
-            {% endfragment %}
+    {% endif %}
+    {% if can_change %}
+      <details class="mt-8" {% if change_form.errors %}open{% endif %}>
+        <summary class="text-sm font-medium cursor-pointer text-base-content/70">
+          {% translate "Use a different email address" %}
+        </summary>
+        {% fragment "form.html" action=form_action class="mt-4 space-y-4" %}
+          {{ change_form }}
+          {{ redirect_field }}
+          {% fragment "form.html#buttons" %}
+            <button type="submit" name="action" value="change" class="btn btn-primary">{% translate "Change" %}</button>
           {% endfragment %}
-        </details>
-      {% endif %}
-    </div>
+        {% endfragment %}
+      </details>
+    {% endif %}
+  </div>
 {% endblock account_content %}

@@ -83,14 +83,18 @@ class TestRenderPaginatedResponse:
     def test_custom_config_target(self, rf):
         config = PaginationConfig(target="my-list", partial="my-list")
         request = self._make_request(rf, htmx_target="my-list")
-        response = render_paginated_response(request, "template.html", [], config=config)
+        response = render_paginated_response(
+            request, "template.html", [], config=config
+        )
         assert response.template_name == "template.html#my-list"
         assert response.context_data["pagination_config"].target == "my-list"
 
     def test_custom_paginator_per_page(self, rf):
         request = self._make_request(rf)
         config = PaginationConfig(paginator=Paginator([1, 2, 3, 4, 5], 2))
-        response = render_paginated_response(request, "template.html", [], config=config)
+        response = render_paginated_response(
+            request, "template.html", [], config=config
+        )
         assert response.context_data["paginator"].per_page == 2
 
     def test_queryset_compatible(self, rf):
@@ -98,7 +102,9 @@ class TestRenderPaginatedResponse:
         from {{ package_name }}.users.models import User
 
         request = self._make_request(rf)
-        response = render_paginated_response(request, "template.html", User.objects.none())
+        response = render_paginated_response(
+            request, "template.html", User.objects.none()
+        )
         assert response.context_data["page"].number == 1
 
     def test_custom_page_param(self, rf):
@@ -106,5 +112,7 @@ class TestRenderPaginatedResponse:
         request.htmx = HtmxDetails(request)
         items = list(range(10))
         config = PaginationConfig(param="p", paginator=Paginator(items, 3))
-        response = render_paginated_response(request, "template.html", items, config=config)
+        response = render_paginated_response(
+            request, "template.html", items, config=config
+        )
         assert response.context_data["page"].number == 2

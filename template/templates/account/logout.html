@@ -4,15 +4,15 @@
 {% block title %}{% title_tag _("Sign Out") %}{% endblock %}
 
 {% block account_content %}
-    {% include "header.html" with title=_("Sign Out") %}
-    <div class="mt-6">
-      <p class="mb-6 text-sm text-base-content/60">
-        {% translate "Are you sure you want to sign out?" %}
-      </p>
-      <form method="post" action="{% url 'account_logout' %}">
-        {% csrf_token %}
-        {{ redirect_field }}
-        <button type="submit" class="btn btn-primary">{% translate "Sign Out" %}</button>
-      </form>
-    </div>
+  {% include "header.html" with title=_("Sign Out") %}
+  <div class="mt-6">
+    <p class="mb-6 text-sm text-base-content/60">
+      {% translate "Are you sure you want to sign out?" %}
+    </p>
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      {{ redirect_field }}
+      <button type="submit" class="btn btn-primary">{% translate "Sign Out" %}</button>
+    </form>
+  </div>
 {% endblock account_content %}

@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
-    {% block title %}{% title_tag %}{% endblock title %}
+    {% block title %}{% title_tag %}{% endblock %}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {% meta_tags %}
@@ -11,28 +11,28 @@
     <script src="{% static 'vendor/htmx.js' %}"></script>
     <script src="{% static 'vendor/alpine.js' %}" defer></script>
   </head>
-  <body class="bg-base-100 text-base-content min-h-screen">
+  <body class="min-h-screen bg-base-100 text-base-content">
     <div id="hx-indicator" x-data="hxIndicator"></div>
     {% include "messages.html" %}
     {% include "navbar.html" %}
-    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main class="py-8 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
       {% block content %}
       {% endblock content %}
     </main>
     {% cookie_banner %}
     {% block scripts %}
-    <script src="{% static 'indicator.js' %}"></script>
-    <script nonce="{{ csp_nonce }}">
-      document.addEventListener('htmx:before:request', (evt) => {
-        evt.detail.ctx?.target?.setAttribute('aria-busy', 'true');
-      });
-      document.addEventListener('htmx:finally:request', (evt) => {
-        evt.detail.ctx?.target?.removeAttribute('aria-busy');
-      });
-      if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('{% static "service-worker.js" %}')
-      }
-    </script>
+      <script src="{% static 'indicator.js' %}"></script>
+      <script nonce="{{ csp_nonce }}">
+        document.addEventListener('htmx:before:request', (evt) => {
+          evt.detail.ctx?.target?.setAttribute('aria-busy', 'true');
+        });
+        document.addEventListener('htmx:finally:request', (evt) => {
+          evt.detail.ctx?.target?.removeAttribute('aria-busy');
+        });
+        if (typeof navigator.serviceWorker !== 'undefined') {
+          navigator.serviceWorker.register('{% static "service-worker.js" %}')
+        }
+      </script>
     {% endblock scripts %}
   </body>
 </html>

@@ -25,7 +25,9 @@ def delete_account(request: AuthenticatedHttpRequest) -> TemplateResponse:
 
 @require_form_methods
 @login_required
-def delete_account_confirm(request: AuthenticatedHttpRequest) -> RenderOrRedirectResponse:
+def delete_account_confirm(
+    request: AuthenticatedHttpRequest,
+) -> RenderOrRedirectResponse:
     """Show the final confirmation page; handle POST to anonymise and log out."""
     if request.method == "POST":
         anonymise_user(request.user)

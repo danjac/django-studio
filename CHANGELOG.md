@@ -1,0 +1,27 @@
+# Changelog
+
+User-visible changes to the django-studio template. `/dj-sync` shows the entries
+added since your project's last update before it runs `copier update`.
+
+Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
+`date +%y.%V.%u`), one section per day.
+
+## 26.39.6 - 2026-09-26
+
+### Added
+
+- `/dj-sync` shows the changelog entries since your project's template commit
+  before running `copier update`.
+
+### Changed
+
+- `config/settings.py` no longer sets `DEFAULT_AUTO_FIELD`; `BigAutoField` is the
+  Django 6 default.
+- Template sources are formatted by the generated project's own pre-commit hooks,
+  so the first `pre-commit run --all-files` modifies no files. Expect formatting-only
+  conflicts in templates and Python modules on your next sync.
+
+### Fixed
+
+- `/dj-create-crud`: the delete button sends the CSRF header, so deleting no longer
+  fails with 403.

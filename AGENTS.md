@@ -265,6 +265,20 @@ it to the parenthesised form — that is wrong. The parenthesised form is the
 pre-3.14 style; the unparenthesised form is now correct.
 See [pyright#10546](https://github.com/microsoft/pyright/issues/10546) for upstream tracking.
 
+## Changelog
+
+`CHANGELOG.md` records user-visible template changes; `/dj-sync` shows generated
+projects the entries added since their last sync.
+
+- With every user-visible `template/` change (code, templates, settings, skills,
+  generated docs), add a bullet in the same commit under today's section, creating
+  it if needed: `## <date +%y.%V.%u> - <YYYY-MM-DD>` with Keep-a-Changelog
+  headings (`Added` / `Changed` / `Fixed` / `Removed`).
+- Repo tooling, tests, evals and CI earn no entry.
+- Call out changes likely to conflict on `copier update` (settings, renamed or
+  removed files) under **Changed** or **Removed**.
+- When the file grows past about 200 lines, delete the oldest sections.
+
 ## Git Workflow
 
 When the user requests any change — feature, bug fix, or otherwise — **always

@@ -577,6 +577,24 @@ if env.bool("USE_DEBUG_TOOLBAR", default=False):
 if env.bool("USE_REMOVALS", default=False):
     INSTALLED_APPS += ["django_removals"]
 
+# Zeal: N+1 query detection
+# https://github.com/taobojlen/django-zeal
+
+if env.bool("USE_ZEAL", default=False):
+    INSTALLED_APPS += ["zeal"]
+
+    MIDDLEWARE += ["zeal.middleware.zeal_middleware"]
+
+    # Raise in tests (ZEAL_RAISE=true in the pytest env); warn in development
+    ZEAL_RAISE = env.bool("ZEAL_RAISE", default=False)
+
+    # Repeated .get() calls inside Django and allauth that zeal reports as N+1s.
+    # These are a fixed number of lookups per request, not one per row.
+    ZEAL_ALLOWLIST = [
+        {"model": "sessions.Session", "field": "get()"},
+        {"model": "account.EmailAddress", "field": "get()"},
+    ]
+
 # TranslateBot
 # https://github.com/gettranslatebot/translatebot-django
 

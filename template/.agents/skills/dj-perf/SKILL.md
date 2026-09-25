@@ -18,6 +18,9 @@ Scan all `views.py` and `models.py` files under `<package_name>/`.
 
 See `docs/django-models.md` (Fetch modes) for Django 6.1 fetch modes.
 
+django-zeal already fails tests on N+1s in the code paths they exercise (see
+`docs/testing.md`, N+1 Detection). Focus on views and querysets without tests.
+
 Flag as **CRITICAL** any queryset that:
 - Iterates over a queryset in a template or view and accesses a `ForeignKey`,
   `OneToOneField`, or deferred field without `select_related`, `only()`

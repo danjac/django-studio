@@ -3,11 +3,19 @@ from django.contrib.auth.signals import user_logged_in
 from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.http import HttpResponse
+from zeal import zeal_context
 
 
 @pytest.fixture
 def site():
     return Site.objects.get_current()
+
+
+@pytest.fixture(autouse=True)
+def _zeal():
+    """Raise ZealError on N+1 queries in every test, not only in requests."""
+    with zeal_context():
+        yield
 
 
 @pytest.fixture(autouse=True)

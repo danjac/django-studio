@@ -78,8 +78,8 @@ For local development, use Mailpit:
 mailpit:
   image: axllent/mailpit:v1.27
   ports:
-    - "8025:8025"  # Web UI
-    - "1025:1025"  # SMTP
+    - "${MAILPIT_WEB_PORT:-8025}:8025"  # Web UI
+    - "${MAILPIT_SMTP_PORT:-1025}:1025"  # SMTP
 ```
 
 The default `EMAIL_URL=smtp://localhost:1025` sends mail to Mailpit. To print

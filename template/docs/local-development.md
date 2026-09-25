@@ -6,6 +6,7 @@ This project uses Docker Compose for local services and `just` for command autom
 
 - [Quick Start](#quick-start)
 - [Docker Compose Services](#docker-compose-services)
+- [Running Several Checkouts](#running-several-checkouts)
 - [Just Commands](#just-commands)
 - [Environment Configuration](#environment-configuration)
 - [Running Migrations](#running-migrations)
@@ -42,23 +43,46 @@ services:
     environment:
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
 
   redis:
     image: redis:8.2.2-bookworm
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
 
   mailpit:
     image: axllent/mailpit:v1.27
     ports:
-      - "8025:8025"  # Web UI
-      - "1025:1025"  # SMTP
+      - "${MAILPIT_WEB_PORT:-8025}:8025"  # Web UI
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"  # SMTP
 ```
+
+## Running Several Checkouts
+
+Docker Compose names each stack after its directory, so every checkout (for example a
+git worktree) gets its own containers and `pg_data` volume. Only the host ports clash.
+Compose reads the same `.env` as Django, so give each extra checkout its own ports in
+its `.env`, and point the URLs at them:
+
+```bash
+# .env in a second checkout
+POSTGRES_PORT=5433
+REDIS_PORT=6380
+MAILPIT_WEB_PORT=8026
+MAILPIT_SMTP_PORT=1026
+DATABASE_URL=postgresql://postgres:password@127.0.0.1:5433/postgres
+REDIS_URL=redis://127.0.0.1:6380/0
+EMAIL_URL=smtp://localhost:1026
+```
+
+Run the dev server on a free port with `just dj tailwind runserver 8001`.
+
+If two checkouts have the same directory name, also set `COMPOSE_PROJECT_NAME` in one
+`.env` so their containers and volumes stay separate.
 
 ## Just Commands
 
@@ -181,3 +205,5 @@ just pyinstall
 - **Mailpit**: http://localhost:8025 (catches emails sent in dev)
 - **PostgreSQL**: localhost:5432
 - **Redis**: localhost:6379
+
+These are the default ports. See [Running Several Checkouts](#running-several-checkouts) to change them.

@@ -22,7 +22,7 @@ services:
       timeout: 3s
       retries: 30
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
   redis:
     image: redis:8.2.2-bookworm
     stop_grace_period: "3s"
@@ -34,7 +34,7 @@ services:
       timeout: 3s
       retries: 30
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
   mailpit:
     image: axllent/mailpit:v1.27
     mem_limit: 100m
@@ -42,7 +42,7 @@ services:
     deploy: *default-deploy
     logging: *default-logging
     ports:
-      - "8025:8025"
-      - "1025:1025"
+      - "${MAILPIT_WEB_PORT:-8025}:8025"
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
 volumes:
   pg_data: {}

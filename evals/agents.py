@@ -9,6 +9,7 @@ import subprocess
 from typing import TYPE_CHECKING
 
 from cases import REPO_DIR
+from setup import BASELINE_TAG
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -38,7 +39,7 @@ REVIEW_RULES = f"""
 You are an independent reviewer. You did not build this project and have no
 knowledge of how it was built. Your tools are read-only.
 
-Files changed since the baseline commit (`git status --porcelain`):
+Files changed since the baseline commit, including any commits made during the run:
 
 ```
 {{changed_files}}
@@ -74,9 +75,9 @@ def run_build(
         "--output-format",
         "stream-json",
         "--verbose",
+        "--plugin-dir",
+        str(PLUGIN_DIR),
     ]
-    if case.bootstrap:
-        command += ["--plugin-dir", str(PLUGIN_DIR)]
     if model:
         command += ["--model", model]
     with transcript.open("w") as out:
@@ -104,13 +105,7 @@ def run_review(case: Case, project: Path, build_output: str, model: str | None) 
     if case.bootstrap:
         changed = "(new project: every file was generated in this run)"
     else:
-        changed = subprocess.run(
-            ["git", "status", "--porcelain"],
-            cwd=project,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
+        changed = changed_files(project)
     prompt = (case.review + REVIEW_RULES).replace(
         "{changed_files}", changed or "(none)"
     )
@@ -137,6 +132,25 @@ def run_review(case: Case, project: Path, build_output: str, model: str | None) 
         check=False,
     )
     return review.stdout.strip() or review.stderr.strip()
+
+
+def changed_files(project: Path) -> str:
+    """List files changed since the baseline tag, committed or not, and new files."""
+
+    def git(*args: str) -> str:
+        return subprocess.run(
+            ["git", *args],
+            cwd=project,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+
+    changed = git("diff", "--name-status", BASELINE_TAG)
+    untracked = git("ls-files", "--others", "--exclude-standard")
+    return (
+        changed + "".join(f"A\t{path}\n" for path in untracked.splitlines())
+    ).strip()
 
 
 def last_line(text: str) -> str:

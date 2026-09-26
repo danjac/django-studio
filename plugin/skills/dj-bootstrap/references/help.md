@@ -15,8 +15,8 @@ directory it generates into `./<project_slug>`. Requires `uv`, `just`, `docker`
 and `gh`.
 
 The generated project is the same as `uvx copier copy` with the same answers, so
-`copier update` and `/dj-sync` work on it. The product answers are saved to
-`.django_studio/brief.md` in the new project.
+`copier update` and `/dj-sync` work on it. The product answers are written to
+`docs/this-project.md` in the new project and committed with it.
 
 Example:
   /dj-bootstrap "recipe sharing site for home cooks"

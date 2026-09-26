@@ -267,17 +267,25 @@ Other rules that commonly apply:
 
 ## Claude Code Plugin
 
-`plugin/` is a Claude Code plugin that ships one skill, `/dj-bootstrap`
-(`plugin/skills/dj-bootstrap/`): a conversational front end to `copier copy` for starting
-a new project. It is not copied into generated projects. `.claude-plugin/marketplace.json`
-publishes it with a `git-subdir` source, so installing it fetches only `plugin/`.
+`plugin/` is a Claude Code plugin with two skills. It is not copied into generated
+projects. `.claude-plugin/marketplace.json` publishes it with a `git-subdir` source,
+so installing it fetches only `plugin/`.
+
+- `/dj-bootstrap` (`plugin/skills/dj-bootstrap/`): a conversational front end to
+  `copier copy`. It records the product interview in the new project's
+  `docs/this-project.md`.
+- `/dj-kickoff` (`plugin/skills/dj-kickoff/`): shapes the new project from
+  `docs/this-project.md` by following the project's own `dj-*` skills. It must not
+  copy their instructions: when a template skill changes, check that the
+  kickoff's hand-off still fits it.
 
 Plugin skills follow the same `SKILL.md` + `references/help.md` layout as the
 template skills. `/dj-bootstrap` passes each `copier.yml` question as `--data`, so when you
 add, rename or remove a Copier question, update the skill too;
 `tests/test_plugin.py` checks this and runs `claude plugin validate` on both
 manifests when the `claude` CLI is installed.
-Run `just eval 04` after changing the skill.
+Run `just eval 04` after changing `/dj-bootstrap`, and `just eval 05` after changing
+`/dj-kickoff` or a skill it follows.
 
 ## Python 3.14 — `except` Without Parentheses (PEP 758)
 

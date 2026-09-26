@@ -12,8 +12,13 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 - A `django-studio` Claude Code plugin with a `/dj-bootstrap` skill: a conversational
   front end to `copier copy` that asks for the Copier answers and a few product
-  questions, generates the project, runs `just check-all` and makes the first
-  commit. See "With Claude Code" in the README.
+  questions, generates the project, records the product answers in
+  `docs/this-project.md`, runs `just check-all` and makes the first commit. See
+  "With Claude Code" in the README.
+- `/dj-kickoff` in the plugin: shapes a new project from `docs/this-project.md` by
+  following the project's own skills: `User` model changes, domain apps and models
+  (after you confirm the breakdown), extra UI languages, and the app docs. Each
+  step can be skipped; it commits when `just check-all` passes.
 - A placeholder favicon: the site name's initial in the PWA colours, served at
   `/favicon.svg` and `/favicon.ico`, linked from `base.html` and listed in
   `manifest.json`. Customise it in `templates/favicon.svg` (see `docs/design.md`).

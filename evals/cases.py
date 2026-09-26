@@ -9,8 +9,8 @@ from pathlib import Path
 REPO_DIR = Path(__file__).resolve().parent.parent
 CASES_DIR = REPO_DIR / "evals" / "cases"
 
-# A case whose prompt starts with this runs in an empty directory with the
-# plugin loaded, instead of in a pre-rendered project.
+# A case whose prompt starts with this runs in an empty directory instead of in
+# a pre-rendered project.
 BOOTSTRAP_SKILL = "/dj-bootstrap"
 
 

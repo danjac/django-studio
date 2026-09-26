@@ -1,0 +1,31 @@
+**/dj-kickoff [project_path]**
+
+Gives a new django-studio project its first shape from the product overview in
+`docs/this-project.md`, which `/dj-bootstrap` writes from its interview.
+
+Runs these steps, each of which you can skip:
+
+1. User model: proposes `User` fields the overview calls for (usually none).
+2. Domain apps and models: proposes an app and model breakdown from the core
+   entities, and which models get CRUD views. Nothing is generated until you
+   confirm it.
+3. Languages: sets up each extra UI language. Translation needs a TranslateBot
+   key; without one, run `/dj-localize <locale>` later.
+4. Project docs: runs `/dj-doc` to fill in the app map and app READMEs.
+5. Optional features: points to the docs for a planned API, webhooks or
+   background tasks. It doesn't build them.
+
+Each step follows the project's own `/dj-*` skill. The skill runs
+`just check-all` and commits when it passes.
+
+`/dj-bootstrap` offers to run it at the end. You can also run it later from
+inside the project. If `docs/this-project.md` is still the template stub, it asks
+the product questions first.
+
+Arguments:
+  project_path   Optional path to the project root. Default: the current
+                 directory.
+
+Examples:
+  /dj-kickoff
+  /dj-kickoff recipe_box

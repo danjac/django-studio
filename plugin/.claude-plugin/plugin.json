@@ -1,0 +1,12 @@
+{
+  "name": "django-studio",
+  "description": "Conversational front end to the django-studio Copier template",
+  "author": {
+    "name": "Dan Jacob",
+    "url": "https://github.com/danjac"
+  },
+  "homepage": "https://github.com/danjac/django-studio",
+  "repository": "https://github.com/danjac/django-studio",
+  "license": "MIT",
+  "keywords": ["django", "copier", "scaffold", "htmx"]
+}

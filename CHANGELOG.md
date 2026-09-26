@@ -17,6 +17,19 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 - `/djs-create-crud`'s list view HTMX test sends `HX-Target: pagination`, the
   paginator's default target. It sent `<model>-list`, so the test got the full page
   and never checked the partial.
+- The debug toolbar keeps its styles after an HTMX redirect (`HX-Location`) swaps
+  in a new page. htmx moves the toolbar's `hx-preserve` root with `moveBefore()`,
+  and Chromium drops the stylesheets of a moved `<link>`; in `DEBUG`, `base.html`
+  re-adds them after each swap.
+- `base.html` no longer triggers a Content-Security-Policy error after an
+  `HX-Location` swap.
+
+### Changed
+
+- `base.html` loads its site-wide scripts (`indicator.js` and the inline HTMX and
+  service worker listeners) in `<head>` instead of `{% block scripts %}`, so body
+  swaps don't run them again. `{% block scripts %}` is now empty by default.
+  Expect a conflict if you edited that block in `base.html`.
 
 ## 26.39.6 - 2026-09-26
 

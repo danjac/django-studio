@@ -126,8 +126,12 @@ to make the checks pass.
 
 ```bash
 git add -A
-git commit -m "Initial commit from django-studio"
+SKIP=helm-lint,terraform_fmt,terraform_validate git commit -m "chore: initial commit from django-studio"
 ```
+
+`SKIP` leaves out the hooks that need Helm and Terraform. They are deployment tools
+the user may not have installed yet, and the hooks run again on later commits
+that change `helm/` or `terraform/`.
 
 Ask whether to create a GitHub repository. It publishes the code, so wait for a
 yes, and ask whether it should be private (the default) or public:
@@ -138,8 +142,9 @@ gh repo create <project_slug> --private --source=. --push
 
 Then print the next steps:
 
-1. `cd <target>` (if it is a subdirectory) and start a new Claude Code session there,
-   so the project's own `/dj-*` skills and docs load.
+1. Quit Claude Code, then `cd <target>` (when it is a subdirectory) and start
+   Claude Code again. The project's own `/dj-*` skills and docs load only in a
+   session started in the project.
 2. `just dj set_default_site localhost:8000 "<project_name>"`
 3. `just dj createsuperuser`
 4. `just serve`, then open http://localhost:8000

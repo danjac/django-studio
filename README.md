@@ -228,6 +228,7 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | `/dj-sync`     | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
 | `/dj-feedback` | Report a bug or improvement against the django-studio template                    |
 | `/dj-doc`      | Create or update project-specific docs: domain, apps, rules, APIs, integrations   |
+| `/dj-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs (plugin; see [With Claude Code](#with-claude-code)) |
 
 **Generators**
 

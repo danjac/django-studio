@@ -8,7 +8,7 @@ checks the result. The project is identical to one made with `uvx copier copy`, 
 `copier update` and `/dj-sync` work on it.
 
 Arguments: `$ARGUMENTS` — a free-text description of the project, e.g.
-`"recipe-sharing site for home cooks, EU hosted"`. May be empty.
+`"recipe sharing site for home cooks"`. May be empty.
 
 **Never ask for something the arguments or earlier answers already give.** Before each
 question, check whether the prompt states or clearly implies the answer, and use it.

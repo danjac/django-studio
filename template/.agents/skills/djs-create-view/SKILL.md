@@ -7,6 +7,13 @@ Add a view, template, and URL following HTMX conventions.
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Templates `{% load i18n %}` and wrap all
+text, page titles included, in `{% translate %}` or `{% blocktranslate %}`. Messages
+and other strings in the view use `gettext as _`.
 
 **Parsing arguments:**
 

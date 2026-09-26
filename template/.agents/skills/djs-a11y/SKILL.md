@@ -174,7 +174,7 @@ Check for a test file `tests/e2e/test_accessibility.py` and flag as
 ```
 VIOLATION (WCAG 2.1 AA failure — fix before going live):
   [icons] templates/base.html:42 — <button> contains only a trash icon with no aria-label
-    Fix: <button type="button" aria-label="Delete post">
+    Fix: <button type="button" aria-label="{% translate "Delete post" %}">
   [semantic] templates/search.html:18 — <div @click="..."> is not keyboard-operable
     Fix: replace with <button type="button">
   ...

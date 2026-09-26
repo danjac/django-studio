@@ -64,5 +64,12 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Fixed
 
+- Generated code marks all user-visible strings for translation, even in an
+  English-only project. `/djs-create-model` wraps field and `Meta` verbose names,
+  `help_text` and choice labels in `gettext_lazy`, and `/djs-create-crud` wraps
+  its template text in `{% translate %}`; before, their examples used bare
+  strings. Every `create-*` skill now points to `docs/localization.md`. Check
+  models and templates generated earlier for bare strings before you add a
+  language: `just dj makemessages -l <locale>` only picks up marked strings.
 - `/dj-create-crud`: the delete button sends the CSRF header, so deleting no longer
   fails with 403.

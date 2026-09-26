@@ -11,6 +11,14 @@ Design and write a Django model with recipe, fixture, and model tests.
 - `docs/python-style-guide.md`
 - `<package_name>/<app_name>/models.py` — existing models and patterns
 - `<package_name>/<app_name>/tests/recipes.py` — existing recipes
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Wrap every field `verbose_name` and
+`help_text`, each choice label (`DRAFT = "draft", _("Draft")`), and
+`Meta.verbose_name` / `verbose_name_plural` in `_()`, imported as
+`from django.utils.translation import gettext_lazy as _`.
 
 ---
 
@@ -41,7 +49,7 @@ If **no**, ask:
 2. Field type. If the user says **UUID** or **UUIDField**:
    - Ask: `Generator function?  [default: uuid.uuid4]`
    - Use `models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False,
-     verbose_name="<name>")`
+     verbose_name=_("<name>"))`
    - No further questions needed.
    - For any other non-default PK type, ask for options as needed.
 
@@ -60,8 +68,8 @@ If **yes**, ask:
 If yes to defaults, use:
 
 ```python
-created = models.DateTimeField(auto_now_add=True, verbose_name="created")
-updated = models.DateTimeField(auto_now=True, verbose_name="updated")
+created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"))
+updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
 ```
 
 If no, ask for the preferred names and use those.
@@ -84,13 +92,13 @@ For each field the user gives:
 - `ManyToManyField`: `blank=True`
 - `UUIDField` (non-PK): `editable=False`, `unique=True` — user can override either
 - `verbose_name`: infer from field name (snake_case → space-separated lowercase),
-  unless the user specifies otherwise
+  unless the user specifies otherwise, and wrap it in `_()`
 
 **Type-specific follow-ups:**
 
 | Type | Ask |
 |------|-----|
-| `CharField` | If the field name implies a finite set of values (e.g. `status`, `state`, `type`, `kind`, `category`, `role`), ask: *"Does this field use a fixed set of choices? [Y/n]"* — if yes, prompt for the choice values (e.g. `pending`, `active`, `closed`), generate a `TextChoices` inner class named `<FieldName>` (e.g. `Status`), and set `max_length` to the length of the longest choice value (no need to ask). Otherwise ask `max_length` directly. |
+| `CharField` | If the field name implies a finite set of values (e.g. `status`, `state`, `type`, `kind`, `category`, `role`), ask: *"Does this field use a fixed set of choices? [Y/n]"* — if yes, prompt for the choice values (e.g. `pending`, `active`, `closed`), generate a `TextChoices` inner class named `<FieldName>` (e.g. `Status`) with a translated label for each member (`DRAFT = "draft", _("Draft")`), and set `max_length` to the length of the longest choice value (no need to ask). Otherwise ask `max_length` directly. |
 | `IntegerField` | If the field name implies a finite set of values, ask: *"Does this field use a fixed set of choices? [Y/n]"* — if yes, prompt for the choice values and generate an `IntegerChoices` inner class. |
 | `DecimalField` | `max_digits`? `decimal_places`? If the field name implies currency (e.g. `price`, `cost`, `amount`, `fee`), ask: *"Use `MoneyField` from django-money instead? [Y/n]  (see `docs/packages.md`)"* — if yes, confirm the package is installed (`uv add django-money`) and use `from djmoney.models.fields import MoneyField`. |
 | `ForeignKey` / `OneToOneField` | Target model (and app if ambiguous)? `on_delete`? (default `PROTECT` — see `docs/django-models.md#on_delete`; `CASCADE` only for an owned child, `SET_NULL` only for a nullable informational reference, and either one needs a comment saying why) `related_name`? (suggest `<model_lower>s`) |
@@ -126,7 +134,8 @@ Ask each of these separately, in order:
 2. **Uniqueness** — `unique=True` on any fields, or a
    `UniqueConstraint(fields=[...], name="...")` in `Meta`?
 
-3. **Help text** — any fields needing `help_text` for the admin or forms?
+3. **Help text** — any fields needing `help_text` for the admin or forms? Wrap
+   each in `_()`.
 
 4. **Non-editable fields** — any additional fields that should be
    `editable=False`? (UUID fields are already set automatically; no need to
@@ -153,14 +162,14 @@ before writing any code:
 Model: <model_name>  →  <package_name>/<app_name>/models.py
 
   <pk_name>   <PKFieldType>(primary_key=True, ...)   ← always shown
-  <field>     <FieldType>(<options>, verbose_name="...")
+  <field>     <FieldType>(<options>, verbose_name=_("..."))
   …
   created     DateTimeField(auto_now_add=True, ...)   ← if timestamps
   updated     DateTimeField(auto_now=True, ...)
 
   Meta:
-    verbose_name        = "<verbose_name>"
-    verbose_name_plural = "<verbose_name_plural>"
+    verbose_name        = _("<verbose_name>")
+    verbose_name_plural = _("<verbose_name_plural>")
     indexes             = [...]   ← only if requested
     constraints         = [...]   ← only if requested
 
@@ -190,22 +199,26 @@ Conventions:
   relations (e.g. use `self.event_id`, not `self.event`)
 - FK `related_name` must always be explicit — never rely on the Django default
 - Always include `class Meta` with `verbose_name` and `verbose_name_plural`
+- Mark every user-visible string with `_()` (`gettext_lazy`): field
+  `verbose_name` and `help_text`, choice labels, and the `Meta` names (see **Localization** under Required reading)
 - Never add `ordering` to Meta unless the user explicitly requested it
 - Use plain tuples for Meta sequences (e.g. `ordering = ("-created",)`) — no
   `ClassVar` annotation needed; see `docs/python-style-guide.md`
 
 ```python
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class <model_name>(models.Model):
     class <ChoiceName>(models.TextChoices):  # only if needed
-        ...
+        <MEMBER> = "<value>", _("<Label>")
 
-    <field_name> = models.<FieldType>(...)
+    <field_name> = models.<FieldType>(..., verbose_name=_("<verbose name>"))
 
-    # class Meta:
-    #     ordering = [...]  # only if user explicitly requested it
+    class Meta:
+        verbose_name = _("<verbose_name>")
+        verbose_name_plural = _("<verbose_name_plural>")
 
     def __str__(self) -> str:
         return ...  # use self fields only, never FK relations

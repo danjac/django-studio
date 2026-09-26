@@ -58,6 +58,22 @@ assert not Book._meta.ordering
 assert Book in admin.site._registry
 print("model assertions passed")
 '
+# Strings are marked for translation even though the project is English-only.
+uv run python manage.py shell -c '
+from django.apps import apps
+from django.utils.functional import Promise
+
+Book = apps.get_model("library", "Book")
+field = Book._meta.get_field
+
+for name in ("title", "isbn", "status", "owner", "published_on", "created", "updated"):
+    assert isinstance(field(name).verbose_name, Promise), f"{name} verbose_name not lazy"
+assert isinstance(Book._meta.verbose_name, Promise), "Meta.verbose_name not lazy"
+assert isinstance(Book._meta.verbose_name_plural, Promise), "Meta.verbose_name_plural not lazy"
+for value, label in field("status").choices:
+    assert isinstance(label, Promise), f"status choice {value} label not lazy"
+print("translation assertions passed")
+'
 grep -q "BookRecipe" my_app/library/tests/recipes.py
 grep -q "def book" my_app/library/tests/fixtures.py
 grep -q "my_app.library.tests.fixtures" conftest.py

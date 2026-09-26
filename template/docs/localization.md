@@ -102,6 +102,10 @@ context processor — `lang.name_local` gives the native language name:
 
 ## Marking strings for translation
 
+Mark every user-visible string, even when the project has one language. Adding a
+language later then only needs `makemessages` and translation, not a hunt for
+unmarked strings.
+
 ### Python
 
 ```python
@@ -148,9 +152,20 @@ translated at the point of use (not at import time):
 from django.utils.translation import gettext_lazy as _
 
 class Article(models.Model):
-    title = models.CharField(_("title"), max_length=255)
+    class Status(models.TextChoices):
+        DRAFT = "draft", _("Draft")
+        PUBLISHED = "published", _("Published")
+
+    title = models.CharField(_("title"), max_length=255, help_text=_("Shown in lists"))
     body = models.TextField(_("body"))
+    status = models.CharField(_("status"), max_length=9, choices=Status)
+
+    class Meta:
+        verbose_name = _("article")
+        verbose_name_plural = _("articles")
 ```
+
+Mark `help_text`, choice labels and the `Meta` names the same way.
 
 ### Forms
 

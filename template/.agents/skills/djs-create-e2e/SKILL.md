@@ -7,6 +7,13 @@ Write one or more Playwright E2E tests that cover a described user interaction.
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Find elements by the default-language text
+the templates render (`get_by_role("button", name="Save")`). Tests run in the
+default language, so they need no translation calls.
 
 **Step 1 — Gather requirements**
 

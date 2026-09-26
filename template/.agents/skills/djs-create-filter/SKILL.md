@@ -8,6 +8,13 @@ See `docs/django-templates.md` for filter conventions and testing patterns.
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Text the filter adds to its output (labels,
+units, fallbacks such as "None") uses `gettext`, called inside the filter so it
+follows the active language.
 
 **Parsing arguments:**
 

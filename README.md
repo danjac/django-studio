@@ -140,6 +140,11 @@ Then follow the prompts:
 
 Copier prints the setup steps when it finishes.
 
+To get the same guided start as `/dj-bootstrap`, install the plugin (step 1 above)
+and run `/dj-kickoff` in the new project. It installs and commits the scaffold if
+you haven't yet, asks the product questions, and records the answers in
+`docs/this-project.md` before shaping the project.
+
 ### Generating from a branch
 
 To generate from a specific branch (e.g. to test a pre-release feature):

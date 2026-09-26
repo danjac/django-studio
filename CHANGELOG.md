@@ -18,7 +18,8 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 - `/dj-kickoff` in the plugin: shapes a new project from `docs/this-project.md` by
   following the project's own skills: `User` model changes, domain apps and models
   (after you confirm the breakdown), extra UI languages, and the app docs. Each
-  step can be skipped; it commits when `just check-all` passes.
+  step can be skipped; it commits when `just check-all` passes. It also works on
+  a project made with `copier copy`.
 - A placeholder favicon: the site name's initial in the PWA colours, served at
   `/favicon.svg` and `/favicon.ico`, linked from `base.html` and listed in
   `manifest.json`. Customise it in `templates/favicon.svg` (see `docs/design.md`).

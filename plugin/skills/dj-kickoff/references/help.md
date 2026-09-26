@@ -21,8 +21,10 @@ Each step follows the project's own `/dj-*` skill. The skill runs
 `just check-all` and commits when it passes.
 
 `/dj-bootstrap` offers to run it at the end. You can also run it later from
-inside the project. If `docs/this-project.md` is still the template stub, it asks
-the product questions first.
+inside the project, including one made with `copier copy`: it runs
+`just install` and commits the scaffold if that hasn't happened yet, and if
+`docs/this-project.md` is still the template stub, it asks the product questions
+first.
 
 Arguments:
   project_path   Optional path to the project root. Default: the current

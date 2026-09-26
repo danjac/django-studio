@@ -1,6 +1,6 @@
 # Project brief
 
-Answers from the `/dj-new` interview. Write "not decided" for anything the user
+Answers from the `/dj-bootstrap` interview. Write "not decided" for anything the user
 skipped.
 
 ## Purpose

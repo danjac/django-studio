@@ -1,4 +1,4 @@
-**/dj-new [description]**
+**/dj-bootstrap [description]**
 
 Start a new django-studio project without running Copier yourself. The skill
 checks your tools, asks for the Copier answers and a few questions about the
@@ -19,4 +19,4 @@ The generated project is the same as `uvx copier copy` with the same answers, so
 `.django_studio/brief.md` in the new project.
 
 Example:
-  /dj-new "recipe-sharing site for home cooks, EU hosted"
+  /dj-bootstrap "recipe-sharing site for home cooks, EU hosted"

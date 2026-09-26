@@ -58,23 +58,7 @@ ask the user to confirm or change any of them.
 or installed package (e.g. not `test`, `django`, `site`). Propose a different slug if it
 does.
 
-## 3. Domain interview
-
-Ask about the product; Copier doesn't cover it. Skip anything the prompt already
-answers, and ask the rest in one or two rounds, not one question at a time:
-
-- Core entities: the main things users create, browse or manage
-- User roles, and what each can do
-- Public site, or login required for most pages
-- Languages the UI needs
-- Whether it needs a public API, incoming webhooks, or background tasks (email,
-  imports, scheduled jobs)
-
-The user may skip any question; record it as `_TODO_` in step 5. Keep the answers
-for step 5. Stack choices are fixed by the template, so don't ask about packages or
-frameworks.
-
-## 4. Generate
+## 3. Generate
 
 Run Copier with every answer passed as `--data`, quoting each value:
 
@@ -97,30 +81,17 @@ user asks for a specific template branch.
 
 If Copier fails, show the error and stop.
 
-## 5. Write the project overview
+## 4. Project overview
 
-Record the interview in `<target>/docs/this-project.md`, the project's permanent
-overview. It is committed with the scaffold, the project's `AGENTS.md` tells agents
-to read it, and `/dj-kickoff` and `/dj-doc` build on it later.
+Ask about the product and record the answers in `<target>/docs/this-project.md`,
+the project's permanent overview. It is committed with the scaffold, the project's
+`AGENTS.md` tells agents to read it, and `/dj-kickoff` and `/dj-doc` build on it.
 
-The generated file is a stub with guidance under each heading. Keep every heading
-and fill in these sections, replacing their guidance and placeholder rows:
+Follow `<target>/.agents/skills/dj-kickoff/references/overview.md` for the
+questions and how to fill in the page. Use what the prompt and the Copier answers
+already say (such as the purpose) instead of asking again.
 
-| Section | From the interview |
-| ------- | ------------------ |
-| Purpose | The one-line purpose, plus any detail the user gave |
-| Users and Roles | One table row per role, with what it can do |
-| Glossary | One entry per core entity: what it is and who creates it |
-| Key Decisions | One row each, dated today: public or login-only access, the UI languages (the first is the default), and the public API, incoming webhooks and background tasks, each as "planned" (with what for) or "not needed" |
-
-Write `_TODO: <what is missing>_` for anything the user skipped. Under Key Flows,
-replace the guidance with `_TODO: the main end-to-end journeys_`. Leave Apps and
-Integrations as they are: `/dj-doc` fills them from the code.
-
-Remove the `<!-- dj-doc: stub -->` line and the `> **Stub.**` note, so `/dj-doc`
-treats the page as written and keeps these answers.
-
-## 6. Smoke test
+## 5. Smoke test
 
 From the target directory, run each step in order and stop at the first failure:
 
@@ -137,7 +108,7 @@ generated project should pass every step, so a failure is a template bug: sugges
 reporting it with `/dj-feedback` from inside the project. Don't edit generated files
 to make the checks pass.
 
-## 7. Finish
+## 6. Finish
 
 `just install` has run `git init`. Make the first commit:
 
@@ -153,9 +124,11 @@ yes, and ask whether it should be private (the default) or public:
 gh repo create <project_slug> --private --source=. --push
 ```
 
-Ask whether to kick off the project now: `/dj-kickoff` turns
+Ask whether to kick off the project now: the project's `/dj-kickoff` skill turns
 `docs/this-project.md` into a user model, domain apps and models, and languages.
-If yes, run `/dj-kickoff <target>` and continue here when it finishes.
+If yes, follow `<target>/.agents/skills/dj-kickoff/SKILL.md` from the target
+directory, and continue here when it finishes. This session hasn't loaded the
+project's skills, so read the file rather than running the command.
 
 Then print the next steps:
 

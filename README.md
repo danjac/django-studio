@@ -92,19 +92,19 @@ project.
    The project comes with its own `/dj-*` skills and agent docs, which load only
    in a session started there.
 
-5. Give the project its first shape with `/dj-kickoff`, unless you already ran it
-   when `/dj-bootstrap` offered. It works from `docs/this-project.md`: it proposes
+5. Give the project its first shape with the project's `/dj-kickoff` skill, unless
+   you already ran it when `/dj-bootstrap` offered. It works from `docs/this-project.md`: it proposes
    changes to the `User` model, an app and model breakdown for your core entities
    (created only after you confirm it), sets up the extra languages, and fills in
    the rest of the project docs. Each step can be skipped, and it commits when
    `just check-all` passes.
 
-The plugin's skills are also available as `/django-studio:dj-bootstrap` and
-`/django-studio:dj-kickoff`, in case another plugin uses the same names.
+`/dj-bootstrap` is also available as `/django-studio:dj-bootstrap`, in case
+another plugin uses the same name.
 
 #### Updating the plugin
 
-The plugin only affects new projects. To get the latest `/dj-bootstrap` and `/dj-kickoff`, run:
+The plugin only affects new projects. To get the latest `/dj-bootstrap`, run:
 
 ```bash
 claude plugin marketplace update django-studio
@@ -140,10 +140,9 @@ Then follow the prompts:
 
 Copier prints the setup steps when it finishes.
 
-To get the same guided start as `/dj-bootstrap`, install the plugin (step 1 above)
-and run `/dj-kickoff` in the new project. It installs and commits the scaffold if
-you haven't yet, asks the product questions, and records the answers in
-`docs/this-project.md` before shaping the project.
+For a guided start, run `/dj-kickoff` in Claude Code inside the new project. It
+installs and commits the scaffold if you haven't yet, asks the product questions,
+and records the answers in `docs/this-project.md` before shaping the project.
 
 ### Generating from a branch
 
@@ -225,7 +224,7 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 | Command        | Summary                                                                           |
 | -------------- | --------------------------------------------------------------------------------- |
 | `/dj-bootstrap` | Start a new project: interview, run Copier, write `docs/this-project.md`, smoke test (Plugin skill: see [With Claude Code](#with-claude-code)) |
-| `/dj-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs (Plugin skill: see [With Claude Code](#with-claude-code)) |
+| `/dj-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
 | `/dj-help`     | List all dj-\* commands or show help for a specific command                       |
 | `/dj-sync`     | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
 | `/dj-feedback` | Report a bug or improvement against the django-studio template                    |

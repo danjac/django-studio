@@ -267,17 +267,20 @@ Other rules that commonly apply:
 
 ## Claude Code Plugin
 
-`plugin/` is a Claude Code plugin with two skills. It is not copied into generated
-projects. `.claude-plugin/marketplace.json` publishes it with a `git-subdir` source,
-so installing it fetches only `plugin/`.
+`plugin/` is a Claude Code plugin with one skill, `/dj-bootstrap`
+(`plugin/skills/dj-bootstrap/`): a conversational front end to `copier copy`. It is
+not copied into generated projects. `.claude-plugin/marketplace.json` publishes it
+with a `git-subdir` source, so installing it fetches only `plugin/`.
 
-- `/dj-bootstrap` (`plugin/skills/dj-bootstrap/`): a conversational front end to
-  `copier copy`. It records the product interview in the new project's
-  `docs/this-project.md`.
-- `/dj-kickoff` (`plugin/skills/dj-kickoff/`): shapes the new project from
-  `docs/this-project.md` by following the project's own `dj-*` skills. It must not
-  copy their instructions: when a template skill changes, check that the
-  kickoff's hand-off still fits it.
+After generating, `/dj-bootstrap` hands over to the new project's own skills: it
+writes `docs/this-project.md` by following
+`.agents/skills/dj-kickoff/references/overview.md`, and offers to run
+`/dj-kickoff` by following its `SKILL.md`. Keep project behaviour in those
+project files, not in the plugin.
+
+The root `README.md` lists `/dj-bootstrap` under General skills with a note that
+it's a plugin skill; it is the one command that `template/README.md.jinja` doesn't
+list.
 
 Plugin skills follow the same `SKILL.md` + `references/help.md` layout as the
 template skills. `/dj-bootstrap` passes each `copier.yml` question as `--data`, so when you

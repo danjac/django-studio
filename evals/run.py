@@ -39,6 +39,11 @@ LOGS_DIR = REPO_DIR / "evals" / "logs"
 
 PROJECT_NAME = "My App"
 
+# A case whose prompt starts with this runs in an empty directory with the
+# plugin loaded, instead of in a pre-rendered project.
+BOOTSTRAP_SKILL = "/dj-bootstrap"
+PLUGIN_DIR = REPO_DIR / "plugin"
+
 BUILD_TIMEOUT = 60 * 60
 REVIEW_TIMEOUT = 20 * 60
 
@@ -85,6 +90,11 @@ class Case:
     check: str
     review: str
     setup: str | None = None
+
+    @property
+    def bootstrap(self) -> bool:
+        """True when the case creates the project itself with /dj-bootstrap."""
+        return self.prompt.startswith(BOOTSTRAP_SKILL)
 
 
 @dataclass
@@ -163,7 +173,7 @@ def parse_case(path: Path) -> Case:
         raise SystemExit(f"{path.name}: missing sections {sorted(missing)}")
     return Case(
         name=path.stem,
-        prompt=sections["prompt"].strip(),
+        prompt=sections["prompt"].strip().replace("{template}", str(REPO_DIR)),
         check=sections["check"],
         review=sections["review"].strip(),
         setup=sections.get("setup"),
@@ -188,10 +198,17 @@ def run_case(case: Case, stamp: str, *, keep: bool, model: str | None) -> Result
         try:
             print("  setup...")
             section("SETUP", f"project: {project}\n")
-            setup_project(project, case, log)
+            env = {**os.environ}
+            if case.bootstrap:
+                # The skill writes .env itself; the project reads settings from
+                # .env without overriding the environment, and so does Compose.
+                project.mkdir()
+                env |= service_env(free_ports())
+            else:
+                setup_project(project, case, log)
 
             print("  build...")
-            output = run_build(case, project, transcript_path, model)
+            output = run_build(case, project, transcript_path, model, env)
             (workdir / "build-output.md").write_text(output)
             section("BUILD OUTPUT", output + "\n")
             result.build = bool(output)
@@ -200,10 +217,7 @@ def run_case(case: Case, stamp: str, *, keep: bool, model: str | None) -> Result
             check = subprocess.run(
                 ["bash", "-euo", "pipefail", "-c", case.check],
                 cwd=project,
-                env={
-                    **os.environ,
-                    "EVAL_BUILD_OUTPUT": str(workdir / "build-output.md"),
-                },
+                env={**env, "EVAL_BUILD_OUTPUT": str(workdir / "build-output.md")},
                 capture_output=True,
                 text=True,
             )
@@ -267,8 +281,19 @@ def setup_project(project: Path, case: Case, log) -> None:
 
 def write_env(project: Path) -> None:
     """Write .env with free host ports so runs never clash with other stacks."""
-    ports = {
-        name: free_port()
+    ports = free_ports()
+    env = (project / ".env.example").read_text()
+    env = env.replace("127.0.0.1:5432/", f"127.0.0.1:{ports['POSTGRES_PORT']}/")
+    env = env.replace("127.0.0.1:6379/", f"127.0.0.1:{ports['REDIS_PORT']}/")
+    env = env.replace("localhost:1025", f"localhost:{ports['MAILPIT_SMTP_PORT']}")
+    env += "".join(f"{name}={port}\n" for name, port in ports.items())
+    (project / ".env").write_text(env)
+
+
+def free_ports() -> dict[str, str]:
+    """Pick a free host port for each service Compose publishes."""
+    return {
+        name: str(free_port())
         for name in (
             "POSTGRES_PORT",
             "REDIS_PORT",
@@ -276,12 +301,18 @@ def write_env(project: Path) -> None:
             "MAILPIT_SMTP_PORT",
         )
     }
-    env = (project / ".env.example").read_text()
-    env = env.replace("127.0.0.1:5432/", f"127.0.0.1:{ports['POSTGRES_PORT']}/")
-    env = env.replace("127.0.0.1:6379/", f"127.0.0.1:{ports['REDIS_PORT']}/")
-    env = env.replace("localhost:1025", f"localhost:{ports['MAILPIT_SMTP_PORT']}")
-    env += "".join(f"{name}={port}\n" for name, port in ports.items())
-    (project / ".env").write_text(env)
+
+
+def service_env(ports: dict[str, str]) -> dict[str, str]:
+    """Environment variables pointing Compose and Django at the given ports."""
+    return {
+        **ports,
+        "DATABASE_URL": (
+            f"postgresql://postgres:password@127.0.0.1:{ports['POSTGRES_PORT']}/postgres"
+        ),
+        "REDIS_URL": f"redis://127.0.0.1:{ports['REDIS_PORT']}/0",
+        "EMAIL_URL": f"smtp://localhost:{ports['MAILPIT_SMTP_PORT']}",
+    }
 
 
 def free_port() -> int:
@@ -291,7 +322,13 @@ def free_port() -> int:
         return sock.getsockname()[1]
 
 
-def run_build(case: Case, project: Path, transcript: Path, model: str | None) -> str:
+def run_build(
+    case: Case,
+    project: Path,
+    transcript: Path,
+    model: str | None,
+    env: dict[str, str],
+) -> str:
     """Run the case prompt headless; return the agent's final message."""
     command = [
         "claude",
@@ -306,12 +343,15 @@ def run_build(case: Case, project: Path, transcript: Path, model: str | None) ->
         "stream-json",
         "--verbose",
     ]
+    if case.bootstrap:
+        command += ["--plugin-dir", str(PLUGIN_DIR)]
     if model:
         command += ["--model", model]
     with transcript.open("w") as out:
         subprocess.run(
             command,
             cwd=project,
+            env=env,
             stdout=out,
             stderr=subprocess.STDOUT,
             timeout=BUILD_TIMEOUT,
@@ -329,13 +369,16 @@ def run_build(case: Case, project: Path, transcript: Path, model: str | None) ->
 
 def run_review(case: Case, project: Path, build_output: str, model: str | None) -> str:
     """Run the independent reviewer; return its reply."""
-    changed = subprocess.run(
-        ["git", "status", "--porcelain"],
-        cwd=project,
-        capture_output=True,
-        text=True,
-        check=True,
-    ).stdout.strip()
+    if case.bootstrap:
+        changed = "(new project: every file was generated in this run)"
+    else:
+        changed = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=project,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
     prompt = (case.review + REVIEW_RULES).replace(
         "{changed_files}", changed or "(none)"
     )

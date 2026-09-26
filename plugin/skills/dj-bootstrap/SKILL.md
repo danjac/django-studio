@@ -91,7 +91,9 @@ uvx copier copy --trust --defaults \
     gh:danjac/django-studio <target>
 ```
 
-Add `--vcs-ref <branch>` only when the user asks for a specific template branch.
+When the user names another template source, such as a fork or a local checkout,
+use it in place of `gh:danjac/django-studio`. Add `--vcs-ref <branch>` only when the
+user asks for a specific template branch.
 
 If Copier fails, show the error and stop.
 

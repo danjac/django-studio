@@ -1,5 +1,5 @@
 ---
-description: Start a new django-studio project: interview, run Copier, smoke test
+description: Start a new django-studio project with Copier, then smoke test it
 ---
 
 Create a new Django project from the django-studio Copier template. Copier does the

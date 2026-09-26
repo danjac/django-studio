@@ -28,7 +28,7 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 {% endblock content %}
 ```
 
-The `{% block scripts %}` block is rendered just before `</body>` — use it for per-page JavaScript. Inline scripts must carry the CSP nonce (see `docs/alpine.md`):
+The `{% block scripts %}` block is rendered just before `</body>` — use it for per-page JavaScript. Inline scripts must carry the CSP nonce (see `docs/alpine.md`). These scripts don't run when the page arrives through an `HX-Location` swap (see `docs/htmx.md#htmxredirectmiddleware`):
 
 ```html
 {% block scripts %}

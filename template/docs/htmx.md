@@ -181,6 +181,14 @@ def my_form_view(request):
     ...
 ```
 
+`HX-Location` swaps the new page's `<body>` in without a page load. htmx runs
+the new body's `<script>` elements again, but the page keeps the
+Content-Security-Policy from its first load, so it blocks inline scripts: their
+nonce belongs to the new response. `base.html` loads the site-wide scripts in
+`<head>`, which the swap leaves alone. When the target page has its own
+`{% block scripts %}`, send a full page load instead with
+`HttpResponseClientRedirect` from `django_htmx.http`.
+
 ## Common Patterns
 
 ### Search with Debounce

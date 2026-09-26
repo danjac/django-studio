@@ -63,7 +63,7 @@ without the template, tests and images. Installing the plugin fetches only the
 Then start Claude Code in an empty directory and run:
 
 ```
-/dj-bootstrap "recipe-sharing site for home cooks, EU hosted"
+/dj-bootstrap "recipe sharing site for home cooks"
 ```
 
 `/dj-bootstrap` (also available as `/django-studio:dj-bootstrap`) checks that `uv`, `just`,

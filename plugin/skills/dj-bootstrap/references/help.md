@@ -19,4 +19,4 @@ The generated project is the same as `uvx copier copy` with the same answers, so
 `.django_studio/brief.md` in the new project.
 
 Example:
-  /dj-bootstrap "recipe-sharing site for home cooks, EU hosted"
+  /dj-bootstrap "recipe sharing site for home cooks"

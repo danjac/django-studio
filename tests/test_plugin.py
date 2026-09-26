@@ -59,9 +59,10 @@ class TestPluginSkills:
     )
     def test_skill_layout(self, skill_dir):
         text = (skill_dir / "SKILL.md").read_text()
-        match = re.match(r"---\ndescription: (.+)\n---\n", text)
-        assert match, "SKILL.md must start with a description frontmatter block"
-        assert len(match.group(1)) <= 80
+        match = re.match(r"---\n(.+?)\n---\n", text, re.DOTALL)
+        assert match, "SKILL.md must start with a frontmatter block"
+        frontmatter = yaml.safe_load(match.group(1))
+        assert len(frontmatter["description"]) <= 80
         assert (skill_dir / "references" / "help.md").is_file()
 
 

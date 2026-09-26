@@ -56,8 +56,9 @@ claude plugin marketplace add danjac/django-studio --sparse .claude-plugin
 claude plugin install django-studio@django-studio
 ```
 
-`--sparse .claude-plugin` fetches only the marketplace file instead of cloning the
-whole repository; the plugin itself is fetched from the `plugin/` directory alone.
+`--sparse .claude-plugin` checks out the marketplace file and the top-level files
+without the template, tests and images. Installing the plugin fetches only the
+`plugin/` directory.
 
 Then start Claude Code in an empty directory and run:
 

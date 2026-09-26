@@ -36,6 +36,14 @@ For each case the runner:
 
 Then it stops the services, removes their volumes and deletes the temp dir.
 
+A case whose prompt starts with `/dj-bootstrap` tests the plugin skill that creates
+the project, so the runner skips step 1: it starts the build in an empty directory
+with `--plugin-dir plugin`, and passes free host ports to the build and check
+phases as environment variables (`POSTGRES_PORT`, `DATABASE_URL` and so on), which
+override the `.env` the skill writes. `{template}` in its prompt becomes the path
+of this checkout, so the case tests local changes to the template. The review gets
+no changed-file list, since every file is new.
+
 Logs go to `evals/logs/` (gitignored): `<stamp>-<case>.log` for the phases and
 `<stamp>-<case>.jsonl` for the build transcript.
 

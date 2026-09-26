@@ -224,7 +224,8 @@ Generated projects include `dj-*` Claude Code and OpenCode slash commands for co
 
 | Command        | Summary                                                                           |
 | -------------- | --------------------------------------------------------------------------------- |
-| `/dj-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs (plugin; see [With Claude Code](#with-claude-code)) |
+| `/dj-bootstrap` | Start a new project: interview, run Copier, write `docs/this-project.md`, smoke test (Plugin skill: see [With Claude Code](#with-claude-code)) |
+| `/dj-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs (Plugin skill: see [With Claude Code](#with-claude-code)) |
 | `/dj-help`     | List all dj-\* commands or show help for a specific command                       |
 | `/dj-sync`     | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
 | `/dj-feedback` | Report a bug or improvement against the django-studio template                    |

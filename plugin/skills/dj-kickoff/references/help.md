@@ -9,7 +9,8 @@ Runs these steps, each of which you can skip:
 2. Domain apps and models: proposes an app and model breakdown from the core
    entities, and which models get CRUD views. Nothing is generated until you
    confirm it.
-3. Languages: sets up each extra UI language. Translation needs a TranslateBot
+3. Languages: sets up each extra UI language. Needs `gettext`, and asks you to
+   install it if it is missing. Translation needs a TranslateBot
    key; without one, run `/dj-localize <locale>` later.
 4. Project docs: runs `/dj-doc` to fill in the app map and app READMEs.
 5. Optional features: points to the docs for a planned API, webhooks or

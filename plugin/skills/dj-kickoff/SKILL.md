@@ -101,8 +101,10 @@ for the user to approve or change it. Then, for each app in turn:
 For each UI language in the overview's Key Decisions other than English, follow
 `dj-localize` in single-locale mode for that locale:
 
-- Check `gettext` first (its prerequisite 1). If it is missing, skip this step
-  and say how to install it.
+- Check `gettext` first (its prerequisite 1). If it is missing, show the install
+  command for the user's OS from that prerequisite, ask them to install it and
+  say when it's done, then check again. If they'd rather not, skip this step and
+  tell them to run `/dj-localize <locale>` once `gettext` is installed.
 - TranslateBot (its prerequisite 2) is optional here. If `.env` has no
   `TRANSLATEBOT_API_KEY`, don't ask for one: run the steps that don't translate
   (`makemessages`, `LANGUAGES`, the format module, the plural forms and

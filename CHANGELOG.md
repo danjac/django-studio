@@ -13,7 +13,7 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 - A `django-studio` Claude Code plugin with a `/dj-bootstrap` skill: a conversational
   front end to `copier copy` that asks for the Copier answers and a few product
   questions, generates the project, runs `just check-all` and makes the first
-  commit. See "Starting from Claude Code" in the README.
+  commit. See "With Claude Code" in the README.
 - A placeholder favicon: the site name's initial in the PWA colours, served at
   `/favicon.svg` and `/favicon.ico`, linked from `base.html` and listed in
   `manifest.json`. Customise it in `templates/favicon.svg` (see `docs/design.md`).

@@ -24,23 +24,25 @@ For each case the runner:
    `just dj migrate`, runs the case's `## Setup` block if there is one, and commits a
    baseline.
 2. **Build:** runs the `## Prompt` block with `claude -p` in the project, with
-   permissions skipped (the project is a throwaway temp dir). The runner adds a
-   note telling the agent that nobody will answer questions.
+   the plugin loaded (`--plugin-dir plugin`) and permissions skipped (the project
+   is a throwaway temp dir). The runner adds a note telling the agent that nobody
+   will answer questions.
 3. **Check:** runs the `## Check` block with `bash -euo pipefail` in the project.
    It must exit 0. `$EVAL_BUILD_OUTPUT` holds the path to the build agent's final
    message.
 4. **Review:** runs the `## Review` block with a fresh `claude -p` limited to
    Read, Grep and Glob, with no settings, MCP servers or build context. The
-   runner adds the list of files changed since the baseline and the standard
-   reviewer rules. The review passes when its last line is `No issues found.`
+   runner adds the list of files changed since the baseline, including any the
+   build committed, and the standard reviewer rules. The review passes when its
+   last line is `No issues found.`
 
 Then it stops the services, removes their volumes and deletes the temp dir.
 
 A case whose prompt starts with `/dj-bootstrap` tests the plugin skill that creates
 the project, so the runner skips step 1: it starts the build in an empty directory
-with `--plugin-dir plugin`, and passes free host ports to the build and check
-phases as environment variables (`POSTGRES_PORT`, `DATABASE_URL` and so on), which
-override the `.env` the skill writes. `{template}` in its prompt becomes the path
+and passes free host ports to the build and check phases as environment
+variables (`POSTGRES_PORT`, `DATABASE_URL` and so on), which override the `.env`
+the skill writes. `{template}` in its prompt becomes the path
 of this checkout, so the case tests local changes to the template. The review gets
 no changed-file list, since every file is new.
 

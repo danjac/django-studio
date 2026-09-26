@@ -70,8 +70,8 @@ answers, and ask the rest in one or two rounds, not one question at a time:
 - Whether it needs a public API, incoming webhooks, or background tasks (email,
   imports, scheduled jobs)
 
-The user may skip any question; record it as "not decided". Keep the answers for
-step 5. Stack choices are fixed by the template, so don't ask about packages or
+The user may skip any question; record it as `_TODO_` in step 5. Keep the answers
+for step 5. Stack choices are fixed by the template, so don't ask about packages or
 frameworks.
 
 ## 4. Generate
@@ -97,11 +97,28 @@ user asks for a specific template branch.
 
 If Copier fails, show the error and stop.
 
-## 5. Save the brief
+## 5. Write the project overview
 
-Write the domain interview answers to `<target>/.django_studio/brief.md` using
-`references/brief.md`. The directory is gitignored in generated projects, so the
-brief stays local.
+Record the interview in `<target>/docs/this-project.md`, the project's permanent
+overview. It is committed with the scaffold, the project's `AGENTS.md` tells agents
+to read it, and `/dj-kickoff` and `/dj-doc` build on it later.
+
+The generated file is a stub with guidance under each heading. Keep every heading
+and fill in these sections, replacing their guidance and placeholder rows:
+
+| Section | From the interview |
+| ------- | ------------------ |
+| Purpose | The one-line purpose, plus any detail the user gave |
+| Users and Roles | One table row per role, with what it can do |
+| Glossary | One entry per core entity: what it is and who creates it |
+| Key Decisions | One row each, dated today: public or login-only access, the UI languages (the first is the default), and the public API, incoming webhooks and background tasks, each as "planned" (with what for) or "not needed" |
+
+Write `_TODO: <what is missing>_` for anything the user skipped. Under Key Flows,
+replace the guidance with `_TODO: the main end-to-end journeys_`. Leave Apps and
+Integrations as they are: `/dj-doc` fills them from the code.
+
+Remove the `<!-- dj-doc: stub -->` line and the `> **Stub.**` note, so `/dj-doc`
+treats the page as written and keeps these answers.
 
 ## 6. Smoke test
 
@@ -136,13 +153,17 @@ yes, and ask whether it should be private (the default) or public:
 gh repo create <project_slug> --private --source=. --push
 ```
 
+Ask whether to kick off the project now: `/dj-kickoff` turns
+`docs/this-project.md` into a user model, domain apps and models, and languages.
+If yes, run `/dj-kickoff <target>` and continue here when it finishes.
+
 Then print the next steps:
 
 1. Quit Claude Code, then `cd <target>` (when it is a subdirectory) and start
    Claude Code again. The project's own `/dj-*` skills and docs load only in a
    session started in the project.
-2. `just dj set_default_site localhost:8000 "<project_name>"`
-3. `just dj createsuperuser`
-4. `just serve`, then open http://localhost:8000
-5. Build the first app with `/dj-create-app`, and describe the domain with `/dj-doc`.
+2. `/dj-kickoff`, if it didn't run above.
+3. `just dj set_default_site localhost:8000 "<project_name>"`
+4. `just dj createsuperuser`
+5. `just serve`, then open http://localhost:8000
 6. `/dj-deploy` when you are ready to go live.

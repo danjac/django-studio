@@ -20,6 +20,9 @@ if TYPE_CHECKING:
 
 PROJECT_NAME = "My App"
 
+# Marks the baseline commit, so the review can list changes the build committed.
+BASELINE_TAG = "eval-baseline"
+
 
 def setup_case(project: Path, case: Case, log: TextIO) -> dict[str, str]:
     """Prepare the case's directory; return the environment for build and check."""
@@ -75,3 +78,4 @@ def setup_project(project: Path, case: Case, log: TextIO) -> None:
         "git add -A && git -c user.name=eval -c user.email=eval@example.com "
         "commit --no-verify -q -m baseline"
     )
+    sh(f"git tag {BASELINE_TAG}")

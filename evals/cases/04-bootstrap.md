@@ -1,8 +1,8 @@
 # Bootstrap a new project
 
 Covers the plugin's `/dj-bootstrap`: preflight, Copier answers taken from the prompt
-and the answers below, the product brief, `copier copy`, the smoke test and the
-first commit. The runner starts it in an empty directory with the plugin loaded,
+and the answers below, `copier copy`, the product overview in
+`docs/this-project.md`, the smoke test and the first commit. The runner starts it in an empty directory with the plugin loaded,
 and `{template}` is replaced with this checkout, so the case tests the local
 template rather than GitHub `main`.
 
@@ -34,6 +34,8 @@ Product answers:
 - Background tasks: yes, a weekly digest email of new recipes.
 
 Create a GitHub repository: no.
+
+Kick off the project now: no.
 ```
 
 ## Check
@@ -48,8 +50,8 @@ grep -qx "author_email: eval@example.com" .copier-answers.yml
 grep -qx "domain: recipebox.example.com" .copier-answers.yml
 grep -qx "license: EUPL-1.2" .copier-answers.yml
 test -d recipe_box
-test -f .django_studio/brief.md
-git check-ignore -q .django_studio/brief.md
+git ls-files --error-unmatch docs/this-project.md
+! grep -q "dj-doc: stub" docs/this-project.md
 test -n "$(ls recipe_box/users/migrations/0001_*.py)"
 test "$(git rev-list --count HEAD)" = 1
 test -z "$(git status --porcelain)"
@@ -61,17 +63,17 @@ just check-all
 ## Review
 
 ```text
-Review the project brief written by a project bootstrap run in this directory.
+Review the project overview written by a project bootstrap run in this directory.
 
-Verify these facts:
+Verify these facts about `docs/this-project.md`:
 
-1. `.django_studio/brief.md` has the sections Purpose, Core entities, User roles,
-   Access, Languages, Integrations and Other notes.
-2. Core entities lists Recipe, Ingredient and Collection.
-3. User roles lists visitors, cooks and staff, with what each can do.
-4. Access says the site is public and login is needed only to post or save
-   recipes.
-5. Languages lists English as the default and French.
-6. Integrations says no public API, no incoming webhooks, and a background task
-   for a weekly digest email.
+1. It keeps the headings Purpose, Users and Roles, Glossary, Apps, Key Flows,
+   Integrations and Key Decisions, and has no "Stub." note.
+2. Purpose describes a recipe sharing site for home cooks.
+3. Users and Roles has rows for visitors, cooks and staff, with what each can do.
+4. Glossary has entries for Recipe, Ingredient and Collection.
+5. Key Decisions records: a public site where login is needed only to post or
+   save recipes; English (default) and French; no public API; no incoming
+   webhooks; and a planned background task for a weekly digest email.
+6. Key Flows has a `_TODO` marker.
 ```

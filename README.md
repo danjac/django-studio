@@ -74,8 +74,8 @@ project.
    cover: the project name, author, domain and licence (the same answers as the
    Copier prompts below), and a few questions about the product: core entities,
    user roles, public or login-only, languages, and whether it needs an API,
-   webhooks or background tasks. The product answers are saved to
-   `.django_studio/brief.md`.
+   webhooks or background tasks. The product answers become the project
+   overview in `docs/this-project.md`, which the project's agents read.
 
    It then generates the project, starts the Docker services, installs
    dependencies, creates the database, runs every check with `just check-all`,
@@ -92,12 +92,19 @@ project.
    The project comes with its own `/dj-*` skills and agent docs, which load only
    in a session started there.
 
-`/dj-bootstrap` is also available as `/django-studio:dj-bootstrap`, in case another
-plugin uses the same name.
+5. Give the project its first shape with `/dj-kickoff`, unless you already ran it
+   when `/dj-bootstrap` offered. It works from `docs/this-project.md`: it proposes
+   changes to the `User` model, an app and model breakdown for your core entities
+   (created only after you confirm it), sets up the extra languages, and fills in
+   the rest of the project docs. Each step can be skipped, and it commits when
+   `just check-all` passes.
+
+The plugin's skills are also available as `/django-studio:dj-bootstrap` and
+`/django-studio:dj-kickoff`, in case another plugin uses the same names.
 
 #### Updating the plugin
 
-The plugin only affects new projects. To get the latest `/dj-bootstrap`, run:
+The plugin only affects new projects. To get the latest `/dj-bootstrap` and `/dj-kickoff`, run:
 
 ```bash
 claude plugin marketplace update django-studio

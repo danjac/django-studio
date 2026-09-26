@@ -265,6 +265,19 @@ Other rules that commonly apply:
 - `PTH123` — use `Path("file").read_text()` instead of `open("file")`
 - `PLW2901` — don't reassign the loop variable; use a separate name for the transformed value
 
+## Claude Code Plugin
+
+`plugin/` is a Claude Code plugin that ships one skill, `/dj-new`
+(`plugin/skills/dj-new/`): a conversational front end to `copier copy` for starting
+a new project. It is not copied into generated projects. `.claude-plugin/marketplace.json`
+publishes it with a `git-subdir` source, so installing it fetches only `plugin/`.
+
+Plugin skills follow the same `SKILL.md` + `references/help.md` layout as the
+template skills. `/dj-new` passes each `copier.yml` question as `--data`, so when you
+add, rename or remove a Copier question, update the skill too;
+`tests/test_plugin.py` checks this and runs `claude plugin validate` on both
+manifests when the `claude` CLI is installed.
+
 ## Python 3.14 — `except` Without Parentheses (PEP 758)
 
 `pyupgrade --py314` rewrites multi-exception handlers to the Python 3.14 syntax:

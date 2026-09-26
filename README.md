@@ -46,6 +46,36 @@ Then follow the prompts:
 | `domain`       | `example.com`           | Production domain                                                                                      |
 | `license`      | `MIT`                   | MIT, Apache-2.0, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0, BSD-2-Clause, BSD-3-Clause, ISC, EUPL-1.2, None |
 
+### Starting from Claude Code
+
+The `django-studio` Claude Code plugin runs the same Copier template through a
+conversation. Install it once from your shell:
+
+```bash
+claude plugin marketplace add danjac/django-studio --sparse .claude-plugin
+claude plugin install django-studio@django-studio
+```
+
+`--sparse .claude-plugin` fetches only the marketplace file instead of cloning the
+whole repository; the plugin itself is fetched from the `plugin/` directory alone.
+
+Then start Claude Code in an empty directory and run:
+
+```
+/dj-new "recipe-sharing site for home cooks, EU hosted"
+```
+
+`/dj-new` (also available as `/django-studio:dj-new`) checks that `uv`, `just`,
+`docker` and `gh` are installed, asks for the Copier answers above that your
+description doesn't already give, and asks a few questions about the product: core
+entities, user roles, access, languages, API, webhooks and background tasks. It
+then runs `copier copy`, saves the product answers to `.django_studio/brief.md`,
+runs `just check-all` on the new project, and makes the first commit. It offers to
+create a GitHub repository, and waits for your confirmation first.
+
+The generated project is the same as running `uvx copier copy` with the same
+answers, so `copier update` and `/dj-sync` work on it.
+
 ### Generating from a branch
 
 To generate from a specific branch (e.g. to test a pre-release feature):

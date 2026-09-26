@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "django-studio",
+  "description": "Start a new django-studio project from Claude Code",
+  "owner": {
+    "name": "Dan Jacob",
+    "url": "https://github.com/danjac"
+  },
+  "plugins": [
+    {
+      "name": "django-studio",
+      "description": "Conversational front end to the django-studio Copier template",
+      "source": {
+        "source": "git-subdir",
+        "url": "danjac/django-studio",
+        "path": "plugin"
+      },
+      "homepage": "https://github.com/danjac/django-studio",
+      "license": "MIT"
+    }
+  ]
+}

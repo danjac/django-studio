@@ -6,6 +6,18 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.39.7 - 2026-09-27
+
+### Fixed
+
+- `/djs-create-crud` defines the form partial with
+  `{% partialdef <name> inline %}` … `{% endpartialdef %}`. It used
+  `{% partial %}` … `{% endpartial %}`, which isn't valid Django, so the generated
+  form template failed to load.
+- `/djs-create-crud`'s list view HTMX test sends `HX-Target: pagination`, the
+  paginator's default target. It sent `<model>-list`, so the test got the full page
+  and never checked the partial.
+
 ## 26.39.6 - 2026-09-26
 
 ### Fixed

@@ -234,7 +234,7 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
 
 {% block content %}
   {% include "header.html" with title=_("<model_name>") %}
-  {% partial "<model_lower>-form" %}
+  {% partialdef <model_lower>-form inline %}
     <div id="<model_lower>-form">
       {% fragment "form.html" htmx=True hx_target="#<model_lower>-form" %}
         {% for field in form %}
@@ -246,7 +246,7 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
         </a>
       {% endfragment %}
     </div>
-  {% endpartial %}
+  {% endpartialdef %}
 {% endblock content %}
 ```
 
@@ -330,7 +330,7 @@ class Test<model_name>List:
     def test_htmx_partial(self, client, auth_user):
         response = client.get(
             reverse("<app_name>:<model_lower>_list"),
-            headers={"HX-Request": "true", "HX-Target": "<model_lower>-list"},
+            headers={"HX-Request": "true", "HX-Target": "pagination"},
         )
         assert response.status_code == 200
 

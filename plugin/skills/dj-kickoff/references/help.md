@@ -1,7 +1,8 @@
 **/dj-kickoff [project_path]**
 
 Gives a new django-studio project its first shape from the product overview in
-`docs/this-project.md`, which `/dj-bootstrap` writes from its interview.
+`docs/this-project.md`. If the page is still the template stub, it asks the
+product questions and writes it first.
 
 Runs these steps, each of which you can skip:
 
@@ -20,11 +21,9 @@ Runs these steps, each of which you can skip:
 Each step follows the project's own `/dj-*` skill. The skill runs
 `just check-all` and commits when it passes.
 
-`/dj-bootstrap` offers to run it at the end. You can also run it later from
-inside the project, including one made with `copier copy`: it runs
-`just install` and commits the scaffold if that hasn't happened yet, and if
-`docs/this-project.md` is still the template stub, it asks the product questions
-first.
+Run it in any new django-studio project. It first runs whatever setup hasn't run
+yet: `just install`, a first commit of the scaffold, and the `users` migration.
+`/dj-bootstrap` also offers to run it at the end.
 
 Arguments:
   project_path   Optional path to the project root. Default: the current

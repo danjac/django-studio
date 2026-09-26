@@ -105,7 +105,7 @@ git init && git commit -A && pre-commit run --all-files
 
 ## Skill Evals
 
-`tests/` checks the generated scaffold. `evals/` checks that the `dj-*` skills produce
+`tests/` checks the generated scaffold. `evals/` checks that the `djs-*` skills produce
 working code: each case renders a fresh project, runs a skill headless with
 `claude -p`, runs a shell check, and has an independent read-only `claude -p`
 review the result.
@@ -267,28 +267,28 @@ Other rules that commonly apply:
 
 ## Claude Code Plugin
 
-`plugin/` is a Claude Code plugin with one skill, `/dj-bootstrap`
-(`plugin/skills/dj-bootstrap/`): a conversational front end to `copier copy`. It is
+`plugin/` is a Claude Code plugin with one skill, `/djs-bootstrap`
+(`plugin/skills/djs-bootstrap/`): a conversational front end to `copier copy`. It is
 not copied into generated projects. `.claude-plugin/marketplace.json` publishes it
 with a `git-subdir` source, so installing it fetches only `plugin/`.
 
-After generating, `/dj-bootstrap` hands over to the new project's own skills: it
+After generating, `/djs-bootstrap` hands over to the new project's own skills: it
 writes `docs/this-project.md` by following
-`.agents/skills/dj-kickoff/references/overview.md`, and offers to run
-`/dj-kickoff` by following its `SKILL.md`. Keep project behaviour in those
+`.agents/skills/djs-kickoff/references/overview.md`, and offers to run
+`/djs-kickoff` by following its `SKILL.md`. Keep project behaviour in those
 project files, not in the plugin.
 
-The root `README.md` lists `/dj-bootstrap` under General skills with a note that
+The root `README.md` lists `/djs-bootstrap` under General skills with a note that
 it's a plugin skill; it is the one command that `template/README.md.jinja` doesn't
 list.
 
 Plugin skills follow the same `SKILL.md` + `references/help.md` layout as the
-template skills. `/dj-bootstrap` passes each `copier.yml` question as `--data`, so when you
+template skills. `/djs-bootstrap` passes each `copier.yml` question as `--data`, so when you
 add, rename or remove a Copier question, update the skill too;
 `tests/test_plugin.py` checks this and runs `claude plugin validate` on both
 manifests when the `claude` CLI is installed.
-Run `just eval 04` after changing `/dj-bootstrap`, and `just eval 05` after changing
-`/dj-kickoff` or a skill it follows.
+Run `just eval 04` after changing `/djs-bootstrap`, and `just eval 05` after changing
+`/djs-kickoff` or a skill it follows.
 
 ## Python 3.14 — `except` Without Parentheses (PEP 758)
 
@@ -309,13 +309,13 @@ See [pyright#10546](https://github.com/microsoft/pyright/issues/10546) for upstr
 
 ## Changelog
 
-`CHANGELOG.md` records user-visible template changes; `/dj-sync` shows generated
+`CHANGELOG.md` records user-visible template changes; `/djs-sync` shows generated
 projects the entries added since their last sync.
 
 - With every user-visible `template/` change (code, templates, settings, skills,
   generated docs), add a bullet in the same commit under today's section, creating
   it if needed: `## <date +%y.%V.%u> - <YYYY-MM-DD>` with Keep-a-Changelog
-  headings (`Added` / `Changed` / `Fixed` / `Removed`).
+  headings (`Added` / `Changed` / `Deprecated` / `Fixed` / `Removed`).
 - Repo tooling, tests, evals and CI earn no entry.
 - Call out changes likely to conflict on `copier update` (settings, renamed or
   removed files) under **Changed** or **Removed**.
@@ -358,4 +358,4 @@ For each: create branch, fix, test, open PR, then move to the next issue.
 
 ## Bugs and Improvements
 
-Use the `/dj-feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.
+Use the `/djs-feedback` skill to report bugs or suggest improvements to this template - it posts a GitHub issue directly. Requires the `gh` CLI authenticated with GitHub access.

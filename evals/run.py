@@ -1,10 +1,10 @@
 #!/usr/bin/env -S uv run python
-"""End-to-end eval runner for the dj-* skills.
+"""End-to-end eval runner for the djs-* skills.
 
 Each case in evals/cases/ is run in four phases:
 
 1. Setup  - render a fresh project, start services, install, migrate, run the
-            case's optional setup block, commit a baseline. A /dj-bootstrap
+            case's optional setup block, commit a baseline. A /djs-bootstrap
             case gets an empty directory instead.
 2. Build  - run the case prompt with a headless `claude -p` in the project.
 3. Check  - run the case's shell block; it must exit 0.

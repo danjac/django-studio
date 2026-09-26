@@ -1,6 +1,6 @@
 # Security audit finds seeded vulnerabilities
 
-Covers `/dj-secure`. The setup adds a view to the `users` app with two seeded
+Covers `/djs-secure`. The setup adds a view to the `users` app with two seeded
 holes: it is `@csrf_exempt`, and it updates any user's email by `pk` with no
 ownership check (IDOR). The audit must report both as CRITICAL and change no code.
 
@@ -35,7 +35,7 @@ just dj check
 ## Prompt
 
 ```text
-/dj-secure
+/djs-secure
 
 Report only. Do not fix anything and do not edit any file, even for CRITICAL
 findings: the report is the output of this run. Skip the dependency scan in

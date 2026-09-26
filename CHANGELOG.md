@@ -29,6 +29,11 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
+- All skills renamed from `dj-<name>` to `djs-<name>` (e.g. `/dj-sync` is now
+  `/djs-sync`), so they don't collide with other Django skill packs. Expect
+  conflicts in any skill you edited locally. The post-gen hook now deletes
+  `.claude/commands/*.md` stubs for skills that no longer exist.
+- The `django-studio` plugin skill is now `/djs-bootstrap`.
 - The `helm-lint`, `terraform_fmt` and `terraform_validate` pre-commit hooks are
   now local hooks that skip when Helm or Terraform isn't installed, and fail in CI
   (`$CI` set) instead of skipping. They replace the `antonbabenko/pre-commit-terraform`
@@ -41,6 +46,12 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 - Template sources are formatted by the generated project's own pre-commit hooks,
   so the first `pre-commit run --all-files` modifies no files. Expect formatting-only
   conflicts in templates and Python modules on your next sync.
+
+### Deprecated
+
+- The old `/dj-<name>` commands (and the plugin's `/dj-bootstrap`) still work as
+  aliases: they print a deprecation notice and run `/djs-<name>`. They will be
+  removed in a future release.
 
 ### Fixed
 

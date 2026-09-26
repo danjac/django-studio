@@ -1,6 +1,6 @@
 # Skill evals
 
-End-to-end checks that the `dj-*` skills produce working code in a freshly
+End-to-end checks that the `djs-*` skills produce working code in a freshly
 generated project. `tests/` checks the scaffold; these check what the skills do to it.
 
 Each run costs tokens and takes several minutes per case, so run it by hand when
@@ -38,7 +38,7 @@ For each case the runner:
 
 Then it stops the services, removes their volumes and deletes the temp dir.
 
-A case whose prompt starts with `/dj-bootstrap` tests the plugin skill that creates
+A case whose prompt starts with `/djs-bootstrap` tests the plugin skill that creates
 the project, so the runner skips step 1: it starts the build in an empty directory
 and passes free host ports to the build and check phases as environment
 variables (`POSTGRES_PORT`, `DATABASE_URL` and so on), which override the `.env`

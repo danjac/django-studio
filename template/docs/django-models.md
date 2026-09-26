@@ -191,7 +191,7 @@ and must carry a comment saying why it is safe here:
   the thing it points at (an audit `created_by`, a claimed invite). Requires
   `null=True`.
 
-`/dj-remove-slop` flags any `CASCADE` or `SET_NULL` without a justification
+`/djs-remove-slop` flags any `CASCADE` or `SET_NULL` without a justification
 comment, so write the comment when you write the field.
 
 ### `related_name`

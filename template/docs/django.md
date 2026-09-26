@@ -238,4 +238,4 @@ See `docs/localization.md` for the full i18n reference — marking strings in Py
 templates, the `makemessages`/`compilemessages` workflow, the language switcher
 component, and model/form translation conventions.
 
-Use `/dj-localize <locale>` to extract, translate, and compile catalogues.
+Use `/djs-localize <locale>` to extract, translate, and compile catalogues.

@@ -56,64 +56,64 @@ Run `just` with no arguments to list all available commands.
 
 ## Slash Commands
 
-Available in Claude Code and OpenCode as `/dj-<command>`:
+Available in Claude Code and OpenCode as `/djs-<command>`:
 
 **General**
 
 | Command              | Summary                                                                           |
 | -------------------- | --------------------------------------------------------------------------------- |
-| `/dj-kickoff`        | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
-| `/dj-help`           | List all dj-* commands or show help for a specific command                        |
-| `/dj-sync`           | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
-| `/dj-feedback`       | Report a bug or improvement against the django-studio template                    |
-| `/dj-doc`            | Create or update project-specific docs: domain, apps, rules, APIs, integrations   |
+| `/djs-kickoff`        | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
+| `/djs-help`           | List all djs-* commands or show help for a specific command                        |
+| `/djs-sync`           | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
+| `/djs-feedback`       | Report a bug or improvement against the django-studio template                    |
+| `/djs-doc`            | Create or update project-specific docs: domain, apps, rules, APIs, integrations   |
 
 **Generators**
 
 | Command              | Summary                                                                |
 | -------------------- | ---------------------------------------------------------------------- |
-| `/dj-create-app`     | Create a Django app (apps.py, models, views, urls, admin, tests)       |
-| `/dj-create-view`    | Add a view, template, and URL                                          |
-| `/dj-create-task`    | Add a `django-tasks-db` background task with correct async patterns    |
-| `/dj-create-command` | Add a management command with tests                                    |
-| `/dj-create-model`     | Design and write a Django model with recipe, fixture, and model tests |
-| `/dj-create-migration` | Create a data migration (Python or SQL)                                |
-| `/dj-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
-| `/dj-create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
-| `/dj-create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
-| `/dj-create-filter`  | Add a template filter with correct escaping flags                      |
+| `/djs-create-app`     | Create a Django app (apps.py, models, views, urls, admin, tests)       |
+| `/djs-create-view`    | Add a view, template, and URL                                          |
+| `/djs-create-task`    | Add a `django-tasks-db` background task with correct async patterns    |
+| `/djs-create-command` | Add a management command with tests                                    |
+| `/djs-create-model`     | Design and write a Django model with recipe, fixture, and model tests |
+| `/djs-create-migration` | Create a data migration (Python or SQL)                                |
+| `/djs-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
+| `/djs-create-e2e`     | Write Playwright E2E test(s) for a described user interaction          |
+| `/djs-create-tag`     | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
+| `/djs-create-filter`  | Add a template filter with correct escaping flags                      |
 
 **Localisation**
 
 | Command         | Summary                                                        |
 | --------------- | -------------------------------------------------------------- |
-| `/dj-localize` | Add localization formats, extract strings, translate with TranslateBot, compile `.mo` catalogue |
+| `/djs-localize` | Add localization formats, extract strings, translate with TranslateBot, compile `.mo` catalogue |
 
 **Audits**
 
 | Command              | Summary                                                                      |
 | -------------------- | ---------------------------------------------------------------------------- |
-| `/dj-perf`           | Performance audit: N+1 queries, missing indexes, caching, async              |
-| `/dj-secure`         | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
-| `/dj-gdpr`           | GDPR compliance audit: PII in models, erasure, consent, logging              |
-| `/dj-a11y`           | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `/dj-deadcode`       | Remove unused Python code, Django templates and static assets                |
-| `/dj-remove-slop`    | Audit and remove Django anti-patterns introduced by AI or inattentive devs   |
-| `/dj-full-coverage`  | Enable 100% coverage gate and write tests for all uncovered lines            |
+| `/djs-perf`           | Performance audit: N+1 queries, missing indexes, caching, async              |
+| `/djs-secure`         | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
+| `/djs-gdpr`           | GDPR compliance audit: PII in models, erasure, consent, logging              |
+| `/djs-a11y`           | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
+| `/djs-deadcode`       | Remove unused Python code, Django templates and static assets                |
+| `/djs-remove-slop`    | Audit and remove Django anti-patterns introduced by AI or inattentive devs   |
+| `/djs-full-coverage`  | Enable 100% coverage gate and write tests for all uncovered lines            |
 
 **Deployment**
 
 | Command                    | Summary                                                                        |
 | -------------------------- | ------------------------------------------------------------------------------ |
-| `/dj-deploy`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
-| `/dj-deploy-observe`       | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
-| `/dj-tailscale [cmd]`      | Enable, check or disable Tailscale private networking for the cluster         |
-| `/dj-scale [n]`            | View or change the webapp replica count                                        |
-| `/dj-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
-| `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
-| `/dj-db-backup`            | Trigger an immediate database backup without waiting for the daily cron        |
-| `/dj-db-restore`           | Guided production database restore from Object Storage backup                  |
-| `/dj-deploy-cron`          | Schedule a management command as a Kubernetes cron job                         |
+| `/djs-deploy`               | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `/djs-deploy-observe`       | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
+| `/djs-tailscale [cmd]`      | Enable, check or disable Tailscale private networking for the cluster         |
+| `/djs-scale [n]`            | View or change the webapp replica count                                        |
+| `/djs-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| `/djs-enable-db-backups`    | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
+| `/djs-db-backup`            | Trigger an immediate database backup without waiting for the daily cron        |
+| `/djs-db-restore`           | Guided production database restore from Object Storage backup                  |
+| `/djs-deploy-cron`          | Schedule a management command as a Kubernetes cron job                         |
 
 ## MCP Servers
 

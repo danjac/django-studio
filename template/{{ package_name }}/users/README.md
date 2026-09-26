@@ -5,7 +5,7 @@ accounts are handled by allauth (see `docs/authentication.md`); this app owns th
 custom `User` model and the right-to-erasure flow.
 
 > Starting point shipped by the template. Extend it as you customise the `User`
-> model — run `/dj-doc users` to update it.
+> model — run `/djs-doc users` to update it.
 
 ## Concepts
 

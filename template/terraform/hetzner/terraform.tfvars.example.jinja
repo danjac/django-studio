@@ -33,10 +33,10 @@ webapp_count     = 0
 postgres_volume_size = 50
 
 # Provision a monitor node for the observability stack (Grafana + Prometheus + Loki)
-# Run /dj-deploy-observe later to provision it.
+# Run /djs-deploy-observe later to provision it.
 create_monitor = false
 
-# Tailscale (optional) - see docs/infrastructure.md, or run /dj-tailscale.
+# Tailscale (optional) - see docs/infrastructure.md, or run /djs-tailscale.
 #
 # Leave the client secret empty to run without Tailscale. When set, every node
 # joins your tailnet at boot and the kubeconfig points at the server's MagicDNS

@@ -22,6 +22,10 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
+- The `helm-lint`, `terraform_fmt` and `terraform_validate` pre-commit hooks are
+  now local hooks that skip when Helm or Terraform isn't installed, and fail in CI
+  (`$CI` set) instead of skipping. They replace the `antonbabenko/pre-commit-terraform`
+  repo in `.pre-commit-config.yaml`; expect a conflict there if you changed it.
 - Wording-only edits across `docs/` and the skills: filler words ("genuinely",
   "truly", "actually") and puffery removed. If you edited those files, expect small
   conflicts on sync.

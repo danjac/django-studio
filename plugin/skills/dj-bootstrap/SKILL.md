@@ -126,12 +126,8 @@ to make the checks pass.
 
 ```bash
 git add -A
-SKIP=helm-lint,terraform_fmt,terraform_validate git commit -m "chore: initial commit from django-studio"
+git commit -m "chore: initial commit from django-studio"
 ```
-
-`SKIP` leaves out the hooks that need Helm and Terraform. They are deployment tools
-the user may not have installed yet, and the hooks run again on later commits
-that change `helm/` or `terraform/`.
 
 Ask whether to create a GitHub repository. It publishes the code, so wait for a
 yes, and ask whether it should be private (the default) or public:

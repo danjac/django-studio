@@ -8,6 +8,12 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ## 26.39.6 - 2026-09-26
 
+### Fixed
+
+- `deploy.yml` no longer fails to load: the "Connect to Tailscale" step's `if:`
+  read the `secrets` context, which GitHub doesn't allow in step conditions. It
+  now tests a job-level `TS_OAUTH_CLIENT_ID` env var.
+
 ### Added
 
 - `/djs-backlog`: keeps the project's work queue in `docs/backlog.md` (bugs,

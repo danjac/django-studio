@@ -527,7 +527,10 @@ class TestAlwaysIncludedFeatures:
     def test_deploy_workflow_joins_tailnet_conditionally(self, project):
         content = (project / ".github" / "workflows" / "deploy.yml").read_text()
         assert "tailscale/github-action@" in content
-        assert "if: ${{ secrets.TS_OAUTH_CLIENT_ID != '' }}" in content
+        # step conditions can't read secrets, so the job copies it into env
+        assert "TS_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}" in content
+        assert "if: ${{ env.TS_OAUTH_CLIENT_ID != '' }}" in content
+        assert "if: ${{ secrets." not in content
         # the runner must be on the tailnet before helm tries to reach the API
         assert content.index("Connect to Tailscale") < content.index(
             "Deploy to Kubernetes"

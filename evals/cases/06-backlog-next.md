@@ -45,6 +45,10 @@ EOF2
 
 ```text
 /djs-backlog next
+
+Answers:
+
+- Approval to start the suggested item: not given. Stop after the suggestion.
 ```
 
 ## Check

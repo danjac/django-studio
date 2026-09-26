@@ -10,6 +10,15 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Added
 
+- `/djs-backlog`: keeps the project's work queue in `docs/backlog.md` (bugs,
+  features and chores, with blockers and linked GitHub issues) and its own
+  `CHANGELOG.md`. `/djs-backlog next` suggests the first unblocked item and, once
+  you approve, opens an issue, does the work on a branch and opens a PR;
+  `/djs-backlog release` turns `Unreleased` into a tagged release. Run
+  `/djs-backlog` in an existing project to create both files.
+- `/djs-kickoff` writes the first backlog and creates `CHANGELOG.md`, in place of
+  its "Optional features" step. `AGENTS.md` asks for a changelog entry with every
+  user-visible change.
 - A `django-studio` Claude Code plugin with a `/dj-bootstrap` skill: a conversational
   front end to `copier copy` that asks for the Copier answers and a few product
   questions, generates the project, records the product answers in

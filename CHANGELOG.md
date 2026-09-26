@@ -49,6 +49,14 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
+- `/djs-backlog` makes GitHub issues the backlog when the project has a GitHub
+  remote: `bug`, `enhancement` and `chore` labels for the type, optional
+  `priority: high` / `priority: low` labels, and GitHub's "blocked by"
+  relationships. `next` works from the open issues and needs no bookkeeping
+  commits, since merging a PR that says `Closes #N` finishes the item.
+  `/djs-backlog` moves an existing `docs/backlog.md` to issues and deletes it;
+  projects without a GitHub remote keep `docs/backlog.md`. `/djs-kickoff` creates
+  issues in place of the file when there is a remote.
 - All skills renamed from `dj-<name>` to `djs-<name>` (e.g. `/dj-sync` is now
   `/djs-sync`), so they don't collide with other Django skill packs. Expect
   conflicts in any skill you edited locally. The post-gen hook now deletes

@@ -15,9 +15,10 @@ Runs these steps, each of which you can skip:
    missing. Translation needs a TranslateBot key; without one, run
    `/djs-localize <locale>` later.
 4. Project docs: runs `/djs-doc` to fill in the app map and app READMEs.
-5. Backlog and changelog: writes `docs/backlog.md` with the planned features
-   (API, webhooks, background tasks), the gaps in the overview and the path to
-   production, and creates `CHANGELOG.md`. It doesn't build them; run
+5. Backlog and changelog: creates the backlog with the planned features (API,
+   webhooks, background tasks), the gaps in the overview and the path to
+   production, as GitHub issues if the project has a GitHub remote or in
+   `docs/backlog.md` if not, and creates `CHANGELOG.md`. It doesn't build them; run
    `/djs-backlog next` to pick up the first item.
 
 Each step follows the project's own `/djs-*` skill. The skill runs

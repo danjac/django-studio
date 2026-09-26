@@ -29,6 +29,64 @@ This project provides AI-related features for those who wish to use LLMs as part
 
 ## Getting Started
 
+You need [uv](https://docs.astral.sh/uv/getting-started/installation/),
+[just](https://just.systems/man/en/packages.html),
+[Docker](https://docs.docker.com/get-started/get-docker/) and the
+[GitHub CLI](https://cli.github.com/) (`gh`). `uv` installs Python for you.
+
+There are two ways to create a project: with the Claude Code plugin, which asks you
+questions and sets everything up, or with Copier directly. Both produce the same
+project.
+
+### With Claude Code
+
+1. Install the plugin. Run these two commands in your shell, from any directory:
+   they install the plugin for your user account, not for the current directory,
+   so you only do this once.
+
+   ```bash
+   claude plugin marketplace add danjac/django-studio --sparse .claude-plugin
+   claude plugin install django-studio@django-studio
+   ```
+
+   The first command registers this repository as a plugin source. `--sparse
+   .claude-plugin` skips the template, tests and images, which the plugin doesn't
+   need. The second installs the plugin, fetching only its `plugin/` directory.
+
+2. Create an empty directory for the new project, and start Claude Code in it:
+
+   ```bash
+   mkdir recipe-box
+   cd recipe-box
+   claude
+   ```
+
+3. Describe the project to `/dj-bootstrap`:
+
+   ```
+   /dj-bootstrap "recipe sharing site for home cooks"
+   ```
+
+   The skill checks your tools, then asks for anything your description didn't
+   cover: the project name, author, domain and licence (the same answers as the
+   Copier prompts below), and a few questions about the product: core entities,
+   user roles, public or login-only, languages, and whether it needs an API,
+   webhooks or background tasks. The product answers are saved to
+   `.django_studio/brief.md`.
+
+   It then generates the project, starts the Docker services, installs
+   dependencies, creates the database, runs every check with `just check-all`,
+   and makes the first commit. It offers to create a GitHub repository, and
+   waits for you to confirm first. This takes several minutes.
+
+4. Quit Claude Code and start it again in the project directory. The project comes
+   with its own `/dj-*` skills and agent docs, which load only in a new session.
+
+`/dj-bootstrap` is also available as `/django-studio:dj-bootstrap`, in case another
+plugin uses the same name.
+
+### With Copier
+
 ```bash
 uvx copier copy --trust gh:danjac/django-studio my-project
 ```
@@ -46,36 +104,7 @@ Then follow the prompts:
 | `domain`       | `example.com`           | Production domain                                                                                      |
 | `license`      | `MIT`                   | MIT, Apache-2.0, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0, BSD-2-Clause, BSD-3-Clause, ISC, EUPL-1.2, None |
 
-### Starting from Claude Code
-
-The `django-studio` Claude Code plugin runs the same Copier template through a
-conversation. Install it once from your shell:
-
-```bash
-claude plugin marketplace add danjac/django-studio --sparse .claude-plugin
-claude plugin install django-studio@django-studio
-```
-
-`--sparse .claude-plugin` checks out the marketplace file and the top-level files
-without the template, tests and images. Installing the plugin fetches only the
-`plugin/` directory.
-
-Then start Claude Code in an empty directory and run:
-
-```
-/dj-bootstrap "recipe sharing site for home cooks"
-```
-
-`/dj-bootstrap` (also available as `/django-studio:dj-bootstrap`) checks that `uv`, `just`,
-`docker` and `gh` are installed, asks for the Copier answers above that your
-description doesn't already give, and asks a few questions about the product: core
-entities, user roles, access, languages, API, webhooks and background tasks. It
-then runs `copier copy`, saves the product answers to `.django_studio/brief.md`,
-runs `just check-all` on the new project, and makes the first commit. It offers to
-create a GitHub repository, and waits for your confirmation first.
-
-The generated project is the same as running `uvx copier copy` with the same
-answers, so `copier update` and `/dj-sync` work on it.
+Copier prints the setup steps when it finishes.
 
 ### Generating from a branch
 

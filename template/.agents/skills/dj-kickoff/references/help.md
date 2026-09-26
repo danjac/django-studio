@@ -1,4 +1,4 @@
-**/dj-kickoff [project_path]**
+**/dj-kickoff**
 
 Gives a new django-studio project its first shape from the product overview in
 `docs/this-project.md`. If the page is still the template stub, it asks the
@@ -25,10 +25,5 @@ Run it in any new django-studio project. It first runs whatever setup hasn't run
 yet: `just install`, a first commit of the scaffold, and the `users` migration.
 `/dj-bootstrap` also offers to run it at the end.
 
-Arguments:
-  project_path   Optional path to the project root. Default: the current
-                 directory.
-
-Examples:
+Example:
   /dj-kickoff
-  /dj-kickoff recipe_box

@@ -1,6 +1,6 @@
 # Kick off a project from its overview
 
-Covers the plugin's `/dj-kickoff`: it reads the overview `/dj-bootstrap` writes to
+Covers the project's `/dj-kickoff`: it reads the overview `/dj-bootstrap` writes to
 `docs/this-project.md`, then follows the project's `dj-create-app`,
 `dj-create-model`, `dj-create-crud`, `dj-localize` (without a TranslateBot key) and
 `dj-doc` skills, runs `just check-all` and commits.

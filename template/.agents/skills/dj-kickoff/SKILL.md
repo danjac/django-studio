@@ -4,22 +4,14 @@ description: Shape a new project from its overview (user model, apps, languages,
 
 Give a new django-studio project its first shape from the product overview in
 `docs/this-project.md`: the `User` model, domain apps and models, languages, and
-the rest of the project docs. This skill only orchestrates. Each step follows the project's own skill or doc, so the result
-matches what those skills produce when run by hand.
-
-Arguments: `$ARGUMENTS` — optional path to the project root. Default: the current
-directory.
+the rest of the project docs. This skill only orchestrates. Each step follows
+another project skill or doc, so the result matches what those skills produce
+when run by hand.
 
 ## 1. Check the project
 
-Work from the project root for the rest of this skill. Stop if it isn't a
-django-studio project:
-
-```bash
-test -f .copier-answers.yml && test -d .agents/skills
-```
-
-Then check what setup has already run, and run only what's missing:
+Work from the project root for the rest of this skill. Check what setup has
+already run, and run only what's missing:
 
 1. If `.env` or `.venv` is missing, run `just install`. It creates `.env`, runs
    `git init`, and installs the dependencies and pre-commit hooks.
@@ -42,8 +34,8 @@ Then check what setup has already run, and run only what's missing:
 
 Read `.copier-answers.yml` for `package_name`, and read `docs/this-project.md`. If
 it still has the `<!-- dj-doc: stub -->` line, the overview hasn't been written:
-ask the product questions and write the page as in steps 3 and 5 of
-`${CLAUDE_SKILL_DIR}/../dj-bootstrap/SKILL.md`, then continue.
+ask the product questions and write the page as `references/overview.md`
+describes, then continue.
 
 The rest of this skill calls the page "the overview". It may have been edited
 since it was written; take it as it is now.
@@ -63,9 +55,10 @@ pointless (e.g. Languages when English is the only UI language) and say why.
 
 ## How to run a project skill
 
-The project's skills are not loaded in a session that started outside the
-project. Run a skill by reading `.agents/skills/<name>/SKILL.md` and following it,
-with the project root as the working directory.
+Run each skill by reading `.agents/skills/<name>/SKILL.md` and following it, with
+the project root as the working directory. This works whether or not the session
+has loaded the project's skills, for example when `/dj-bootstrap` hands over in
+the session that created the project.
 
 Those skills ask questions one at a time. Answer them from the overview and from
 the choices the user confirmed in this skill, and ask the user only what neither

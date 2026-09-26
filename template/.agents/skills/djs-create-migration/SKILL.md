@@ -9,6 +9,13 @@ Create a Django data migration for `<app>`.
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Mark nothing in migrations. Translatable text
+belongs in the models: a data migration that creates rows stores data, not strings
+for translation.
 
 **Never write migration files by hand.** Always generate the empty file first:
 

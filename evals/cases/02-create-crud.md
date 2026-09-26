@@ -63,6 +63,26 @@ for name in ("detail", "edit", "delete"):
     reverse(f"catalog:product_{name}", args=[1])
 print("crud assertions passed")
 '
+# Strings are marked for translation even though the project is English-only.
+uv run python manage.py shell -c '
+from django.apps import apps
+from django.utils.functional import Promise
+
+Product = apps.get_model("catalog", "Product")
+for name in ("name", "sku", "price", "in_stock", "created", "updated"):
+    field = Product._meta.get_field(name)
+    assert isinstance(field.verbose_name, Promise), f"{name} verbose_name not lazy"
+assert isinstance(Product._meta.verbose_name, Promise), "Meta.verbose_name not lazy"
+assert isinstance(Product._meta.verbose_name_plural, Promise), "Meta.verbose_name_plural not lazy"
+print("translation assertions passed")
+'
+for template in list detail form confirm_delete; do
+  file="templates/catalog/product_${template}.html"
+  grep -Eq '\{% (translate|blocktranslate) ' "$file" || { echo "$file: no {% translate %}"; exit 1; }
+  if grep -Eq '>[[:space:]]*(Save|Delete|Edit|Cancel)[[:space:]]*<' "$file"; then
+    echo "$file: bare button or link text"; exit 1
+  fi
+done
 # Delete through the confirm page the way htmx does: send the hx-headers the page
 # renders, with CSRF enforced (the test client skips CSRF checks by default).
 uv run python manage.py shell -c '

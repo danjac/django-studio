@@ -7,6 +7,13 @@ Create a basic Django app with the standard file structure for this project.
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. `apps.py` sets no `verbose_name`; if you add
+one, wrap it in `gettext_lazy`. Models, views and templates added to the app follow
+the matching `create-*` skill.
 
 **Steps:**
 

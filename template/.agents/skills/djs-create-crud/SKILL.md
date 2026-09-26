@@ -9,6 +9,14 @@ Generate a complete set of CRUD views for a model.
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Templates `{% load i18n %}` and wrap all text
+in `{% translate %}`, or `{% blocktranslate %}` when it contains variables; pass
+`title=_("...")` to includes. Views use `gettext as _` for messages. Explicit form
+labels use `gettext_lazy`.
 
 **Definitions:**
 - `<model_lower>` = `<model_name>` lower-cased (e.g. `Photo` → `photo`)
@@ -177,12 +185,13 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
 
 ```html
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
-  {% include "header.html" with title="<model_name>s" %}
+  {% include "header.html" with title=_("<model_name>s") %}
   <div class="mt-4">
     <a href="{% url '<app_name>:<model_lower>_create' %}" class="btn btn-primary">
-      Add <model_name>
+      {% translate "Add <model_name>" %}
     </a>
   </div>
   {% partialdef pagination inline %}
@@ -190,7 +199,7 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
       {% for item in page.object_list %}
         <div>{{ item }}</div>
       {% empty %}
-        <p class="text-zinc-500">No items yet.</p>
+        <p class="text-zinc-500">{% translate "No items yet." %}</p>
       {% endfor %}
     {% endfragment %}
   {% endpartialdef %}
@@ -201,16 +210,17 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
 
 ```html
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
-  {% include "header.html" with title="<model_name>" %}
+  {% include "header.html" with title=_("<model_name>") %}
   <div class="mt-4">
     <p>{{ <model_lower> }}</p>
     <div class="mt-6 flex gap-3">
       <a href="{% url '<app_name>:<model_lower>_edit' <model_lower>.pk %}"
-         class="btn btn-secondary">Edit</a>
+         class="btn btn-secondary">{% translate "Edit" %}</a>
       <a href="{% url '<app_name>:<model_lower>_delete' <model_lower>.pk %}"
-         class="btn btn-danger">Delete</a>
+         class="btn btn-danger">{% translate "Delete" %}</a>
     </div>
   </div>
 {% endblock content %}
@@ -220,18 +230,19 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
 
 ```html
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
-  {% include "header.html" with title="<model_name>" %}
+  {% include "header.html" with title=_("<model_name>") %}
   {% partial "<model_lower>-form" %}
     <div id="<model_lower>-form">
       {% fragment "form.html" htmx=True hx_target="#<model_lower>-form" %}
         {% for field in form %}
           {{ field.as_field_group }}
         {% endfor %}
-        <button type="submit" class="btn btn-primary" hx-disable="this">Save</button>
+        <button type="submit" class="btn btn-primary" hx-disable="this">{% translate "Save" %}</button>
         <a href="{% url '<app_name>:<model_lower>_list' %}" class="btn btn-secondary">
-          Cancel
+          {% translate "Cancel" %}
         </a>
       {% endfragment %}
     </div>
@@ -243,22 +254,25 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
 
 ```html
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
-  {% include "header.html" with title="Delete <model_name>" %}
+  {% include "header.html" with title=_("Delete <model_name>") %}
   <div class="mt-4">
-    <p>Are you sure you want to delete <strong>{{ <model_lower> }}</strong>?</p>
+    <p>
+      {% blocktranslate with object=<model_lower> %}Are you sure you want to delete <strong>{{ object }}</strong>?{% endblocktranslate %}
+    </p>
     <div class="mt-6 flex gap-3">
       <button
         class="btn btn-danger"
         hx-delete="{% url '<app_name>:<model_lower>_delete' <model_lower>.pk %}"
         hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'
-        hx-confirm="This cannot be undone."
+        hx-confirm="{% translate "This cannot be undone." %}"
         hx-target="body"
         hx-push-url="{% url '<app_name>:<model_lower>_list' %}"
-      >Delete</button>
+      >{% translate "Delete" %}</button>
       <a href="{% url '<app_name>:<model_lower>_detail' <model_lower>.pk %}"
-         class="btn btn-secondary">Cancel</a>
+         class="btn btn-secondary">{% translate "Cancel" %}</a>
     </div>
   </div>
 {% endblock content %}

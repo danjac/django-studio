@@ -66,7 +66,7 @@ decorative (adjacent text already communicates the meaning):
 When the icon is the only content of an interactive element, provide a label:
 
 ```html
-<button type="button" aria-label="Delete post">
+<button type="button" aria-label="{% translate "Delete post" %}">
   {% heroicon_mini "trash" class="size-4" aria_hidden="true" %}
 </button>
 ```

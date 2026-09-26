@@ -121,7 +121,7 @@ Run targeted tests on intermediate commits. Run `just check-all` once before ope
 Never use `{{ form.as_div }}` or `{% include "forms/partials.html" %}`.{% endraw %}
 See `docs/django-forms.md`.
 
-**Internationalisation**: All user-visible text must be wrapped in translation functions. See `docs/django.md` for usage.
+**Internationalisation**: All user-visible text must be wrapped in translation functions, even in an English-only project: adding a language later then only needs translating. See `docs/localization.md` for usage.
 
 **Documentation**: When updating a `docs/` file, keep its `## Contents` table of contents in sync. If a doc lacks a ToC and has 8+ `##` sections or 250+ lines, add one below the intro paragraph.
 

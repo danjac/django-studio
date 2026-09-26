@@ -50,7 +50,7 @@ Pass context via `{% with %}` before the call instead:
 
 ```html
 {# WRONG — with is not supported #}
-{% partial menu_item with icon="envelope" label="Email" %}
+{% partial menu_item with icon="envelope" label=_("Email") %}
 
 {# CORRECT — set context first, then call partial #}
 {% with icon="envelope" label=_("Email") %}
@@ -214,7 +214,7 @@ The component uses Alpine for the mobile menu and dropdown — DaisyUI provides 
 
 ```html
 {% url 'podcasts:subscriptions' as subscriptions_url %}
-{% with icon="rss" label="Subscriptions" url=subscriptions_url %}
+{% with icon="rss" label=_("Subscriptions") url=subscriptions_url %}
   {% partial item %}
 {% endwith %}
 ```

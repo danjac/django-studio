@@ -8,6 +8,13 @@ Add a background task using `django-tasks-db`.
 
 - `docs/django-tasks.md`
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Text a task sends to users (email subjects
+and bodies, notifications) uses `gettext`, with the recipient's language activated
+(`translation.override`) while it renders.
 
 **Steps:**
 

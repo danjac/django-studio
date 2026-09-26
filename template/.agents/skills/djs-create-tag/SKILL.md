@@ -8,6 +8,13 @@ See `docs/django-templates.md` for the tag type reference and testing convention
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Text the tag outputs uses `gettext`, called
+when the tag renders so it follows the active language. An inclusion tag's template
+loads `i18n` and wraps its text in `{% translate %}`.
 
 **Parsing arguments:**
 

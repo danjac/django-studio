@@ -10,6 +10,13 @@ enqueues background tasks via `django-tasks-db` for long-running or parallel wor
 ## Required reading
 
 - `docs/python-style-guide.md`
+- `docs/localization.md`
+
+**Localization:** Mark user-visible strings for translation even when the project
+has one language, so adding a language later only needs translating. See
+`docs/localization.md` for the syntax. Output for developers (`self.stdout.write`)
+stays unmarked. Mark anything the command sends to users, such as email text, with
+`gettext`.
 
 Parse `$ARGUMENTS` as: `<app_name> [description]`
 

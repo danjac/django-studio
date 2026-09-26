@@ -1,17 +1,17 @@
 # CRUD views for a new model
 
-Covers `/dj-create-crud`, including its hand-off to `/dj-create-app` and
-`/dj-create-model` when neither the app nor the model exists.
+Covers `/djs-create-crud`, including its hand-off to `/djs-create-app` and
+`/djs-create-model` when neither the app nor the model exists.
 
 ## Prompt
 
 ```text
-/dj-create-crud catalog Product
+/djs-create-crud catalog Product
 
 Neither the `catalog` app nor the `Product` model exists yet. Follow the skill's
 Step 0: create the app, then the model, then the CRUD views.
 
-Answers for dj-create-model:
+Answers for djs-create-model:
 
 - Primary key: use the default.
 - Timestamps: yes, with the default names `created` / `updated`.
@@ -28,7 +28,7 @@ Answers for dj-create-model:
 - Run migrate: yes.
 - Generate CRUD views: yes (this is the CRUD run).
 
-Answers for dj-create-crud:
+Answers for djs-create-crud:
 
 - The form exposes `name`, `sku`, `price` and `in_stock`.
 - URL prefix `products/`.

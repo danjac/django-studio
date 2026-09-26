@@ -31,7 +31,7 @@ class TestRandomSlug:
 
 
 class TestDjHelpLookup:
-    script = ".agents/skills/dj-help/scripts/lookup.py"
+    script = ".agents/skills/djs-help/scripts/lookup.py"
 
     def run(self, project: Path, *args: str) -> subprocess.CompletedProcess:
         return subprocess.run(
@@ -44,17 +44,17 @@ class TestDjHelpLookup:
     def test_lists_all_commands(self, project_with_deps: Path) -> None:
         result = self.run(project_with_deps)
         assert result.returncode == 0
-        assert "/dj-deploy" in result.stdout
+        assert "/djs-deploy" in result.stdout
 
     def test_shows_help_for_exact_name(self, project_with_deps: Path) -> None:
-        result = self.run(project_with_deps, "dj-deploy")
+        result = self.run(project_with_deps, "djs-deploy")
         assert result.returncode == 0
-        assert "**/dj-deploy**" in result.stdout
+        assert "**/djs-deploy**" in result.stdout
 
     def test_shows_help_for_suffix_match(self, project_with_deps: Path) -> None:
         result = self.run(project_with_deps, "a11y")
         assert result.returncode == 0
-        assert "**/dj-a11y**" in result.stdout
+        assert "**/djs-a11y**" in result.stdout
 
     def test_unknown_name_exits_nonzero(self, project_with_deps: Path) -> None:
         result = self.run(project_with_deps, "nope-not-a-skill")
@@ -65,7 +65,7 @@ class TestDjHelpLookup:
 class TestDjSyncChangelogSince:
     script = (
         Path(__file__).parent.parent
-        / "template/.agents/skills/dj-sync/scripts/changelog-since.py"
+        / "template/.agents/skills/djs-sync/scripts/changelog-since.py"
     )
 
     @staticmethod

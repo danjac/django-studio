@@ -1,4 +1,4 @@
-"""Tests for the Claude Code plugin: marketplace manifest and the /dj-bootstrap skill."""
+"""Tests for the Claude Code plugin: marketplace manifest and the /djs-bootstrap skill."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import yaml
 ROOT = Path(__file__).parent.parent
 MARKETPLACE = ROOT / ".claude-plugin" / "marketplace.json"
 PLUGIN_DIR = ROOT / "plugin"
-DJ_BOOTSTRAP = PLUGIN_DIR / "skills" / "dj-bootstrap" / "SKILL.md"
+DJ_BOOTSTRAP = PLUGIN_DIR / "skills" / "djs-bootstrap" / "SKILL.md"
 
 
 def _copier_questions() -> dict:
@@ -73,7 +73,7 @@ class TestDjBootstrapMatchesCopier:
         text = DJ_BOOTSTRAP.read_text()
         for question in _copier_questions():
             assert f"--data {question}=" in text, (
-                f"{question} missing from dj-bootstrap"
+                f"{question} missing from djs-bootstrap"
             )
 
     def test_lists_every_license_choice(self):

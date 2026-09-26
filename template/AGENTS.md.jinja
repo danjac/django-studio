@@ -88,7 +88,7 @@ just --yes rdj migrate             # run manage.py on production
 ```
 
 Skills that need kubectl beyond these two recipes should call `kubectl` directly.
-Skill scripts (e.g. `.agents/skills/dj-db-restore/scripts/`) handle kubeconfig resolution
+Skill scripts (e.g. `.agents/skills/djs-db-restore/scripts/`) handle kubeconfig resolution
 internally.
 
 Human-invoked commands (typed directly in the terminal) do not need `--yes` — the
@@ -155,7 +155,7 @@ It lists which files must change together. If another doc disagrees with it,
 **Read `docs/this-project.md` and the `README.md` of any app you are changing.**
 They describe this project's domain, business rules, APIs and integrations — the
 context the generic docs below cannot give. If they contradict the code or are still
-stubs, say so; `/dj-doc` creates and updates them.
+stubs, say so; `/djs-doc` creates and updates them.
 
 **Before starting any task, look up your task type in the table below and read
 the listed doc(s) before writing any code.** The table is a lookup — use it
@@ -218,64 +218,64 @@ If a doc contradicts what you see in existing code, flag it — do not silently 
 
 ## Slash Commands
 
-Available in Claude Code and OpenCode as `/dj-<command>`.
+Available in Claude Code and OpenCode as `/djs-<command>`.
 
 **General**
 
 | Command | Purpose |
 | ------- | ------- |
-| `/dj-kickoff` | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
-| `/dj-help` | List all dj-* commands or show help for a specific command |
-| `/dj-sync` | Preview the changelog, pull template changes via Copier and resolve conflicts |
-| `/dj-feedback` | File a GitHub issue against the django-studio repo |
-| `/dj-doc [<app_name>]` | Create or update project-specific docs (`docs/this-project.md`, app READMEs) |
+| `/djs-kickoff` | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
+| `/djs-help` | List all djs-* commands or show help for a specific command |
+| `/djs-sync` | Preview the changelog, pull template changes via Copier and resolve conflicts |
+| `/djs-feedback` | File a GitHub issue against the django-studio repo |
+| `/djs-doc [<app_name>]` | Create or update project-specific docs (`docs/this-project.md`, app READMEs) |
 
 **Generators**
 
 | Command | Purpose |
 | ------- | ------- |
-| `/dj-create-app <app_name>` | Scaffold a complete Django app |
-| `/dj-create-view [<app_name>] <view>` | Add a view + template + URL |
-| `/dj-create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
-| `/dj-create-command <app_name> [desc]` | Add a management command with tests |
-| `/dj-create-model <app_name> <model>` | Design a model with recipe, fixture, and tests |
-| `/dj-create-migration <app_name> [name]` | Create a data migration (Python or SQL) |
-| `/dj-create-crud <app_name> <model>` | Full CRUD views, templates, URLs, forms, and tests |
-| `/dj-create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
-| `/dj-create-tag [<app_name>] [<module>]` | Add a template tag |
-| `/dj-create-filter [<app_name>] [<module>]` | Add a template filter |
+| `/djs-create-app <app_name>` | Scaffold a complete Django app |
+| `/djs-create-view [<app_name>] <view>` | Add a view + template + URL |
+| `/djs-create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
+| `/djs-create-command <app_name> [desc]` | Add a management command with tests |
+| `/djs-create-model <app_name> <model>` | Design a model with recipe, fixture, and tests |
+| `/djs-create-migration <app_name> [name]` | Create a data migration (Python or SQL) |
+| `/djs-create-crud <app_name> <model>` | Full CRUD views, templates, URLs, forms, and tests |
+| `/djs-create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
+| `/djs-create-tag [<app_name>] [<module>]` | Add a template tag |
+| `/djs-create-filter [<app_name>] [<module>]` | Add a template filter |
 
 **Localisation**
 
 | Command | Purpose |
 | ------- | ------- |
-| `/dj-localize <locale>` | Add localization formats, extract, translate (TranslateBot), and compile message catalogue |
+| `/djs-localize <locale>` | Add localization formats, extract, translate (TranslateBot), and compile message catalogue |
 
 **Audits**
 
 | Command | Purpose |
 | ------- | ------- |
-| `/dj-perf` | Performance audit: N+1 queries, indexes, caching, async |
-| `/dj-secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
-| `/dj-gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
-| `/dj-a11y` | Accessibility audit: WCAG 2.1 AA |
-| `/dj-deadcode` | Remove unused Python code, Django templates and static assets |
-| `/dj-remove-slop` | Audit and remove Django anti-patterns introduced by AI or inattentive devs |
-| `/dj-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines |
+| `/djs-perf` | Performance audit: N+1 queries, indexes, caching, async |
+| `/djs-secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
+| `/djs-gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
+| `/djs-a11y` | Accessibility audit: WCAG 2.1 AA |
+| `/djs-deadcode` | Remove unused Python code, Django templates and static assets |
+| `/djs-remove-slop` | Audit and remove Django anti-patterns introduced by AI or inattentive devs |
+| `/djs-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines |
 
 **Deployment**
 
 | Command | Purpose |
 | ------- | ------- |
-| `/dj-deploy` | Interactive first-deploy wizard (infra → secrets → deploy) |
-| `/dj-deploy-observe` | Deploy the observability stack (Grafana + Prometheus + Loki) |
-| `/dj-tailscale [enable\|status\|disable]` | Enable, check or disable Tailscale private networking |
-| `/dj-scale [n]` | View or change the webapp replica count |
-| `/dj-rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
-| `/dj-enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
-| `/dj-db-backup`         | Trigger an immediate database backup without waiting for the daily cron |
-| `/dj-db-restore`        | Guided production database restore from Object Storage backup |
-| `/dj-deploy-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
+| `/djs-deploy` | Interactive first-deploy wizard (infra → secrets → deploy) |
+| `/djs-deploy-observe` | Deploy the observability stack (Grafana + Prometheus + Loki) |
+| `/djs-tailscale [enable\|status\|disable]` | Enable, check or disable Tailscale private networking |
+| `/djs-scale [n]` | View or change the webapp replica count |
+| `/djs-rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
+| `/djs-enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
+| `/djs-db-backup`         | Trigger an immediate database backup without waiting for the daily cron |
+| `/djs-db-restore`        | Guided production database restore from Object Storage backup |
+| `/djs-deploy-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
 
 
 ## MCP Servers
@@ -314,4 +314,4 @@ the next issue.
 
 ## Template Feedback
 
-Generated from [django-studio](https://github.com/danjac/django-studio). To report a bug or improvement: `/dj-feedback`
+Generated from [django-studio](https://github.com/danjac/django-studio). To report a bug or improvement: `/djs-feedback`

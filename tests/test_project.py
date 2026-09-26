@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import py_compile
 import re
 import subprocess
@@ -502,7 +503,7 @@ class TestAlwaysIncludedFeatures:
             assert request in content
 
     def test_tailscale_skill_is_installed(self, project):
-        skill = project / ".agents" / "skills" / "dj-tailscale"
+        skill = project / ".agents" / "skills" / "djs-tailscale"
         assert (skill / "SKILL.md").exists()
         assert (skill / "references" / "help.md").exists()
         script = skill / "scripts" / "join-nodes.sh"
@@ -511,7 +512,7 @@ class TestAlwaysIncludedFeatures:
 
     def test_tailscale_skill_files_contain_no_jinja(self, project):
         """.agents/ is copied verbatim, so unrendered braces would ship as-is."""
-        skill = project / ".agents" / "skills" / "dj-tailscale"
+        skill = project / ".agents" / "skills" / "djs-tailscale"
         for path in skill.rglob("*"):
             if path.is_file():
                 content = path.read_text()
@@ -535,7 +536,7 @@ class TestAlwaysIncludedFeatures:
     def test_tailscale_documented_in_all_command_tables(self, project):
         """AGENTS.md requires the skill tables stay in lockstep."""
         for rel in ("AGENTS.md", "README.md"):
-            assert "/dj-tailscale" in (project / rel).read_text(), rel
+            assert "/djs-tailscale" in (project / rel).read_text(), rel
 
     def test_i18n_and_storage_coexist(self, project):
         settings_content = (project / "config" / "settings.py").read_text()
@@ -658,10 +659,25 @@ class TestClaudeHooksInstallation:
         assert skills, "No SKILL.md files found in .agents/skills/"
         commands_dir = project / ".claude" / "commands"
         for skill_md in skills:
-            name = skill_md.parent.name  # e.g. "dj-create-app"
+            name = skill_md.parent.name  # e.g. "djs-create-app"
             stub = commands_dir / f"{name}.md"
             assert stub.exists(), f"Missing stub for skill '{name}'"
             assert stub.read_text().strip() == f"@.agents/skills/{name}/SKILL.md"
+
+    def test_deprecated_dj_aliases_installed(self, project):
+        commands_dir = project / ".claude" / "commands"
+        skills = sorted(
+            p.parent.name for p in (project / ".agents" / "skills").glob("*/SKILL.md")
+        )
+        assert all(name.startswith("djs-") for name in skills)
+        aliases = {"dj-" + name.removeprefix("djs-") for name in skills}
+        assert {p.stem for p in commands_dir.glob("*.md")} == set(skills) | aliases
+        stub = (commands_dir / "dj-help.md").read_text()
+        assert "`/dj-help` is deprecated" in stub
+        assert "@.agents/skills/djs-help/SKILL.md" in stub
+        opencode = json.loads((project / "opencode.json").read_text())["command"]
+        assert set(opencode) == set(skills) | aliases
+        assert opencode["dj-help"]["description"] == "Deprecated: use /djs-help"
 
 
 class TestRenderedPythonLinting:

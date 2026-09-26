@@ -1,4 +1,4 @@
-<!-- dj-doc: stub -->
+<!-- djs-doc: stub -->
 # This Project
 
 This page describes **this project specifically** — what it does, who it is for, and
@@ -8,7 +8,7 @@ conventions and are maintained by the template.
 Each app has its own `README.md` next to its code with business rules, lifecycles,
 APIs and integrations. This page is the map; the app READMEs are the detail.
 
-> **Stub.** Run `/dj-doc` to fill this in: it reads the code, asks you for the
+> **Stub.** Run `/djs-doc` to fill this in: it reads the code, asks you for the
 > context the code cannot provide, and keeps this page and the app READMEs up to
 > date on later runs. You can also edit it by hand — keep the headings.
 

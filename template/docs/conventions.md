@@ -43,7 +43,7 @@ Connection URLs (`DATABASE_URL`, `REDIS_URL`, `EMAIL_URL`):
 - Local values are in `.env.example`.
 - Production `DATABASE_URL` and `REDIS_URL` are built in
   `helm/site/templates/secret.yaml` and rebuilt by
-  `.agents/skills/dj-rotate-secrets/scripts/patch-k8s-secrets.sh` when secrets are
+  `.agents/skills/djs-rotate-secrets/scripts/patch-k8s-secrets.sh` when secrets are
   rotated. If you change the URL format in one, change it in the other.
 - Production does not set `EMAIL_URL`; email goes through Mailgun (`MAILGUN_*`).
 

@@ -1,0 +1,114 @@
+---
+description: Preview the changelog, pull template changes via Copier, resolve conflicts
+---
+
+Pull the latest django-studio template changes into this project and resolve
+any merge conflicts interactively.
+
+## Steps
+
+### 1. Review what's changed
+
+Show the template changelog entries added since this project's last sync:
+
+```bash
+.agents/skills/djs-sync/scripts/changelog-since.py
+```
+
+Summarise the entries for the user. Call out any **Changed** or **Removed**
+entry that touches files the project has customised, since those are where
+conflicts are likely. Ask whether to continue with the update.
+
+If the script cannot reach the template or find the project's commit, say so and
+ask whether to continue anyway.
+
+### 2. Run Copier update
+
+```bash
+uvx copier update --trust
+```
+
+The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,
+and `opencode.json` to `.django_studio/backups/<n>/` (incrementing integer) before regenerating them.
+
+This pulls the latest template into the project and stages the merged files.
+If there are no conflicts, skip to Step 4.
+
+### 3. Detect and resolve conflicts
+
+Check for merge conflicts introduced by the update:
+
+```bash
+git status
+```
+
+List any files with conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`):
+
+```bash
+grep -rn "<<<<<<" . --include="*.py" --include="*.html" --include="*.jinja" \
+    --include="*.yml" --include="*.toml" --include="*.md" 2>/dev/null
+```
+
+For every conflicted file:
+
+1. Read the file and show the conflict to the user:
+   ```
+   Conflict in <file>:
+   <<< Current (your project)
+   <your version>
+   ===
+   <template version>
+   >>> Incoming (django-studio template)
+   ```
+2. Explain what each side does in plain language.
+3. Ask the user which version to keep, or whether to merge them manually.
+4. Apply the user's decision and remove the conflict markers.
+
+Repeat until no conflict markers remain.
+
+### 4. Restore local overrides in generated files
+
+Diff each backed-up file against its current counterpart in the project root:
+
+```bash
+BACKUP_DIR=$(.agents/skills/djs-sync/scripts/get-backup-dir.py)
+find "$BACKUP_DIR" -type f | while read -r backup_file; do
+    rel="${backup_file#"$BACKUP_DIR/"}"
+    diff "$backup_file" "$rel"
+done
+```
+
+For each file with a non-empty diff:
+
+1. Show the diff to the user.
+2. Identify which lines are new template additions vs. local customizations
+   the user had made (e.g. extra `permissions.allow` entries, extra MCP servers).
+3. Ask the user which local customizations to restore, then apply them.
+
+If `get-backup-dir.py` prints nothing (no backups yet), skip this step.
+
+### 5. Verify
+
+After all conflicts are resolved:
+
+```bash
+just check-all
+```
+
+Fix any issues before continuing.
+
+---
+
+### 6. Commit
+
+Stage all resolved files and commit:
+
+```bash
+git add -A
+git commit -m "chore: sync with django-studio template"
+```
+
+Inform the user the sync is complete and the project is ready to push.
+
+> **Start a new conversation** before using any skills — updated skill files
+> are not re-read mid-conversation.

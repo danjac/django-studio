@@ -109,7 +109,7 @@ Terraform applies each label to the server node unless a dedicated node claims i
 | `webapp_count` | `0` | `N` dedicated webapp nodes take `webapp=true` |
 | `create_jobrunner` | `false` | dedicated jobrunner node takes `jobrunner=true` |
 | `create_database` | `false` | dedicated database node takes `database=true` |
-| `create_monitor` | `false` | separate observability node (see `/dj-deploy-observe`) |
+| `create_monitor` | `false` | separate observability node (see `/djs-deploy-observe`) |
 
 ### The scaling path
 
@@ -126,7 +126,7 @@ create_database = true
 
 ⚠️ **This moves the Hetzner volume between servers.** Terraform will detach it from the
 server node and reattach it to the new database node, so PostgreSQL is down for the
-duration. Take a backup first (`/dj-db-backup`), and expect a short outage.
+duration. Take a backup first (`/djs-db-backup`), and expect a short outage.
 
 **Stage 3 — split the workers.** Background tasks and CronJobs stop competing with web
 requests for CPU:
@@ -142,7 +142,7 @@ webapp_count = 2
 ```
 
 Then raise `replicas` in `helm/site/values.secret.yaml` to match, and raise the `app`
-resource requests — a dedicated node has the whole box to itself. Or just run `/dj-scale`.
+resource requests — a dedicated node has the whole box to itself. Or just run `/djs-scale`.
 
 After any stage: `just terraform hetzner apply`, then `just helm site`.
 
@@ -391,7 +391,7 @@ and the Kubernetes API travel over the tailnet instead of the public internet an
 open — that is public web traffic via Cloudflare.
 
 It ships with the template but is **off by default**. The quickest way to turn it on is
-`/dj-tailscale enable`, which handles both a fresh deploy and an existing cluster. What
+`/djs-tailscale enable`, which handles both a fresh deploy and an existing cluster. What
 follows is what that skill automates.
 
 #### Setting up
@@ -434,7 +434,7 @@ an existing cluster. Two things have to happen on the running nodes:
 ```bash
 TAILSCALE_OAUTH_CLIENT_SECRET=tskey-client-... \
 TAILSCALE_TAILNET=tail1a2b3c.ts.net \
-  .agents/skills/dj-tailscale/scripts/join-nodes.sh
+  .agents/skills/djs-tailscale/scripts/join-nodes.sh
 ```
 
 This installs Tailscale on each node, and on the server writes a
@@ -540,7 +540,7 @@ In brief:
 ## Backup
 
 Automated daily backups are optional and set up separately after initial deployment.
-See `docs/database-backups.md` for the full setup and restore guide, or run `/dj-enable-db-backups`
+See `docs/database-backups.md` for the full setup and restore guide, or run `/djs-enable-db-backups`
 to be guided through the process interactively.
 
 In brief: a Kubernetes CronJob runs `pg_dump` nightly and uploads compressed dumps to a

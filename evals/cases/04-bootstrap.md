@@ -1,6 +1,6 @@
 # Bootstrap a new project
 
-Covers the plugin's `/dj-bootstrap`: preflight, Copier answers taken from the prompt
+Covers the plugin's `/djs-bootstrap`: preflight, Copier answers taken from the prompt
 and the answers below, `copier copy`, the product overview in
 `docs/this-project.md`, the smoke test and the first commit. The runner starts it in an empty directory with the plugin loaded,
 and `{template}` is replaced with this checkout, so the case tests the local
@@ -9,7 +9,7 @@ template rather than GitHub `main`.
 ## Prompt
 
 ```text
-/dj-bootstrap "Recipe Box: a recipe sharing site for home cooks"
+/djs-bootstrap "Recipe Box: a recipe sharing site for home cooks"
 
 Template source: {template}
 
@@ -51,7 +51,7 @@ grep -qx "domain: recipebox.example.com" .copier-answers.yml
 grep -qx "license: EUPL-1.2" .copier-answers.yml
 test -d recipe_box
 git ls-files --error-unmatch docs/this-project.md
-! grep -q "dj-doc: stub" docs/this-project.md
+! grep -q "djs-doc: stub" docs/this-project.md
 test -n "$(ls recipe_box/users/migrations/0001_*.py)"
 test "$(git rev-list --count HEAD)" = 1
 test -z "$(git status --porcelain)"

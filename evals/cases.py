@@ -11,7 +11,7 @@ CASES_DIR = REPO_DIR / "evals" / "cases"
 
 # A case whose prompt starts with this runs in an empty directory instead of in
 # a pre-rendered project.
-BOOTSTRAP_SKILL = "/dj-bootstrap"
+BOOTSTRAP_SKILL = "/djs-bootstrap"
 
 
 @dataclass
@@ -26,7 +26,7 @@ class Case:
 
     @property
     def bootstrap(self) -> bool:
-        """True when the case creates the project itself with /dj-bootstrap."""
+        """True when the case creates the project itself with /djs-bootstrap."""
         return self.prompt.startswith(BOOTSTRAP_SKILL)
 
 

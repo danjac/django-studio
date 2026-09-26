@@ -28,7 +28,7 @@ _TEMPLATE_ROOT = Path(sys.argv[0]).resolve().parent.parent
 
 BASE_DIR = Path()
 
-# Generated config files backed up before each copier update so dj-sync can diff them.
+# Generated config files backed up before each copier update so djs-sync can diff them.
 BACKUP_FILES = [
     BASE_DIR / ".claude" / "settings.json",
     BASE_DIR / ".mcp.json",
@@ -40,9 +40,9 @@ BACKUP_FILES = [
 # conflicts with Jinja2.
 PLAIN_SLUG_FILES = [
     BASE_DIR / "justfile",
-    BASE_DIR / ".agents" / "skills" / "dj-db-backup" / "bin" / "db-backup.sh",
-    BASE_DIR / ".agents" / "skills" / "dj-db-restore" / "bin" / "db-restore.sh",
-    BASE_DIR / ".agents" / "skills" / "dj-db-restore" / "bin" / "list-backups.sh",
+    BASE_DIR / ".agents" / "skills" / "djs-db-backup" / "bin" / "db-backup.sh",
+    BASE_DIR / ".agents" / "skills" / "djs-db-restore" / "bin" / "db-restore.sh",
+    BASE_DIR / ".agents" / "skills" / "djs-db-restore" / "bin" / "list-backups.sh",
     *[
         BASE_DIR / ".github" / "workflows" / name
         for name in (
@@ -102,13 +102,37 @@ def _next_backup_dir() -> Path:
 def _backup_files(backup_dir: Path) -> None:
     """Copy existing BACKUP_FILES into backup_dir preserving relative paths.
 
-    dj-sync diffs each backup against its counterpart in the project root.
+    djs-sync diffs each backup against its counterpart in the project root.
     """
     for src in BACKUP_FILES:
         if src.exists():
             dest = backup_dir / src.relative_to(BASE_DIR)
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dest)
+
+
+def _deprecated_aliases(opencode_commands: dict[str, dict[str, str]]) -> dict[str, str]:
+    """Return a deprecated dj-<name> command stub for each djs-<name> skill.
+
+    Skills were renamed from dj-<name> to djs-<name>; the aliases keep the old
+    names working for now. Also adds the matching entries to opencode_commands.
+    """
+    aliases: dict[str, str] = {}
+    for name in [n for n in opencode_commands if n.startswith("djs-")]:
+        alias = "dj-" + name.removeprefix("djs-")
+        notice = (
+            f"`/{alias}` is deprecated and will be removed in a future release;"
+            f" use `/{name}`."
+        )
+        aliases[alias] = (
+            f"{notice} Tell the user this in one line, then follow"
+            f" @.agents/skills/{name}/SKILL.md\n"
+        )
+        opencode_commands[alias] = {
+            "template": f".agents/skills/{name}/SKILL.md",
+            "description": f"Deprecated: use /{name}",
+        }
+    return aliases
 
 
 def install_claude_hooks() -> None:
@@ -195,6 +219,7 @@ def install_claude_hooks() -> None:
     commands_dst = claude_dir / "commands"
     commands_dst.mkdir(parents=True, exist_ok=True)
     skills_root = BASE_DIR / ".agents" / "skills"
+    commands: dict[str, str] = {}
     opencode_commands: dict[str, dict[str, str]] = {}
     for skill_dir in sorted(skills_root.iterdir()):
         if not skill_dir.is_dir():
@@ -203,12 +228,19 @@ def install_claude_hooks() -> None:
         if not skill_file.exists():
             continue
         name = skill_dir.name
-        (commands_dst / f"{name}.md").write_text(f"@.agents/skills/{name}/SKILL.md\n")
+        commands[name] = f"@.agents/skills/{name}/SKILL.md\n"
         description = _parse_skill_description(skill_file)
         opencode_commands[name] = {
             "template": f".agents/skills/{name}/SKILL.md",
             "description": description,
         }
+    commands |= _deprecated_aliases(opencode_commands)
+    # Delete stubs for skills that were renamed or removed.
+    for stub in commands_dst.glob("*.md"):
+        if stub.stem not in commands:
+            stub.unlink()
+    for name, content in commands.items():
+        (commands_dst / f"{name}.md").write_text(content)
     opencode = {
         "$schema": "https://opencode.ai/config.json",
         "command": opencode_commands,

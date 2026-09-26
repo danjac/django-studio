@@ -60,14 +60,14 @@ project.
    claude
    ```
 
-   `/dj-bootstrap` creates the project in a new subdirectory named after it, such
+   `/djs-bootstrap` creates the project in a new subdirectory named after it, such
    as `recipe_box/`. If you start it in an empty directory instead, it uses that
    directory.
 
-3. Describe the project to `/dj-bootstrap`:
+3. Describe the project to `/djs-bootstrap`:
 
    ```
-   /dj-bootstrap "recipe sharing site for home cooks"
+   /djs-bootstrap "recipe sharing site for home cooks"
    ```
 
    The skill checks your tools, then asks for anything your description didn't
@@ -89,22 +89,22 @@ project.
    claude
    ```
 
-   The project comes with its own `/dj-*` skills and agent docs, which load only
+   The project comes with its own `/djs-*` skills and agent docs, which load only
    in a session started there.
 
-5. Give the project its first shape with the project's `/dj-kickoff` skill, unless
-   you already ran it when `/dj-bootstrap` offered. It works from `docs/this-project.md`: it proposes
+5. Give the project its first shape with the project's `/djs-kickoff` skill, unless
+   you already ran it when `/djs-bootstrap` offered. It works from `docs/this-project.md`: it proposes
    changes to the `User` model, an app and model breakdown for your core entities
    (created only after you confirm it), sets up the extra languages, and fills in
    the rest of the project docs. Each step can be skipped, and it commits when
    `just check-all` passes.
 
-`/dj-bootstrap` is also available as `/django-studio:dj-bootstrap`, in case
+`/djs-bootstrap` is also available as `/django-studio:djs-bootstrap`, in case
 another plugin uses the same name.
 
 #### Updating the plugin
 
-The plugin only affects new projects. To get the latest `/dj-bootstrap`, run:
+The plugin only affects new projects. To get the latest `/djs-bootstrap`, run:
 
 ```bash
 claude plugin marketplace update django-studio
@@ -116,7 +116,7 @@ Or let Claude Code do it: run `/plugin`, open the **Marketplaces** tab, select
 updates when a session starts.
 
 Projects you have already generated don't change when the plugin updates. Run
-`/dj-sync` inside a project to pull template changes into it (see
+`/djs-sync` inside a project to pull template changes into it (see
 [Updating a generated project](#updating-a-generated-project)).
 
 ### With Copier
@@ -140,7 +140,7 @@ Then follow the prompts:
 
 Copier prints the setup steps when it finishes.
 
-For a guided start, run `/dj-kickoff` in Claude Code inside the new project. It
+For a guided start, run `/djs-kickoff` in Claude Code inside the new project. It
 installs and commits the scaffold if you haven't yet, asks the product questions,
 and records the answers in `docs/this-project.md` before shaping the project.
 
@@ -217,69 +217,69 @@ UI components are provided by [DaisyUI](https://daisyui.com/), a Tailwind CSS co
 
 ## Skills
 
-Generated projects include `dj-*` Claude Code and OpenCode slash commands for common workflows:
+Generated projects include `djs-*` Claude Code and OpenCode slash commands for common workflows:
 
 **General**
 
 | Command        | Summary                                                                           |
 | -------------- | --------------------------------------------------------------------------------- |
-| `/dj-bootstrap` | Start a new project: interview, run Copier, write `docs/this-project.md`, smoke test (Plugin skill: see [With Claude Code](#with-claude-code)) |
-| `/dj-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
-| `/dj-help`     | List all dj-\* commands or show help for a specific command                       |
-| `/dj-sync`     | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
-| `/dj-feedback` | Report a bug or improvement against the django-studio template                    |
-| `/dj-doc`      | Create or update project-specific docs: domain, apps, rules, APIs, integrations   |
+| `/djs-bootstrap` | Start a new project: interview, run Copier, write `docs/this-project.md`, smoke test (Plugin skill: see [With Claude Code](#with-claude-code)) |
+| `/djs-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
+| `/djs-help`     | List all djs-\* commands or show help for a specific command                       |
+| `/djs-sync`     | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
+| `/djs-feedback` | Report a bug or improvement against the django-studio template                    |
+| `/djs-doc`      | Create or update project-specific docs: domain, apps, rules, APIs, integrations   |
 
 **Generators**
 
 | Command                | Summary                                                                |
 | ---------------------- | ---------------------------------------------------------------------- |
-| `/dj-create-app`       | Create a Django app (apps.py, models, views, urls, admin, tests)       |
-| `/dj-create-view`      | Add a view, template, and URL                                          |
-| `/dj-create-task`      | Add a `django-tasks-db` background task with correct async patterns    |
-| `/dj-create-command`   | Add a management command with tests                                    |
-| `/dj-create-model`     | Design and write a Django model with recipe, fixture, and model tests  |
-| `/dj-create-migration` | Create a data migration (Python or SQL)                                |
-| `/dj-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
-| `/dj-create-e2e`       | Write Playwright E2E test(s) for a described user interaction          |
-| `/dj-create-tag`       | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
-| `/dj-create-filter`    | Add a template filter with correct escaping flags                      |
+| `/djs-create-app`       | Create a Django app (apps.py, models, views, urls, admin, tests)       |
+| `/djs-create-view`      | Add a view, template, and URL                                          |
+| `/djs-create-task`      | Add a `django-tasks-db` background task with correct async patterns    |
+| `/djs-create-command`   | Add a management command with tests                                    |
+| `/djs-create-model`     | Design and write a Django model with recipe, fixture, and model tests  |
+| `/djs-create-migration` | Create a data migration (Python or SQL)                                |
+| `/djs-create-crud`      | Generate full CRUD views, templates, URLs, and tests                   |
+| `/djs-create-e2e`       | Write Playwright E2E test(s) for a described user interaction          |
+| `/djs-create-tag`       | Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node) |
+| `/djs-create-filter`    | Add a template filter with correct escaping flags                      |
 
 **Localisation**
 
 | Command        | Summary                                                                                   |
 | -------------- | ----------------------------------------------------------------------------------------- |
-| `/dj-localize` | Add localization formats, extract strings, translate with TranslateBot, compile `.mo` catalogue |
+| `/djs-localize` | Add localization formats, extract strings, translate with TranslateBot, compile `.mo` catalogue |
 
 **Audits**
 
 | Command             | Summary                                                                      |
 | ------------------- | ---------------------------------------------------------------------------- |
-| `/dj-perf`          | Performance audit: N+1 queries, missing indexes, caching, async              |
-| `/dj-secure`        | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
-| `/dj-gdpr`          | GDPR compliance audit: PII in models, erasure, consent, logging              |
-| `/dj-a11y`          | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `/dj-deadcode`      | Remove unused Python code, Django templates and static assets                |
-| `/dj-remove-slop`   | Audit and remove Django anti-patterns introduced by AI or inattentive devs   |
-| `/dj-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
+| `/djs-perf`          | Performance audit: N+1 queries, missing indexes, caching, async              |
+| `/djs-secure`        | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
+| `/djs-gdpr`          | GDPR compliance audit: PII in models, erasure, consent, logging              |
+| `/djs-a11y`          | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
+| `/djs-deadcode`      | Remove unused Python code, Django templates and static assets                |
+| `/djs-remove-slop`   | Audit and remove Django anti-patterns introduced by AI or inattentive devs   |
+| `/djs-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
 
 **Deployment**
 
 | Command                 | Summary                                                                        |
 | ----------------------- | ------------------------------------------------------------------------------ |
-| `/dj-deploy`            | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
-| `/dj-deploy-observe`    | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
-| `/dj-tailscale [cmd]`   | Enable, check or disable Tailscale private networking for the cluster          |
-| `/dj-scale [n]`         | View or change the webapp replica count                                        |
-| `/dj-rotate-secrets`    | Rotate auto-generated and third-party Helm secrets and redeploy                |
-| `/dj-enable-db-backups` | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
-| `/dj-db-backup`         | Trigger an immediate database backup without waiting for the daily cron        |
-| `/dj-db-restore`        | Guided production database restore from Object Storage backup                  |
-| `/dj-deploy-cron`       | Schedule a management command as a Kubernetes cron job                         |
+| `/djs-deploy`            | Interactive first-deploy wizard: provisions infra, configures secrets, deploys |
+| `/djs-deploy-observe`    | Deploy the observability stack (Grafana + Prometheus + Loki)                   |
+| `/djs-tailscale [cmd]`   | Enable, check or disable Tailscale private networking for the cluster          |
+| `/djs-scale [n]`         | View or change the webapp replica count                                        |
+| `/djs-rotate-secrets`    | Rotate auto-generated and third-party Helm secrets and redeploy                |
+| `/djs-enable-db-backups` | Enable automated daily PostgreSQL backups to a private Object Storage bucket   |
+| `/djs-db-backup`         | Trigger an immediate database backup without waiting for the daily cron        |
+| `/djs-db-restore`        | Guided production database restore from Object Storage backup                  |
+| `/djs-deploy-cron`       | Schedule a management command as a Kubernetes cron job                         |
 
 ### Feedback Loop
 
-Two skills in particular are designed to help you provide feedback on the template itself: `dj-sync` and `dj-feedback`. The first allows you to pull in the latest template changes and resolve any merge conflicts interactively, while the second lets you report bugs or suggest improvements directly from your project.
+Two skills in particular are designed to help you provide feedback on the template itself: `djs-sync` and `djs-feedback`. The first allows you to pull in the latest template changes and resolve any merge conflicts interactively, while the second lets you report bugs or suggest improvements directly from your project.
 
 This alleviates a common issue with template projects: once a project is generated, it can be difficult to keep it up to date with the latest improvements and fixes. By providing these skills, we aim to create a feedback loop that benefits both the template maintainers and the developers using it. As more developers use `django-studio`, we expect to receive valuable feedback that will help us refine the template and make it even more useful for the community.
 
@@ -305,7 +305,7 @@ The point is that hosting is **low and fixed**. You pay per server, not per requ
 
 [Tailscale](https://tailscale.com) is supported as an optional extra. When enabled, every node joins a private WireGuard mesh and SSH and the Kubernetes API travel over the tailnet instead of the public internet, so ports 22 and 6443 can be closed to everyone else. Ports 80 and 443 stay open for web traffic via Cloudflare.
 
-It is **off by default** - there is no Copier question for it. Set `tailscale_oauth_client_secret` in `terraform/hetzner/terraform.tfvars`, or run `/dj-tailscale enable`, which handles both a fresh deploy and retrofitting a cluster that is already running.
+It is **off by default** - there is no Copier question for it. Set `tailscale_oauth_client_secret` in `terraform/hetzner/terraform.tfvars`, or run `/djs-tailscale enable`, which handles both a fresh deploy and retrofitting a cluster that is already running.
 
 Tailscale's free tier covers 3 users and 100 devices, so for solo projects and small teams this adds no cost. See `docs/infrastructure.md` in the generated project for the full setup.
 

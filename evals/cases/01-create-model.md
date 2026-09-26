@@ -1,18 +1,18 @@
 # Create an app and a model
 
-Covers `/dj-create-app` and `/dj-create-model`: a new app, a model with a unique
+Covers `/djs-create-app` and `/djs-create-model`: a new app, a model with a unique
 field, choices, a foreign key to the user model and timestamps, admin registration,
 recipe, fixture, model tests and migration.
 
 ## Prompt
 
 ```text
-/dj-create-model library Book
+/djs-create-model library Book
 
 The `library` app does not exist yet. Create it first by following
-.agents/skills/dj-create-app/SKILL.md, then continue with the model.
+.agents/skills/djs-create-app/SKILL.md, then continue with the model.
 
-Answers for dj-create-model:
+Answers for djs-create-model:
 
 - Primary key: use the default.
 - Timestamps: yes, with the default names `created` / `updated`.

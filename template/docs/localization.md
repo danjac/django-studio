@@ -13,7 +13,7 @@ models and forms.
 - [Marking strings for translation](#marking-strings-for-translation)
 - [Models and forms](#models-and-forms)
 - [Dates, numbers, and locale-aware formatting](#dates-numbers-and-locale-aware-formatting)
-- [dj-localize skill](#dj-localize-skill)
+- [djs-localize skill](#djs-localize-skill)
 
 ## Workflow
 
@@ -251,9 +251,9 @@ formats.localize(value)                         # auto-detects type
 
 ---
 
-## dj-localize skill
+## djs-localize skill
 
-Use `/dj-localize <locale>` to extract, translate, and compile a message catalogue in
+Use `/djs-localize <locale>` to extract, translate, and compile a message catalogue in
 one step. The skill handles `makemessages`, translates empty/fuzzy entries via Claude,
 and runs `compilemessages`. See `docs/localization.md` (this file) for background on
 the full i18n workflow.

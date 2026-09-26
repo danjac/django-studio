@@ -33,7 +33,7 @@ def setup_case(project: Path, case: Case, log: TextIO) -> dict[str, str]:
 
 
 def setup_bootstrap(project: Path) -> dict[str, str]:
-    """Create an empty directory for /dj-bootstrap to generate the project in.
+    """Create an empty directory for /djs-bootstrap to generate the project in.
 
     The skill writes .env itself. The project reads settings from .env without
     overriding the environment, and so does Compose, so free ports go in the

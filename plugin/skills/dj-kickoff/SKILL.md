@@ -38,7 +38,7 @@ may have edited it since `/dj-bootstrap`; take it as it is now.
 
 Show the steps below, each with one line on what it will do for this project,
 and ask which to run. Default: all of them. Skip a step the overview makes
-pointless (e.g. Languages when it lists one language) and say why.
+pointless (e.g. Languages when English is the only UI language) and say why.
 
 1. User model
 2. Domain apps and models
@@ -97,6 +97,10 @@ for the user to approve or change it. Then, for each app in turn:
 3. `dj-create-crud <app> <Model>` for each model marked for CRUD.
 
 ## 5. Languages
+
+If English is the only UI language, skip this step. The source strings are
+already English and marked for translation, so nothing is needed until another
+language is added, and `gettext` isn't required.
 
 For each UI language in the overview's Key Decisions other than English, follow
 `dj-localize` in single-locale mode for that locale:

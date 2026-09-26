@@ -4,9 +4,7 @@ description: Shape a new project from its overview (user model, apps, languages,
 
 Give a new django-studio project its first shape from the product overview in
 `docs/this-project.md`: the `User` model, domain apps and models, languages, and
-the rest of the project docs. It works on any new project, whether made with
-`/dj-bootstrap` or with `copier copy`. This skill only
-orchestrates. Each step follows the project's own skill or doc, so the result
+the rest of the project docs. This skill only orchestrates. Each step follows the project's own skill or doc, so the result
 matches what those skills produce when run by hand.
 
 Arguments: `$ARGUMENTS` — optional path to the project root. Default: the current
@@ -21,8 +19,7 @@ django-studio project:
 test -f .copier-answers.yml && test -d .agents/skills
 ```
 
-Bring the project to the state `/dj-bootstrap` leaves it in. A project made with
-`copier copy` may not have run any of these yet:
+Then check what setup has already run, and run only what's missing:
 
 1. If `.env` or `.venv` is missing, run `just install`. It creates `.env`, runs
    `git init`, and installs the dependencies and pre-commit hooks.
@@ -44,12 +41,12 @@ Bring the project to the state `/dj-bootstrap` leaves it in. A project made with
    continue: this skill ends with a commit of everything it changed.
 
 Read `.copier-answers.yml` for `package_name`, and read `docs/this-project.md`. If
-it still has the `<!-- dj-doc: stub -->` line, the project was made without
-`/dj-bootstrap`: ask the domain interview questions and write the page as in
-steps 3 and 5 of `${CLAUDE_SKILL_DIR}/../dj-bootstrap/SKILL.md`, then continue.
+it still has the `<!-- dj-doc: stub -->` line, the overview hasn't been written:
+ask the product questions and write the page as in steps 3 and 5 of
+`${CLAUDE_SKILL_DIR}/../dj-bootstrap/SKILL.md`, then continue.
 
-The rest of this skill calls the page "the overview". The user or earlier agents
-may have edited it since `/dj-bootstrap`; take it as it is now.
+The rest of this skill calls the page "the overview". It may have been edited
+since it was written; take it as it is now.
 
 ## 2. Choose the steps
 
@@ -87,8 +84,8 @@ each field, follow `docs/django-models.md`. Personal data (names, bios, location
 must also be handled in `<package_name>/users/gdpr.py`; see `docs/gdpr.md`.
 
 Then run the migrations, even with no changes or when the user skipped this step.
-A project made with `copier copy` has no `users` migration yet, and the domain
-models' foreign keys to `User` need one. In that case this creates
+The template ships the `users` app without a migration, and the domain models'
+foreign keys to `User` need one. If there is none yet, this creates
 `0001_initial`, including any new fields:
 
 ```bash

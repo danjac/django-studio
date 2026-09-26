@@ -71,6 +71,12 @@ repos:
     hooks:
       - id: shellcheck
 
+  # GitHub Actions workflows; ignores are in .github/actionlint.yaml
+  - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
+    rev: v1.7.12.25
+    hooks:
+      - id: actionlint
+
   # Docker
   - repo: https://github.com/hadolint/hadolint
     rev: v2.15.1

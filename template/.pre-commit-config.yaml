@@ -17,13 +17,43 @@ repos:
         exclude: '\.example'
   - repo: local
     hooks:
+      # Helm and Terraform are deployment tools a developer may not have installed
+      # yet: these hooks skip when the tool is missing, except in CI.
       - id: helm-lint
         name: Helm lint site chart
         language: system
-        entry: helm lint
-        args: [helm/site/]
+        entry: >-
+          bash -c 'if ! command -v helm >/dev/null; then
+          if [ -n "${CI:-}" ]; then echo "helm is required in CI"; exit 1; fi;
+          echo "helm not installed, skipping (CI runs this check)"; exit 0;
+          fi;
+          helm lint helm/site/'
         files: ^helm/site/
         pass_filenames: false
+      - id: terraform_fmt
+        name: Terraform fmt
+        language: system
+        entry: >-
+          bash -c 'if ! command -v terraform >/dev/null; then
+          if [ -n "${CI:-}" ]; then echo "terraform is required in CI"; exit 1; fi;
+          echo "terraform not installed, skipping (CI runs this check)"; exit 0;
+          fi;
+          terraform fmt "$@"' --
+        files: \.(tf|tfvars)$
+      - id: terraform_validate
+        name: Terraform validate
+        language: system
+        entry: >-
+          bash -c 'if ! command -v terraform >/dev/null; then
+          if [ -n "${CI:-}" ]; then echo "terraform is required in CI"; exit 1; fi;
+          echo "terraform not installed, skipping (CI runs this check)"; exit 0;
+          fi;
+          for dir in $(for file in "$@"; do dirname "$file"; done | sort -u); do
+          terraform -chdir="$dir" init -backend=false -input=false >/dev/null &&
+          terraform -chdir="$dir" validate || exit 1;
+          done' --
+        files: \.tf$
+        require_serial: true
       - id: rustywind
         name: rustywind Tailwind CSS class linter
         language: node
@@ -101,11 +131,6 @@ repos:
     rev: fa412071e4f5d44d44f9e365f4676f9df92456a2  # v1.30.1
     hooks:
       - id: zizmor
-  - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: 253d99053f80e4a368175e93b36edb662e7e5135  # v1.109.1
-    hooks:
-      - id: terraform_fmt
-      - id: terraform_validate
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: 25d0a52aa8bc0fc242613346792dc8d726c13347  # v9.26.0
     hooks:

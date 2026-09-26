@@ -3,7 +3,8 @@
 Covers the project's `/djs-kickoff`: it reads the overview `/djs-bootstrap` writes to
 `docs/this-project.md`, then follows the project's `djs-create-app`,
 `djs-create-model`, `djs-create-crud`, `djs-localize` (without a TranslateBot key) and
-`djs-doc` skills, runs `just check-all` and commits.
+`djs-doc` skills, writes the backlog and changelog in the `djs-backlog` formats, runs
+`just check-all` and commits.
 
 ## Setup
 
@@ -105,6 +106,7 @@ Answers:
 - Languages: set up Finnish (`fi`). There is no TranslateBot key.
 - Project docs: fill in what the code and this breakdown say; leave `_TODO_`
   markers for the rest.
+- Backlog: approve the backlog you propose.
 - Push: there is no remote.
 ```
 
@@ -121,6 +123,10 @@ test -f locale/fi/LC_MESSAGES/django.po
 test -f locale/fi/LC_MESSAGES/django.mo
 test -f config/formats/fi/formats.py
 grep -q "recipes" docs/this-project.md
+grep -qx "## Unreleased" CHANGELOG.md
+for section in Bugs Features Chores Done; do grep -qx "## $section" docs/backlog.md; done
+sed -n '/^## Features/,/^## Chores/p' docs/backlog.md | grep -q "djs-create-task"
+sed -n '/^## Chores/,/^## Done/p' docs/backlog.md | grep -q "djs-localize fi"
 just dj makemigrations --check --dry-run
 just check-all
 uv run python manage.py shell -c '
@@ -169,4 +175,10 @@ Verify these facts:
    `nplurals=INTEGER` placeholder.
 7. No `tasks.py`, `api/` or `webhooks/` package was added: the optional features
    were not built.
+8. `docs/backlog.md` follows
+   `.agents/skills/djs-backlog/references/backlog-format.md`: every item has a
+   unique bold slug, every `Blocked by:` slug names an item in the file, Bugs is
+   `_None._`, and Features has an item for the weekly digest.
+9. `CHANGELOG.md` has an intro and an empty `## Unreleased` section, and no
+   entries copied from the django-studio template changelog.
 ```

@@ -33,6 +33,8 @@ The structure for each file is fixed:
   stub with guidance under each heading).
 - App READMEs — use `references/app-readme.md`.
 
+`docs/backlog.md` and `CHANGELOG.md` belong to `/djs-backlog`; leave them alone.
+
 Do not add project docs anywhere else under `docs/`, and do not edit the generic
 `docs/*.md` pages — they are owned by the template and updated by `/djs-sync`, so
 project content there causes merge conflicts.

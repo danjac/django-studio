@@ -95,9 +95,10 @@ project.
 5. Give the project its first shape with the project's `/djs-kickoff` skill, unless
    you already ran it when `/djs-bootstrap` offered. It works from `docs/this-project.md`: it proposes
    changes to the `User` model, an app and model breakdown for your core entities
-   (created only after you confirm it), sets up the extra languages, and fills in
-   the rest of the project docs. Each step can be skipped, and it commits when
-   `just check-all` passes.
+   (created only after you confirm it), sets up the extra languages, fills in
+   the rest of the project docs, and writes a backlog of what comes next. Each
+   step can be skipped, and it commits when `just check-all` passes. Then run
+   `/djs-backlog next` to pick up the first item.
 
 `/djs-bootstrap` is also available as `/django-studio:djs-bootstrap`, in case
 another plugin uses the same name.
@@ -224,7 +225,8 @@ Generated projects include `djs-*` Claude Code and OpenCode slash commands for c
 | Command        | Summary                                                                           |
 | -------------- | --------------------------------------------------------------------------------- |
 | `/djs-bootstrap` | Start a new project: interview, run Copier, write `docs/this-project.md`, smoke test (Plugin skill: see [With Claude Code](#with-claude-code)) |
-| `/djs-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
+| `/djs-kickoff`  | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs, backlog |
+| `/djs-backlog`  | Keep the backlog and changelog current, pick up the next item, cut a release      |
 | `/djs-help`     | List all djs-\* commands or show help for a specific command                       |
 | `/djs-sync`     | Preview the changelog, pull latest template changes via Copier and resolve merge conflicts interactively |
 | `/djs-feedback` | Report a bug or improvement against the django-studio template                    |

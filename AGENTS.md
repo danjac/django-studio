@@ -287,8 +287,9 @@ template skills. `/djs-bootstrap` passes each `copier.yml` question as `--data`,
 add, rename or remove a Copier question, update the skill too;
 `tests/test_plugin.py` checks this and runs `claude plugin validate` on both
 manifests when the `claude` CLI is installed.
-Run `just eval 04` after changing `/djs-bootstrap`, and `just eval 05` after changing
-`/djs-kickoff` or a skill it follows.
+Run `just eval 04` after changing `/djs-bootstrap`, `just eval 05` after changing
+`/djs-kickoff` or a skill it follows, and `just eval 06 07` after changing
+`/djs-backlog`.
 
 ## Python 3.14 — `except` Without Parentheses (PEP 758)
 

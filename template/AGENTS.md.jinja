@@ -157,6 +157,13 @@ They describe this project's domain, business rules, APIs and integrations — t
 context the generic docs below cannot give. If they contradict the code or are still
 stubs, say so; `/djs-doc` creates and updates them.
 
+**`docs/backlog.md` is the ordered work queue** (bugs, features, chores, with
+blockers), and `CHANGELOG.md` records user-visible changes. `/djs-backlog` owns
+both: it keeps them current and picks up the next item. With any user-visible
+change, add a `CHANGELOG.md` entry under `Unreleased` in the same commit (format:
+`.agents/skills/djs-backlog/references/changelog-format.md`). Don't copy entries
+from the django-studio template changelog that `/djs-sync` shows.
+
 **Before starting any task, look up your task type in the table below and read
 the listed doc(s) before writing any code.** The table is a lookup — use it
 actively, not as background reading.
@@ -224,7 +231,8 @@ Available in Claude Code and OpenCode as `/djs-<command>`.
 
 | Command | Purpose |
 | ------- | ------- |
-| `/djs-kickoff` | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs |
+| `/djs-kickoff` | Shape a new project from `docs/this-project.md`: user model, apps, languages, docs, backlog |
+| `/djs-backlog [add \| next \| release]` | Keep the backlog and changelog current, pick up the next item, cut a release |
 | `/djs-help` | List all djs-* commands or show help for a specific command |
 | `/djs-sync` | Preview the changelog, pull template changes via Copier and resolve conflicts |
 | `/djs-feedback` | File a GitHub issue against the django-studio repo |

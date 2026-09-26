@@ -53,13 +53,16 @@ project.
    .claude-plugin` skips the template, tests and images, which the plugin doesn't
    need. The second installs the plugin, fetching only its `plugin/` directory.
 
-2. Create an empty directory for the new project, and start Claude Code in it:
+2. Start Claude Code in the directory where you keep your projects:
 
    ```bash
-   mkdir recipe-box
-   cd recipe-box
+   cd ~/Projects
    claude
    ```
+
+   `/dj-bootstrap` creates the project in a new subdirectory named after it, such
+   as `recipe_box/`. If you start it in an empty directory instead, it uses that
+   directory.
 
 3. Describe the project to `/dj-bootstrap`:
 
@@ -79,11 +82,35 @@ project.
    and makes the first commit. It offers to create a GitHub repository, and
    waits for you to confirm first. This takes several minutes.
 
-4. Quit Claude Code and start it again in the project directory. The project comes
-   with its own `/dj-*` skills and agent docs, which load only in a new session.
+4. Quit Claude Code and start it again in the project directory:
+
+   ```bash
+   cd recipe_box
+   claude
+   ```
+
+   The project comes with its own `/dj-*` skills and agent docs, which load only
+   in a session started there.
 
 `/dj-bootstrap` is also available as `/django-studio:dj-bootstrap`, in case another
 plugin uses the same name.
+
+#### Updating the plugin
+
+The plugin only affects new projects. To get the latest `/dj-bootstrap`, run:
+
+```bash
+claude plugin marketplace update django-studio
+claude plugin update django-studio@django-studio
+```
+
+Or let Claude Code do it: run `/plugin`, open the **Marketplaces** tab, select
+`django-studio` and choose **Enable auto-update**. Claude Code then checks for
+updates when a session starts.
+
+Projects you have already generated don't change when the plugin updates. Run
+`/dj-sync` inside a project to pull template changes into it (see
+[Updating a generated project](#updating-a-generated-project)).
 
 ### With Copier
 

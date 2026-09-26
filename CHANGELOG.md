@@ -13,9 +13,14 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 - `deploy.yml` no longer fails to load: the "Connect to Tailscale" step's `if:`
   read the `secrets` context, which GitHub doesn't allow in step conditions. It
   now tests a job-level `TS_OAUTH_CLIENT_ID` env var.
+- `deploy.yml` drops the `branches:` key under `workflow_dispatch`, which GitHub
+  ignores.
 
 ### Added
 
+- An actionlint pre-commit hook checks `.github/workflows/`, with its config in
+  `.github/actionlint.yaml`. It ignores the `$/` reusable-workflow paths that
+  zizmor requires.
 - `/djs-backlog`: keeps the project's work queue in `docs/backlog.md` (bugs,
   features and chores, with blockers and linked GitHub issues) and its own
   `CHANGELOG.md`. `/djs-backlog next` suggests the first unblocked item and, once

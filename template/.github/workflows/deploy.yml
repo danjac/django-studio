@@ -2,8 +2,6 @@ name: PROJECT_SLUG:deploy
 run-name: ${{ github.actor }} is deploying to production
 on:
   workflow_dispatch:
-    branches:
-      - main
 jobs:
   checks:
     uses: $/.github/workflows/checks.yml

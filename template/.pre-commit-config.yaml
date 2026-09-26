@@ -71,6 +71,10 @@ repos:
     rev: a6564f5d57444e123433a5c9af733e3975c77229  # v0.11.0.1-1
     hooks:
       - id: shellcheck
+  - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
+    rev: 805f85e558841bf4d852335e036b33d2b26be1cc  # v1.7.12.25
+    hooks:
+      - id: actionlint
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: e8f7d69b957a30acb2c875078d5fd012de24b64c  # v0.16.7
     hooks:

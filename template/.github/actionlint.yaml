@@ -1,0 +1,6 @@
+paths:
+  .github/workflows/**/*.yml:
+    ignore:
+      # zizmor's self-repository audit requires $/ for local reusable workflows;
+      # GitHub accepts it but actionlint only knows ./
+      - 'reusable workflow call "\$/.+" at "uses" is not following the format'

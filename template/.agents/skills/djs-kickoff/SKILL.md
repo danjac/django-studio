@@ -138,15 +138,18 @@ asking about every gap.
 
 ## 7. Backlog and changelog
 
-Don't build anything in this step. Write the backlog of work that comes next, and
-create the project's changelog, following
+Don't build anything in this step. Create the backlog of work that comes next, and
+the project's changelog, following
 `.agents/skills/djs-backlog/references/backlog-format.md` and
-`.agents/skills/djs-backlog/references/changelog-format.md`.
+`.agents/skills/djs-backlog/references/changelog-format.md`. Check where the
+backlog lives as "Where the backlog lives" in `.agents/skills/djs-backlog/SKILL.md`
+says: GitHub issues if the project has a GitHub remote, otherwise
+`docs/backlog.md`.
 
 **`CHANGELOG.md`**: the intro and an empty `## Unreleased` section. The work this
 skill did is the starting point, not a change, so it gets no entry.
 
-**`docs/backlog.md`**:
+**Backlog**:
 
 - **Features**: each feature the overview's Key Decisions lists as planned, with
   where to start:
@@ -166,10 +169,13 @@ skill did is the starting point, not a change, so it gets no entry.
   flows (`/djs-create-e2e`), `/djs-secure`, `/djs-a11y`, `/djs-perf`,
   `/djs-full-coverage` and `/djs-deploy`. Block the E2E tests on the Key Flows
   item, and `/djs-full-coverage` and `/djs-deploy` on the planned features.
-- **Bugs**: `_None._`
+- **Bugs**: none.
 
-Show the backlog and wait for the user to approve or change it. If they skip this
-step, still create `CHANGELOG.md`.
+Show the backlog in order, with each item's type, priority and blockers, and wait
+for the user to approve or change it. Then write `docs/backlog.md`, or, with a
+GitHub remote, create the labels, issues and blockers as "Moving to GitHub issues"
+in `backlog-format.md` describes. If they skip this step, still create
+`CHANGELOG.md`.
 
 ## 8. Check and commit
 

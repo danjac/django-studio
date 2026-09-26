@@ -157,9 +157,10 @@ They describe this project's domain, business rules, APIs and integrations — t
 context the generic docs below cannot give. If they contradict the code or are still
 stubs, say so; `/djs-doc` creates and updates them.
 
-**`docs/backlog.md` is the ordered work queue** (bugs, features, chores, with
-blockers), and `CHANGELOG.md` records user-visible changes. `/djs-backlog` owns
-both: it keeps them current and picks up the next item. With any user-visible
+**The backlog is the ordered work queue** (bugs, features, chores, with
+blockers): GitHub issues when the project has a GitHub remote, otherwise
+`docs/backlog.md`. `CHANGELOG.md` records user-visible changes. `/djs-backlog`
+owns both: it keeps them current and picks up the next item. With any user-visible
 change, add a `CHANGELOG.md` entry under `Unreleased` in the same commit (format:
 `.agents/skills/djs-backlog/references/changelog-format.md`). Don't copy entries
 from the django-studio template changelog that `/djs-sync` shows.

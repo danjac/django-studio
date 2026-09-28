@@ -22,7 +22,7 @@ every file in its row in the same commit.
 
 | Component | Files that must change together |
 |-----------|---------------------------------|
-| Python | `pyproject.toml` (`requires-python`, ruff `target-version`), `.pre-commit-config.yaml` (pyupgrade `--py3XX`), `Dockerfile` (`ARG PYTHON_IMAGE`), `.github/workflows/checks.yml` (`python-version` and `uv python install`) |
+| Python | `pyproject.toml` (`requires-python`, ruff `target-version`), `.pre-commit-config.yaml` (pyupgrade `--py3XX`), `Dockerfile` (`ARG PYTHON_IMAGE`), `.github/workflows/checks.yml` (`env.PYTHON_VERSION`) |
 | Django | `pyproject.toml` (`django` dependency), `.pre-commit-config.yaml` (django-upgrade `--target-version`) |
 | PostgreSQL | `docker-compose.yml` (`postgres` image), `helm/site/values.yaml` (`postgres.image`), `.github/workflows/checks.yml` (both `services.postgres.image`), `Dockerfile` (`ARG POSTGRES_MAJOR`, major only) |
 | Redis | `docker-compose.yml` (`redis` image), `helm/site/values.yaml` (`redis.image`) |

@@ -17,6 +17,7 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
   hook, and updated the ruff, djLint and commitlint hooks.
 - `.github/workflows/checks.yml` sets the CI Python version once, as
   `env.PYTHON_VERSION`, used by `setup-python` and both `uv python install` steps.
+- CI runs Python 3.14.2, matching the `Dockerfile` (was 3.14.0).
 
 ## 26.39.7 - 2026-09-27
 

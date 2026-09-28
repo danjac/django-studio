@@ -15,6 +15,8 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 - Updated vendored Alpine.js to 3.17.4 and DaisyUI to 5.7.46.
 - Bumped uv to 0.12.19 in `Dockerfile`, `checks.yml` and the `uv-lock` pre-commit
   hook, and updated the ruff, djLint and commitlint hooks.
+- `.github/workflows/checks.yml` sets the CI Python version once, as
+  `env.PYTHON_VERSION`, used by `setup-python` and both `uv python install` steps.
 
 ## 26.39.7 - 2026-09-27
 

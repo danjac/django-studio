@@ -10,6 +10,10 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
+- `/djs-deadcode` runs deptry inside the project environment and reports unused
+  dependencies only. Before proposing a removal, it checks each package for
+  references from settings, `{% load %}` tags, scripts and backend URLs.
+  Approved packages are removed with `uv remove`.
 - Updated Python dependency minimums to the latest releases (OpenTelemetry 1.45 /
   0.66b0, uvicorn 0.54, sentry-sdk 2.70, ruff 0.16.9, and others).
 - Updated vendored Alpine.js to 3.17.4 and DaisyUI to 5.7.46.

@@ -257,7 +257,7 @@ Generated projects include `djs-*` Claude Code and OpenCode slash commands for c
 | `/djs-secure`        | Security audit: settings, views, XSS, CSRF, IDOR, SQL injection              |
 | `/djs-gdpr`          | GDPR compliance audit: PII in models, erasure, consent, logging              |
 | `/djs-a11y`          | Accessibility audit: WCAG 2.1 AA — forms, icons, HTMX, Alpine, semantic HTML |
-| `/djs-deadcode`      | Remove unused Python code, Django templates and static assets                |
+| `/djs-deadcode`      | Remove unused Python code, templates, static assets and dependencies         |
 | `/djs-remove-slop`   | Audit and remove Django anti-patterns introduced by AI or inattentive devs   |
 | `/djs-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
 

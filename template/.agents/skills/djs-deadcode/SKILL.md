@@ -1,5 +1,5 @@
 ---
-description: Remove unused Python code, Django templates and static assets
+description: Remove unused Python code, templates, static assets and dependencies
 ---
 
 Scan the project for unused code and assets. **Always present a summary of
@@ -109,15 +109,35 @@ correct tool. Mention `manage.py squashmigrations` if relevant.
 
 ## 6. Unused dependencies
 
-Run:
+Run `deptry` inside the project environment, so it can map distribution names
+to import names (`django-allauth` → `allauth`), and report unused dependencies
+only:
 
 ```bash
-uvx deptry .
+uv run --with deptry deptry . --ignore DEP001,DEP003,DEP004
 ```
 
-Flag any package reported as unused. Cross-check against `config/settings.py`
-`INSTALLED_APPS` and any `TYPE_CHECKING` imports before confirming it is
-unused.
+deptry only sees `import` statements, so it reports every package that Django
+loads from a string. On a new project, all of its results are false positives.
+Treat each result as unverified until you have searched for its import name
+(`rg -n '<import_name>' --glob '!uv.lock' --glob '!pyproject.toml'`)
+and checked where Django loads packages by string:
+
+- `config/settings.py`: `INSTALLED_APPS`, `MIDDLEWARE`, `STORAGES`,
+  `EMAIL_BACKEND`, `TEMPLATES` builtins, and `TYPE_CHECKING` imports
+- `{% load %}` tags in templates (`{% load heroicons %}`, `{% load widget_tweaks %}`)
+- `Dockerfile`, `gunicorn.conf.py`, `*.sh`, `justfile` and `helm/` (`gunicorn`,
+  `uvicorn`)
+- URL-configured backends, where the scheme selects the driver and the package
+  name never appears: `DATABASE_URL` needs `psycopg`, and `REDIS_URL` needs
+  `redis`/`django-redis`
+
+A package with any of these references is in use. Only packages with no
+references go in the removal list. Mark a package **uncertain** if you can't
+rule out that it's loaded indirectly.
+
+Remove approved packages with `uv remove <package>` so that `uv.lock` stays in
+sync, then delete any leftover settings for them.
 
 ---
 
@@ -140,13 +160,14 @@ Templates:
 Static files:
   - static/js/legacy-ie.js — no {% static %} or url() references found
 
-Unused dependencies (deptry):
-  - boto3 — not imported outside settings; remove from pyproject.toml if
-    USE_STORAGE is disabled
+Unused dependencies (deptry, manually verified):
+  - markdown — no imports, settings, template or script references found
 
 Uncertain (possible false positives — review manually):
   - accounts/signals.py: on_user_created() — decorated with @receiver;
     vulture flags as unused but Django signal dispatch is dynamic
+  - django-redis — no references found, but REDIS_URL may select it as the
+    cache backend
 ```
 
 Then ask:

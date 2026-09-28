@@ -6,13 +6,13 @@
     "dest": "static/vendor/htmx.js"
   },
   "alpinejs": {
-    "version": "3.15.8",
+    "version": "3.17.4",
     "repo": "alpinejs/alpine",
     "source": "https://cdn.jsdelivr.net/npm/alpinejs@{version}/dist/cdn.min.js",
     "dest": "static/vendor/alpine.js"
   },
   "daisyui": {
-    "version": "5.5.19",
+    "version": "5.7.46",
     "files": [
       {
         "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui.mjs",

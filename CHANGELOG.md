@@ -6,6 +6,16 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.40.1 - 2026-09-28
+
+### Changed
+
+- Updated Python dependency minimums to the latest releases (OpenTelemetry 1.45 /
+  0.66b0, uvicorn 0.54, sentry-sdk 2.70, ruff 0.16.9, and others).
+- Updated vendored Alpine.js to 3.17.4 and DaisyUI to 5.7.46.
+- Bumped uv to 0.12.19 in `Dockerfile`, `checks.yml` and the `uv-lock` pre-commit
+  hook, and updated the ruff, djLint and commitlint hooks.
+
 ## 26.39.7 - 2026-09-27
 
 ### Fixed

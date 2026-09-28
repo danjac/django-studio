@@ -112,10 +112,6 @@ claude plugin marketplace update django-studio
 claude plugin update django-studio@django-studio
 ```
 
-Or let Claude Code do it: run `/plugin`, open the **Marketplaces** tab, select
-`django-studio` and choose **Enable auto-update**. Claude Code then checks for
-updates when a session starts.
-
 Projects you have already generated don't change when the plugin updates. Run
 `/djs-sync` inside a project to pull template changes into it (see
 [Updating a generated project](#updating-a-generated-project)).

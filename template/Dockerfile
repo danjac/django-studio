@@ -1,6 +1,6 @@
 
 ARG PYTHON_IMAGE=3.14.2-slim-bookworm
-ARG UV_VERSION=0.12.6
+ARG UV_VERSION=0.12.19
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 

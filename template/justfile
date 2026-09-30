@@ -11,19 +11,7 @@ kubeconfig := env("KUBECONFIG", env("HOME") + "/.kube/" + project_slug + ".yaml"
 # Install all dependencies
 [group('development')]
 install:
-   #!/usr/bin/env bash
-   set -euo pipefail
-   if [ ! -f .env ]; then
-       cp .env.example .env
-       echo "Created .env from .env.example"
-   fi
-   if [ ! -d .git ]; then
-       git init
-       echo "Initialized git repository"
-   fi
-   just pyinstall
-   just precommitinstall
-   just playwright-install
+   {{ script_dir }}/install.sh
 
 # Update all dependencies
 [group('development')]
@@ -32,12 +20,7 @@ update: pyupdate pyinstall vendorupdate precommitupdate
 # Install all Python dependencies
 [group('development')]
 pyinstall:
-   #!/usr/bin/env bash
-   if [ -f uv.lock ]; then
-       uv sync --frozen --all-extras --no-install-project
-   else
-       uv sync --all-extras --no-install-project
-   fi
+   {{ script_dir }}/pyinstall.sh
 
 # Update all Python dependencies
 [group('development')]
@@ -187,19 +170,7 @@ deploy-config: gh-set-secrets
 # Install or upgrade a Helm chart, e.g. 'just helm site' or 'just helm observability'
 [group('deployment')]
 helm chart="site":
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if [[ ! -f "{{ kubeconfig }}" ]]; then
-        echo "Error: kubeconfig not found at {{ kubeconfig }}"
-        echo "Provision the cluster first, then run: just get-kubeconfig"
-        exit 1
-    fi
-    helm dependency build helm/{{ chart }}/
-    helm upgrade --install {{ chart }} helm/{{ chart }}/ \
-        --kubeconfig {{ kubeconfig }} \
-        --reuse-values \
-        -f helm/{{ chart }}/values.yaml \
-        -f helm/{{ chart }}/values.secret.yaml
+    {{ script_dir }}/helm.sh {{ kubeconfig }} {{ chart }}
 
 # Run Terraform commands in a subdirectory, e.g. 'just terraform hetzner plan'
 [group('deployment')]

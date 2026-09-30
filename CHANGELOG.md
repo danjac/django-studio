@@ -6,6 +6,14 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.40.3 - 2026-09-30
+
+### Changed
+
+- The `install`, `pyinstall` and `helm` recipes in `justfile` call scripts in
+  `just/` (`install.sh`, `pyinstall.sh`, `helm.sh`) instead of embedding them.
+  Projects that customised these recipes will conflict on `copier update`.
+
 ## 26.40.1 - 2026-09-28
 
 ### Changed

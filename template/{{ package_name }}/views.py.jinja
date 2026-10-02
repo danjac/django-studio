@@ -1,3 +1,4 @@
+import calendar
 import datetime
 from typing import TYPE_CHECKING
 
@@ -65,15 +66,21 @@ def robots(_) -> TextResponse:
 def security(request: HttpRequest) -> TextResponse:
     """Serve .well-known/security.txt (RFC 9116).
 
-    Expires rolls forward so the file never goes stale; Contact comes from
-    settings.CONTACT_EMAIL. The short cache lets a changed contact show quickly.
+    Expires is the last day of next month: one to two months ahead, so it
+    outlasts any cached copy. Contact comes from settings.CONTACT_EMAIL; the
+    short cache lets a changed contact show quickly.
     """
-    expires = timezone.now().replace(microsecond=0) + datetime.timedelta(days=180)
+    next_month = (
+        timezone.now().date().replace(day=1) + datetime.timedelta(days=32)
+    ).replace(day=1)
+    expires = next_month.replace(
+        day=calendar.monthrange(next_month.year, next_month.month)[1]
+    )
     return TextResponse(
         "\n".join(
             [
                 f"Contact: mailto:{settings.CONTACT_EMAIL}",
-                f"Expires: {expires.isoformat()}",
+                f"Expires: {expires.isoformat()}T23:59:59Z",
                 "Preferred-Languages: "
                 + ", ".join(code for code, _ in settings.LANGUAGES),
                 f"Canonical: {request.build_absolute_uri()}",

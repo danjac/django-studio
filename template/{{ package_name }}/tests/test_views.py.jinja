@@ -3,7 +3,6 @@ import datetime
 import pytest
 from django.conf import settings
 from django.urls import reverse
-from django.utils import timezone
 
 
 @pytest.mark.django_db
@@ -75,9 +74,13 @@ class TestSecurity:
                 fields.setdefault(name, []).append(value)
         return fields
 
-    def test_get(self, client, settings):
+    def test_get(self, client, mocker, settings):
         settings.CONTACT_EMAIL = "security@example.com"
         settings.LANGUAGES = [("en", "English"), ("fi", "Finnish")]
+        mocker.patch(
+            "django.utils.timezone.now",
+            return_value=datetime.datetime(2026, 1, 31, 12, tzinfo=datetime.UTC),
+        )
         response = client.get(reverse("security"))
         assert response.status_code == 200
         assert response["Content-Type"] == "text/plain; charset=utf-8"
@@ -87,10 +90,7 @@ class TestSecurity:
         assert fields["Contact"] == ["mailto:security@example.com"]
         assert fields["Preferred-Languages"] == ["en, fi"]
         assert fields["Canonical"] == ["http://testserver/.well-known/security.txt"]
-        assert len(fields["Expires"]) == 1
-        expires = datetime.datetime.fromisoformat(fields["Expires"][0])
-        assert expires.tzinfo is not None
-        assert expires > timezone.now()
+        assert fields["Expires"] == ["2026-02-28T23:59:59Z"]
 
     def test_head(self, client):
         response = client.head(reverse("security"))

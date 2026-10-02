@@ -1,6 +1,9 @@
+import datetime
+
 import pytest
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 
 
 @pytest.mark.django_db
@@ -53,6 +56,7 @@ class TestRobots:
     def test_get(self, client):
         response = client.get(reverse("robots"))
         assert response.status_code == 200
+        assert response["Content-Type"] == "text/plain; charset=utf-8"
         assert b"User-Agent" in response.content
 
     def test_post_not_allowed(self, client):
@@ -62,10 +66,34 @@ class TestRobots:
 
 @pytest.mark.django_db
 class TestSecurity:
-    def test_get(self, client):
+    def _fields(self, response) -> dict[str, list[str]]:
+        fields: dict[str, list[str]] = {}
+        for line in response.content.decode().splitlines():
+            name, sep, value = line.partition(": ")
+            if sep and not line.startswith("#"):
+                fields.setdefault(name, []).append(value)
+        return fields
+
+    def test_get(self, client, settings):
+        settings.CONTACT_EMAIL = "security@example.com"
+        settings.LANGUAGES = [("en", "English"), ("fi", "Finnish")]
         response = client.get(reverse("security"))
         assert response.status_code == 200
-        assert b"Contact:" in response.content
+        assert response["Content-Type"] == "text/plain; charset=utf-8"
+        assert response["Cache-Control"] == "max-age=3600, public"
+
+        fields = self._fields(response)
+        assert fields["Contact"] == ["mailto:security@example.com"]
+        assert fields["Preferred-Languages"] == ["en, fi"]
+        assert fields["Canonical"] == ["http://testserver/.well-known/security.txt"]
+        assert len(fields["Expires"]) == 1
+        expires = datetime.datetime.fromisoformat(fields["Expires"][0])
+        assert expires.tzinfo is not None
+        assert expires > timezone.now()
+
+    def test_head(self, client):
+        response = client.head(reverse("security"))
+        assert response.status_code == 200
 
     def test_post_not_allowed(self, client):
         response = client.post(reverse("security"))

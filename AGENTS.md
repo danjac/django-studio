@@ -36,14 +36,8 @@ Create a new project in `/tmp` using the Copier template:
 uvx copier copy --trust --defaults --data project_name="My App" . /tmp/my_app
 ```
 
-If a project has already been created in `/tmp`, remove it first (stop services to avoid port conflicts):
-
-```bash
-cd /tmp/my_app
-just stop
-cd ..
-trash my_app
-```
+If a project has already been created in `/tmp`, remove it first (see
+[Cleaning up](#cleaning-up)).
 
 Then navigate to the generated project and test it:
 
@@ -56,8 +50,22 @@ just typecheck                  # run type checks
 just dj makemigrations          # generate initial users migration (expected on first run)
 just test                       # run tests
 just test-e2e                   # run Playwright E2E tests
-just stop                       # stop Docker services
 ```
+
+### Cleaning up
+
+When you finish testing, and before regenerating, remove the generated project, its
+Docker containers and volumes, and any other scratch files you created under `/tmp`:
+
+```bash
+cd /tmp/my_app && just stop -v   # remove containers and the database volume
+cd /tmp && trash my_app && find /tmp/.Trash-1000 -mindepth 1 -delete
+```
+
+`/tmp` is a small in-memory filesystem: a generated project takes about 1 GB, and
+`trash` keeps files on the same filesystem until the trash is emptied. When it fills
+up, `uv sync` in `tests/test_quality.py` fails with no useful message. A leftover
+`my_app_pg_data` volume carries the old database into the next generated project.
 
 **Pre-commit must pass on the first run** on the generated project: no lint errors,
 and no auto-formatter (ruff-format, pyupgrade, django-upgrade, DjHTML, Djade,
@@ -141,7 +149,7 @@ After any change to `template/`, regenerate the project and verify all checks pa
 (documentation-only changes are exempt; see Git Workflow):
 
 ```bash
-cd /tmp && trash my_app && find /tmp/.Trash-1000 -mindepth 1 -delete
+# first clean up any existing project (see Cleaning up)
 uvx copier copy --trust --defaults --data project_name="My App" . /tmp/my_app
 cd /tmp/my_app
 git init && git add -A

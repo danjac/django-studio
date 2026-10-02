@@ -6,6 +6,16 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.40.6 - 2026-10-03
+
+### Changed
+
+- `docs/seo.md` explains how to keep public pages out of search results with
+  `noindex`, `nofollow` and `noarchive`, in a meta tag or an `X-Robots-Tag`
+  header, and how to remove a page that is already indexed. `/djs-seo` checks
+  for `noindex` on pages `robots.txt` blocks, file and export views without
+  `X-Robots-Tag`, and user-submitted links without `rel="ugc nofollow"`.
+
 ## 26.40.5 - 2026-10-02
 
 ### Added

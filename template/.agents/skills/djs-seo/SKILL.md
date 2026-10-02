@@ -33,9 +33,10 @@ these pages.
 
 ---
 
-### 2. robots.txt
+### 2. robots.txt and robots directives
 
-Read `views.robots` in `<package_name>/views.py`.
+Read `views.robots` in `<package_name>/views.py`, then search templates for
+`<meta name="robots"` and views for `X-Robots-Tag`.
 
 | Check | Severity if failing |
 |---|---|
@@ -43,6 +44,9 @@ Read `views.robots` in `<package_name>/views.py`.
 | `Disallow: /` is still the last rule, so new URLs stay hidden until allowed | WARNING |
 | An `Allow:` line names a URL that requires login or no longer exists | WARNING |
 | A sitemap is wired up but `robots.txt` has no absolute `Sitemap:` line, or does not allow the sitemap URL | VIOLATION |
+| A page sends `noindex` (meta tag or `X-Robots-Tag`) but `robots.txt` disallows it, so crawlers never see the directive | WARNING |
+| A public view returns a file or export (`FileResponse`, CSV, PDF) that is not meant for search and sends no `X-Robots-Tag` | ADVISORY |
+| Three or more views set the same `X-Robots-Tag` by hand | ADVISORY — suggest the `robots_tag` decorator in `docs/seo.md#keeping-pages-out-of-search-results` |
 
 ---
 
@@ -58,7 +62,7 @@ For each public page, read its template and the templates it extends.
 | A page generated from a model renders the shared site description instead of its own | WARNING |
 | A public page renders no description while others set their own | WARNING |
 | A template's `{% block meta %}` adds `<meta name="description">` while `META_TAGS` still has `description` (two description tags) | VIOLATION |
-| A public page has a `noindex` meta tag but is meant to be found | VIOLATION |
+| A public page has a `noindex` meta tag or `X-Robots-Tag` header but is meant to be found | VIOLATION |
 
 Per-page descriptions go in `{% block meta %}` once `description` is removed from
 `META_TAGS` (see `docs/seo.md#titles-and-descriptions`). Recommend that only when a
@@ -102,6 +106,7 @@ full. Check only what affects search results:
 | A public page has no `<h1>`, or more than one | WARNING |
 | `<img>` in public content with no `alt` | WARNING |
 | Link text on public pages is generic ("click here", "read more") with no `aria-label` | ADVISORY |
+| Links from user-submitted content (comments, profile websites) have no `rel="ugc nofollow"` | WARNING |
 | `<html lang>` is not set from `LANGUAGE_CODE` | WARNING |
 
 ---

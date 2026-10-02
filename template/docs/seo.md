@@ -9,6 +9,7 @@ against this page.
 - [Key references](#key-references)
 - [Does this project need SEO?](#does-this-project-need-seo)
 - [robots.txt](#robotstxt)
+- [Keeping pages out of search results](#keeping-pages-out-of-search-results)
 - [Titles and descriptions](#titles-and-descriptions)
 - [Canonical URLs and social previews](#canonical-urls-and-social-previews)
 - [Sitemaps](#sitemaps)
@@ -59,9 +60,100 @@ from models, allow the prefix without `$`, so `/posts/` covers `/posts/<slug>/`:
 ```
 
 `robots.txt` controls crawling, not indexing: a disallowed URL can still be listed
-in search results if other sites link to it. Add
-`<meta name="robots" content="noindex">` to a public page that must stay out of
-results, and leave it crawlable so the crawler can read the tag.
+in search results if other sites link to it. To keep a page out of results, see the
+next section.
+
+---
+
+## Keeping pages out of search results
+
+Robots directives tell search engines what to do with a page they have fetched:
+
+| Directive | Effect |
+|---|---|
+| `noindex` | Leave the page out of search results |
+| `nofollow` | Do not follow the links on the page |
+| `noarchive` | Do not show a cached copy (Google no longer shows cached pages; other engines such as Bing still honour it) |
+
+Combine them with commas: `noindex, nofollow`.
+
+Send them in a meta tag for HTML pages, in `{% block meta %}`:
+
+```html
+{% block meta %}
+  <meta name="robots" content="noindex">
+{% endblock meta %}
+```
+
+The tag can depend on the object, for a public profile whose owner opted out of
+search:
+
+```html
+{% block meta %}
+  {% if not profile.searchable %}
+    <meta name="robots" content="noindex">
+  {% endif %}
+{% endblock meta %}
+```
+
+Send the `X-Robots-Tag` header from the view when the response is not HTML (PDFs,
+CSV exports, images) or the view already decides per request:
+
+```python
+@require_safe
+def invoice_pdf(request: HttpRequest, pk: int) -> FileResponse:
+    """Download an invoice as PDF."""
+    ...
+    response = FileResponse(pdf, filename=f"invoice-{pk}.pdf")
+    response["X-Robots-Tag"] = "noindex, noarchive"
+    return response
+```
+
+When several views set the same header, add a decorator to `<package_name>/seo.py`:
+
+```python
+import functools
+from collections.abc import Callable
+
+from django.http import HttpResponseBase
+
+from my_package.http.request import HttpRequest
+
+type View = Callable[..., HttpResponseBase]
+
+
+def robots_tag(*directives: str) -> Callable[[View], View]:
+    """Sets X-Robots-Tag on the view's response.
+
+    Example:
+        @robots_tag("noindex", "nofollow")
+    """
+
+    def decorator(view: View) -> View:
+        @functools.wraps(view)
+        def wrapper(request: HttpRequest, *args, **kwargs) -> HttpResponseBase:
+            response = view(request, *args, **kwargs)
+            response["X-Robots-Tag"] = ", ".join(directives)
+            return response
+
+        return wrapper
+
+    return decorator
+```
+
+A crawler sees a directive only on a page it is allowed to fetch, so keep the URL
+allowed in `robots.txt`. To remove a page that is already indexed:
+
+1. Leave it allowed in `robots.txt` and send `noindex`.
+2. Wait for it to drop out; Search Console's URL Inspection shows when it has. Its
+   Removals tool hides a URL for about six months when it cannot wait.
+3. Keep `noindex` in place and the URL allowed. Disallowing it later hides the
+   directive again, and the bare URL can return to results if other sites link to
+   it.
+
+`nofollow` on the page applies to every link on it. To mark a single link, use
+`rel` on the `<a>`: `rel="ugc nofollow"` on links users submit (comments, profile
+websites), `rel="sponsored"` on paid links.
 
 ---
 

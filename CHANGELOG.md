@@ -8,6 +8,15 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ## 26.40.5 - 2026-10-02
 
+### Added
+
+- `/djs-seo` audits public pages for search engine optimisation: robots.txt
+  allow-list, titles and meta descriptions, content loaded by HTMX after the
+  page arrives, status codes, canonical and Open Graph tags, sitemaps and JSON-LD.
+  Projects with no public content get a short report.
+- `docs/seo.md` covers the same topics, with recipes for per-page descriptions,
+  canonical and Open Graph tags, sitemaps and JSON-LD for projects that need them.
+
 ### Fixed
 
 - Form fields are labelled with `<label for>` instead of a `<legend>`, so screen

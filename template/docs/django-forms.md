@@ -155,8 +155,9 @@ level-3 rendering (see [Rendering Fields](#rendering-fields)):
 
 | Partial | Renders |
 |---------|---------|
-| `{% partial label %}` | `<legend>` with label text, optional marker, error colour |
-| `{% partial errors %}` | `<ul>` of validation errors |
+| `{% partial label %}` | `<label for>` with label text, optional marker, error colour — for single controls |
+| `{% partial legend %}` | `<legend>` with the same content — for grouped widgets (radios, checkbox lists, multi-part inputs) |
+| `{% partial errors %}` | `<ul id="<auto_id>_error">` of validation errors, matching Django's `aria-describedby` |
 | `{% partial help_text %}` | `<p>` of help text |
 | `{% fragment "forms/partials.html#fieldset" field=... %}` | Full `<fieldset>` wrapper — `{{ content }}` + errors + help text |
 
@@ -164,12 +165,16 @@ The rendered output for a standard field:
 
 ```html
 <fieldset class="fieldset">
-  <legend class="fieldset-legend">Email</legend>
-  <input id="id_email" type="email" class="input w-full" ...>
-  <ul class="text-sm font-semibold text-error">...</ul>
-  <p class="label">Help text</p>
+  <label for="id_email" class="fieldset-legend">Email</label>
+  <input id="id_email" type="email" class="input w-full"
+         aria-describedby="id_email_helptext id_email_error" ...>
+  <ul id="id_email_error" class="text-sm font-semibold text-error">...</ul>
+  <p class="label" id="id_email_helptext">Help text</p>
 </fieldset>
 ```
+
+Django puts `aria-describedby` on the input. For grouped widgets (`field.use_fieldset`),
+Django puts it on the fieldset instead, and the partial uses `{% partial legend %}`.
 
 ## Widget Type Dispatch
 
@@ -184,21 +189,29 @@ with explicit partials:
 | `Textarea` | `textarea` | `textarea` |
 | `CheckboxInput` | `checkboxinput` | `checkbox` |
 | `CheckboxSelectMultiple` | `checkboxselectmultiple` | — |
+| `RadioSelect` | `radioselect` | — |
 | `PasswordInput` | `passwordinput` | `input` |
 | `Select` | `select` | `select` |
+| `NullBooleanSelect` | `nullbooleanselect` | `select` |
 | `SelectMultiple` | `selectmultiple` | `select` |
 | `DateInput` | `dateinput` | `input` (type="date") |
 | `DateTimeInput` | `datetimeinput` | `input` (type="datetime-local") |
+| `TimeInput` | `timeinput` | `input` (type="time") |
+| `SplitDateTimeWidget` | `splitdatetimewidget` | `input` |
+| `SelectDateWidget` | `selectdatewidget` | `select` |
+| `FileInput`, `ClearableFileInput` | `fileinput`, `clearablefileinput` | `file-input` |
 
-All other widgets (e.g. `TextInput`, `EmailInput`, `FileInput`, `URLInput`) fall back
-to the `input` partial automatically.
+Plain text-like inputs (`TextInput`, `EmailInput`, `NumberInput`, `URLInput`,
+`ColorInput`, `SearchInput`, `TelInput`) fall back to the `input` partial.
+`tests/test_forms.py` fails if any other Django widget lacks a partial.
 
 ## Custom Widget Partials
 
 If you add a custom widget with non-default rendering, add a matching `{% partialdef %}`
 block to `templates/forms/partials.html`. The partial name is the widget's class name,
-lowercased. Use `{% partial label %}`, `{% partial errors %}`, and
-`{% partial help_text %}` to keep rendering consistent. Widgets that render identically
+lowercased. Use `{% partial label %}` (or `{% partial legend %}` for a widget that
+renders several inputs), `{% partial errors %}`, and `{% partial help_text %}` to keep
+rendering consistent. Widgets that render identically
 to a plain `<input>` need no partial — the fallback handles them.
 
 ## Adding Widget Attributes

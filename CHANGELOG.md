@@ -10,6 +10,20 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Fixed
 
+- Form fields are labelled with `<label for>` instead of a `<legend>`, so screen
+  readers and checkers such as axe find an accessible name and
+  Playwright's `get_by_label` matches. Grouped widgets (radios, checkbox lists,
+  multi-part inputs) keep `<legend>` through the new `{% partial legend %}`.
+- The form fieldset no longer repeats the input's `aria-describedby`, and the
+  errors list has the `<auto_id>_error` id that Django's `aria-describedby`
+  points at.
+- The password show/hide button is reachable by keyboard and exposes its state
+  with `aria-pressed`.
+- `RadioSelect`, `TimeInput`, `NullBooleanSelect`, `SplitDateTimeWidget` and
+  `SelectDateWidget` get their own partials instead of falling back to the text
+  `input` partial. `tests/test_forms.py` checks that every Django widget has a
+  partial or is a plain text-like input.
+
 - `/.well-known/security.txt` now meets RFC 9116: it adds `Expires` (the last
   day of next month), `Preferred-Languages` from `settings.LANGUAGES` and
   `Canonical`.
@@ -18,6 +32,9 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
+- `templates/forms/partials.html` changes its `label`, `fieldset` and `errors`
+  partials, and adds partials for more widgets. Projects that customised it will
+  conflict on `copier update`.
 - Each view in `views.py` sets its own `cache_control` instead of sharing a
   one-year `immutable` policy, and none uses `cache_page`, whose Redis copy
   outlived deploys. `robots.txt` and the favicon are cached for a day;

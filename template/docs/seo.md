@@ -69,10 +69,10 @@ next section.
 
 Robots directives tell search engines what to do with a page they have fetched:
 
-| Directive | Effect |
-|---|---|
-| `noindex` | Leave the page out of search results |
-| `nofollow` | Do not follow the links on the page |
+| Directive   | Effect                                                                                                      |
+| ----------- | ----------------------------------------------------------------------------------------------------------- |
+| `noindex`   | Leave the page out of search results                                                                        |
+| `nofollow`  | Do not follow the links on the page                                                                         |
 | `noarchive` | Do not show a cached copy (Google no longer shows cached pages; other engines such as Bing still honour it) |
 
 Combine them with commas: `noindex, nofollow`.
@@ -81,7 +81,7 @@ Send them in a meta tag for HTML pages, in `{% block meta %}`:
 
 ```html
 {% block meta %}
-  <meta name="robots" content="noindex">
+<meta name="robots" content="noindex" />
 {% endblock meta %}
 ```
 
@@ -89,11 +89,9 @@ The tag can depend on the object, for a public profile whose owner opted out of
 search:
 
 ```html
-{% block meta %}
-  {% if not profile.searchable %}
-    <meta name="robots" content="noindex">
-  {% endif %}
-{% endblock meta %}
+{% block meta %} {% if not profile.searchable %}
+<meta name="robots" content="noindex" />
+{% endif %} {% endblock meta %}
 ```
 
 Send the `X-Robots-Tag` header from the view when the response is not HTML (PDFs,
@@ -109,18 +107,9 @@ def invoice_pdf(request: HttpRequest, pk: int) -> FileResponse:
     return response
 ```
 
-When several views set the same header, add a decorator to `<package_name>/seo.py`:
+When several views set the same header, add a decorator to `<package_name>/http/decorators.py`:
 
 ```python
-import functools
-from collections.abc import Callable
-
-from django.http import HttpResponseBase
-
-from my_package.http.request import HttpRequest
-
-type View = Callable[..., HttpResponseBase]
-
 
 def robots_tag(*directives: str) -> Callable[[View], View]:
     """Sets X-Robots-Tag on the view's response.
@@ -131,7 +120,7 @@ def robots_tag(*directives: str) -> Callable[[View], View]:
 
     def decorator(view: View) -> View:
         @functools.wraps(view)
-        def wrapper(request: HttpRequest, *args, **kwargs) -> HttpResponseBase:
+        def wrapper(request: HttpRequest, *args, **kwargs) -> HttpResponse:
             response = view(request, *args, **kwargs)
             response["X-Robots-Tag"] = ", ".join(directives)
             return response
@@ -172,7 +161,7 @@ Each page sets its own `<title>` with `{% title_tag %}` (see
 
 ```html
 {% block meta %}
-  <meta name="description" content="{{ post.summary }}">
+<meta name="description" content="{{ post.summary }}" />
 {% endblock meta %}
 ```
 
@@ -196,15 +185,20 @@ Add both in the page's `meta` block:
 
 ```html
 {% block meta %}
-  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="{{ post.title }}">
-  <meta property="og:description" content="{{ post.summary }}">
-  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
-  {% if post.cover %}
-    <meta property="og:image" content="{{ post.cover.url }}">
-  {% endif %}
-{% endblock meta %}
+<link
+  rel="canonical"
+  href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"
+/>
+<meta property="og:type" content="article" />
+<meta property="og:title" content="{{ post.title }}" />
+<meta property="og:description" content="{{ post.summary }}" />
+<meta
+  property="og:url"
+  content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"
+/>
+{% if post.cover %}
+<meta property="og:image" content="{{ post.cover.url }}" />
+{% endif %} {% endblock meta %}
 ```
 
 `og:image` must be an absolute URL. Media served from object storage already is;

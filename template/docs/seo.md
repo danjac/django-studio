@@ -74,45 +74,20 @@ Each page sets its own `<title>` with `{% title_tag %}` (see
 {% block title %}{% title_tag post.title %}{% endblock %}
 ```
 
-`{% meta_tags %}` renders `settings.META_TAGS`, so every page shares the
-`META_DESCRIPTION` description by default. When public pages need their own
-description, let the tag take overrides and give `base.html` a block around it.
-
-In `<package_name>/templatetags.py`, replace `meta_tags` (drop `@functools.cache`,
-since the output now varies per page):
-
-```python
-@register.simple_tag
-def meta_tags(**overrides: str) -> str:
-    """Renders META tags from settings including HTMX config.
-
-    Keyword arguments override entries in settings.META_TAGS, e.g.
-    {% meta_tags description=post.summary %}
-    """
-    tags = [
-        *[
-            {"name": key, "content": value}
-            for key, value in (settings.META_TAGS | overrides).items()
-        ],
-        {
-            "name": "htmx-config",
-            "content": json.dumps(settings.HTMX_CONFIG),
-        },
-    ]
-    ...
-```
-
-In `templates/base.html`:
+`{% meta_tags %}` renders the site-wide tags in `settings.META_TAGS`, including the
+`META_DESCRIPTION` description. Add page-specific tags in `{% block meta %}`, which
+`base.html` renders after them:
 
 ```html
-{% block meta_tags %}{% meta_tags %}{% endblock meta_tags %}
+{% block meta %}
+  <meta name="description" content="{{ post.summary }}">
+{% endblock meta %}
 ```
 
-In a public page:
-
-```html
-{% block meta_tags %}{% meta_tags description=post.summary %}{% endblock meta_tags %}
-```
+Before giving pages their own description, remove `"description"` from
+`META_TAGS` in `config/settings.py`, so no page renders two, and the
+`app.metaDescription` Helm value that sets it. Then set one in the `meta` block of
+each public page, `home.html` included; pages behind a login need none.
 
 Keep descriptions to one or two sentences (under about 160 characters) that
 summarise the page, and translate them like any other user-facing string.
@@ -125,16 +100,10 @@ A canonical link tells search engines which URL to index when the same page is
 reachable under several, for example with `?page=2`, sort or filter parameters.
 Open Graph tags control the preview shown when a page is shared.
 
-Add a `head` block to `templates/base.html`, after `{% meta_tags %}`:
+Add both in the page's `meta` block:
 
 ```html
-{% block head %}{% endblock head %}
-```
-
-Then fill it in each public page:
-
-```html
-{% block head %}
+{% block meta %}
   <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
   <meta property="og:type" content="article">
   <meta property="og:title" content="{{ post.title }}">
@@ -143,7 +112,7 @@ Then fill it in each public page:
   {% if post.cover %}
     <meta property="og:image" content="{{ post.cover.url }}">
   {% endif %}
-{% endblock head %}
+{% endblock meta %}
 ```
 
 `og:image` must be an absolute URL. Media served from object storage already is;
@@ -276,10 +245,10 @@ def json_ld(data: dict) -> str:
     )
 ```
 
-Build the dict in the view and render it in the `head` block:
+Build the dict in the view and render it in the `meta` block:
 
 ```html
-{% block head %}{% json_ld article_schema %}{% endblock head %}
+{% block meta %}{% json_ld article_schema %}{% endblock %}
 ```
 
 A `type="application/ld+json"` block is data, not script, so it needs no CSP nonce.

@@ -28,6 +28,8 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 {% endblock content %}
 ```
 
+The `{% block meta %}` block is rendered in `<head>` after the site-wide `{% meta_tags %}` — use it for per-page tags such as a description, canonical link or Open Graph tags (see `docs/seo.md`).
+
 The `{% block scripts %}` block is rendered just before `</body>` — use it for per-page JavaScript. Inline scripts must carry the CSP nonce (see `docs/alpine.md`). These scripts don't run when the page arrives through an `HX-Location` swap (see `docs/htmx.md#htmxredirectmiddleware`):
 
 ```html

@@ -7,10 +7,11 @@
 {% endfragment %}
 
 {% partialdef fieldset %}
+  {# Django puts aria-describedby on the input, except for grouped widgets. #}
   {% with errors=field.errors described_by=field.aria_describedby %}
     <fieldset
       class="fieldset"
-      {% if described_by %}aria-describedby="{{ described_by }}"{% endif %}
+      {% if field.use_fieldset and described_by %}aria-describedby="{{ described_by }}"{% endif %}
     >
       {{ content }}
       {% partial errors %}
@@ -19,16 +20,28 @@
   {% endwith %}
 {% endpartialdef fieldset %}
 
+{# Single control #}
 {% partialdef label %}
-  <legend class="fieldset-legend{% if field.errors %} text-error{% endif %}">
-    {{ field.label }}
-    {% if not field.field.required %}{% translate "(optional)" %}{% endif %}
-  </legend>
+  <label for="{{ field.id_for_label }}" class="fieldset-legend{% if field.errors %} text-error{% endif %}">
+    {% partial label_text %}
+  </label>
 {% endpartialdef label %}
+
+{# Grouped widgets: radios, checkboxes, multi-part inputs #}
+{% partialdef legend %}
+  <legend class="fieldset-legend{% if field.errors %} text-error{% endif %}">
+    {% partial label_text %}
+  </legend>
+{% endpartialdef legend %}
+
+{% partialdef label_text %}
+  {{ field.label }}
+  {% if not field.field.required %}{% translate "(optional)" %}{% endif %}
+{% endpartialdef label_text %}
 
 {% partialdef errors %}
   {% if errors %}
-    <ul class="space-y-1 text-sm font-semibold text-error">
+    <ul id="{{ field.auto_id }}_error" class="space-y-1 text-sm font-semibold text-error">
       {{ errors|unordered_list }}
     </ul>
   {% endif %}
@@ -72,6 +85,28 @@
   {% render_field field class="input" type="datetime-local" %}
 {% endpartialdef datetimeinput %}
 
+{# Time #}
+{% partialdef timeinput %}
+  {% partial label %}
+  {% render_field field class="input" type="time" %}
+{% endpartialdef timeinput %}
+
+{# Date + time as two inputs #}
+{% partialdef splitdatetimewidget %}
+  {% partial legend %}
+  <div class="flex gap-2">
+    {% render_field field class="input" %}
+  </div>
+{% endpartialdef splitdatetimewidget %}
+
+{# Day, month and year selects #}
+{% partialdef selectdatewidget %}
+  {% partial legend %}
+  <div class="flex gap-2">
+    {% render_field field class="select" %}
+  </div>
+{% endpartialdef selectdatewidget %}
+
 {# Textarea #}
 {% partialdef textarea %}
   {% partial label %}
@@ -91,11 +126,19 @@
 
 {# Checkbox select multiple (e.g. M2M fields) #}
 {% partialdef checkboxselectmultiple %}
-  {% partial label %}
+  {% partial legend %}
   <div class="space-y-2">
     {% render_field field %}
   </div>
 {% endpartialdef checkboxselectmultiple %}
+
+{# Radio buttons #}
+{% partialdef radioselect %}
+  {% partial legend %}
+  <div class="space-y-2">
+    {% render_field field %}
+  </div>
+{% endpartialdef radioselect %}
 
 {# Password with show/hide toggle #}
 {% partialdef passwordinput %}
@@ -105,9 +148,9 @@
     <button
       type="button"
       x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';"
-      aria-label="{% translate "Toggle password visibility" %}"
+      aria-label="{% translate "Show password" %}"
+      :aria-pressed="show.toString()"
       class="flex absolute inset-y-0 right-0 justify-center items-center px-3"
-      tabindex="-1"
     >
       {% heroicon_mini "eye" class="opacity-50 size-5" x_show="show" %}
       {% heroicon_mini "eye-slash" class="opacity-50 size-5" x_show="!show" %}
@@ -126,3 +169,9 @@
   {% partial label %}
   {% render_field field class="select" %}
 {% endpartialdef selectmultiple %}
+
+{# Yes / No / Unknown select #}
+{% partialdef nullbooleanselect %}
+  {% partial label %}
+  {% render_field field class="select" %}
+{% endpartialdef nullbooleanselect %}

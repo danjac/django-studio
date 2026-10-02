@@ -54,13 +54,15 @@ For each public page, read its template and the templates it extends.
 |---|---|
 | Template overrides `{% block title %}` with `{% title_tag ... %}` (pages other than `index`) | VIOLATION |
 | Two public pages render the same title | WARNING |
-| `META_DESCRIPTION` is still the template default (`settings.META_TAGS`) | WARNING |
+| `META_TAGS` has a `description` that is still the template default (`META_DESCRIPTION`) | WARNING |
 | A page generated from a model renders the shared site description instead of its own | WARNING |
-| A template adds its own `<meta name="description">` while `{% meta_tags %}` still renders one (two description tags) | VIOLATION |
+| A public page renders no description while others set their own | WARNING |
+| A template's `{% block meta %}` adds `<meta name="description">` while `META_TAGS` still has `description` (two description tags) | VIOLATION |
 | A public page has a `noindex` meta tag but is meant to be found | VIOLATION |
 
-Per-page descriptions need the `meta_tags` override in `docs/seo.md#titles-and-descriptions`.
-Recommend it only when a WARNING above applies.
+Per-page descriptions go in `{% block meta %}` once `description` is removed from
+`META_TAGS` (see `docs/seo.md#titles-and-descriptions`). Recommend that only when a
+WARNING above applies.
 
 ---
 
@@ -108,7 +110,7 @@ full. Check only what affects search results:
 
 | Check | Severity if failing |
 |---|---|
-| A public list page accepts sort, filter or `page` query parameters and has no `<link rel="canonical">` | WARNING |
+| A public list page accepts sort, filter or `page` query parameters and has no `<link rel="canonical">` in `{% block meta %}` | WARNING |
 | A public page generated from a model has no Open Graph tags (`og:title`, `og:description`, `og:url`) | ADVISORY |
 | `og:image` or `canonical` uses a relative URL | VIOLATION |
 

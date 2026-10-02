@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block title %}
+  {% title_tag _("About") %}
+{% endblock title %}
+
 {% block content %}
   {% include "header.html" with title=_("About") %}
   {% with site=request.site %}

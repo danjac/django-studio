@@ -6,6 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {% meta_tags %}
+    {% block meta %}{% endblock %}
     <link rel="manifest" href="{% url 'manifest' %}">
     <link rel="icon" href="{% url 'favicon' %}" type="image/svg+xml">
     <link rel="stylesheet" href="{% static 'app.css' %}" />

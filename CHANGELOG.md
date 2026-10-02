@@ -19,6 +19,8 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Fixed
 
+- The about page sets its own `<title>` ("Site | About") instead of the bare site
+  name.
 - Form fields are labelled with `<label for>` instead of a `<legend>`, so screen
   readers and checkers such as axe find an accessible name and
   Playwright's `get_by_label` matches. Grouped widgets (radios, checkbox lists,
@@ -41,6 +43,9 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
+- `base.html` has a `{% block meta %}` after `{% meta_tags %}` for per-page tags
+  such as a description, canonical link or Open Graph tags. Projects that
+  customised `base.html` may conflict on `copier update`.
 - `templates/forms/partials.html` changes its `label`, `fieldset` and `errors`
   partials, and adds partials for more widgets. Projects that customised it will
   conflict on `copier update`.

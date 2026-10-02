@@ -12,7 +12,7 @@ class TextResponse(HttpResponse):
 
     def __init__(self, *args, **kwargs) -> None:
         """Initialize a plain text HTTP response."""
-        kwargs.setdefault("content_type", "text/plain")
+        kwargs.setdefault("content_type", "text/plain; charset=utf-8")
         super().__init__(*args, **kwargs)
 
 

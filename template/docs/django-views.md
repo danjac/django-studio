@@ -56,7 +56,7 @@ RenderOrRedirectResponse = TemplateResponse | HttpResponseRedirect
 
 class TextResponse(HttpResponse):
     def __init__(self, *args, **kwargs) -> None:
-        kwargs.setdefault("content_type", "text/plain")
+        kwargs.setdefault("content_type", "text/plain; charset=utf-8")
         super().__init__(*args, **kwargs)
 
 class HttpResponseNoContent(HttpResponse):

@@ -6,6 +6,22 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.40.5 - 2026-10-02
+
+### Fixed
+
+- `/.well-known/security.txt` now meets RFC 9116: it adds a rolling `Expires`
+  (180 days ahead), `Preferred-Languages` from `settings.LANGUAGES` and
+  `Canonical`.
+- `TextResponse` (used by `robots.txt` and `security.txt`) sends
+  `text/plain; charset=utf-8` instead of `text/plain`.
+
+### Changed
+
+- `/.well-known/security.txt` is cached for an hour instead of a year, so a
+  changed `CONTACT_EMAIL` shows up quickly. Projects that customised the
+  `security` view will conflict on `copier update`.
+
 ## 26.40.3 - 2026-09-30
 
 ### Changed

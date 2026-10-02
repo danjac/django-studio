@@ -70,11 +70,25 @@ def robots(_) -> TextResponse:
 
 
 @require_safe
-@_cache_control
-@_cache_page
-def security(_) -> TextResponse:
-    """Serve .well-known/security.txt."""
-    return TextResponse(f"Contact: mailto:{settings.CONTACT_EMAIL}")
+@cache_control(max_age=60 * 60, public=True)
+def security(request: HttpRequest) -> TextResponse:
+    """Serve .well-known/security.txt (RFC 9116).
+
+    Expires rolls forward so the file never goes stale; Contact comes from
+    settings.CONTACT_EMAIL. The short cache lets a changed contact show quickly.
+    """
+    expires = timezone.now().replace(microsecond=0) + datetime.timedelta(days=180)
+    return TextResponse(
+        "\n".join(
+            [
+                f"Contact: mailto:{settings.CONTACT_EMAIL}",
+                f"Expires: {expires.isoformat()}",
+                "Preferred-Languages: "
+                + ", ".join(code for code, _ in settings.LANGUAGES),
+                f"Canonical: {request.build_absolute_uri()}",
+            ]
+        ),
+    )
 
 
 @require_POST

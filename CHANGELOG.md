@@ -10,8 +10,8 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Fixed
 
-- `/.well-known/security.txt` now meets RFC 9116: it adds a rolling `Expires`
-  (180 days ahead), `Preferred-Languages` from `settings.LANGUAGES` and
+- `/.well-known/security.txt` now meets RFC 9116: it adds `Expires` (the last
+  day of next month), `Preferred-Languages` from `settings.LANGUAGES` and
   `Canonical`.
 - `TextResponse` (used by `robots.txt` and `security.txt`) sends
   `text/plain; charset=utf-8` instead of `text/plain`.

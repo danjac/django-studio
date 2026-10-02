@@ -18,9 +18,12 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
-- `/.well-known/security.txt` is cached for an hour instead of a year, so a
-  changed `CONTACT_EMAIL` shows up quickly. Projects that customised the
-  `security` view will conflict on `copier update`.
+- Each view in `views.py` sets its own `cache_control` instead of sharing a
+  one-year `immutable` policy, and none uses `cache_page`, whose Redis copy
+  outlived deploys. `robots.txt` and the favicon are cached for a day;
+  `security.txt`, `manifest.json` and `assetlinks.json` for an hour, so env
+  changes such as `CONTACT_EMAIL` or `PWA_*` show up quickly. Projects that
+  customised these views will conflict on `copier update`.
 
 ## 26.40.3 - 2026-09-30
 

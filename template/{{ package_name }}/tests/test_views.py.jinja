@@ -57,6 +57,7 @@ class TestRobots:
         response = client.get(reverse("robots"))
         assert response.status_code == 200
         assert response["Content-Type"] == "text/plain; charset=utf-8"
+        assert response["Cache-Control"] == "max-age=86400, public"
         assert b"User-Agent" in response.content
 
     def test_post_not_allowed(self, client):
@@ -124,6 +125,7 @@ class TestManifest:
     def test_get(self, client):
         response = client.get(reverse("manifest"))
         assert response.status_code == 200
+        assert response["Cache-Control"] == "max-age=3600, public"
         assert response.json()["start_url"] == "/"
         assert response.json()["icons"][0]["src"] == reverse("favicon")
 
@@ -141,6 +143,7 @@ class TestFavicon:
         response = client.get(reverse("favicon"))
         assert response.status_code == 200
         assert response["Content-Type"] == "image/svg+xml"
+        assert response["Cache-Control"] == "max-age=86400, public"
         assert b">E</text>" in response.content
 
     def test_favicon_ico(self, client):
@@ -164,6 +167,7 @@ class TestAssetlinks:
     def test_get(self, client):
         response = client.get(reverse("assetlinks"))
         assert response.status_code == 200
+        assert response["Cache-Control"] == "max-age=3600, public"
         assert isinstance(response.json(), list)
 
     @pytest.mark.django_db

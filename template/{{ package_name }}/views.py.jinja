@@ -1,26 +1,18 @@
 import datetime
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.cache import cache_control, cache_page
+from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_safe
 
 from {{ package_name }}.http.response import TextResponse
 
 if TYPE_CHECKING:
     from {{ package_name }}.http.request import HttpRequest
-
-_CACHE_TIMEOUT: Final = 60 * 60 * 24 * 365
-
-_cache_control = cache_control(max_age=_CACHE_TIMEOUT, immutable=True, public=True)
-_cache_page = cache_page(_CACHE_TIMEOUT)
-
-# The favicon is meant to be replaced, so cache it for a day rather than a year.
-_FAVICON_CACHE_TIMEOUT: Final = 60 * 60 * 24
 
 
 @require_safe
@@ -54,8 +46,7 @@ def privacy(request: HttpRequest) -> TemplateResponse:
 
 
 @require_safe
-@_cache_control
-@_cache_page
+@cache_control(max_age=60 * 60 * 24, public=True)
 def robots(_) -> TextResponse:
     """Serve robots.txt."""
     return TextResponse(
@@ -111,8 +102,7 @@ def accept_cookies(_: HttpRequest) -> HttpResponse:
 
 
 @require_safe
-@_cache_control
-@_cache_page
+@cache_control(max_age=60 * 60, public=True)
 def manifest(request: HttpRequest) -> JsonResponse:
     """Serve PWA manifest.json."""
     pwa = settings.PWA_CONFIG
@@ -139,8 +129,7 @@ def manifest(request: HttpRequest) -> JsonResponse:
 
 
 @require_safe
-@cache_control(max_age=_FAVICON_CACHE_TIMEOUT, public=True)
-@cache_page(_FAVICON_CACHE_TIMEOUT)
+@cache_control(max_age=60 * 60 * 24, public=True)
 def favicon(request: HttpRequest) -> TemplateResponse:
     """Serve the SVG favicon: the site name's initial in the PWA colours."""
     pwa = settings.PWA_CONFIG
@@ -157,8 +146,7 @@ def favicon(request: HttpRequest) -> TemplateResponse:
 
 
 @require_safe
-@_cache_control
-@_cache_page
+@cache_control(max_age=60 * 60, public=True)
 def assetlinks(_) -> JsonResponse:
     """Serve PWA .well-known/assetlinks.json."""
     pwa = settings.PWA_CONFIG["assetlinks"]

@@ -6,6 +6,18 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.40.7 - 2026-10-04
+
+### Fixed
+
+- `docs/sse.md` shares one LISTEN connection per process between all open
+  streams, instead of opening a Postgres connection per stream, and routes each
+  notification to its recipient only (the previous example sent every
+  notification to every user). It publishes with `pg_notify` on Django's
+  connection so events fire on commit, sends heartbeats so proxies keep idle
+  streams open, reads the user with `await request.auser()`, and notes that
+  local SSE needs an ASGI `runserver`.
+
 ## 26.40.6 - 2026-10-03
 
 ### Changed

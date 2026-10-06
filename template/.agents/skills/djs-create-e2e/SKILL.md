@@ -55,6 +55,8 @@ The target file is:
   """E2E tests for <app_name>."""
 
   import pytest
+  from django.urls import reverse
+  from django.utils.translation import gettext
   from playwright.sync_api import Page, expect
 
   pytestmark = [pytest.mark.e2e, pytest.mark.django_db(transaction=True)]
@@ -102,6 +104,9 @@ page.goto(f"{live_server.url}{reverse('<url_name>')}")
 | 4 | Text | `page.get_by_text("Welcome back")` |
 | 5 | `name` attribute | `page.locator('[name="login"]')` |
 
+Look up translated labels with `gettext` so they match the rendered page in any
+`LANGUAGE_CODE`: `page.get_by_role("button", name=gettext("Save"))`.
+
 Avoid CSS class selectors and XPath. Never use `page.wait_for_timeout()` —
 Playwright's `expect()` auto-waits.
 
@@ -111,7 +116,7 @@ Playwright's `expect()` auto-waits.
 expect(page).to_have_url(expected_url)
 expect(page.get_by_role("heading", name="Dashboard")).to_be_visible()
 expect(page.get_by_text("Saved successfully")).to_be_visible()
-expect(page.get_by_role("link", name="Sign in").first).to_be_visible()
+expect(page.get_by_role("link", name=gettext("Sign in")).first).to_be_visible()
 ```
 
 **HTMX interactions** — clicks and form submits that trigger HTMX swaps
@@ -122,7 +127,7 @@ click the trigger first:
 
 ```python
 page.get_by_role("button", name=e2e_user.username).click()
-page.get_by_role("button", name="Sign out").click()
+page.get_by_role("button", name=gettext("Sign out")).click()
 ```
 
 **Full example:**
@@ -130,9 +135,9 @@ page.get_by_role("button", name="Sign out").click()
 ```python
 def test_user_submits_form_and_sees_success(auth_page: Page, e2e_user, live_server):
     auth_page.goto(f"{live_server.url}{reverse('my_app:create')}")
-    auth_page.get_by_label("Title").fill("My item")
-    auth_page.get_by_role("button", name="Save").click()
-    expect(auth_page.get_by_text("Item created.")).to_be_visible()
+    auth_page.get_by_label(gettext("Title")).fill("My item")
+    auth_page.get_by_role("button", name=gettext("Save")).click()
+    expect(auth_page.get_by_text(gettext("Item created."))).to_be_visible()
 ```
 
 ---

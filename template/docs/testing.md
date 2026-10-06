@@ -86,6 +86,8 @@ def user():
 ```python
 # my_package/tests/e2e_fixtures.py
 import pytest
+from django.urls import reverse
+from django.utils.translation import gettext
 from playwright.sync_api import Page
 
 from my_package.users.tests.recipes import TEST_PASSWORD, make_verified_user
@@ -102,7 +104,7 @@ def auth_page(page: Page, e2e_user, live_server) -> Page:
     page.goto(login_url)
     page.locator('[name="login"]').fill(e2e_user.email)
     page.locator('[name="password"]').fill(TEST_PASSWORD)
-    page.get_by_role("button", name="Sign In").click()
+    page.get_by_role("button", name=gettext("Sign In")).click()
     return page
 ```
 

@@ -8,6 +8,13 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ## 26.41.2 - 2026-10-06
 
+### Changed
+
+- `static/indicator.js` is renamed `static/loading.js` and now also sets
+  `aria-busy` on HTMX request targets, which `base.html` used to do in its inline
+  script. Projects that edited `indicator.js` or the inline script may conflict on
+  `copier update`.
+
 ### Fixed
 
 - The shipped E2E auth tests and the `auth_page` fixture look up button and

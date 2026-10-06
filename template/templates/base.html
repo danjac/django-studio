@@ -12,14 +12,8 @@
     <link rel="stylesheet" href="{% static 'app.css' %}" />
     <script src="{% static 'vendor/htmx.js' %}"></script>
     <script src="{% static 'vendor/alpine.js' %}" defer></script>
-    <script src="{% static 'indicator.js' %}"></script>
+    <script src="{% static 'loading.js' %}"></script>
     <script nonce="{{ csp_nonce }}">
-      document.addEventListener('htmx:before:request', (evt) => {
-        evt.detail.ctx?.target?.setAttribute('aria-busy', 'true');
-      });
-      document.addEventListener('htmx:finally:request', (evt) => {
-        evt.detail.ctx?.target?.removeAttribute('aria-busy');
-      });
       {% if debug %}
         // htmx moves hx-preserve elements (the debug toolbar) with moveBefore(),
         // and Chromium drops the stylesheets of a moved <link>: re-add them.

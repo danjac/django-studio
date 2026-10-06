@@ -1,3 +1,11 @@
+document.addEventListener('htmx:before:request', (evt) => {
+  evt.detail.ctx?.target?.setAttribute('aria-busy', 'true');
+});
+
+document.addEventListener('htmx:finally:request', (evt) => {
+  evt.detail.ctx?.target?.removeAttribute('aria-busy');
+});
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('hxIndicator', () => ({
     width: 0,

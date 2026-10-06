@@ -6,6 +6,14 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.41.2 - 2026-10-06
+
+### Fixed
+
+- The shipped E2E auth tests and the `auth_page` fixture look up button and
+  link labels with `gettext`, so they pass when `LANGUAGE_CODE` isn't English.
+  `/djs-create-e2e` and `docs/testing.md` do the same.
+
 ## 26.40.7 - 2026-10-04
 
 ### Fixed

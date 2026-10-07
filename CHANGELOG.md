@@ -6,6 +6,14 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.41.3 - 2026-10-07
+
+### Added
+
+- `docs/django-templates.md` explains when to write markup by hand instead of
+  adding parameters to the shipped components, e.g. a one-button action form or an
+  htmx form with its own swap and target.
+
 ## 26.41.2 - 2026-10-06
 
 ### Fixed

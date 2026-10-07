@@ -116,7 +116,8 @@ See [Custom Widget Partials](#custom-widget-partials) and
 ## HTMX Form Wrapper
 
 `form.html` renders a `<form>` element. Include it via `{% fragment %}`, passing the
-form fields as `{{ content }}`:
+form fields as `{{ content }}`. For forms it doesn't cover, write the `<form>` by hand
+(see [When to Write Markup by Hand](django-templates.md#when-to-write-markup-by-hand)):
 
 ```html
 {% fragment "form.html" htmx=True target="my-form" %}

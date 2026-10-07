@@ -7,6 +7,7 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 - [Base Templates](#base-templates)
 - [partialdef / partial](#partialdef--partial)
 - [fragment Tag](#fragment-tag)
+- [When to Write Markup by Hand](#when-to-write-markup-by-hand)
 - [Forms](#forms)
 - [Pagination](#pagination)
 - [Browse List](#browse-list)
@@ -140,6 +141,29 @@ Use `{% fragment %}` **only when there is content to pass** inside the block (av
     <p>{{ item.name }}</p>
   {% endfor %}
 {% endfragment %}
+```
+
+## When to Write Markup by Hand
+
+The shipped components (`form.html`, `header.html`, `grid.html`, `browse.html`,
+`paginate.html`) cover the common cases with a few parameters. When a template needs
+attributes or structure a component doesn't take, such as a GET search form, a
+one-button action form, or an htmx form with its own swap and target, write the
+element by hand rather than adding parameters to the component. Plain HTML with
+`hx-*` and `x-data` attributes is easier to read than a component configured through
+template tags.
+
+```html
+<form
+  method="post"
+  action="{{ assign_url }}"
+  hx-post="{{ assign_url }}"
+  hx-target="closest form"
+  hx-swap="outerHTML"
+>
+  {% csrf_token %}
+  <button type="submit" class="btn btn-sm btn-outline">{% translate "Assign" %}</button>
+</form>
 ```
 
 ## Forms

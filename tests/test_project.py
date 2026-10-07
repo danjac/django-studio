@@ -667,20 +667,15 @@ class TestClaudeHooksInstallation:
             assert stub.exists(), f"Missing stub for skill '{name}'"
             assert stub.read_text().strip() == f"@.agents/skills/{name}/SKILL.md"
 
-    def test_deprecated_dj_aliases_installed(self, project):
-        commands_dir = project / ".claude" / "commands"
-        skills = sorted(
+    def test_one_command_per_skill(self, project):
+        skills = {
             p.parent.name for p in (project / ".agents" / "skills").glob("*/SKILL.md")
-        )
+        }
         assert all(name.startswith("djs-") for name in skills)
-        aliases = {"dj-" + name.removeprefix("djs-") for name in skills}
-        assert {p.stem for p in commands_dir.glob("*.md")} == set(skills) | aliases
-        stub = (commands_dir / "dj-help.md").read_text()
-        assert "`/dj-help` is deprecated" in stub
-        assert "@.agents/skills/djs-help/SKILL.md" in stub
+        commands_dir = project / ".claude" / "commands"
+        assert {p.stem for p in commands_dir.glob("*.md")} == skills
         opencode = json.loads((project / "opencode.json").read_text())["command"]
-        assert set(opencode) == set(skills) | aliases
-        assert opencode["dj-help"]["description"] == "Deprecated: use /djs-help"
+        assert set(opencode) == skills
 
 
 class TestRenderedPythonLinting:

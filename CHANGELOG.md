@@ -1,6 +1,6 @@
 # Changelog
 
-User-visible changes to the django-studio template. `/dj-sync` shows the entries
+User-visible changes to the django-studio template. `/djs-sync` shows the entries
 added since your project's last update before it runs `copier update`.
 
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
@@ -27,6 +27,9 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Removed
 
+- The deprecated `/dj-<name>` skill aliases and the plugin's `/dj-bootstrap`; use
+  `/djs-<name>`. `copier update` deletes the `.claude/commands/dj-*.md` stubs and
+  the `dj-*` entries in `opencode.json`.
 - The `{% try_include %}` template tag. Use `{% include %}`, which also accepts a
   list of template names and renders the first that exists.
 

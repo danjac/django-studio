@@ -146,17 +146,15 @@ Use `{% fragment %}` **only when there is content to pass** inside the block (av
 ## When to Write Markup by Hand
 
 The shipped components (`form.html`, `header.html`, `grid.html`, `browse.html`,
-`paginate.html`) cover the common cases with a few parameters. When a template needs
-attributes or structure a component doesn't take, such as a GET search form, a
-one-button action form, or an htmx form with its own swap and target, write the
-element by hand rather than adding parameters to the component. Plain HTML with
-`hx-*` and `x-data` attributes is easier to read than a component configured through
-template tags.
+`paginate.html`) cover the common cases with a few parameters. They are part of your
+project: to change a default across the site, such as the header layout, edit the
+component.
 
-When the same hand-written pattern appears in several templates, such as a GET search
-form, extract it into a new component of its own (e.g. `search.html`) rather than
-adding a variant to an existing one. Place it beside its callers — see
-[Locality of Behaviour](project-structure.md#locality-of-behaviour).
+When a template needs attributes or structure a component doesn't take, such as a GET
+search form, a one-button action form, or an htmx form with its own swap and target,
+write the element by hand rather than adding parameters to the component. Plain HTML
+with `hx-*` and `x-data` attributes is easier to read than a component configured
+through template tags.
 
 ```html
 <form
@@ -170,6 +168,11 @@ adding a variant to an existing one. Place it beside its callers — see
   <button type="submit" class="btn btn-sm btn-outline">{% translate "Assign" %}</button>
 </form>
 ```
+
+When the same hand-written pattern appears in several templates, extract it into a new
+component: a template with `{% partialdef %}` blocks for its parts, like `browse.html`.
+Place it beside its callers — see
+[Locality of Behaviour](project-structure.md#locality-of-behaviour).
 
 ## Forms
 

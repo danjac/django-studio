@@ -1,27 +1,25 @@
-{% with action=action|default:request.path method="post" %}
+{% build_attrs action=action|default:request.path method="post" class=inline|yesno:"flex gap-2,space-y-4" as defaults %}
+{% if htmx %}
+  {% build_attrs id=target|default:None hx_trigger="submit once" hx_disable="this" hx_swap="outerHTML" hx_target="this" hx_validate="true" as htmx_attrs %}
+{% elif hx_ignore %}
+  {% build_attrs hx_ignore="true" as htmx_attrs %}
+{% else %}
+  {% build_attrs as htmx_attrs %}
+{% endif %}
+{% if multipart %}
+  {% build_attrs enctype="multipart/form-data" hx_encoding="multipart/form-data" as multipart_attrs %}
+{% else %}
+  {% build_attrs as multipart_attrs %}
+{% endif %}
+{% build_attrs defaults htmx_attrs multipart_attrs attrs as form_attrs %}
+{% with method=form_attrs.method|lower %}
   <form
-    action="{{ action }}"
-    method="{{ method }}"
-    class="{{ class|default:'space-y-4' }}"
-    {% if htmx %}
-      id="{{ target }}"
-      hx-{{ method }}="{{ action }}"
-      hx-trigger="submit once"
-      hx-disable="this"
-      hx-swap="{{ hx_swap|default:'outerHTML' }}"
-      hx-target="{{ hx_target|default:'this' }}"
-      hx-validate="true"
-    {% elif hx_ignore %}
-      hx-ignore="true"
-    {% endif %}
-    {% if multipart %}
-      enctype="multipart/form-data"
-      {% if htmx %}
-        hx-encoding="multipart/form-data"
-      {% endif %}
-    {% endif %}
+    {% if htmx %}hx-{{ method }}="{{ form_attrs.action }}"{% endif %}
+    {% render_attrs form_attrs %}
   >
-    {% csrf_token %}
+    {% if method == "post" %}
+      {% csrf_token %}
+    {% endif %}
     {{ content }}
   </form>
 {% endwith %}

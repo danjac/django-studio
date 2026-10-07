@@ -6,10 +6,12 @@ from typing import TYPE_CHECKING, Any
 
 from django import template
 from django.conf import settings
+from django.forms.utils import flatatt
 from django.shortcuts import resolve_url
 from django.template.exceptions import TemplateDoesNotExist
 from django.urls import NoReverseMatch, reverse
 from django.utils.html import format_html, format_html_join
+from django.utils.safestring import mark_safe
 
 if TYPE_CHECKING:
     from django.contrib.sites.models import Site
@@ -225,6 +227,105 @@ def try_include(
         tmpl = engine.get_template(fallback)
     with context.push(**extra_context):
         return tmpl.render(context)
+
+
+@register.simple_tag
+def build_attrs(*attrs: Any, **kwargs: Any) -> dict[str, Any]:
+    """Returns a new dict of HTML attributes.
+
+    Merges dicts left to right, then keyword arguments. Underscores in keyword
+    names become hyphens. Class names are combined; other keys are replaced.
+    Arguments that are not dicts (e.g. an undefined variable) are skipped.
+
+    Example:
+
+        {% raw %}{% build_attrs attrs hx_target="#list" class="mt-6" as attrs %}{% endraw %}
+    """
+    return _merge_attrs(*attrs, _keyword_attrs(kwargs))
+
+
+@register.simple_tag
+def merge_attrs(attrs: Any, *pairs: Any) -> str:
+    """Sets key/value pairs in a dict of HTML attributes, in place.
+
+    Keys are used as given, so they can hold names that keyword arguments
+    cannot, such as ``hx-on::after-request`` or ``@click.outside``.
+
+    Example:
+
+        {% raw %}{% merge_attrs attrs "hx-on::after-request" "this.reset()" %}{% endraw %}
+    """
+    if not isinstance(attrs, dict):
+        raise template.TemplateSyntaxError("merge_attrs requires a dict.")
+    if len(pairs) % 2:
+        raise template.TemplateSyntaxError("merge_attrs requires key/value pairs.")
+    for key, value in zip(pairs[::2], pairs[1::2], strict=True):
+        _set_attr(attrs, key, value)
+    return ""
+
+
+@register.simple_tag
+def pop_attr(attrs: Any, key: str, default: Any = None) -> Any:
+    """Removes a key from a dict of HTML attributes and returns its value.
+
+    Returns ``default`` if the key is missing or ``attrs`` is not a dict.
+
+    Example:
+
+        {% raw %}{% pop_attr attrs "method" "post" as method %}{% endraw %}
+    """
+    if not isinstance(attrs, dict):
+        return default
+    return attrs.pop(key, default)
+
+
+@register.simple_tag
+def render_attrs(*attrs: Any, **defaults: Any) -> SafeString:
+    """Renders dicts of HTML attributes over keyword-argument defaults.
+
+    ``True`` renders a bare attribute; ``False`` and ``None`` are omitted.
+
+    Example:
+
+        {% raw %}<form {% render_attrs attrs method="post" class="space-y-4" %}>{% endraw %}
+    """
+    merged = _merge_attrs(_keyword_attrs(defaults), *attrs)
+    if "class" in merged:
+        merged["class"] = " ".join(merged["class"]) or None
+    return mark_safe(flatatt(merged).lstrip())  # noqa: S308
+
+
+def _keyword_attrs(kwargs: dict[str, Any]) -> dict[str, Any]:
+    """Convert keyword-argument names to HTML attribute names."""
+    return {key.replace("_", "-"): value for key, value in kwargs.items()}
+
+
+def _merge_attrs(*attrs: Any) -> dict[str, Any]:
+    """Merge dicts of HTML attributes into a new dict, skipping non-dicts."""
+    merged: dict[str, Any] = {}
+    for item in attrs:
+        if isinstance(item, dict):
+            for key, value in item.items():
+                _set_attr(merged, key, value)
+    return merged
+
+
+def _set_attr(attrs: dict[str, Any], key: str, value: Any) -> None:
+    """Set an HTML attribute, combining class names and replacing other values."""
+    if key == "class":
+        names = _class_names(attrs.get(key)) + _class_names(value)
+        attrs[key] = list(dict.fromkeys(names))
+    else:
+        attrs[key] = value
+
+
+def _class_names(value: Any) -> list[str]:
+    """Split a class string, or list of class strings, into class names."""
+    if isinstance(value, str):
+        return value.split()
+    if isinstance(value, list | tuple):
+        return [name for item in value for name in _class_names(item)]
+    return []
 
 
 def _resolve_url(viewname: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:

@@ -7,6 +7,7 @@ This project uses Django templates with HTMX, including the `partialdef` pattern
 - [Base Templates](#base-templates)
 - [partialdef / partial](#partialdef--partial)
 - [fragment Tag](#fragment-tag)
+- [HTML Attributes](#html-attributes)
 - [Forms](#forms)
 - [Pagination](#pagination)
 - [Browse List](#browse-list)
@@ -142,6 +143,58 @@ Use `{% fragment %}` **only when there is content to pass** inside the block (av
 {% endfragment %}
 ```
 
+## HTML Attributes
+
+Components accept an `attrs` dict so callers can add or override attributes on the
+component's outer element. `form.html`, `header.html`, `grid.html` and `browse.html`
+take one, as do the `item` and `empty` partials of the last two. Four tags build and
+render these dicts:
+
+| Tag | Purpose |
+|-----|---------|
+| `{% build_attrs d1 d2 key=val as name %}` | New dict from the dicts, then the keyword arguments; `_` in keyword names becomes `-` |
+| `{% merge_attrs d "key" val "key2" val2 %}` | Set keys in `d` in place; keys are used as given |
+| `{% pop_attr d "key" default as name %}` | Remove a key from `d` and return its value |
+| `{% render_attrs d1 d2 key=default %}` | Render the dicts over the keyword-argument defaults |
+
+Later values replace earlier ones, except `class`, whose class names are combined
+without duplicates. `True` renders a bare attribute; `False` and `None` are omitted,
+so a caller can pass `None` to remove a component default.
+
+Keyword arguments cannot hold `:`, `.` or `@`, so use `merge_attrs` for names such
+as `hx-on::after-request`, `hx-target:inherited` or `@click.outside`.
+
+The caller builds a dict with a name specific to the component it passes it to,
+because a variable named `attrs` in the page context would reach every component
+on the page that is called without `attrs=`:
+
+```html
+{% build_attrs hx_target="#comments" hx_swap="beforeend" as comment_form_attrs %}
+{% merge_attrs comment_form_attrs "hx-on::after-request" "htmx.trigger('#comment-count', 'refresh')" %}
+{% fragment "form.html" htmx=True target="comment-form" attrs=comment_form_attrs %}
+  {{ form }}
+{% endfragment %}
+```
+
+The component renders `attrs` over its own defaults, so the caller's classes are
+added to the component's:
+
+```html
+<ul {% render_attrs attrs id=target|default:None class="divide-y divide-solid" %}>
+```
+
+When callers need to choose between layouts, the component takes a named parameter
+and keeps the class strings to itself. `form.html` lays its fields out in a row with
+`inline=True`:
+
+```html
+{% build_attrs class=inline|yesno:"flex gap-2,space-y-4" as defaults %}
+```
+
+`pop_attr` and `merge_attrs` change the dict they are given. To change `attrs` without
+changing the caller's dict, copy it first with
+`{% build_attrs attrs as list_attrs %}`.
+
 ## Forms
 
 For form rendering patterns, widget dispatch, and custom widgets, see `docs/django-forms.md`.
@@ -162,12 +215,15 @@ The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links 
 
 ## Browse List
 
-`browse.html` renders a `<ul>` list with dividers. Use its `item` and `empty` partials:
+`browse.html` renders a `<ul>` list with dividers. Use its `item` and `empty` partials.
+The list and both partials take an `attrs` dict (see [HTML Attributes](#html-attributes)),
+e.g. to give each row its own Alpine state:
 
 ```html
 {% fragment "browse.html" target="item-list" %}
   {% for item in items %}
-    {% fragment "browse.html#item" %}
+    {% build_attrs x_data="{ open: false }" as row_attrs %}
+    {% fragment "browse.html#item" attrs=row_attrs %}
       <a href="{{ item.get_absolute_url }}">{{ item.name }}</a>
     {% endfragment %}
   {% empty %}
@@ -324,6 +380,7 @@ Always append to an existing file — never recreate it. App-level files need a
 | `{% active_url 'name' *args active_class='' **kwargs %}` | `simple_tag` | `ActiveUrl` dataclass; `.url`, `.is_active`, `.css_class` |
 | `{% re_active_url 'pattern' 'viewname' active_class='' %}` | `simple_tag` | `ActiveUrl` matched by regex; resolves viewname for href |
 | `{% fragment "t.html" %}...{% endfragment %}` | `simple_block_tag` | Include a template with `{{ content }}` slot |
+| `{% build_attrs %}`, `{% merge_attrs %}`, `{% pop_attr %}`, `{% render_attrs %}` | `simple_tag` | Build and render HTML attribute dicts — see [HTML Attributes](#html-attributes) |
 | `{% try_include "t.html" "fallback.html" key=val %}` | `simple_tag` | Include a template, falling back if not found; optional extra context |
 | `{% cookie_banner %}` | `inclusion_tag` | GDPR cookie consent banner |
 | `{% title_tag %}` | `simple_tag` | Composable `<title>` tag |

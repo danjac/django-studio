@@ -6,6 +6,26 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.41.3 - 2026-10-07
+
+### Added
+
+- `{% build_attrs %}`, `{% merge_attrs %}`, `{% pop_attr %}` and `{% render_attrs %}`
+  template tags build and render dicts of HTML attributes, so callers can add or
+  override attributes on a component's outer element. `form.html`, `header.html`,
+  `grid.html` and `browse.html`, and the `item` and `empty` partials of the last
+  two, accept an `attrs` dict. See `docs/django-templates.md#html-attributes`.
+
+### Changed
+
+- `form.html` no longer takes `class`, `hx_swap` or `hx_target`. Pass
+  `inline=True` for a row layout; pass extra classes and htmx overrides in
+  `attrs` (`{% build_attrs class="mt-4" as my_form_attrs %}` then
+  `attrs=my_form_attrs`); classes in `attrs` are added to the form's own. It
+  now honours `method`, so GET forms use `hx-get` and omit `{% csrf_token %}`.
+  Callers in your project that pass the removed variables will lose those
+  attributes silently; update them after `copier update`.
+
 ## 26.41.2 - 2026-10-06
 
 ### Fixed

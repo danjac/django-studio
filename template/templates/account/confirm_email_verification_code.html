@@ -41,7 +41,8 @@
         <summary class="text-sm font-medium cursor-pointer text-base-content/70">
           {% translate "Use a different email address" %}
         </summary>
-        {% fragment "form.html" action=form_action class="mt-4 space-y-4" %}
+        {% build_attrs class="mt-4" as change_form_attrs %}
+        {% fragment "form.html" action=form_action attrs=change_form_attrs %}
           {{ change_form }}
           {{ redirect_field }}
           {% fragment "form.html#buttons" %}

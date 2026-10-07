@@ -22,7 +22,7 @@
             click the link to confirm the change.
           {% endblocktranslate %}
         </p>
-        {% fragment "form.html" action=form_action class="flex gap-2" %}
+        {% fragment "form.html" action=form_action inline=True %}
           <input type="hidden" name="email" value="{{ new_emailaddress.email }}" />
           <button type="submit" name="action_send" class="btn btn-secondary">
             {% translate "Re-send Verification" %}

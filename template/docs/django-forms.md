@@ -133,11 +133,22 @@ Key variables:
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `action` | `request.path` | Form action URL |
-| `method` | `"post"` | HTTP method |
 | `htmx` | — | Enable HTMX attributes |
-| `hx_swap` | `"outerHTML"` | HTMX swap strategy |
-| `hx_target` | `"this"` | HTMX target selector |
+| `target` | — | Form `id` when `htmx` is set |
 | `multipart` | — | Enable file upload encoding |
+| `inline` | — | Lay the form out in a row (`flex gap-2`) instead of stacked (`space-y-4`) |
+| `attrs` | — | Attributes that add to or override the defaults, e.g. `method`, `class`, `hx-target`, `hx-swap` — see [HTML Attributes](django-templates.md#html-attributes) |
+
+The default `method` is `"post"`. With `htmx=True` the form posts with `hx-post` (or
+`hx-get` for `method="get"`), swaps `outerHTML` and targets itself. `{% csrf_token %}`
+renders only for POST forms. To change the swap target:
+
+```html
+{% build_attrs hx_target="#comments" hx_swap="beforeend" as comment_form_attrs %}
+{% fragment "form.html" htmx=True target="comment-form" attrs=comment_form_attrs %}
+  ...
+{% endfragment %}
+```
 
 For file upload forms, pass `multipart=True`:
 

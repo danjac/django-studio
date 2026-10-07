@@ -236,7 +236,8 @@ inside Alpine or htmx expression attributes (`x-data`, `@click`, `hx-on:*`). See
   {% include "header.html" with title=_("<model_name>") %}
   {% partialdef <model_lower>-form inline %}
     <div id="<model_lower>-form">
-      {% fragment "form.html" htmx=True hx_target="#<model_lower>-form" %}
+      {% build_attrs hx_target="#<model_lower>-form" as <model_lower>_form_attrs %}
+      {% fragment "form.html" htmx=True attrs=<model_lower>_form_attrs %}
         {% for field in form %}
           {{ field.as_field_group }}
         {% endfor %}

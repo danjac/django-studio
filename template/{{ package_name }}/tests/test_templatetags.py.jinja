@@ -1,17 +1,21 @@
 from unittest.mock import Mock
 
 import pytest
-from django.template import TemplateSyntaxError
+from django.template import TemplateSyntaxError, engines
 from django.template.exceptions import TemplateDoesNotExist
 
 from {{ package_name }}.http.request import RequestContext
 from {{ package_name }}.templatetags import (
     absolute_uri,
     active_url,
+    build_attrs,
     cookie_banner,
     fragment,
+    merge_attrs,
     meta_tags,
+    pop_attr,
     re_active_url,
+    render_attrs,
     title_tag,
     try_include,
 )
@@ -222,3 +226,126 @@ class TestTryInclude:
         context.template.engine.get_template.return_value = tmpl
         try_include(context, "primary.html", "fallback.html", foo="bar")
         context.push.assert_called_once_with(foo="bar")
+
+
+class TestBuildAttrs:
+    def test_converts_underscores_in_keywords(self):
+        assert build_attrs(hx_get="/items/") == {"hx-get": "/items/"}
+
+    def test_keywords_override_dicts(self):
+        attrs = build_attrs({"hx-target": "this"}, hx_target="#list")
+        assert attrs == {"hx-target": "#list"}
+
+    def test_later_dicts_override_earlier(self):
+        attrs = build_attrs({"id": "a"}, {"id": "b"})
+        assert attrs == {"id": "b"}
+
+    def test_skips_non_dicts(self):
+        assert build_attrs("", None, id="a") == {"id": "a"}
+
+    def test_merges_classes(self):
+        attrs = build_attrs({"class": "x-4"}, {"class": "x-4 d-5"})
+        assert attrs == {"class": ["x-4", "d-5"]}
+
+    def test_returns_copy(self):
+        original = {"class": ["x-4"]}
+        attrs = build_attrs(original, **{"class": "d-5"})
+        assert original == {"class": ["x-4"]}
+        assert attrs == {"class": ["x-4", "d-5"]}
+
+
+class TestMergeAttrs:
+    def test_sets_keys_verbatim(self):
+        attrs = {}
+        merge_attrs(
+            attrs,
+            "hx-on::after-request",
+            "this.reset()",
+            "@item_selected.window",
+            "open = false",
+        )
+        assert attrs == {
+            "hx-on::after-request": "this.reset()",
+            "@item_selected.window": "open = false",
+        }
+
+    def test_replaces_existing_value(self):
+        attrs = {"hx-on::after-request": "this.reset()"}
+        merge_attrs(attrs, "hx-on::after-request", "alert('hi')")
+        assert attrs == {"hx-on::after-request": "alert('hi')"}
+
+    def test_merges_classes(self):
+        attrs = {"class": ["x-4"]}
+        merge_attrs(attrs, "class", "x-4 d-5")
+        assert attrs == {"class": ["x-4", "d-5"]}
+
+    def test_returns_empty_string(self):
+        assert merge_attrs({}, "id", "a") == ""
+
+    def test_odd_number_of_arguments(self):
+        with pytest.raises(TemplateSyntaxError):
+            merge_attrs({}, "id")
+
+    def test_not_a_dict(self):
+        with pytest.raises(TemplateSyntaxError):
+            merge_attrs("", "id", "a")
+
+
+class TestPopAttr:
+    def test_removes_and_returns_value(self):
+        attrs = {"method": "get", "id": "a"}
+        assert pop_attr(attrs, "method", "post") == "get"
+        assert attrs == {"id": "a"}
+
+    def test_returns_default_when_missing(self):
+        assert pop_attr({}, "method", "post") == "post"
+
+    def test_default_is_none(self):
+        assert pop_attr({}, "method") is None
+
+    def test_returns_default_when_not_a_dict(self):
+        assert pop_attr("", "method", "post") == "post"
+
+
+class TestRenderAttrs:
+    def test_renders_attributes(self):
+        assert render_attrs({"hx-get": "/items/"}) == 'hx-get="/items/"'
+
+    def test_dicts_override_defaults(self):
+        result = render_attrs({"hx-target": "#list"}, hx_target="this")
+        assert result == 'hx-target="#list"'
+
+    def test_merges_classes(self):
+        result = render_attrs({"class": "x-4 d-5"}, **{"class": "x-4"})
+        assert result == 'class="x-4 d-5"'
+
+    def test_true_renders_bare_attribute(self):
+        assert render_attrs({"hx-validate": True}) == "hx-validate"
+
+    def test_false_and_none_omitted(self):
+        result = render_attrs({"disabled": False, "hx-target": None}, id="a")
+        assert result == 'id="a"'
+
+    def test_none_removes_default(self):
+        assert render_attrs({"hx-target": None}, hx_target="this") == ""
+
+    def test_escapes_values(self):
+        result = render_attrs({"x-data": '{ label: "<b>" }'})
+        assert result == 'x-data="{ label: &quot;&lt;b&gt;&quot; }"'
+
+    def test_skips_non_dicts(self):
+        assert render_attrs("", id="a") == 'id="a"'
+
+
+class TestAttrsTags:
+    def test_render_in_template(self):
+        tmpl = engines["django"].from_string(
+            "{% raw %}{% build_attrs hx_target=target class='mt-6' as attrs %}"
+            "{% merge_attrs attrs 'hx-on::after-request' 'this.reset()' %}"
+            "{% pop_attr attrs 'hx-target' as hx_target %}"
+            "<form data-target=\"{{ hx_target }}\" {% render_attrs attrs class='space-y-4' %}>{% endraw %}"
+        )
+        assert tmpl.render({"target": "#list"}) == (
+            '<form data-target="#list" class="space-y-4 mt-6"'
+            ' hx-on::after-request="this.reset()">'
+        )

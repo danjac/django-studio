@@ -99,7 +99,7 @@ When rendering a `{% partialdef %}` that lives in the **same** template file, us
 {% partial item-list %}
 ```
 
-The only exception is when the template name is dynamic (e.g. `forms/partials.html` uses `try_include` with a variable name).
+The only exception is when the template name is dynamic (e.g. `forms/partials.html` uses `{% include %}` with a name built from the widget type).
 
 For cross-file partials, `{% include "other/partials.html#name" %}` remains correct.
 
@@ -388,7 +388,6 @@ Always append to an existing file — never recreate it. App-level files need a
 | `{% active_url 'name' *args active_class='' **kwargs %}` | `simple_tag` | `ActiveUrl` dataclass; `.url`, `.is_active`, `.css_class` |
 | `{% re_active_url 'pattern' 'viewname' active_class='' %}` | `simple_tag` | `ActiveUrl` matched by regex; resolves viewname for href |
 | `{% fragment "t.html" %}...{% endfragment %}` | `simple_block_tag` | Include a template with `{{ content }}` slot |
-| `{% try_include "t.html" "fallback.html" key=val %}` | `simple_tag` | Include a template, falling back if not found; optional extra context |
 | `{% cookie_banner %}` | `inclusion_tag` | GDPR cookie consent banner |
 | `{% title_tag %}` | `simple_tag` | Composable `<title>` tag |
 

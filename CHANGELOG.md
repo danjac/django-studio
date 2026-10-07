@@ -16,6 +16,20 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
   pattern into a new component built from partials, and make variants by
   extending a component and overriding its blocks.
 
+### Changed
+
+- Form fields render their widget partial with a plain `{% include %}`; there is no
+  fallback to the `input` partial. `TextInput`, `EmailInput`, `URLInput`,
+  `NumberInput`, `TelInput`, `SearchInput` and `ColorInput` have their own alias
+  partials. **Each custom widget in your project now needs a `{% partialdef %}` in
+  `templates/forms/partials.html`** (a one-line `{% partial input %}` alias if it
+  renders like a plain input), or the field raises `TemplateDoesNotExist`.
+
+### Removed
+
+- The `{% try_include %}` template tag. Use `{% include %}`, which also accepts a
+  list of template names and renders the first that exists.
+
 ## 26.41.2 - 2026-10-06
 
 ### Fixed

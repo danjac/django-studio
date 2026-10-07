@@ -2,7 +2,7 @@
 
 {% fragment "forms/partials.html#fieldset" %}
   {% with widget_type=field|widget_type %}
-    {% try_include "forms/partials.html#"|add:widget_type "forms/partials.html#input" %}
+    {% include "forms/partials.html#"|add:widget_type %}
   {% endwith %}
 {% endfragment %}
 
@@ -55,11 +55,40 @@
   {% endif %}
 {% endpartialdef help_text %}
 
-{# Default input #}
+{# Default input, shared by the text-like widgets below #}
 {% partialdef input %}
   {% partial label %}
   {% render_field field class="input" %}
 {% endpartialdef input %}
+
+{# Text-like widgets #}
+{% partialdef textinput %}
+  {% partial input %}
+{% endpartialdef textinput %}
+
+{% partialdef emailinput %}
+  {% partial input %}
+{% endpartialdef emailinput %}
+
+{% partialdef urlinput %}
+  {% partial input %}
+{% endpartialdef urlinput %}
+
+{% partialdef numberinput %}
+  {% partial input %}
+{% endpartialdef numberinput %}
+
+{% partialdef telinput %}
+  {% partial input %}
+{% endpartialdef telinput %}
+
+{% partialdef searchinput %}
+  {% partial input %}
+{% endpartialdef searchinput %}
+
+{% partialdef colorinput %}
+  {% partial input %}
+{% endpartialdef colorinput %}
 
 {# File input (explicit widget=FileInput) #}
 {% partialdef fileinput %}

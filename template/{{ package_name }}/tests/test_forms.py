@@ -5,17 +5,6 @@ from django import forms
 from django.forms import widgets
 from django.template.loader import get_template
 
-# Widgets that render as a plain <input> through the "input" fallback partial.
-_INPUT_FALLBACK = {
-    widgets.ColorInput,
-    widgets.EmailInput,
-    widgets.NumberInput,
-    widgets.SearchInput,
-    widgets.TelInput,
-    widgets.TextInput,
-    widgets.URLInput,
-}
-
 
 def _visible_widgets() -> list[type[widgets.Widget]]:
     return [
@@ -23,7 +12,7 @@ def _visible_widgets() -> list[type[widgets.Widget]]:
         for cls in (getattr(widgets, name) for name in widgets.__all__)
         if inspect.isclass(cls)
         and issubclass(cls, widgets.Widget)
-        and cls not in {widgets.Widget, widgets.MultiWidget, *_INPUT_FALLBACK}
+        and cls not in {widgets.Widget, widgets.MultiWidget}
         and not cls().is_hidden
     ]
 

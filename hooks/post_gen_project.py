@@ -111,30 +111,6 @@ def _backup_files(backup_dir: Path) -> None:
             shutil.copy2(src, dest)
 
 
-def _deprecated_aliases(opencode_commands: dict[str, dict[str, str]]) -> dict[str, str]:
-    """Return a deprecated dj-<name> command stub for each djs-<name> skill.
-
-    Skills were renamed from dj-<name> to djs-<name>; the aliases keep the old
-    names working for now. Also adds the matching entries to opencode_commands.
-    """
-    aliases: dict[str, str] = {}
-    for name in [n for n in opencode_commands if n.startswith("djs-")]:
-        alias = "dj-" + name.removeprefix("djs-")
-        notice = (
-            f"`/{alias}` is deprecated and will be removed in a future release;"
-            f" use `/{name}`."
-        )
-        aliases[alias] = (
-            f"{notice} Tell the user this in one line, then follow"
-            f" @.agents/skills/{name}/SKILL.md\n"
-        )
-        opencode_commands[alias] = {
-            "template": f".agents/skills/{name}/SKILL.md",
-            "description": f"Deprecated: use /{name}",
-        }
-    return aliases
-
-
 def install_claude_hooks() -> None:
     """Write .claude/settings.json with permissions and agentic hooks."""
     settings = {
@@ -234,7 +210,6 @@ def install_claude_hooks() -> None:
             "template": f".agents/skills/{name}/SKILL.md",
             "description": description,
         }
-    commands |= _deprecated_aliases(opencode_commands)
     # Delete stubs for skills that were renamed or removed.
     for stub in commands_dst.glob("*.md"):
         if stub.stem not in commands:

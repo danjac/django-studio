@@ -12,8 +12,9 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 - `docs/django-templates.md` explains how far to take the shipped components: edit
   them to change site-wide defaults, write markup by hand for custom cases (e.g. a
-  one-button action form) instead of adding parameters, and extract a repeated
-  pattern into a new component built from partials.
+  one-button action form) instead of adding parameters, extract a repeated
+  pattern into a new component built from partials, and make variants by
+  extending a component and overriding its blocks.
 
 ## 26.41.2 - 2026-10-06
 

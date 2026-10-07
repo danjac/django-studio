@@ -174,6 +174,38 @@ component: a template with `{% partialdef %}` blocks for its parts, like `browse
 Place it beside its callers — see
 [Locality of Behaviour](project-structure.md#locality-of-behaviour).
 
+For variants of a component, extend it and override its blocks. Each `{% block %}`
+is a named slot that the variant fills; `{{ content }}` stays the per-call slot:
+
+```html
+{# card.html #}
+<article class="card bg-base-100 shadow-sm">
+  {% block media %}{% endblock media %}
+  <div class="card-body">
+    <h2 class="card-title">{{ title }}</h2>
+    {{ content }}
+  </div>
+</article>
+```
+
+```html
+{# photos/card.html #}
+{% extends "card.html" %}
+
+{% block media %}
+  <figure><img src="{{ photo.url }}" alt="{{ photo.alt }}"></figure>
+{% endblock media %}
+```
+
+```html
+{% fragment "photos/card.html" title=post.title photo=post.photo %}
+  <p>{{ post.summary }}</p>
+{% endfragment %}
+```
+
+Partials are not inherited: a `{% partialdef %}` in `card.html` is included as
+`card.html#name`, not `photos/card.html#name`.
+
 ## Forms
 
 For form rendering patterns, widget dispatch, and custom widgets, see `docs/django-forms.md`.

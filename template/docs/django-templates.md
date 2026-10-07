@@ -153,6 +153,11 @@ element by hand rather than adding parameters to the component. Plain HTML with
 `hx-*` and `x-data` attributes is easier to read than a component configured through
 template tags.
 
+When the same hand-written pattern appears in several templates, such as a GET search
+form, extract it into a new component of its own (e.g. `search.html`) rather than
+adding a variant to an existing one. Place it beside its callers — see
+[Locality of Behaviour](project-structure.md#locality-of-behaviour).
+
 ```html
 <form
   method="post"

@@ -10,9 +10,10 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Added
 
-- `docs/django-templates.md` explains when to write markup by hand instead of
-  adding parameters to the shipped components, e.g. a one-button action form or an
-  htmx form with its own swap and target.
+- `docs/django-templates.md` explains how far to take the shipped components: edit
+  them to change site-wide defaults, write markup by hand for custom cases (e.g. a
+  one-button action form) instead of adding parameters, and extract a repeated
+  pattern into a new component built from partials.
 
 ## 26.41.2 - 2026-10-06
 

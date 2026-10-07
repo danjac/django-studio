@@ -179,11 +179,11 @@ Django puts it on the fieldset instead, and the partial uses `{% partial legend 
 
 ## Widget Type Dispatch
 
-`forms/partials.html` dispatches to a `{% partialdef %}` block by lowercasing the
-widget's class name via
-`{% try_include "forms/partials.html#"|add:widget_type "forms/partials.html#input" %}`.
-If no matching partial exists, it falls back to the `input` partial. Built-in widgets
-with explicit partials:
+`forms/partials.html` dispatches to a `{% partialdef %}` block named after the
+widget's class name, lowercased:
+`{% include "forms/partials.html#"|add:widget_type %}`. Every widget needs a
+partial; a missing one raises `TemplateDoesNotExist` when the field renders.
+Partials for Django's built-in widgets:
 
 | Widget | Partial | DaisyUI class |
 |--------|---------|---------------|
@@ -202,18 +202,25 @@ with explicit partials:
 | `SelectDateWidget` | `selectdatewidget` | `select` |
 | `FileInput`, `ClearableFileInput` | `fileinput`, `clearablefileinput` | `file-input` |
 
-Plain text-like inputs (`TextInput`, `EmailInput`, `NumberInput`, `URLInput`,
-`ColorInput`, `SearchInput`, `TelInput`) fall back to the `input` partial.
-`tests/test_forms.py` fails if any other Django widget lacks a partial.
+| `TextInput`, `EmailInput`, `URLInput`, `NumberInput`, `TelInput`, `SearchInput`, `ColorInput` | `textinput`, `emailinput`, … (each `{% partial input %}`) | `input` |
+
+`tests/test_forms.py` fails if any visible Django widget lacks a partial.
 
 ## Custom Widget Partials
 
-If you add a custom widget with non-default rendering, add a matching `{% partialdef %}`
-block to `templates/forms/partials.html`. The partial name is the widget's class name,
-lowercased. Use `{% partial label %}` (or `{% partial legend %}` for a widget that
-renders several inputs), `{% partial errors %}`, and `{% partial help_text %}` to keep
-rendering consistent. Widgets that render identically
-to a plain `<input>` need no partial — the fallback handles them.
+Each custom widget needs a matching `{% partialdef %}` block in
+`templates/forms/partials.html`, named after the widget's class name, lowercased.
+A widget that renders like a plain `<input>` reuses the `input` partial:
+
+```html
+{% partialdef slugwidget %}
+  {% partial input %}
+{% endpartialdef slugwidget %}
+```
+
+For other rendering, use `{% partial label %}` (or `{% partial legend %}` for a widget
+that renders several inputs), `{% partial errors %}`, and `{% partial help_text %}` to
+keep rendering consistent.
 
 ## Adding Widget Attributes
 

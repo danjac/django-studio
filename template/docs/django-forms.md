@@ -75,8 +75,9 @@ Key rules:
 
 ## Rendering Fields
 
-`templates/forms/partials.html` dispatches each field to a per-widget `partialdef`
-based on the field's widget type, rendering label, input, errors, and help text.
+`templates/django/forms/field.html` wraps each field in the `fieldset` partial and
+includes the per-widget `partialdef` from `templates/forms/partials.html` named after
+the field's widget type, rendering label, input, errors, and help text.
 
 Use the first level that fits:
 

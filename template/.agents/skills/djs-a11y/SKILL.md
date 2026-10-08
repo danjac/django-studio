@@ -24,7 +24,7 @@ risks breaking the `<label>`–`<input>` association and `aria-describedby` on e
 |---|---|
 | `{% render_field %}` without a label wrapper | VIOLATION |
 | `{{ form.as_div }}` | WARNING — bypasses configured renderer |
-| `{% include "forms/partials.html" %}` | VIOLATION — the include path is wrong; use `as_field_group` |
+| `{% include "widgets.html#..." %}` | VIOLATION — skips the `fieldset` wrapper with errors and help text; use `as_field_group` |
 | Radio/checkbox group using `<label>` instead of `<fieldset>`+`<legend>` | WARNING |
 
 ---

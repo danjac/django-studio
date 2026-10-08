@@ -99,26 +99,26 @@ When rendering a `{% partialdef %}` that lives in the **same** template file, us
 {% partial item-list %}
 ```
 
-The only exception is when the template name is dynamic (e.g. `forms/partials.html` uses `{% include %}` with a name built from the widget type).
+The only exception is when the template name is dynamic (e.g. `django/forms/field.html` uses `{% include %}` with a name built from the widget type).
 
 For cross-file partials, `{% include "other/partials.html#name" %}` remains correct.
 
 ### Extracting shared partials into partials.html
 
-When several templates share the same `{% partialdef %}` blocks (e.g. a card layout, a status badge, a shared action menu), extract them into a dedicated `partials.html` file. Callers include the partial via `{% partial "partials.html#block-name" %}`.
+When several templates share the same `{% partialdef %}` blocks (e.g. a card layout, a status badge, a shared action menu), extract them into a dedicated `partials.html` file. Callers include the partial via `{% include "partials.html#block-name" %}`.
+
+A `partials.html` file holds only `{% partialdef %}` blocks, with no top-level content, so it never renders anything when included whole. A template that renders its own markup and also defines partials (e.g. `form.html`, `paginate.html`) is named after what it renders.
 
 Conventional locations:
 
 | Scope | File |
 |-------|------|
 | Project-wide | `templates/partials.html` |
-| Domain-specific | `templates/forms/partials.html`, `templates/my_app/partials.html` |
-
-`forms/partials.html` follows this pattern — it holds all form-field widget partials and is included indirectly by Django's field renderer.
+| Domain-specific | `templates/my_app/partials.html` |
 
 ## fragment Tag
 
-`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `forms/partials.html` and `paginate.html`:
+`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `django/forms/field.html` and `paginate.html`:
 
 ```html
 {% fragment "form.html" htmx=True target="my-form" %}

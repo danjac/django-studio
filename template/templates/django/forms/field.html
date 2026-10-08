@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
-{% fragment "forms/partials.html#fieldset" %}
+{% fragment "form.html#fieldset" %}
   {% with widget_type=field|widget_type %}
-    {% include "forms/partials.html#"|add:widget_type %}
+    {% include "widgets.html#"|add:widget_type %}
   {% endwith %}
 {% endfragment %}

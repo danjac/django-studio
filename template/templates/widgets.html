@@ -1,19 +1,5 @@
 {% load heroicons i18n widget_tweaks %}
 
-{% partialdef fieldset %}
-  {# Django puts aria-describedby on the input, except for grouped widgets. #}
-  {% with errors=field.errors described_by=field.aria_describedby %}
-    <fieldset
-      class="fieldset"
-      {% if field.use_fieldset and described_by %}aria-describedby="{{ described_by }}"{% endif %}
-    >
-      {{ content }}
-      {% partial errors %}
-      {% partial help_text %}
-    </fieldset>
-  {% endwith %}
-{% endpartialdef fieldset %}
-
 {# Single control #}
 {% partialdef label %}
   <label for="{{ field.id_for_label }}" class="fieldset-legend{% if field.errors %} text-error{% endif %}">
@@ -32,22 +18,6 @@
   {{ field.label }}
   {% if not field.field.required %}{% translate "(optional)" %}{% endif %}
 {% endpartialdef label_text %}
-
-{% partialdef errors %}
-  {% if errors %}
-    <ul id="{{ field.auto_id }}_error" class="space-y-1 text-sm font-semibold text-error">
-      {{ errors|unordered_list }}
-    </ul>
-  {% endif %}
-{% endpartialdef errors %}
-
-{% partialdef help_text %}
-  {% if field.help_text %}
-    <p class="label" id="{{ field.auto_id }}_helptext">
-      {{ field.help_text }}
-    </p>
-  {% endif %}
-{% endpartialdef help_text %}
 
 {# Default input, shared by the text-like widgets below #}
 {% partialdef input %}

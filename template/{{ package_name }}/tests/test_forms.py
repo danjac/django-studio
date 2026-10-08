@@ -30,7 +30,7 @@ class _Form(forms.Form):
 class TestWidgetPartials:
     @pytest.mark.parametrize("widget", _visible_widgets(), ids=lambda cls: cls.__name__)
     def test_widget_has_partial(self, widget):
-        get_template(f"widgets.html#{widget.__name__.lower()}")
+        get_template(f"forms/widgets.html#{widget.__name__.lower()}")
 
 
 class TestFieldRendering:

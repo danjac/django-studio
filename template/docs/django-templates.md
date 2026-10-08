@@ -99,7 +99,7 @@ When rendering a `{% partialdef %}` that lives in the **same** template file, us
 {% partial item-list %}
 ```
 
-The only exception is when the template name is dynamic (e.g. `django/forms/field.html` uses `{% include %}` with a name built from the widget type).
+The only exception is when the template name is dynamic (e.g. `forms/field.html` uses `{% include %}` with a name built from the widget type).
 
 For cross-file partials, `{% include "other/partials.html#name" %}` remains correct.
 
@@ -107,7 +107,7 @@ For cross-file partials, `{% include "other/partials.html#name" %}` remains corr
 
 When several templates share the same `{% partialdef %}` blocks (e.g. a card layout, a status badge, a shared action menu), extract them into a dedicated `partials.html` file. Callers include the partial via `{% include "partials.html#block-name" %}`.
 
-A `partials.html` file holds only `{% partialdef %}` blocks, with no top-level content, so it never renders anything when included whole. A template that renders its own markup and also defines partials (e.g. `form.html`, `paginate.html`) is named after what it renders.
+A partials-only file holds only `{% partialdef %}` blocks, with no top-level content, so it never renders anything when included whole. Name it after what its partials are for: `partials.html` for general shared blocks, or a specific name such as `forms/widgets.html`. A template that renders its own markup and also defines partials (e.g. `form.html`, `forms/field.html`, `paginate.html`) is named after what it renders.
 
 Conventional locations:
 
@@ -118,7 +118,7 @@ Conventional locations:
 
 ## fragment Tag
 
-`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `django/forms/field.html` and `paginate.html`:
+`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `forms/field.html` and `paginate.html`:
 
 ```html
 {% fragment "form.html" htmx=True target="my-form" %}

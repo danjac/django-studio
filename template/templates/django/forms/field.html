@@ -1,6 +1,0 @@
-{% load widget_tweaks %}
-{% fragment "form.html#fieldset" %}
-  {% with widget_type=field|widget_type %}
-    {% include "widgets.html#"|add:widget_type %}
-  {% endwith %}
-{% endfragment %}

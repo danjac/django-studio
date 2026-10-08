@@ -344,7 +344,7 @@ else:
 # Templates
 # https://docs.djangoproject.com/en/1.11/ref/forms/renderers/
 
-FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+FORM_RENDERER = "{{ package_name }}.forms.FormRenderer"
 
 # Secure settings
 # https://docs.djangoproject.com/en/4.1/topics/security/

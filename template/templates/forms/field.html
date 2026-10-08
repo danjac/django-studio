@@ -1,0 +1,36 @@
+{% load widget_tweaks %}
+{% fragment "forms/field.html#fieldset" %}
+  {% with widget_type=field|widget_type %}
+    {% include "forms/widgets.html#"|add:widget_type %}
+  {% endwith %}
+{% endfragment %}
+
+{% partialdef fieldset %}
+  {# Django puts aria-describedby on the input, except for grouped widgets. #}
+  {% with errors=field.errors described_by=field.aria_describedby %}
+    <fieldset
+      class="fieldset"
+      {% if field.use_fieldset and described_by %}aria-describedby="{{ described_by }}"{% endif %}
+    >
+      {{ content }}
+      {% partial errors %}
+      {% partial help_text %}
+    </fieldset>
+  {% endwith %}
+{% endpartialdef fieldset %}
+
+{% partialdef errors %}
+  {% if errors %}
+    <ul id="{{ field.auto_id }}_error" class="space-y-1 text-sm font-semibold text-error">
+      {{ errors|unordered_list }}
+    </ul>
+  {% endif %}
+{% endpartialdef errors %}
+
+{% partialdef help_text %}
+  {% if field.help_text %}
+    <p class="label" id="{{ field.auto_id }}_helptext">
+      {{ field.help_text }}
+    </p>
+  {% endif %}
+{% endpartialdef help_text %}

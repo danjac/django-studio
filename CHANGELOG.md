@@ -10,17 +10,15 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 
 ### Changed
 
-- The widget dispatch (wrap the field in the `fieldset` partial, then include the
-  partial named after its widget type) moved from a top-level `{% fragment %}` in
-  `templates/forms/partials.html` to `templates/django/forms/field.html`.
-  `forms/partials.html` now holds only `{% partialdef %}` blocks. **Expect a
-  conflict on `copier update` if you edited either file.**
-- `templates/forms/partials.html` is split in two and removed. The `fieldset`,
-  `errors` and `help_text` partials move into `templates/form.html`; `label`,
-  `legend`, `input` and the per-widget partials move into `templates/widgets.html`.
-  Add custom widget partials to `widgets.html` and update any
-  `forms/partials.html#...` references. **Expect a conflict on `copier update` if
-  you edited `forms/partials.html` or `form.html`.**
+- Form field rendering moves out of `templates/forms/partials.html` (removed) and
+  `templates/django/forms/field.html` (removed). `FORM_RENDERER` is now
+  `<package>.forms.FormRenderer`, which renders each field with
+  `templates/forms/field.html`: the widget dispatch plus the `fieldset`, `errors`
+  and `help_text` partials. `label`, `legend`, `input` and the per-widget partials
+  move to `templates/forms/widgets.html`; add custom widget partials there and
+  update any `forms/partials.html#...` references. **Expect a conflict on
+  `copier update` in `config/settings.py` and in either removed template if you
+  edited it.**
 
 ## 26.41.3 - 2026-10-07
 

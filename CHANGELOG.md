@@ -6,6 +6,16 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.41.4 - 2026-10-08
+
+### Changed
+
+- The widget dispatch (wrap the field in the `fieldset` partial, then include the
+  partial named after its widget type) moved from a top-level `{% fragment %}` in
+  `templates/forms/partials.html` to `templates/django/forms/field.html`.
+  `forms/partials.html` now holds only `{% partialdef %}` blocks. **Expect a
+  conflict on `copier update` if you edited either file.**
+
 ## 26.41.3 - 2026-10-07
 
 ### Added

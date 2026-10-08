@@ -1,11 +1,5 @@
 {% load heroicons i18n widget_tweaks %}
 
-{% fragment "forms/partials.html#fieldset" %}
-  {% with widget_type=field|widget_type %}
-    {% include "forms/partials.html#"|add:widget_type %}
-  {% endwith %}
-{% endfragment %}
-
 {% partialdef fieldset %}
   {# Django puts aria-describedby on the input, except for grouped widgets. #}
   {% with errors=field.errors described_by=field.aria_describedby %}

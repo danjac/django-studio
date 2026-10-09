@@ -1,5 +1,5 @@
-{% load heroicons i18n %}<div id="messages" class="z-50 toast toast-end toast-bottom"{% if hx_oob %} hx-swap-oob="true"{% endif %}>
-    {% if messages %}
+{% load heroicons i18n %}<div id="messages" class="z-50 toast toast-end toast-bottom">
+    {% partialdef messages inline %}
         {% for message in messages %}
             <div class="alert alert-soft alert-{{ message.tags }}"
                  role="alert"
@@ -22,5 +22,5 @@
                 </button>
             </div>
         {% endfor %}
-    {% endif %}
+    {% endpartialdef messages %}
 </div>

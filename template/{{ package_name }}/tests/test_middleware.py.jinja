@@ -119,6 +119,7 @@ class TestHtmxMessagesMiddleware:
         req.htmx = HtmxDetails(req)
         req._messages = messages
         resp = mw(req)
+        assert b'<hx-partial hx-target="#messages" hx-swap="innerHTML">' in resp.content
         assert b"OK" in resp.content
 
     def test_hx_redirect(self, rf, messages):

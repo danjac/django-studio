@@ -24,6 +24,11 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
   `messages` partial, so customised copies of `messages.html` or the
   middleware may conflict on `copier update`.
 
+### Fixed
+
+- Message toasts sit above the cookie banner (`z-[60]` on `#messages`), so the
+  banner no longer hides them or blocks their dismiss button.
+
 ## 26.41.4 - 2026-10-08
 
 ### Changed

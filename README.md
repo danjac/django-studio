@@ -261,6 +261,7 @@ Generated projects include `djs-*` Claude Code and OpenCode slash commands for c
 | `/djs-deadcode`      | Remove unused Python code, templates, static assets and dependencies         |
 | `/djs-remove-slop`   | Audit and remove Django anti-patterns introduced by AI or inattentive devs   |
 | `/djs-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines            |
+| `/djs-full-audit`    | Run all audits in one sweep and combine the findings into one report         |
 
 **Deployment**
 

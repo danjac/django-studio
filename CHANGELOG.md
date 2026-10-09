@@ -6,6 +6,16 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.41.5 - 2026-10-09
+
+### Added
+
+- `/djs-full-audit` runs the security, performance, GDPR, accessibility, SEO,
+  dead-code and anti-pattern audits in one sweep (in parallel where the agent
+  supports subagents) without changing any file, and combines the findings into
+  one report. It suggests which audits to skip for the project, such as SEO when
+  there are no public pages, and then offers fixes one audit at a time.
+
 ## 26.41.4 - 2026-10-08
 
 ### Changed

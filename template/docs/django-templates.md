@@ -255,10 +255,13 @@ DaisyUI alert classes map directly to Django message tags:
 | `messages.WARNING` | `alert alert-soft alert-warning` |
 | `messages.ERROR` | `alert alert-soft alert-error` |
 
-For HTMX requests, re-render messages as an out-of-band swap:
+`HtmxMessagesMiddleware` adds pending messages to HTMX responses, wrapping the
+`messages` partial in an `<hx-partial>` (see [HTMX](htmx.md)):
 
 ```html
-{% include "messages.html" with hx_oob=True %}
+<hx-partial hx-target="#messages" hx-swap="innerHTML">
+    {% include "messages.html#messages" %}
+</hx-partial>
 ```
 
 ## Navigation

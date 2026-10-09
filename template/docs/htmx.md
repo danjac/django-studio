@@ -161,7 +161,7 @@ Sets `Vary: HX-Request` on HTMX responses so caches serve the correct variant to
 
 ### `HtmxMessagesMiddleware`
 
-Appends pending Django messages to HTMX HTML responses as an [out-of-band swap](https://four.htmx.org/reference/attributes/hx-swap-oob/) (`hx-swap-oob="true"`) targeting the `#messages` container in `base.html`. This means any view that calls `messages.success(...)` before a partial response will automatically display the toast — no extra template code required.
+Appends pending Django messages to HTMX HTML responses as an `<hx-partial hx-target="#messages" hx-swap="innerHTML">` wrapping the `messages.html#messages` partial, which fills the `#messages` container in `base.html`. This means any view that calls `messages.success(...)` before a partial response will automatically display the toast — no extra template code required.
 
 The middleware skips responses that already carry an HTMX redirect header (`HX-Location`, `HX-Redirect`, `HX-Refresh`) because the browser is about to navigate away.
 

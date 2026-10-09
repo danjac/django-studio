@@ -16,6 +16,14 @@ Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
   one report. It suggests which audits to skip for the project, such as SEO when
   there are no public pages, and then offers fixes one audit at a time.
 
+### Changed
+
+- `HtmxMessagesMiddleware` sends messages as an htmx 4
+  `<hx-partial hx-target="#messages">` instead of an `hx-swap-oob` swap.
+  `messages.html` no longer takes `hx_oob`; its message list is now the
+  `messages` partial, so customised copies of `messages.html` or the
+  middleware may conflict on `copier update`.
+
 ## 26.41.4 - 2026-10-08
 
 ### Changed

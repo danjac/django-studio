@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 from django.urls import reverse
+from django.utils.translation import gettext
+from playwright.sync_api import expect
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -79,3 +81,13 @@ def test_preserved_stylesheet_survives_htmx_swap(page: Page, live_server, settin
 
     assert page.locator("#e2e-preserved").count() == 1
     page.wait_for_function(applied, timeout=5000)
+
+
+def test_message_toast_above_cookie_banner(auth_page: Page):
+    """The sign-in toast can be dismissed while the cookie banner is showing."""
+    toast = auth_page.get_by_role("alert")
+    expect(toast).to_be_visible()
+    expect(auth_page.locator("#cookie-banner")).to_be_visible()
+    # The toast hides itself after 4 seconds, so click before then
+    toast.get_by_role("button", name=gettext("Dismiss")).click(timeout=2000)
+    expect(toast).to_be_hidden()

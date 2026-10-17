@@ -1,5 +1,6 @@
 ---
 description: Enable, check or disable Tailscale private networking for the cluster
+disable-model-invocation: true
 ---
 
 Put the cluster on a Tailscale tailnet so SSH and the Kubernetes API are reachable

@@ -12,6 +12,7 @@ Invoked by copier as:
     python hooks/post_gen_project.py <project_slug> <license> <author>
 """
 
+import contextlib
 import datetime
 import json
 import shutil
@@ -192,10 +193,15 @@ def install_claude_hooks() -> None:
     with (claude_dir / "settings.json").open("w") as f:
         json.dump(settings, f, indent=2)
         f.write("\n")
-    commands_dst = claude_dir / "commands"
-    commands_dst.mkdir(parents=True, exist_ok=True)
+    skills_dst = claude_dir / "skills"
+    skills_dst.mkdir(exist_ok=True)
+    link_root = Path("../../.agents/skills")
+    # Relink on every run so renamed or removed skills drop out,
+    # leaving skills installed by other tools alone.
+    for link in skills_dst.iterdir():
+        if link.is_symlink() and link.readlink().parent == link_root:
+            link.unlink()
     skills_root = BASE_DIR / ".agents" / "skills"
-    commands: dict[str, str] = {}
     opencode_commands: dict[str, dict[str, str]] = {}
     for skill_dir in sorted(skills_root.iterdir()):
         if not skill_dir.is_dir():
@@ -204,18 +210,18 @@ def install_claude_hooks() -> None:
         if not skill_file.exists():
             continue
         name = skill_dir.name
-        commands[name] = f"@.agents/skills/{name}/SKILL.md\n"
+        # Keep entries the user made, such as a whole-directory link.
+        with contextlib.suppress(FileExistsError):
+            (skills_dst / name).symlink_to(link_root / name)
         description = _parse_skill_description(skill_file)
         opencode_commands[name] = {
             "template": f".agents/skills/{name}/SKILL.md",
             "description": description,
         }
-    # Delete stubs for skills that were renamed or removed.
-    for stub in commands_dst.glob("*.md"):
-        if stub.stem not in commands:
+    # Remove stubs left by earlier template versions.
+    for stub in (claude_dir / "commands").glob("*.md"):
+        if stub.read_bytes() == f"@.agents/skills/{stub.stem}/SKILL.md\n".encode():
             stub.unlink()
-    for name, content in commands.items():
-        (commands_dst / f"{name}.md").write_text(content)
     opencode = {
         "$schema": "https://opencode.ai/config.json",
         "command": opencode_commands,

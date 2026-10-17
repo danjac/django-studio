@@ -1,5 +1,6 @@
 ---
 description: Restore the production database from a Hetzner Object Storage backup
+disable-model-invocation: true
 ---
 
 Restore the production database from a backup stored in Hetzner Object Storage.

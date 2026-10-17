@@ -224,3 +224,21 @@ class TestPostGenBackup:
         assert (project / ".claude" / "settings.json").exists()
         # The hook should not have created a backup dir (nothing to back up)
         assert not (project / ".django_studio").exists()
+
+
+def test_re_render_replaces_only_template_owned_claude_entries(output_dir):
+    claude_dir = output_dir / "project" / ".claude"
+    commands = claude_dir / "commands"
+    commands.mkdir(parents=True)
+    (commands / "djs-help.md").write_text("@.agents/skills/djs-help/SKILL.md\n")
+    (commands / "mine.md").write_text("@.agents/skills/djs-help/SKILL.md\nAnd more\n")
+    skills = claude_dir / "skills"
+    skills.mkdir()
+    (skills / "djs-removed").symlink_to("../../.agents/skills/djs-removed")
+    (skills / "daisyui").mkdir()
+
+    render(output_dir, DEFAULT_CONTEXT)
+
+    assert {p.name for p in commands.iterdir()} == {"mine.md"}
+    assert not (skills / "djs-removed").is_symlink()
+    assert (skills / "daisyui").is_dir()

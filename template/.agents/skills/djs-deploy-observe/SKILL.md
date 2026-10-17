@@ -1,5 +1,6 @@
 ---
 description: Deploy the observability stack (Grafana + Prometheus + Loki)
+disable-model-invocation: true
 ---
 
 Deploy the observability stack (Grafana + Prometheus + Loki) to a running cluster.

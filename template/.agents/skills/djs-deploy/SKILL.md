@@ -1,5 +1,6 @@
 ---
 description: Interactive first-deploy wizard: provisions infra, configures secrets, deploys
+disable-model-invocation: true
 ---
 
 Interactive first-deploy wizard. Guides the user through provisioning infrastructure,

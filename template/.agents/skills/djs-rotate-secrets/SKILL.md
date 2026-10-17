@@ -1,5 +1,6 @@
 ---
 description: Rotate auto-generated and third-party Helm secrets and redeploy
+disable-model-invocation: true
 ---
 
 Rotate secrets in `helm/site/values.secret.yaml` and redeploy.

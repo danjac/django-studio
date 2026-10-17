@@ -6,6 +6,7 @@ import json
 import py_compile
 import re
 import subprocess
+from pathlib import Path
 
 
 class TestProjectStructure:
@@ -656,24 +657,14 @@ class TestClaudeHooksInstallation:
     def test_settings_json_installed(self, project):
         assert (project / ".claude" / "settings.json").exists()
 
-    def test_command_stubs_installed(self, project):
-        # Every skill with a SKILL.md should have a corresponding stub
-        skills = list((project / ".agents" / "skills").glob("*/SKILL.md"))
-        assert skills, "No SKILL.md files found in .agents/skills/"
-        commands_dir = project / ".claude" / "commands"
-        for skill_md in skills:
-            name = skill_md.parent.name  # e.g. "djs-create-app"
-            stub = commands_dir / f"{name}.md"
-            assert stub.exists(), f"Missing stub for skill '{name}'"
-            assert stub.read_text().strip() == f"@.agents/skills/{name}/SKILL.md"
-
     def test_one_command_per_skill(self, project):
         skills = {
             p.parent.name for p in (project / ".agents" / "skills").glob("*/SKILL.md")
         }
-        assert all(name.startswith("djs-") for name in skills)
-        commands_dir = project / ".claude" / "commands"
-        assert {p.stem for p in commands_dir.glob("*.md")} == skills
+        assert skills and all(name.startswith("djs-") for name in skills)
+        skills_dir = project / ".claude" / "skills"
+        links = {p.name: p.readlink() for p in skills_dir.iterdir()}
+        assert links == {name: Path("../../.agents/skills", name) for name in skills}
         opencode = json.loads((project / "opencode.json").read_text())["command"]
         assert set(opencode) == skills
 

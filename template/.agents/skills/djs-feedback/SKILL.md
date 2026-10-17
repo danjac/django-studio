@@ -1,5 +1,6 @@
 ---
 description: File a GitHub issue against the django-studio repo
+disable-model-invocation: true
 ---
 
 File a GitHub issue against the django-studio template repo. Use this when the

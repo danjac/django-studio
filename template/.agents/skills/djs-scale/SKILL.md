@@ -1,5 +1,6 @@
 ---
 description: View or change the webapp replica count
+disable-model-invocation: true
 ---
 
 View or change the webapp replica count.

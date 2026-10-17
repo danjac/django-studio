@@ -6,6 +6,16 @@ added since your project's last update before it runs `copier update`.
 Versions are date-based: `YY.WW.D` (ISO year, week and weekday, as printed by
 `date +%y.%V.%u`), one section per day.
 
+## 26.42.6 - 2026-10-17
+
+### Changed
+
+- `djs-*` skills are symlinked into `.claude/skills/` instead of stubbed in
+  `.claude/commands/`. `copier update` removes the old stubs and no longer
+  deletes your own commands.
+- Skills that touch production or post to the django-studio repo set
+  `disable-model-invocation: true`, so they run only when you type them.
+
 ## 26.41.5 - 2026-10-09
 
 ### Added

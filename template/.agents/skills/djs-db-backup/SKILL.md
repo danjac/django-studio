@@ -1,5 +1,6 @@
 ---
 description: Trigger an immediate production database backup without waiting for the daily cron
+disable-model-invocation: true
 ---
 
 Take an on-demand snapshot of the production database and upload it to Object Storage.

@@ -1,5 +1,6 @@
 ---
 description: "Deprecated: renamed to /djs-deploy-observe — runs it automatically"
+disable-model-invocation: true
 ---
 
 **This command has been renamed to `/djs-deploy-observe`.**

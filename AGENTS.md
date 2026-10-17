@@ -189,7 +189,7 @@ The template uses [DaisyUI](https://daisyui.com/components/) for component styli
 
 ## Slash Commands
 
-Each slash command is a standalone skill at `template/.agents/skills/<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook scans `.agents/skills/*/SKILL.md` and writes one stub per skill at `.claude/commands/<name>.md` — no list to maintain.
+Each slash command is a standalone skill at `template/.agents/skills/<command>/SKILL.md`. The `.agents/` tree lives under `template/` and is copied verbatim by Copier into generated projects. The post-gen hook scans `.agents/skills/*/SKILL.md` and symlinks each into `.claude/skills/<name>` — no list to maintain.
 
 Supporting files (Markdown docs, prompt templates, JSON/text reference data) live in a `references/` subdirectory: `template/.agents/skills/<command>/references/`.
 
@@ -208,6 +208,9 @@ description: One-sentence summary shown in opencode.json and the UI (≤80 chars
 
 <workflow prose — steps, code blocks, decisions>
 ```
+
+Add `disable-model-invocation: true` to skills that touch production or post to the
+django-studio repo, so only the user can run them.
 
 **references/help.md** — every skill must have one. Content:
 

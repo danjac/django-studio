@@ -1,5 +1,6 @@
 ---
 description: Schedule a management command as a Kubernetes cron job
+disable-model-invocation: true
 ---
 
 Schedule a Django management command as a Kubernetes cron job in `helm/site/values.yaml`.
